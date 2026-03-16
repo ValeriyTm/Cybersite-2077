@@ -11,7 +11,9 @@
     /*Для работы алиасов:*/
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      //Для работы с Zod:
+      "@repo/validation": ["../../packages/validation/index.ts"]
     },
 
     /* Bundler mode */

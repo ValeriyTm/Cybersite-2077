@@ -1,7 +1,11 @@
 {
   "name": "cybersite",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
   "main": "index.js",
   "workspaces": [
     "apps/*",
@@ -10,12 +14,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
     "prettier": "^3.8.1",
-    "prettier-plugin-packagejson": "^3.0.2"
-  }
+    "prettier-plugin-packagejson": "^3.0.2",
+    "turbo": "^2.8.17"
+  },
+  "packageManager": "npm@11.9.0"
 }
