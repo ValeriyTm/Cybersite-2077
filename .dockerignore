@@ -1,0 +1,25 @@
+# Зависимости (самое важное!)
+node_modules
+**/node_modules
+npm-debug.log*
+
+# Сборка и кэш
+dist
+build
+.turbo
+.next
+.cache
+
+# Конфиги и секреты
+.env
+.env.*
+!.env.example
+.git
+.github
+.vscode
+.eslintcache
+.stylelintcache
+
+# Логи и дампы
+*.log
+docker-compose*.yml

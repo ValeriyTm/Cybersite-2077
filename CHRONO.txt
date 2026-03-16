@@ -1,0 +1,60 @@
+-Создаю файловую структуру проекта.
+-В корне проекта делаю "npm init -y".
+-В корневой package.json добавляю:
+"workspaces": ["apps/_", "packages/*"]
+-
+
+<!--Занимаюсь структурой Frontend:-->
+
+*В папке apps выполняю команду:
+npm create vite@latest web -- --template react-ts
+-!Не выполняю установку папки node_modules в apps/web
+*Папке apps/web выполняю команду:
+rm -rf .git
+*Запускаю фронтенд из корня всего проекта (а не из фронтендовской папки) командой:
+npm run dev -w web
+*Меняю стандартную струтуру папки src на FSD:
+-Создаю в src папки app, pages, widgets, features, entities, shared. Main.tsx оставляю в корне папки src. Глобальные стили помещаю в app/styles. Файлы из src/assets перемещаю в src/shared/assets. App.tsx перемещаю в src/app. Компоненты создаю в src/shared/ui/имя_компонента.
+-Добавляю алиас. Сначала в конфиге vite добавляю импорт "import { fileURLToPath, URL } from "node:url";", а затем после plugins вставляю "resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
+      },
+    },". После иду в конфиг tsconfig.app.json и добавляю в compilerOptions следующее: " "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }"
+После этого могу начать использовать алиасы - теперь в путях символ "@" - это путь от src.
+-Устанавливаю sass из корня проекта:
+npm i -D sass -w web
+Больше для работы sass делать не нужно ничего.
+-Устанавливаю PostCSS и его плагины командой:
+npm i -D postcss postcss-preset-env postcss-pxtorem -w web
+Далее создаю в apps/web конфиг postcss.config.js и заполняю его.
+Создаю в apps/web файл vite-env.d.ts, который будет говорить тайпскрипту не ругаться на импорты стилей.
+-Устанавливаю StyleLint. Выполняю команду из корня:
+npm install -D stylelint stylelint-config-standard-scss stylelint-config-clean-order -w web
+Что есть что: stylelint-config-standard-scss - это стандартные правила для Sass; stylelint-config-clean-order - автоматически расставляет CSS-свойства в логическом порядке (сначала позиционирование, потом размеры, потом шрифты и т.д.).
+Создаём в apps/web файл .stylelint.config.mjs и заполняем его. Затем в package.json фронтенда добавляем скрипт "lint:style": "stylelint \"src/**/*.scss\"" для запуска проверки и "lint:style:fix": "stylelint \"src/**/*.scss\" --fix" для починки.
+
+
+<!--Установка пакетов при работе с турборепо-->
+
+-Файлы package.json у меня должны быть: в корне проекта, в apps/server/, в /apps/web, в packages/"\*"/
+-Устанавливаю пакеты только из корня. Если это общий пакет, то использую стандартную команду "npm install package_name". Если же мне нужно установить пакет для фронтенда, то я выполняю команду "npm install -D package_name -w web".
+-Установим Prettier - для единообразия форматирования кода его ставим для всего проекта. 
+Выполним команду:
+npm install -D prettier prettier-plugin-packagejson
+Пакеты: prettier - это сам движок.
+prettier-plugin-packagejson - это плагин, который будет автоматически сортировать поля в многочисленных package.json (в корне, в apps, в packages) по алфавиту и стандарту.
+В корне проекта создадим файл ".prettierrc".
+Из корня выполним команду:
+npm i -D stylelint-config-prettier-scss -w web
+, чтобы prettier и stylelint не конфликтовали.
+После этого в stylelint.config.mjs на фронтенде в массив extends в самый конец добавим строку:
+"stylelint-config-prettier-scss".
+Далее занимаемся устранением конфликтов между Prettier и ESLint. Выполним команду:
+npm install -D eslint-config-prettier -w web
+После этого в esling.config.js фронтенда добавим строку "eslintConfigPrettier" (в самый конец; не забыть импорт).
+-Инициализирую Git в корне проекта. Файл gitignore всего один и он в корне.
+
+/////////////////////////////////

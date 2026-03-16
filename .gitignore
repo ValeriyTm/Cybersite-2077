@@ -1,0 +1,28 @@
+# Зависимости 
+node_modules/
+**/node_modules/
+
+# Сборка и кэш
+dist/
+build/
+.turbo/
+.next/
+.cache/
+tsconfig.tsbuildinfo
+
+# Логи и переменные окружения
+*.log
+.env
+.env.*
+!.env.example
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Конфиги IDE
+.vscode/
+.idea/
+
+# Прочее:
+docs/
