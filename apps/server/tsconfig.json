@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@repo/validation": ["../../packages/validation/index.ts"]
+    },
+    "outDir": "./dist",
+    // УДАЛИ или закомментируй строку "rootDir": "./src",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*", "../../packages/validation/index.ts"], // ДОБАВЬ путь к пакету сюда
+  "exclude": ["node_modules", "dist"]
+}

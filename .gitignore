@@ -26,3 +26,7 @@ Thumbs.db
 
 # Прочее:
 docs/
+
+
+# Папка от Prisma:
+generated/

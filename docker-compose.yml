@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  # Основная база: PostgreSQL с расширением PostGIS для твоей карты
+  postgres:
+    image: postgis/postgis:15-3.3 # Специальный образ с уже установленным PostGIS
+    container_name: cybersite_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: cybersite_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Кэш и очереди: Redis (для корзины и BullMQ)
+  redis:
+    image: redis:7-alpine
+    container_name: cybersite_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Дополнительная база: MongoDB (для отзывов и новостей)
+  mongodb:
+    image: mongo:6.0
+    container_name: cybersite_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  # Веб-интерфейс для просмотра таблиц (замена pgAdmin/DBeaver в браузере)
+  adminer:
+    image: adminer
+    container_name: cybersite_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+    # Веб-интерфейс для управления MongoDB
+  mongo-express:
+    image: mongo-express
+    container_name: cybersite_mongo_express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: dev
+      ME_CONFIG_BASICAUTH_PASSWORD: dev
+    depends_on:
+      - mongodb
+
+  # Веб-интерфейс для управления Redis:
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: cybersite_redis_insight
+    restart: always
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:

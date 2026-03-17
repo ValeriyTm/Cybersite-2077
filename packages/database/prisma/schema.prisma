@@ -1,0 +1,112 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+    //Важно для работы в монорепозитории:
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  //Включаем поддержку PostGIS:
+  extensions = [postgis]
+}
+
+///////////////////////////////////////
+
+enum Role {
+  USER
+  MANAGER
+  CONTENT_EDITOR
+  ADMIN
+  SUPERADMIN
+}
+//Роли:
+//-User(по умолч): может покупать, оставлять отзывы, смотреть свои заказы.
+//-Manager: может менять статусы заказов, управлять резервами на Складе (Warehouse), отвечать в Support.
+//-Content_editor: может добавлять товары в Catalog, писать новости в Content, модерировать отзывы.
+//-Admin: может всё вышеперечисленное + управление скидками (Discount) и просмотр Отчетов.
+//-Superadmin: может назначать роли другим сотрудникам и видеть системные логи.
+
+enum Gender {
+  MALE
+  FEMALE
+  }
+
+//Модель пользователя (для модуля Identity)
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified   DateTime? // Для OAuth (Google подтверждает почту)
+  name          String    @unique
+  passwordHash  String    // Храним хеш, а не чистый пароль!
+  
+ // Данные профиля (указываются не на этапе регистрации):
+  phone           String?   @unique
+  birthday        DateTime?
+  gender          Gender?
+
+  // Добавляем роль с дефолтным значением
+  role          Role      @default(USER)
+
+  // Поля для OAuth/OIDC
+  provider      String?   // 'google', 'github' и т.д.
+  providerId    String?   @unique
+  
+  // Данные профиля
+  avatarUrl     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+
+
+  // Предпочтительная гео-точка для доставки (используется тип Unsupported для PostGIS)
+  // Мы сможем работать с ней через сырые запросы Prisma $queryRaw
+  location      Unsupported("geometry(Point, 4326)")?
+
+  orders    Order[] // У одного юзера может быть много заказов
+
+  @@index([location], type: Gist) // Индекс для быстрого поиска по координатам
+  @@map("users") // Название таблицы в БД в нижнем регистре
+}
+
+// Модель для склада (для модуля Warehouse)
+model Warehouse {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  // Координаты склада (PostGIS)
+  location  Unsupported("geometry(Point, 4326)")
+  
+  orders    Order[]  // Связь: один склад может обслуживать много заказов
+
+  @@index([location], type: Gist)
+  @@map("warehouses")
+}
+
+// Модуль для таблицы заказа (для модуля Ordering)
+model Order {
+  id              String    @id @default(uuid())
+  
+  // Кто заказал
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  
+  // Откуда везем (выбранный склад):
+  warehouseId     String
+  warehouse       Warehouse @relation(fields: [warehouseId], references: [id])
+  
+  // Куда везем (точка на карте Leaflet):
+  deliveryPoint   Unsupported("geometry(Point, 4326)")
+  
+  //Результаты моих расчетов на сервере:
+  distance        Float?    // Расстояние в км
+  deliveryPrice   Decimal   // Цена (Decimal для точности денег)
+  deliveryDate    DateTime  // Дата прибытия
+  
+  status          String    @default("PENDING")
+  createdAt       DateTime  @default(now())
+
+  @@index([deliveryPoint], type: Gist)
+  @@map("orders")
+}

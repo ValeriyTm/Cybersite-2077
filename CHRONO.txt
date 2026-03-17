@@ -77,3 +77,102 @@ npm install -D typescript -w @repo/validation
 -В packages/validation/package.json добавляем скрипт "type-check": "tsc --noEmit". Затем запускаем этот скрипт (для проверки валидности кода в index.ts и проверки работы монорепозитория) из корня командой:
 npx turbo type-check
 Если скрипт отработал без ошибки, то всё хорошо.
+
+/////////////////////////////////
+-Устанавливаю React Hook Form командой из корня:
+npm install react-hook-form @hookform/resolvers -w web
+Примечание: @hookform/resolvers - это специальный адаптер, который позволяет react-hook-form понимать правила валидации из твоей Zod-схемы.
+
+/////////////////////////////////
+///////////Занимаюсь бэкендом
+-В apps/server создаю package.json (через npm init -y).
+-Устанавливаю пакеты:
+npm install express cors dotenv -w server
+
+а также:
+npm install -D typescript @types/node @types/express @types/cors ts-node-dev -w server
+
+и ещё:
+npm install -D tsx -w server
+(чтобы ts-node мог работать с ESM модулями)
+
+-Привязываю свою валидацию также к серверу (из корня):
+npm install @repo/validation -w server
+
+-Запускаю сервер из корня командой:
+npm run dev -w server
+
+///////////////////////////////
+/////Проверяю работу схемы Zod на сервере.
+-Запускаю сервер
+-В Postman указываю POST запрос для адреса сервера (http://localhost:3001/api/auth/register). В Headers ставлю Content-Type: application/json. В Body выбираю raw --> JSON.
+
+Запрос №1: Отправляю: {}. Должен получить 400 Bad Request.
+
+Запрос №2: Отправляю: {
+  "name": "alexander",
+  "email": "invalid-email",
+  "password": "PasswordAlexander123!"
+}
+Должен получить ошибку по email и по password.
+
+Запрос №3: Отправляю: {
+  "name": "alex_dev",
+  "email": "test@google.com",
+  "password": "SafePassword@2026"
+}
+Должен получить 201 Created.
+
+///////////////////////////////
+/////Настраиваю ESLint на сервере.
+-В apps/server создаю и наполняю tsconfig.json.
+-Из корня ставлю пакеты:
+npm install -D eslint @eslint/js globals typescript-eslint eslint-config-prettier -w server
+
+-Создаю конфиг apps/server/eslint.config.js
+
+///////////////////////Запускаем БД в Docker:
+-Наполним docker-compose.yml данными.
+-Собираем командой "docker-compose up -d".
+-Проверяем работу после запуска:
+
+Заходим в Adminer по http://localhost:8080. 
+Выбираем систему PostgreSQL, сервер postgres, логин admin, пароль password, БД cybersite_db.
+
+Заходим в Mongoexpess по http://localhost:8081/.
+Логин - dev, пароль - dev.
+
+Заходим в Redis Insight по http://localhost:5540.
+
+///////////////////////Занимаемся Prisma (создаём модели и таблицы в БД):
+-Создаю package.json в packages/database. Правлю его, в т.ч. изменив имя на "@repo/database".
+-Из корня устанавливаю Prisma командой:
+npm install prisma -w @repo/database
+
+-Внутри папки packages/database выполняю:
+npx prisma init --datasource-provider postgresql
+Командой инициализирую призму.
+-В созданном .env файле в packages/database изменяю DATABASE_URL на нужный (который в Docker).
+-Настраиваем prisma.config.ts и generator + datasource в schema.prisma.
+-Записываем свои схемы в schema.prisma.
+
+-Выполняю установку клиента Prisma (в packages/database):
+npm install @prisma/client -w @repo/database
+
+-Из папки packages/database выполняю (не забыть выключить postgres-службу на своём ПК, чтобы порты не конфликтовали):
+npx prisma migrate dev --name init_full_schema
+(если предложат сделать reset, то выполняю "npx prisma migrate reset", а затем снова повторяю команду).
+
+-Из папки packages/database выполняю:
+npx prisma generate
+
+-Чтобы сервер мог импортировать базу, создаю файл packages/database/index.ts
+Экспорты из этого файла используются для связывания сервера и БД.
+Для этого файла надо установить пакеты:
+npm install @prisma/adapter-pg pg -w @repo/database
+npm install -D @types/pg -w @repo/database
+////////////////////Делаем регистрацию:
+-Из корня выполняем:
+npm install argon2 -w server
+
+-Добавляем на сервер логику (эндпоинт, контроллеры) для регистрации.
