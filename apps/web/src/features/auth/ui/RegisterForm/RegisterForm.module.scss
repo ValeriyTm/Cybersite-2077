@@ -1,0 +1,121 @@
+.container {
+  max-width: 450px;
+  margin: 50px auto;
+  font-family: sans-serif;
+}
+
+.toggleWrapper {
+  display: flex;
+  background: #ccc;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.toggleBtn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: transparent;
+  color: #666;
+  transition: 0.3s;
+
+  &.active {
+    background: #000;
+    color: #fff;
+  }
+}
+
+.formCard {
+  background: #fff;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center;
+
+  h2 {
+    margin-bottom: 24px;
+    font-size: 24px;
+  }
+}
+
+.googleBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  background: #fff;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  img {
+    width: 20px;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #ccc;
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+    margin: 0 10px;
+  }
+}
+
+.field {
+  text-align: left;
+  margin-bottom: 16px;
+  label {
+    display: block;
+    margin-bottom: 6px;
+    color: #666;
+    font-size: 14px;
+  }
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: #f9f9f9;
+    box-sizing: border-box;
+
+    &.inputError {
+      border-color: #ff4d4f;
+    }
+  }
+}
+
+.errorText {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 30px;
+  background: #ccc; // Будет серым как на скрине, пока не заполнено
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:not(:disabled):hover {
+    background: #000;
+  }
+}

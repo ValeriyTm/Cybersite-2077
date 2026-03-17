@@ -176,3 +176,7 @@ npm install -D @types/pg -w @repo/database
 npm install argon2 -w server
 
 -Добавляем на сервер логику (эндпоинт, контроллеры) для регистрации.
+
+-Установим пакеты для frontend:
+npm install react-hook-form @hookform/resolvers axios -w web
+Пакеты: react-hook-form - для работы с формами; @hookform/resolvers - заставит форму понимать Zod-схемы из @repo/validation; 

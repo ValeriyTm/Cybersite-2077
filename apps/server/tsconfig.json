@@ -1,23 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "ES2023", //Версия версию JavaScript, в которую будет превращен TS-код
+    "module": "NodeNext", //Говорит TS использовать самый современный стандарт модулей для Node.js. Это позволяет корректно работать с import/export и нативно поддерживать ESM.
+    "moduleResolution": "NodeNext", //Алгоритм, по которому TS ищет файлы при импорте. В связке с NodeNext он заставляет учитывать поле exports в package.json и проверять расширения файлов.
+    // Устанавливаем базовую директорию для разрешения модулей, чтобы можно было использовать абсолютные пути от корня проекта:
     "baseUrl": ".",
+    // Настраиваем алиас для пакета validation, указывая путь к его исходному файлу:
     "paths": {
       "@repo/validation": ["../../packages/validation/index.ts"]
     },
-    "outDir": "./dist",
-    // УДАЛИ или закомментируй строку "rootDir": "./src",
+    "outDir": "./dist", //Папка, куда попадет готовый скомпилированный JavaScript код после запуска команды npm run build.
 
-    "strict": true,
+    "strict": true, //Включает все строгие проверки типов
+    // Линтинг на уровне типов:
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    //Приказывает TS не проверять типы внутри библиотек в node_modules:
     "skipLibCheck": true,
+    //Позволяет комфортно импортировать старые библиотеки (CommonJS), которые не поддерживают export default, через обычный import:
     "esModuleInterop": true,
+    // Разрешает писать import Express from 'express', даже если сама библиотека официально не экспортирует default:
     "allowSyntheticDefaultImports": true,
+    //Говорит компилятору, что файлы в проекте должны иметь расширения, соответствующие их регистру. Это помогает избежать проблем с импортами на разных операционных системах (например, Windows не чувствительна к регистру, а Linux - чувствительна):
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "../../packages/validation/index.ts"], // ДОБАВЬ путь к пакету сюда
+  // Указываем, какие файлы включать в компиляцию, добавляя путь к пакету validation:
+  "include": ["src/**/*", "../../packages/validation/index.ts"],
   "exclude": ["node_modules", "dist"]
 }

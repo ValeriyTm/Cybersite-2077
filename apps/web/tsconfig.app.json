@@ -1,36 +1,39 @@
 {
   "compilerOptions": {
+    // Создаем файл кэша. Благодаря ему при следующей проверке TypeScript будет проверять только измененные файлы:
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2023",
-    "useDefineForClassFields": true,
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "types": ["vite/client"],
-    "skipLibCheck": true,
+    "target": "ES2023", //Компилирует код под современные браузеры, поддерживающие стандарты 2023 года
+    "useDefineForClassFields": true, //Заставляет поля в классах работать по стандарту ECMAScript (важно для корректного поведения логики в некоторых библиотеках).
+    "lib": ["ES2023", "DOM", "DOM.Iterable"], // Говорит TS, какие типы «знать» по умолчанию. ES2023 - для современных возможностей JS, DOM и DOM.Iterable - для работы с браузерными API.
+    "module": "ESNext", //Использует самый современный формат модулей.
+    "types": ["vite/client"], //Добавляет поддержку специфических типов Vite
+    "skipLibCheck": true, //Не проверять типы внутри node_modules
 
-    /*Для работы алиасов:*/
-    "baseUrl": ".",
+    "baseUrl": ".", //Корень для отсчета путей — папка apps/web.
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"], //Позволяет писать короткие импорты import ... from '@/shared/ui', вместо того чтобы считать точки ../../../.
       //Для работы с Zod:
       "@repo/validation": ["../../packages/validation/index.ts"]
     },
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
+    "moduleResolution": "bundler", //Режим, созданный специально для Vite/Webpack. Он разрешает импорты так же, как это делает сам сборщик.
+    "allowImportingTsExtensions": true, //Разрешает импортировать файлы с расширением .ts (нужно для работы в связке с noEmit).
+    "verbatimModuleSyntax": true, //Следит за тем, чтобы import type использовался строго для типов.
+    "moduleDetection": "force", //Заставляет TS считать каждый файл отдельным модулем, даже если в нем нет import/export.
+    "noEmit": true, //TypeScript здесь только проверяет ошибки. За превращение кода в JavaScript отвечает сам Vite
+    "jsx": "react-jsx", //Включает поддержку React 17+ (позволяет не писать import React from 'react' в каждом файле).
 
     /* Linting */
-    "strict": true,
+    "strict": true, //Максимальный уровень контроля типов.
+    //Выдает ошибки, если есть неиспользуемые переменные или аргументы:
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+
+    "erasableSyntaxOnly": true, // Запрещает фичи TS, которые нельзя просто «стереть» (например, старые enum или namespaces). Это гарантирует совместимость с быстрыми сборщиками типа esbuild.
+    "noFallthroughCasesInSwitch": true, //Защита от багов в switch, когда забыл написать break.
+    "noUncheckedSideEffectImports": true //Проверяет, что если ты импортируешь CSS или другой файл с побочными эффектами, он реально существует.
   },
+  //Проверять только файлы внутри папки src:
   "include": ["src"]
 }
