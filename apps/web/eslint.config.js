@@ -31,10 +31,8 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: globals.browser, // Разрешает использование 'window', 'document' и т.д.
       parserOptions: {
-        // project: ["./tsconfig.app.json", "./tsconfig.node.json"],
         tsconfigRootDir: __dirname, // Устанавливает корневой каталог для поиска tsconfig
-        // projectService: true, // Позволяет ESLint самому находить ближайший tsconfig
-        project: true,
+        project: ["./tsconfig.app.json", "./tsconfig.node.json"],
       },
     },
     //Тут активируем конкретные проверки для React Hooks и React Refresh, а также разрешаем экспорт констант в правилах React Refresh:

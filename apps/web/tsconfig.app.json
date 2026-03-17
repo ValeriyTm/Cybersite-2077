@@ -1,13 +1,19 @@
 {
   "compilerOptions": {
     // Создаем файл кэша. Благодаря ему при следующей проверке TypeScript будет проверять только измененные файлы:
+    "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2023", //Компилирует код под современные браузеры, поддерживающие стандарты 2023 года
+
+    "target": "ESNext",
     "useDefineForClassFields": true, //Заставляет поля в классах работать по стандарту ECMAScript (важно для корректного поведения логики в некоторых библиотеках).
-    "lib": ["ES2023", "DOM", "DOM.Iterable"], // Говорит TS, какие типы «знать» по умолчанию. ES2023 - для современных возможностей JS, DOM и DOM.Iterable - для работы с браузерными API.
+    "lib": ["ESNext", "DOM", "DOM.Iterable"], // Говорит TS, какие типы «знать» по умолчанию.
     "module": "ESNext", //Использует самый современный формат модулей.
     "types": ["vite/client"], //Добавляет поддержку специфических типов Vite
     "skipLibCheck": true, //Не проверять типы внутри node_modules
+
+    // В monorepo мы импортируем код из ../../packages,
+    // поэтому rootDir должен покрывать и apps/web и packages/*.
+    "rootDir": "../..",
 
     "baseUrl": ".", //Корень для отсчета путей — папка apps/web.
     "paths": {
@@ -30,10 +36,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
 
-    "erasableSyntaxOnly": true, // Запрещает фичи TS, которые нельзя просто «стереть» (например, старые enum или namespaces). Это гарантирует совместимость с быстрыми сборщиками типа esbuild.
-    "noFallthroughCasesInSwitch": true, //Защита от багов в switch, когда забыл написать break.
-    "noUncheckedSideEffectImports": true //Проверяет, что если ты импортируешь CSS или другой файл с побочными эффектами, он реально существует.
+    "noFallthroughCasesInSwitch": true //Защита от багов в switch, когда забыл написать break.
   },
-  //Проверять только файлы внутри папки src:
-  "include": ["src"]
+  //Проверять только файлы внутри папки src + Vite env types:
+  "include": ["src", "vite-env.d.ts", "../../packages/validation/**/*.ts"]
 }

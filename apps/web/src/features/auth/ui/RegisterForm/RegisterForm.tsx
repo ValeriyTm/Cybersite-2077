@@ -24,8 +24,12 @@ export const AuthForm = () => {
         data,
       );
       alert(response.data.message);
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Ошибка регистрации");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || "Ошибка регистрации");
+        return;
+      }
+      alert("Ошибка регистрации");
     }
   };
 
