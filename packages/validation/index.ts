@@ -87,3 +87,29 @@ export const LoginSchema = z.object({
 
 //Создаём тип для входа на основе схемы:
 export type LoginInput = z.infer<typeof LoginSchema>;
+//---------------------------------------------------------
+//-----------------Прочие схемы:---------------------//
+//Схема для добавления дополнительных данных о пользователе:
+export const UpdateProfileSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(3, { message: "Имя слишком короткое" })
+    .max(20, "Максимум 20 символов")
+    .regex(
+      /^[a-z0-9_]+$/,
+      "Используйте только латиницу, цифры и нижнее подчеркивание",
+    )
+    .optional(), //Говорит, что параметр не обязательный
+  phone: z
+    .string()
+    .trim()
+    //Телефон: Необязательный "+"" в начале. Первая цифра от 1 до 9. Всего от 2 до 15 цифр (международный стандарт E.164):
+    .regex(/^\+?[1-9]\d{1,14}$/, "Некорректный формат телефона")
+    .nullish(), //Это поле = поле optional() + nullable()
+  birthday: z.string().date().nullish(),
+  gender: z.enum(["MALE", "FEMALE"]).nullish(),
+});
+
+export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;

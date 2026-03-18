@@ -5,7 +5,7 @@ import { RegisterSchema, LoginSchema } from "@repo/validation";
 import { AuthService } from "./auth.service.js";
 import { TokenService } from "./token.service.js";
 import { SessionService } from "./session.service.js";
-import { AppError } from "../../../shared/utils/api-error.js";
+import { AppError } from "../../../shared/utils/app-error.js";
 import { catchAsync } from "../../../shared/utils/catch-async.js";
 
 export const register = catchAsync(async (req: Request, res: Response) => {

@@ -8,9 +8,16 @@ import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 const app = express();
 
 //----------Подключаем middleware:--------
+//Тут будет Morgan
+
+//Настройка политики CORS:
 app.use(cors());
+//Парсим тело запроса:
 app.use(express.json());
+//Извлекаем данные из кук:
 app.use(cookieParser());
+//Открываем папку apps/server/uploads для раздачи:
+app.use("/uploads", express.static("uploads"));
 
 //----------Подключаем роуты модулей:--------
 //Роуты для модуля Identity:

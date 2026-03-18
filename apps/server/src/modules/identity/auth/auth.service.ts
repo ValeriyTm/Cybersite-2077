@@ -4,7 +4,7 @@ import { prisma } from "@repo/database";
 import { RegisterInput, LoginInput } from "@repo/validation";
 import { randomUUID } from "node:crypto";
 import { MailService } from "../../../shared/mail.service.js";
-import { AppError } from "../../../shared/utils/api-error.js";
+import { AppError } from "../../../shared/utils/app-error.js";
 
 export class AuthService {
   static async register(data: RegisterInput) {
