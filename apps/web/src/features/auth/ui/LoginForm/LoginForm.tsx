@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@repo/validation";
 import { HiEye, HiEyeOff } from "react-icons/hi";
@@ -18,10 +19,27 @@ export const LoginForm = () => {
   });
 
   const onSubmit = async (data: LoginInput) => {
-    // Пока просто выводим в консоль, скоро напишем запрос на бэк
-    console.log("Login submitted:", data);
-  };
+    try {
+      // 2. Отправляем запрос на твой новый эндпоинт
+      const response = await axios.post(
+        "http://localhost:3001/api/identity/auth/login",
+        data,
+      );
 
+      // Если всё ок, выводим сообщение (позже будем сохранять пользователя в стейт)
+      alert(response.data.message);
+      console.log("User data:", response.data.user);
+    } catch (error: any) {
+      // 3. Обработка ошибок с бэкенда
+      const message = error.response?.data?.message || "Ошибка входа";
+
+      // Если это ошибка про активацию почты — выведем её красиво
+      alert(message);
+
+      // Если хочешь подсветить поле ошибки через setError:
+      // setError("email", { message });
+    }
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <div className={styles.field}>

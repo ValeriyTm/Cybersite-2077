@@ -49,6 +49,9 @@ model User {
   // Добавляем роль с дефолтным значением
   role          Role      @default(USER)
 
+  //Refresh-токены пользователя (виртуальное поле):
+  tokens          Token[]
+
   //Активация аккаунта по ссылке:
   isActivated   Boolean   @default(false)
   activationToken String?  @unique
@@ -72,6 +75,18 @@ model User {
 
   @@index([location], type: Gist) // Индекс для быстрого поиска по координатам
   @@map("users") // Название таблицы в БД в нижнем регистре
+}
+
+//Таблица Refresh-токенов для пользователя:
+model Token {
+  id           String   @id @default(uuid())
+  refreshToken String   @unique @db.Text // Используем Text для длинных строк
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+
+  @@index([userId])    // Индекс для быстрого поиска всех сессий юзера
+  @@map("tokens")
 }
 
 // Модель для склада (для модуля Warehouse)

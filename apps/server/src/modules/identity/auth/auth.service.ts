@@ -1,9 +1,10 @@
 //Тут только логика. Этот кодне знает про req и res, он работает только с данными и базой.
 import argon2 from "argon2";
 import { prisma } from "@repo/database";
-import { RegisterInput } from "@repo/validation";
+import { RegisterInput, LoginInput } from "@repo/validation";
 import { randomUUID } from "node:crypto";
 import { MailService } from "../../../shared/mail.service.js";
+import { AppError } from "../../../shared/utils/api-error.js";
 
 export class AuthService {
   static async register(data: RegisterInput) {
@@ -11,7 +12,9 @@ export class AuthService {
     const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
     });
-    if (existingUser) throw new Error("USER_ALREADY_EXISTS");
+    if (existingUser) {
+      throw new AppError(400, "Ошибка в email или пароле");
+    }
 
     //2.Хэшируем пароль пользователя:
     const passwordHash = await argon2.hash(data.password);
@@ -56,5 +59,35 @@ export class AuthService {
       where: { id: user.id },
       data: { isActivated: true, activationToken: null },
     });
+  }
+
+  static async login(data: LoginInput) {
+    // 1. Ищем пользователя в БД по email:
+    const user = await prisma.user.findUnique({ where: { email: data.email } });
+
+    if (!user || !user.passwordHash) {
+      throw new AppError(401, "Неверный email или пароль");
+    }
+
+    // 2. Проверяем, активировал ли он почту
+    if (!user.isActivated) {
+      throw new AppError(403, "Аккаунт не активирован. Проверьте почту.");
+    }
+
+    // 3. Сверяем введенный пароль с хешем из базы
+    const isPasswordValid = await argon2.verify(
+      user.passwordHash,
+      data.password,
+    );
+    if (!isPasswordValid) {
+      throw new AppError(401, "Неверный email или пароль");
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    };
   }
 }

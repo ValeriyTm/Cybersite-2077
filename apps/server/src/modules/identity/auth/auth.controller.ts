@@ -1,38 +1,141 @@
 //Тут связь с HTTP. Этот код принимает запросы от клиентов, направляет их в сервис; отправляет ответ клиентам
 
 import { Request, Response } from "express";
-import { RegisterSchema } from "@repo/validation";
+import { RegisterSchema, LoginSchema } from "@repo/validation";
 import { AuthService } from "./auth.service.js";
+import { TokenService } from "./token.service.js";
+import { SessionService } from "./session.service.js";
+import { AppError } from "../../../shared/utils/api-error.js";
+import { catchAsync } from "../../../shared/utils/catch-async.js";
 
-export const register = async (req: Request, res: Response) => {
+export const register = catchAsync(async (req: Request, res: Response) => {
   //Валидация запроса при помощи Zod:
   const result = RegisterSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({ errors: result.error.flatten().fieldErrors });
   }
 
-  try {
-    const user = await AuthService.register(result.data);
-    res.status(201).json({
-      message: "Пользователь создан!",
-      user: { id: user.id, email: user.email },
-    });
-  } catch (error: any) {
-    if (error.message === "USER_ALREADY_EXISTS") {
-      //Мог бы написать "Этот email уже занят, но это не безопасно"
-      return res.status(400).json({ message: "Неправильный email или пароль" });
-    }
-    res.status(500).json({ message: "Внутренняя ошибка сервера" });
-  }
-};
+  const user = await AuthService.register(result.data);
+  res.status(201).json({
+    message: "Пользователь создан!",
+    user: { id: user.id, email: user.email },
+  });
+});
 
-export const activate = async (req: Request, res: Response) => {
-  try {
-    const { token } = req.params;
-    await AuthService.activate(token);
-    // После редиректим пользователя на фронтенд:
-    return res.redirect(`${process.env.CLIENT_URL}/login?activated=true`);
-  } catch (e) {
-    res.status(400).send("Ссылка недействительна");
+export const activate = catchAsync(async (req: Request, res: Response) => {
+  const { token } = req.params;
+  await AuthService.activate(token);
+  // После редиректим пользователя на фронтенд:
+  return res.redirect(`${process.env.CLIENT_URL}/login?activated=true`);
+});
+
+export const login = catchAsync(async (req: Request, res: Response) => {
+  // Валидация Zod (email и password):
+  const result = LoginSchema.safeParse(req.body);
+  if (!result.success) {
+    throw new AppError(400, "Ошибка валидации");
   }
-};
+
+  const user = await AuthService.login(result.data);
+
+  // Генерируем токены:
+  const tokens = TokenService.generateTokens({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  });
+
+  // Записываем сессию в БД:
+  await SessionService.saveToken(user.id, tokens.refreshToken);
+
+  // Сохраняем Refresh Token в HttpOnly Cookie:
+  res.cookie("refreshToken", tokens.refreshToken, {
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней
+    httpOnly: true, // Защита от XSS
+    secure: process.env.NODE_ENV === "production", // Только HTTPS в продакшене
+    sameSite: "lax",
+    //Куки с refresh-токеном будут отправляться клиентом только по этому пути:
+    path: "/api/identity/auth",
+  });
+
+  //Посылаем ответ пользователю:
+  res.status(200).json({
+    message: "Вход выполнен успешно",
+    accessToken: tokens.accessToken, //Отправляю пользователю Access токен
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    },
+  });
+});
+
+export const logout = catchAsync(async (req: Request, res: Response) => {
+  //Извлекаем refresh-токен из запроса:
+  const { refreshToken } = req.cookies;
+
+  //Если токен есть, то удаляем refresh-токен из БД:
+  if (refreshToken) {
+    await SessionService.removeToken(refreshToken);
+  }
+
+  // Очищаем куку с теми же параметрами, с которыми создавали
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/api/identity/auth",
+  });
+
+  return res.status(200).json({ message: "Выход выполнен успешно" });
+});
+
+export const refresh = catchAsync(async (req: Request, res: Response) => {
+  //Извлекаем refresh-токен из запроса пользователя:
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    throw new AppError(401, "Сессия не найдена");
+  }
+
+  // 1.Проверяем подпись токена (не протух ли он криптографически):
+  const userData: any = TokenService.validateRefreshToken(refreshToken);
+
+  // 2.Ищем этот конкретный токен в нашей базе данных:
+  const tokenFromDb = await SessionService.findToken(refreshToken);
+  // Если токена нет в базе или он не валиден по подписи — сессия скомпрометирована:
+  if (!userData || !tokenFromDb) {
+    // На всякий случай чистим куку, чтобы не гонять битый токен
+    res.clearCookie("refreshToken");
+    throw new AppError(401, "Сессия не действительна или отозвана");
+  }
+
+  // 3.Удаляем из базы (Refresh Token Rotation):
+  await SessionService.removeToken(refreshToken);
+
+  // 4.Генерируем новую пару токенов:
+  const tokens = TokenService.generateTokens({
+    id: userData.id,
+    email: userData.email,
+    role: userData.role,
+  });
+
+  // 5.Сохраняем новый токен в БД:
+  await SessionService.saveToken(userData.id, tokens.refreshToken);
+
+  // 6.Обновляем куку:
+  res.cookie("refreshToken", tokens.refreshToken, {
+    maxAge: 7 * 24 * 60 * 60 * 1000, //7 дней
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    //Куки с refresh-токеном будут отправляться клиентом только по этому пути:
+    path: "/api/identity/auth",
+  });
+
+  // Отправляем новый Access токен фронтенду:
+  return res.json({
+    accessToken: tokens.accessToken,
+    user: { id: userData.id, email: userData.email, role: userData.role },
+  });
+});

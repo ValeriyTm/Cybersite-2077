@@ -1,0 +1,30 @@
+Гайд - как вручную протестировать эндпоинты:
+1. Регистрация (POST /api/identity/auth/register)
+-Тест: Отправь валидный JSON (name, email, password).
+-Ожидаем: 201 Created.
+-В базе: В таблице users появилась запись, isActivated: false, activationToken заполнен.
+-Почта: На твой Gmail пришло письмо со ссылкой.
+2. Активация (GET по ссылке из письма)
+-Тест: Скопируй ссылку из письма и вставь в браузер/Postman.
+-Ожидаем: Редирект на твой фронтенд (CLIENT_URL) с параметром ?activated=true.
+-В базе: У этого юзера isActivated стал true, а activationToken стерся (стал null).
+3. Логин (POST /api/identity/auth/login)
+-Тест: Введи email и пароль активированного юзера.
+-Ожидаем: 200 OK. В теле ответа — accessToken и объект user.
+-Проверка Cookies: В Postman (вкладка Cookies) должна появиться кука refreshToken.
+-Важно: Убедись, что у неё стоит Path: /api/identity/auth.
+-В базе: В таблице tokens появилась 1 запись с твоим userId.
+4. Проверка защищенного роута (GET /api/identity/profile/me)
+-Тест 1 (Без токена): Отправь запрос просто так.
+-Ожидаем: 401 Unauthorized от authMiddleware.
+-Тест 2 (С токеном): Вкладка Auth -> Bearer Token -> Вставь accessToken из прошлого шага.
+-Ожидаем: 200 OK и полные данные твоего профиля.
+5. Обновление сессии (GET /api/identity/auth/refresh)
+-Тест: В Postman просто сделай GET на этот адрес. Кука refreshToken прикрепится автоматически.
+-Ожидаем: 200 OK, новый accessToken.
+-В базе: Старая запись в таблице tokens должна исчезнуть, а новая (с новым хешем токена) появиться. Это проверка Rotation.
+6. Выход (POST /api/identity/auth/logout)
+-Тест: Отправь запрос.
+-Ожидаем: 200 OK.
+-Проверка Cookies: Кука в Postman должна исчезнуть.
+-В базе: Запись из таблицы tokens для этого устройства должна быть удалена.

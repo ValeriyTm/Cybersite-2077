@@ -8,5 +8,11 @@ const router = Router();
 router.post("/register", AuthController.register);
 //Роут активации аккаунта по ссылке:
 router.get("/activate/:token", AuthController.activate);
+//Роут входа в аккаунт:
+router.post("/login", AuthController.login);
+//Роут выхода из аккаунта:
+router.post("/logout", AuthController.logout);
+//Роут для обновления токенов:
+router.get("/refresh", AuthController.refresh);
 
 export { router as authRouter };
