@@ -180,3 +180,16 @@ npm install argon2 -w server
 -Установим пакеты для frontend:
 npm install react-hook-form @hookform/resolvers axios -w web
 Пакеты: react-hook-form - для работы с формами; @hookform/resolvers - заставит форму понимать Zod-схемы из @repo/validation; 
+
+
+-Ставим иконки:
+npm install react-icons -w web
+
+
+
+///////////////////////////
+Как выполнять миграцию БД при обновлении схемы:
+-Захожу в папку packages/database и выполняю команду:
+npx prisma migrate dev --name имя_для_миграции
+(при этом БД должна быть запущена; сервер можно не выключать)
+-Выполнить npx prisma generate

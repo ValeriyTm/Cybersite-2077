@@ -49,6 +49,10 @@ model User {
   // Добавляем роль с дефолтным значением
   role          Role      @default(USER)
 
+  //Активация аккаунта по ссылке:
+  isActivated   Boolean   @default(false)
+  activationToken String?  @unique
+
   // Поля для OAuth/OIDC
   provider      String?   // 'google', 'github' и т.д.
   providerId    String?   @unique

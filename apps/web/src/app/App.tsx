@@ -1,10 +1,10 @@
 import "./App.css";
-import { AuthForm } from "../features/auth/ui/RegisterForm/RegisterForm";
+import { AuthCard } from "@/features/auth/ui/AuthCard";
 
 function App() {
   return (
     <>
-      <AuthForm />
+      <AuthCard />
     </>
   );
 }
