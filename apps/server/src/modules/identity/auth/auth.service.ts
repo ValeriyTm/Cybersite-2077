@@ -88,6 +88,10 @@ export class AuthService {
       email: user.email,
       name: user.name,
       role: user.role,
+      avatarUrl: user.avatarUrl,
+      phone: user.phone,
+      birthday: user.birthday,
+      gender: user.gender,
     };
   }
 
@@ -104,6 +108,13 @@ export class AuthService {
         birthday: true,
         gender: true,
       },
+    });
+  }
+
+  static async logoutAll(userId: string) {
+    // Удаляем абсолютно все токены этого пользователя из БД
+    return prisma.token.deleteMany({
+      where: { userId: userId },
     });
   }
 }

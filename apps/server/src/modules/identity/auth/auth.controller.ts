@@ -7,6 +7,7 @@ import { TokenService } from "./token.service.js";
 import { SessionService } from "./session.service.js";
 import { AppError } from "../../../shared/utils/app-error.js";
 import { catchAsync } from "../../../shared/utils/catch-async.js";
+import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js";
 
 export const register = catchAsync(async (req: Request, res: Response) => {
   //Валидация запроса при помощи Zod:
@@ -143,4 +144,17 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
     accessToken: tokens.accessToken,
     user: freshUser, //Тут акутальные данные о юзере
   });
+});
+
+export const logoutAll = catchAsync(async (req: AuthRequest, res: Response) => {
+  // await AuthService.logoutAll(req.user!.id);
+  if (!req.user?.id) {
+    throw new AppError(401, "Пользователь не авторизован");
+  }
+  await AuthService.logoutAll(req.user.id);
+
+  // Чистим куку текущего браузера
+  res.clearCookie("refreshToken", { path: "/api/identity/auth" });
+
+  return res.status(200).json({ message: "Выход со всех устройств выполнен" });
 });

@@ -114,18 +114,53 @@ export const UpdateProfileSchema = z.object({
       "Введите корректный номер телефона",
     )
     .nullish(), //Это поле = поле optional() + nullable()
-  birthday: z
-    .preprocess((arg) => {
-      if (!arg || arg === "") return null;
-      if (arg instanceof Date) return arg;
-      return new Date(arg as string);
-    }, z.date().nullable())
-    .refine((v) => v !== null, { message: "Введите дату рождения" }),
+  birthday: z.preprocess((arg) => {
+    if (!arg || arg === "") return null;
+    if (arg instanceof Date) return arg;
+    return new Date(arg as string);
+  }, z.date().nullable().optional()),
   // Для enum в Zod сообщения об ошибках пишутся ВНУТРИ массива значений через запятую
   gender: z.enum(["MALE", "FEMALE"], {
-    // Кастомная карта ошибок: единое сообщение для любого некорректного значения
-    error: () => ({ message: "Пожалуйста, выберите ваш пол" }),
+    // Этот блок перехватит всё: и пустую строку, и неверный тип
+    errorMap: (issue) => {
+      if (
+        issue.code === "invalid_enum_value" ||
+        issue.code === "invalid_type"
+      ) {
+        return { message: "Пожалуйста, выберите ваш пол" };
+      }
+      return { message: "Ошибка выбора пола" };
+    },
   }),
 });
 
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
+
+//Схема для смены пароля:
+export const ChangePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(1, "Введите текущий пароль"),
+    newPassword: z
+      .string()
+      .trim()
+      .min(8, "Пароль должен иметь минимум 8 символов")
+      .max(32, "Пароль должен иметь максимум 32 символа")
+      // Хотя бы одна заглавная буква
+      .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
+      // Хотя бы одна строчная буква
+      .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
+      // Хотя бы одна цифра
+      .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
+      // Хотя бы один спецсимвол
+      .regex(
+        /[^a-zA-Z0-9]/,
+        "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
+
+export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>;

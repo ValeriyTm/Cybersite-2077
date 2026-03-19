@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useForm, type Resolver, type SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdateProfileSchema, type UpdateProfileInput } from "@repo/validation";
 import { useAuth } from "@/features/auth/model/auth-store";
@@ -18,6 +18,7 @@ import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage = () => {
   const { user, setAuth, accessToken } = useAuth();
+  const { logout, logoutAll } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,19 +26,19 @@ export const ProfilePage = () => {
     register,
     handleSubmit,
     control,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isSubmitting },
     reset,
   } = useForm<UpdateProfileInput>({
-    resolver: zodResolver(UpdateProfileSchema) as Resolver<UpdateProfileInput>,
+    resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
       name: user?.name || "",
       phone: user?.phone || "",
       gender: user?.gender || null,
-      birthday: user?.birthday ? new Date(user.birthday) : null,
+      birthday: user?.birthday?.split("T")[0] || "",
     },
   });
 
-  const onSubmit: SubmitHandler<UpdateProfileInput> = async (data) => {
+  const onSubmit = async (data: UpdateProfileInput) => {
     console.log("Данные из формы перед Axios:", data);
 
     try {
@@ -69,12 +70,17 @@ export const ProfilePage = () => {
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     const formData = new FormData();
     formData.append("avatar", file);
     try {
       const res = await $api.post("/identity/profile/avatar", formData);
+      //Обновляем store:
       setAuth({ ...user, avatarUrl: res.data.avatarUrl }, accessToken || "");
       toast.success("Аватар обновлен");
+
+      //Выходим из режима редактирования:
+      setIsEditing(false);
     } catch (e) {
       toast.error("Ошибка загрузки файла");
     }
@@ -229,8 +235,10 @@ export const ProfilePage = () => {
                           }}
                           // ВАЖНО: передаем в форму объект Date, который IMask распарсил сам
                           onAccept={(_, mask) => {
-                            const typed = (mask as unknown as { typedValue: Date | null }).typedValue;
-                            onChange(typed ?? null);
+                            const masked = mask as unknown as { date: Date };
+                            if (masked.date) {
+                              onChange(masked.date);
+                            }
                           }}
                           // Чтобы при загрузке данных дата из базы правильно отобразилась в маске
                           value={
@@ -314,6 +322,18 @@ JS/Prisma работают с объектами new Date().
             </div>
           )}
         </form>
+      </div>
+
+      <div className={styles.dangerZone}>
+        <h3>Управление сессиями</h3>
+        <div className={styles.btnGroup}>
+          <button onClick={logout} className={styles.logoutBtn}>
+            Выйти из аккаунта
+          </button>
+          <button onClick={logoutAll} className={styles.logoutAllBtn}>
+            Выйти со всех устройств
+          </button>
+        </div>
       </div>
     </div>
   );
