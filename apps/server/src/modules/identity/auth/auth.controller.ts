@@ -63,12 +63,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({
     message: "Вход выполнен успешно",
     accessToken: tokens.accessToken, //Отправляю пользователю Access токен
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-    },
+    user: user,
   });
 });
 
