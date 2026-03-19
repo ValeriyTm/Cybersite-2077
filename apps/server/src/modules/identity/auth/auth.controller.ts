@@ -37,8 +37,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     throw new AppError(400, "Ошибка валидации");
   }
 
-  const user = await AuthService.login(result.data);
-
+  const { rememberMe, ...user } = await AuthService.login(result.data);
   // Генерируем токены:
   const tokens = TokenService.generateTokens({
     id: user.id,
@@ -49,15 +48,21 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   // Записываем сессию в БД:
   await SessionService.saveToken(user.id, tokens.refreshToken);
 
-  // Сохраняем Refresh Token в HttpOnly Cookie:
-  res.cookie("refreshToken", tokens.refreshToken, {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней
+  //Задаём настройки куки:
+  const cookieOptions: any = {
     httpOnly: true, // Защита от XSS
     secure: process.env.NODE_ENV === "production", // Только HTTPS в продакшене
     sameSite: "lax",
-    //Куки с refresh-токеном будут отправляться клиентом только по этому пути:
     path: "/api/identity/auth",
-  });
+  };
+
+  if (rememberMe) {
+    cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 дней
+  }
+  // Если rememberMe === true — 7 дней, иначе — null (сессионная кука):
+
+  //Посылаем куки:
+  res.cookie("refreshToken", tokens.refreshToken, cookieOptions);
 
   //Посылаем ответ пользователю:
   res.status(200).json({

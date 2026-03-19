@@ -92,6 +92,7 @@ export class AuthService {
       phone: user.phone,
       birthday: user.birthday,
       gender: user.gender,
+      rememberMe: data.rememberMe,
     };
   }
 

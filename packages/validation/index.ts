@@ -85,7 +85,7 @@ export const LoginSchema = z.object({
 
   password: z.string().min(1, { message: "Введите пароль" }),
 
-  rememberMe: z.boolean().optional(), // Поле для чекбокса "Запомнить меня"
+  rememberMe: z.boolean().optional().default(false), // Поле для чекбокса "Запомнить меня"
 });
 
 //Создаём тип для входа на основе схемы:
