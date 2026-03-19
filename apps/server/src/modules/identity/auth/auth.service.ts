@@ -1,7 +1,11 @@
 //Тут только логика. Этот кодне знает про req и res, он работает только с данными и базой.
 import argon2 from "argon2";
 import { prisma } from "@repo/database";
-import { RegisterInput, LoginInput } from "@repo/validation";
+import {
+  RegisterInput,
+  LoginInput,
+  ChangePasswordInput,
+} from "@repo/validation";
 import { randomUUID } from "node:crypto";
 import { MailService } from "../../../shared/mail.service.js";
 import { AppError } from "../../../shared/utils/app-error.js";
@@ -116,6 +120,29 @@ export class AuthService {
     // Удаляем абсолютно все токены этого пользователя из БД
     return prisma.token.deleteMany({
       where: { userId: userId },
+    });
+  }
+
+  static async changePassword(userId: string, data: ChangePasswordInput) {
+    // Ищем пользователя в базе:
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.passwordHash) {
+      throw new AppError(404, "Пользователь не найден");
+    }
+
+    //Проверяем, совпадает ли старый пароль с хешем в базе
+    const isMatch = await argon2.verify(user.passwordHash, data.oldPassword);
+    if (!isMatch) {
+      throw new AppError(400, "Текущий пароль введен неверно");
+    }
+
+    //Хешируем новый пароль:
+    const hashedPassword = await argon2.hash(data.newPassword);
+
+    //Обновляем пароль в БД:
+    return prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash: hashedPassword },
     });
   }
 }

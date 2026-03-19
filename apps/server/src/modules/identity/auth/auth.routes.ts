@@ -17,5 +17,7 @@ router.post("/logout", AuthController.logout);
 router.post("/logout-all", authMiddleware, AuthController.logoutAll);
 //Роут для обновления токенов:
 router.get("/refresh", AuthController.refresh);
+//Роут для замены пароля:
+router.post("/change-password", authMiddleware, AuthController.changePassword);
 
 export { router as authRouter };

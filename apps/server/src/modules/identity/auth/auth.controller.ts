@@ -1,7 +1,11 @@
 //Тут связь с HTTP. Этот код принимает запросы от клиентов, направляет их в сервис; отправляет ответ клиентам
 
 import { Request, Response } from "express";
-import { RegisterSchema, LoginSchema } from "@repo/validation";
+import {
+  RegisterSchema,
+  LoginSchema,
+  ChangePasswordSchema,
+} from "@repo/validation";
 import { AuthService } from "./auth.service.js";
 import { TokenService } from "./token.service.js";
 import { SessionService } from "./session.service.js";
@@ -158,3 +162,18 @@ export const logoutAll = catchAsync(async (req: AuthRequest, res: Response) => {
 
   return res.status(200).json({ message: "Выход со всех устройств выполнен" });
 });
+
+export const changePassword = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    // Валидируем входящие данные:
+    const result = ChangePasswordSchema.safeParse(req.body);
+    if (!result.success) {
+      throw new AppError(400, "Ошибка валидации данных");
+    }
+
+    // Вызываем сервис (req.user.id берем из мидлвара авторизации):
+    await AuthService.changePassword(req.user!.id, result.data);
+
+    res.status(200).json({ message: "Пароль успешно изменен" });
+  },
+);
