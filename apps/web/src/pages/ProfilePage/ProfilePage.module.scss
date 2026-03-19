@@ -211,3 +211,27 @@
     color: #fff;
   }
 }
+
+//Для смены пароля:
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    padding-right: 40px !important;
+  }
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}

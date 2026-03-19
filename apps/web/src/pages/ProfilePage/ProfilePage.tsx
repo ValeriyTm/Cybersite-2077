@@ -1,10 +1,16 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UpdateProfileSchema, type UpdateProfileInput } from "@repo/validation";
+import {
+  UpdateProfileSchema,
+  ChangePasswordSchema,
+  type UpdateProfileInput,
+  type ChangePasswordInput,
+} from "@repo/validation";
 import { useAuth } from "@/features/auth/model/auth-store";
 import { $api, API_URL } from "@/shared/api/api";
 import { toast } from "react-hot-toast";
+import { HiEye, HiEyeOff } from "react-icons/hi";
 import {
   HiOutlineUser,
   HiOutlineMail,
@@ -22,6 +28,10 @@ export const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  //Для смены пароля:
+  const [showPass, setShowPass] = useState(false);
+
+  // 1. Основная форма профиля:
   const {
     register,
     handleSubmit,
@@ -36,6 +46,16 @@ export const ProfilePage = () => {
       gender: user?.gender || null,
       birthday: user?.birthday?.split("T")[0] || "",
     },
+  });
+
+  // 2. Форма смены пароля (используем алиасы, чтобы не было конфликта имен):
+  const {
+    register: regPass,
+    handleSubmit: handlePassSubmit,
+    reset: resetPass,
+    formState: { errors: passErrors, isSubmitting: isPassSubmitting },
+  } = useForm<ChangePasswordInput>({
+    resolver: zodResolver(ChangePasswordSchema),
   });
 
   const onSubmit = async (data: UpdateProfileInput) => {
@@ -92,6 +112,17 @@ export const ProfilePage = () => {
     const fieldError = Object.values(formErrors)[0] as any;
     if (fieldError?.message) {
       toast.error(fieldError.message, { id: "validation-error" });
+    }
+  };
+
+  //Для смены пароля:
+  const onChangePassword = async (data: ChangePasswordInput) => {
+    try {
+      await $api.post("/identity/auth/change-password", data);
+      toast.success("Пароль успешно изменен");
+      resetPass(); // Очищаем поля после успеха
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || "Ошибка при смене пароля");
     }
   };
 
@@ -323,6 +354,86 @@ JS/Prisma работают с объектами new Date().
           )}
         </form>
       </div>
+
+      {/*Смена пароля:*/}
+      <div className={styles.card} style={{ marginTop: "24px" }}>
+        <div className={styles.header}>
+          <h2>Безопасность</h2>
+        </div>
+
+        <form onSubmit={handlePassSubmit(onChangePassword)}>
+          <div className={styles.row}>
+            <div className={styles.label}>Текущий пароль</div>
+            <div className={styles.value}>
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPass ? "text" : "password"}
+                  {...regPass("oldPassword")}
+                  placeholder="••••••••"
+                  className={passErrors.oldPassword ? styles.inputError : ""}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(!showPass)}
+                  className={styles.eyeBtn}
+                >
+                  {showPass ? <HiEyeOff /> : <HiEye />}
+                </button>
+              </div>
+              {passErrors.oldPassword && (
+                <span className={styles.errorText}>
+                  {passErrors.oldPassword.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.label}>Новый пароль</div>
+            <div className={styles.value}>
+              <input
+                type={showPass ? "text" : "password"}
+                {...regPass("newPassword")}
+                placeholder="Минимум 6 символов"
+                className={passErrors.newPassword ? styles.inputError : ""}
+              />
+              {passErrors.newPassword && (
+                <span className={styles.errorText}>
+                  {passErrors.newPassword.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.label}>Повторите пароль</div>
+            <div className={styles.value}>
+              <input
+                type={showPass ? "text" : "password"}
+                {...regPass("confirmPassword")}
+                placeholder="••••••••"
+                className={passErrors.confirmPassword ? styles.inputError : ""}
+              />
+              {passErrors.confirmPassword && (
+                <span className={styles.errorText}>
+                  {passErrors.confirmPassword.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.actions}>
+            <button
+              type="submit"
+              className={styles.saveBtn}
+              disabled={isPassSubmitting}
+            >
+              {isPassSubmitting ? "Обновление..." : "Обновить пароль"}
+            </button>
+          </div>
+        </form>
+      </div>
+      {/*  */}
 
       <div className={styles.dangerZone}>
         <h3>Управление сессиями</h3>
