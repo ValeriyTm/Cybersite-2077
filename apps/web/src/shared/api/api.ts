@@ -2,11 +2,11 @@ import axios from "axios";
 import { useAuth } from "@/features/auth/model/auth-store"; //Импорт Zustand-храналища с данными о пользователе и токене
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 
-export const API_URL = "http://localhost:3001/api";
+export const API_URL = "http://localhost:3001";
 
 //Создание кастомного экземпляра Axios с базовыми настройками:
 export const $api = axios.create({
-  baseURL: API_URL, //Основной адрес сервера
+  baseURL: `${API_URL}/api/`, //Основной адрес сервера
   withCredentials: true, //Разрешаем передачу кук, т.к. используем refreshToken
 });
 
@@ -30,7 +30,7 @@ const refreshAuthLogic = (failedRequest: any) => {
   }
 
   return axios
-    .get(`${API_URL}/identity/auth/refresh`, { withCredentials: true })
+    .get(`${API_URL}/api/identity/auth/refresh`, { withCredentials: true })
     .then((tokenRefreshResponse) => {
       const { user, accessToken } = tokenRefreshResponse.data;
 
