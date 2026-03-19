@@ -3,8 +3,11 @@ import { prisma } from "@repo/database";
 export class SessionService {
   // Сохраняем новую сессию (токен) в базу
   static async saveToken(userId: string, refreshToken: string) {
-    return prisma.token.create({
-      data: { userId, refreshToken },
+    // Используем upsert, чтобы гарантировать отсутствие дубликатов по самому токену
+    return prisma.token.upsert({
+      where: { refreshToken }, // Если такой токен уже существует
+      update: { refreshToken }, // Просто "обновляем" его тем же значением
+      create: { userId, refreshToken }, // Если нет — создаем новую сессию
     });
   }
 

@@ -193,3 +193,18 @@ npm install react-icons -w web
 npx prisma migrate dev --name имя_для_миграции
 (при этом БД должна быть запущена; сервер можно не выключать)
 -Выполнить npx prisma generate
+
+////////////////
+Как работаю с БД после уничтожения контейнеров:
+-Удаляю контейнеры:
+docker-compose down -v
+-Создаю контейнеры:
+docker-compose up -d
+-Создаю таблицы (из папки packages/database):
+npx prisma migrate dev
+
+Прим: если после последней команды консоль требует сделать reset, то выполняю:
+npx prisma migrate reset
+а затем:
+npx prisma migrate dev
+///////////////////////

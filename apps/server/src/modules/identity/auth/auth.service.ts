@@ -90,4 +90,17 @@ export class AuthService {
       role: user.role,
     };
   }
+
+  static async getUserData(userId: string) {
+    return prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        avatarUrl: true,
+      },
+    });
+  }
 }

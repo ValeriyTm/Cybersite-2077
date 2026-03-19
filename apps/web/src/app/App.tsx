@@ -1,12 +1,7 @@
-import "./App.css";
-import { AuthCard } from "@/features/auth/ui/AuthCard";
+import { RouterProvider } from "react-router";
+import { router } from "./providers/router/config/router";
+import "./styles/index.css"; //Подключаем тут глобальные стили
 
-function App() {
-  return (
-    <>
-      <AuthCard />
-    </>
-  );
-}
-
-export default App;
+export const App = () => {
+  return <RouterProvider router={router} />;
+};

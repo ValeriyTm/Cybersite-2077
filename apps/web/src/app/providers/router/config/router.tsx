@@ -1,0 +1,47 @@
+import { createBrowserRouter, Navigate } from "react-router";
+import { AuthCard } from "@/features/auth/ui/AuthCard/AuthCard";
+import { useAuth } from "@/features/auth/model/auth-store";
+import { MainLayout } from "@/app/ui/MainLayout";
+import { HomePage } from "@/pages/HomePage/HomePage";
+import { ProfilePage } from "@/pages/ProfilePage/ProfilePage";
+
+//Компонент-обертка, который ограничивает доступ к определенным страницам приложения в зависимости от статуса авторизации пользователя.
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  //Извлекаем статус авторизации из глобального состояния с помощью хука useAuth:
+  const isAuth = useAuth((state) => state.isAuth);
+  // Если пользователь не авторизован, перенаправляем его на страницу /auth:
+  return isAuth ? children : <Navigate to="/auth" replace />;
+};
+
+// Охранник для гостей (PublicOnly)
+const GuestRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuth = useAuth((state) => state.isAuth);
+  // Если залогинен — не пускаем на форму логина, отправляем в профиль
+  return isAuth ? <Navigate to="/profile" replace /> : children;
+};
+
+export const router = createBrowserRouter([
+  {
+    element: <MainLayout />, // Теперь проверка авторизации будет на ВСЕХ страницах
+    children: [
+      { path: "/", element: <HomePage /> },
+      {
+        path: "/auth",
+        element: (
+          <GuestRoute>
+            <AuthCard />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+      { path: "*", element: <div>404</div> },
+    ],
+  },
+]);

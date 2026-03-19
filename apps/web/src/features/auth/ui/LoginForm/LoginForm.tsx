@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@repo/validation";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import { $api } from "@/shared/api/api";
+import { useAuth } from "@/features/auth/model/auth-store";
 import styles from "../AuthCard/AuthCard.module.scss";
 
 export const LoginForm = () => {
@@ -18,28 +21,20 @@ export const LoginForm = () => {
     mode: "onBlur",
   });
 
+  const { setAuth } = useAuth();
+
   const onSubmit = async (data: LoginInput) => {
     try {
-      // 2. Отправляем запрос на твой новый эндпоинт
-      const response = await axios.post(
-        "http://localhost:3001/api/identity/auth/login",
-        data,
-      );
-
-      // Если всё ок, выводим сообщение (позже будем сохранять пользователя в стейт)
-      alert(response.data.message);
-      console.log("User data:", response.data.user);
-    } catch (error: any) {
-      // 3. Обработка ошибок с бэкенда
-      const message = error.response?.data?.message || "Ошибка входа";
-
-      // Если это ошибка про активацию почты — выведем её красиво
-      alert(message);
-
-      // Если хочешь подсветить поле ошибки через setError:
-      // setError("email", { message });
+      const res = await $api.post("/identity/auth/login", data);
+      setAuth(res.data.user, res.data.accessToken); // Сохраняем!
+      toast.success("С возвращением!");
+    } catch (e: any) {
+      const message = e.response?.data?.message || "Ошибка входа";
+      // Красивое красное уведомление
+      toast.error(message);
     }
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <div className={styles.field}>

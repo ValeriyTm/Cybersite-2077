@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 import { HiEye, HiEyeOff } from "react-icons/hi"; // Импорт иконок
 import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 import styles from "../AuthCard/AuthCard.module.scss";
+import { $api } from "@/shared/api/api";
 
 // export const AuthForm = () => {
 //   const [isLogin, setIsLogin] = useState(false);
@@ -173,30 +175,37 @@ import styles from "../AuthCard/AuthCard.module.scss";
 
 export const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormInput>({
     resolver: zodResolver(RegisterFormSchema),
-    mode: "onBlur",
   });
+
+  // Функция, которая сработает, если Zod найдет ошибки
+  const onFormError = (errors: any) => {
+    // Берем первую попавшуюся ошибку и выводим её в Toast
+    const firstError = Object.values(errors)[0] as any;
+    if (firstError?.message) {
+      toast.error(firstError.message, {
+        id: "form-validation-error", // Чтобы тосты не плодились, а заменяли друг друга
+      });
+    }
+  };
 
   const onSubmit = async (data: RegisterFormInput) => {
     try {
-      const { confirmPassword, acceptTerms, ...apiData } = data;
-      const response = await axios.post(
-        "http://localhost:3001/api/identity/auth/register",
-        apiData,
-      );
-      alert(response.data.message);
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Ошибка регистрации");
+      const res = await $api.post("/identity/auth/register", data);
+      toast.success("Регистрация успешна! Проверьте почту.");
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || "Ошибка сервера");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit, onFormError)}>
       <div className={styles.field}>
         <label>Name</label>
         <input

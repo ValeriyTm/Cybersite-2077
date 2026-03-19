@@ -2,10 +2,26 @@ import { useState } from "react";
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
 import { FcGoogle } from "react-icons/fc";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { useAuth } from "@/features/auth/model/auth-store";
 import styles from "./AuthCard.module.scss";
 
 export const AuthCard = () => {
   const [mode, setMode] = useState<"login" | "register">("register");
+
+  const isAuth = useAuth((state) => state.isAuth);
+  const navigate = useNavigate();
+
+  // Если пользователь залогинился (или уже был залогинен), уводим его отсюда
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/profile", { replace: true });
+    }
+  }, [isAuth, navigate]);
+
+  // Пока идет редирект, можно вернуть null или спиннер
+  if (isAuth) return null;
 
   return (
     <div className={styles.container}>

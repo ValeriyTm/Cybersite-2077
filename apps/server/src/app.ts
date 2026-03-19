@@ -7,11 +7,17 @@ import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 
 const app = express();
 
+const corsOptions = {
+  origin: "http://localhost:5173",
+  //Разрешаем передавать учетные данные с клиента:
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
 //----------Подключаем middleware:--------
 //Тут будет Morgan
 
 //Настройка политики CORS:
-app.use(cors());
+app.use(cors(corsOptions));
 //Парсим тело запроса:
 app.use(express.json());
 //Извлекаем данные из кук:

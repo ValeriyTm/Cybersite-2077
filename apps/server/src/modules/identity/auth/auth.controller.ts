@@ -99,7 +99,7 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   }
 
   // 1.Проверяем подпись токена (не протух ли он криптографически):
-  const userData: any = TokenService.validateRefreshToken(refreshToken);
+  const userData = TokenService.validateRefreshToken(refreshToken) as any;
 
   // 2.Ищем этот конкретный токен в нашей базе данных:
   const tokenFromDb = await SessionService.findToken(refreshToken);
@@ -133,9 +133,16 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
     path: "/api/identity/auth",
   });
 
+  // 7.Достаем актуальные данные юзера из сервиса
+  const user = await AuthService.getUserData(userData.id);
+
+  if (!user) {
+    throw new AppError(404, "Пользователь не найден");
+  }
+
   // Отправляем новый Access токен фронтенду:
   return res.json({
     accessToken: tokens.accessToken,
-    user: { id: userData.id, email: userData.email, role: userData.role },
+    user: user,
   });
 });
