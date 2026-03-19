@@ -29,6 +29,8 @@ export class ProfileService {
   }
 
   static async updateProfile(userId: string, data: UpdateProfileInput) {
+    console.log("Данные для обновления:", data);
+
     // Создаем объект для базы
     const updateData: any = { ...data };
     // Если дата пришла строкой, превращаем её в объект Date для Prisma
@@ -40,13 +42,21 @@ export class ProfileService {
     //Обновляем данные в БД:
     return prisma.user.update({
       where: { id: userId },
-      data: updateData,
+      data: {
+        name: data.name,
+        phone: data.phone || null,
+        gender: data.gender || null,
+        // ВАЖНО: Prisma ожидает объект Date для поля DateTime
+        birthday: data.birthday ? new Date(data.birthday) : null,
+      },
       select: {
         id: true,
         name: true,
+        email: true,
         phone: true,
-        birthday: true,
         gender: true,
+        birthday: true,
+        avatarUrl: true,
       },
     });
   }

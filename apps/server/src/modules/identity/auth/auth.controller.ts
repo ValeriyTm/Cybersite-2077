@@ -100,28 +100,33 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
 
   // 1.Проверяем подпись токена (не протух ли он криптографически):
   const userData = TokenService.validateRefreshToken(refreshToken) as any;
-
   // 2.Ищем этот конкретный токен в нашей базе данных:
   const tokenFromDb = await SessionService.findToken(refreshToken);
   // Если токена нет в базе или он не валиден по подписи — сессия скомпрометирована:
   if (!userData || !tokenFromDb) {
     // На всякий случай чистим куку, чтобы не гонять битый токен
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", { path: "/api/identity/auth" });
     throw new AppError(401, "Сессия не действительна или отозвана");
   }
 
-  // 3.Удаляем из базы (Refresh Token Rotation):
-  await SessionService.removeToken(refreshToken);
+  //3.Идем в базу за самыми свежими данными о пользователе:
+  const freshUser = await AuthService.getUserData(userData.id);
+  if (!freshUser) {
+    throw new AppError(404, "Пользователь не найден");
+  }
 
-  // 4.Генерируем новую пару токенов:
+  //4.Осуществляем ротацию токенов (Refresh Token Rotation):
+  //Удаляем старый токен:
+  await SessionService.removeToken(refreshToken);
+  //Генерируем новую пару токенов:
   const tokens = TokenService.generateTokens({
-    id: userData.id,
-    email: userData.email,
-    role: userData.role,
+    id: freshUser.id,
+    email: freshUser.email,
+    role: freshUser.role,
   });
 
   // 5.Сохраняем новый токен в БД:
-  await SessionService.saveToken(userData.id, tokens.refreshToken);
+  await SessionService.saveToken(freshUser.id, tokens.refreshToken);
 
   // 6.Обновляем куку:
   res.cookie("refreshToken", tokens.refreshToken, {
@@ -133,16 +138,9 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
     path: "/api/identity/auth",
   });
 
-  // 7.Достаем актуальные данные юзера из сервиса
-  const user = await AuthService.getUserData(userData.id);
-
-  if (!user) {
-    throw new AppError(404, "Пользователь не найден");
-  }
-
-  // Отправляем новый Access токен фронтенду:
+  //7.Отправляем новый Access токен фронтенду:
   return res.json({
     accessToken: tokens.accessToken,
-    user: user,
+    user: freshUser, //Тут акутальные данные о юзере
   });
 });

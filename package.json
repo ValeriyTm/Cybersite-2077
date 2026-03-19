@@ -1,6 +1,6 @@
 {
   "name": "cybersite",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "",
   "keywords": [],
   "license": "ISC",
@@ -19,5 +19,8 @@
     "prettier-plugin-packagejson": "^3.0.2",
     "turbo": "^2.8.17"
   },
-  "packageManager": "npm@11.9.0"
+  "packageManager": "npm@11.9.0",
+  "dependencies": {
+    "imask": "^7.6.1"
+  }
 }

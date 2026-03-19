@@ -109,10 +109,23 @@ export const UpdateProfileSchema = z.object({
     .string()
     .trim()
     //Телефон: Необязательный "+"" в начале. Первая цифра от 1 до 9. Всего от 2 до 15 цифр (международный стандарт E.164):
-    .regex(/^\+?[1-9]\d{1,14}$/, "Некорректный формат телефона")
+    .regex(
+      /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/,
+      "Введите корректный номер телефона",
+    )
     .nullish(), //Это поле = поле optional() + nullable()
-  birthday: z.string().date().nullish(),
-  gender: z.enum(["MALE", "FEMALE"]).nullish(),
+  birthday: z
+    .preprocess((arg) => {
+      if (!arg || arg === "") return null;
+      if (arg instanceof Date) return arg;
+      return new Date(arg as string);
+    }, z.date().nullable())
+    .refine((v) => v !== null, { message: "Введите дату рождения" }),
+  // Для enum в Zod сообщения об ошибках пишутся ВНУТРИ массива значений через запятую
+  gender: z.enum(["MALE", "FEMALE"], {
+    // Кастомная карта ошибок: единое сообщение для любого некорректного значения
+    error: () => ({ message: "Пожалуйста, выберите ваш пол" }),
+  }),
 });
 
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;

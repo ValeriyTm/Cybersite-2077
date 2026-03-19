@@ -100,6 +100,9 @@ export class AuthService {
         name: true,
         role: true,
         avatarUrl: true,
+        phone: true,
+        birthday: true,
+        gender: true,
       },
     });
   }
