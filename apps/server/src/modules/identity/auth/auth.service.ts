@@ -9,6 +9,8 @@ import {
 import { randomUUID } from "node:crypto";
 import { MailService } from "../../../shared/mail.service.js";
 import { AppError } from "../../../shared/utils/app-error.js";
+import fs from "node:fs/promises"; // Используем промисы для асинхронности
+import path from "node:path";
 
 export class AuthService {
   static async register(data: RegisterInput) {
@@ -158,6 +160,24 @@ export class AuthService {
     const isMatch = await argon2.verify(user.passwordHash, password);
     if (!isMatch)
       throw new AppError(400, "Неверный пароль для удаления аккаунта");
+
+    //Логика удаления аватара с сервера:
+    if (user.avatarUrl) {
+      try {
+        // Формируем полный путь к файлу на диске
+        // В БД лежит путь типа "/uploads/avatars/file.jpg", а
+        // нам нужно превратить его в системный путь
+        const filePath = path.join(process.cwd(), user.avatarUrl);
+
+        await fs.unlink(filePath); // Удаляем файл
+        console.log(
+          `Файл ${user.avatarUrl} успешно удален при удалении аккаунта`,
+        );
+      } catch (err) {
+        // Если файла нет на диске (например, удалили вручную), просто логируем, но не "паникуем"
+        console.error("Ошибка при удалении файла аватара:", err);
+      }
+    }
 
     // Удаляем пользователя (каскадное удаление токенов сработает, если настроено в Prisma)
     await prisma.token.deleteMany({ where: { userId } });
