@@ -56,12 +56,15 @@ export class AuthService {
     const user = await prisma.user.findUnique({
       where: { activationToken: token },
     });
-    if (!user) throw new Error("Некорректная ссылка активации");
+
+    // Если токена нет, возможно пользователь уже активирован
+    // В этом случае мы просто выходим из функции (контроллер сделает редирект)
+    if (!user) return;
 
     //Меняем свойство isActiveted у юзера в БД на true:
     await prisma.user.update({
       where: { id: user.id },
-      data: { isActivated: true, activationToken: null },
+      data: { isActivated: true, activationToken: null }, // Стираем токен, чтобы ссылку нельзя было юзать дважды
     });
   }
 
@@ -144,5 +147,20 @@ export class AuthService {
       where: { id: userId },
       data: { passwordHash: hashedPassword },
     });
+  }
+
+  static async deleteAccount(userId: string, password: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.passwordHash)
+      throw new AppError(404, "Пользователь не найден");
+
+    // Проверяем пароль перед удалением
+    const isMatch = await argon2.verify(user.passwordHash, password);
+    if (!isMatch)
+      throw new AppError(400, "Неверный пароль для удаления аккаунта");
+
+    // Удаляем пользователя (каскадное удаление токенов сработает, если настроено в Prisma)
+    await prisma.token.deleteMany({ where: { userId } });
+    return prisma.user.delete({ where: { id: userId } });
   }
 }

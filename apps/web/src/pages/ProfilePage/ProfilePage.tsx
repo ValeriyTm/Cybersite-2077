@@ -31,6 +31,10 @@ export const ProfilePage = () => {
   //Для смены пароля:
   const [showPass, setShowPass] = useState(false);
 
+  //Для удаления аккаунта:
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   // 1. Основная форма профиля:
   const {
     register,
@@ -48,7 +52,7 @@ export const ProfilePage = () => {
     },
   });
 
-  // 2. Форма смены пароля (используем алиасы, чтобы не было конфликта имен):
+  // 2. Для смены пароля (используем алиасы, чтобы не было конфликта имен):
   const {
     register: regPass,
     handleSubmit: handlePassSubmit,
@@ -123,6 +127,19 @@ export const ProfilePage = () => {
       resetPass(); // Очищаем поля после успеха
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Ошибка при смене пароля");
+    }
+  };
+
+  //Для удаления аккаунта:
+  const onDeleteAccount = async () => {
+    try {
+      await $api.delete("/identity/auth/delete-account", {
+        data: { password: confirmPassword },
+      });
+      toast.success("Ваш аккаунт удален");
+      logout(); // Очищаем стор и уходим на главную
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || "Ошибка при удалении");
     }
   };
 
@@ -433,6 +450,46 @@ JS/Prisma работают с объектами new Date().
           </div>
         </form>
       </div>
+      {/*  */}
+
+      {/*Удаление аккаунта:*/}
+      <div className={styles.dangerZone}>
+        <h3>Опасная зона</h3>
+        <div className={styles.btnGroup}>
+          {/* ... кнопки logout ... */}
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className={styles.deleteBtn}
+          >
+            Удалить аккаунт
+          </button>
+        </div>
+      </div>
+
+      {/* Простое модальное окно (можно потом вынести в UI Kit) */}
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2>Удаление аккаунта</h2>
+            <p>Это действие необратимо. Введите пароль для подтверждения:</p>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Ваш пароль"
+            />
+            <div className={styles.modalActions}>
+              <button onClick={() => setShowDeleteModal(false)}>Отмена</button>
+              <button
+                onClick={onDeleteAccount}
+                className={styles.confirmDelete}
+              >
+                Я понимаю, удалить мой аккаунт
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/*  */}
 
       <div className={styles.dangerZone}>

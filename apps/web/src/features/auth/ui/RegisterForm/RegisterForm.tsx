@@ -173,15 +173,17 @@ import { $api } from "@/shared/api/api";
 //   );
 // };
 
-export const RegisterForm = () => {
+export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormInput>({
     resolver: zodResolver(RegisterFormSchema),
+    mode: "onBlur",
   });
 
   // Функция, которая сработает, если Zod найдет ошибки
@@ -197,10 +199,24 @@ export const RegisterForm = () => {
 
   const onSubmit = async (data: RegisterFormInput) => {
     try {
-      const res = await $api.post("/identity/auth/register", data);
-      toast.success("Регистрация успешна! Проверьте почту.");
+      await $api.post("/identity/auth/register", data);
+
+      // 1. Показываем уведомление
+      toast.success(
+        "Регистрация успешна! Проверьте почту для активации аккаунта.",
+      );
+
+      // 2. Очищаем форму (необязательно, но полезно)
+      reset();
+
+      // 3. Редиректим на вкладку логина через 1.5 секунды,
+      // чтобы юзер успел прочитать сообщение
+      setTimeout(() => {
+        onSuccess();
+      }, 1500);
     } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка сервера");
+      const message = e.response?.data?.message || "Ошибка при регистрации";
+      toast.error(message);
     }
   };
 
@@ -287,7 +303,7 @@ export const RegisterForm = () => {
         disabled={isSubmitting}
         className={styles.submitBtn}
       >
-        Sign up
+        {isSubmitting ? "Signing up..." : "Sign up"}
       </button>
     </form>
   );

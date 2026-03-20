@@ -31,7 +31,7 @@ export const activate = catchAsync(async (req: Request, res: Response) => {
   const { token } = req.params;
   await AuthService.activate(token);
   // После редиректим пользователя на фронтенд:
-  return res.redirect(`${process.env.CLIENT_URL}/login?activated=true`);
+  return res.redirect(`${process.env.CLIENT_URL}/auth?activated=true`);
 });
 
 export const login = catchAsync(async (req: Request, res: Response) => {
@@ -175,5 +175,17 @@ export const changePassword = catchAsync(
     await AuthService.changePassword(req.user!.id, result.data);
 
     res.status(200).json({ message: "Пароль успешно изменен" });
+  },
+);
+
+export const deleteAccount = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const { password } = req.body;
+    if (!password) throw new AppError(400, "Введите пароль для подтверждения");
+
+    await AuthService.deleteAccount(req.user!.id, password);
+
+    res.clearCookie("refreshToken", { path: "/api/identity/auth" });
+    res.status(200).json({ message: "Аккаунт успешно удален" });
   },
 );
