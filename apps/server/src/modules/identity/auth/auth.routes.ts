@@ -1,16 +1,17 @@
 import { Router } from "express";
 import * as AuthController from "./auth.controller.js";
 import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js";
+import { authLimiter } from "../../../shared/middlewares/rate-limiter.js";
 
 const router = Router();
 
 //-------------Роуты подмодуля аутентификации----
 //Роут регистрации:
-router.post("/register", AuthController.register);
+router.post("/register", authLimiter, AuthController.register);
 //Роут активации аккаунта по ссылке:
 router.get("/activate/:token", AuthController.activate);
 //Роут входа в аккаунт:
-router.post("/login", AuthController.login);
+router.post("/login", authLimiter, AuthController.login);
 //Роут выхода из аккаунта:
 router.post("/logout", AuthController.logout);
 //Роут выхода из всех аккаунтов:
@@ -22,7 +23,7 @@ router.post("/change-password", authMiddleware, AuthController.changePassword);
 //Роут для удаления аккаунта:
 router.delete("/delete-account", authMiddleware, AuthController.deleteAccount);
 //Роут для замены пароля (Forgot password):
-router.post("/forgot-password", AuthController.forgotPassword);
+router.post("/forgot-password", authLimiter, AuthController.forgotPassword);
 //Роут для сброса пароля (Forgot password):
 router.post("/reset-password", AuthController.resetPassword);
 ////Роуты для OAuth:
