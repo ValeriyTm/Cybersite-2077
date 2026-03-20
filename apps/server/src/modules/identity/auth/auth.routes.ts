@@ -25,9 +25,16 @@ router.delete("/delete-account", authMiddleware, AuthController.deleteAccount);
 router.post("/forgot-password", AuthController.forgotPassword);
 //Роут для сброса пароля (Forgot password):
 router.post("/reset-password", AuthController.resetPassword);
+////Роуты для OAuth:
 //Роутер входа в аккаунт Google (перенаправление в Google) [OAuth]:
 router.get("/google", AuthController.googleAuth);
 //Обработка ответа от Google [OAuth]:
 router.get("/google/callback", AuthController.googleCallback);
+////Роуты для 2FA:
+// Эти только для авторизованных (настройка)
+router.post("/2fa/setup", authMiddleware, AuthController.setup2FA);
+router.post("/2fa/enable", authMiddleware, AuthController.enable2FA);
+// Этот публичный (используется на этапе логина)
+router.post("/2fa/verify", AuthController.verify2FA);
 
 export { router as authRouter };

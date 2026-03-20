@@ -12,6 +12,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@otplib/preset-default": "^12.0.1",
     "@repo/validation": "^1.0.0",
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
@@ -22,7 +23,9 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.1.1",
     "node-cron": "^4.2.1",
-    "nodemailer": "^8.0.2"
+    "nodemailer": "^8.0.2",
+    "otplib": "^13.4.0",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -33,6 +36,7 @@
     "@types/multer": "^2.1.0",
     "@types/node": "^24.12.0",
     "@types/nodemailer": "^7.0.11",
+    "@types/qrcode": "^1.5.6",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.4.0",

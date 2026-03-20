@@ -69,6 +69,10 @@ model User {
   resetPasswordToken  String? @unique
   resetPasswordExpires DateTime?
 
+  //Для хранения секретного ключа и статуса 2FA:
+  twoFactorSecret  String?  // Секретный ключ (зашифрованный)
+  is2FAEnabled     Boolean  @default(false)
+
   // Предпочтительная гео-точка для доставки (используется тип Unsupported для PostGIS)
   // Мы сможем работать с ней через сырые запросы Prisma $queryRaw
   location      Unsupported("geometry(Point, 4326)")?

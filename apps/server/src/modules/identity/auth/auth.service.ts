@@ -3,6 +3,7 @@ import argon2 from "argon2";
 import { prisma } from "@repo/database";
 import { TokenService } from "./token.service.js";
 import { SessionService } from "./session.service.js";
+import { TwoFactorService } from "./two-factor.service.js";
 import {
   RegisterInput,
   LoginInput,
@@ -94,6 +95,16 @@ export class AuthService {
     );
     if (!isPasswordValid) {
       throw new AppError(401, "Неверный email или пароль");
+    }
+
+    //4.Проверяем, нужно ли требовать 2FA:
+    const isAdmin = user.role === "ADMIN" || user.role === "SUPERADMIN";
+
+    if (isAdmin && user.is2FAEnabled) {
+      return {
+        requires2FA: true,
+        userId: user.id,
+      };
     }
 
     return {
@@ -238,8 +249,7 @@ export class AuthService {
     });
   }
 
-  ////////////Реализуем OAuth + OIDC:
-  // apps/server/src/modules/identity/auth/auth.service.ts
+  ////Реализуем OAuth + OIDC:
   static async processGoogleUser(googleUser: any) {
     // 1. Ищем или создаем пользователя
     let user = await prisma.user.findUnique({
@@ -269,5 +279,64 @@ export class AuthService {
     await SessionService.saveToken(user.id, tokens.refreshToken);
 
     return { user, tokens };
+  }
+
+  ////Реализуем 2FA:
+  // Инициация настройки: генерация секрета и QR:
+  static async setup2FA(userId: string, email: string) {
+    const { secret, qrCodeUrl } = await TwoFactorService.generateSecret(email);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorSecret: secret },
+    });
+
+    return { qrCodeUrl };
+  }
+
+  // Подтверждение и включение 2FA:
+  static async enable2FA(userId: string, code: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user?.twoFactorSecret) {
+      throw new AppError(400, "Настройка 2FA не была инициирована");
+    }
+
+    const isValid = TwoFactorService.verifyToken(
+      code.trim(),
+      user.twoFactorSecret,
+    );
+    if (!isValid) throw new AppError(400, "Неверный код подтверждения");
+
+    return prisma.user.update({
+      where: { id: userId },
+      data: { is2FAEnabled: true },
+      select: { id: true, is2FAEnabled: true },
+    });
+  }
+
+  // Финальная проверка при логине:
+  static async verify2FA(userId: string, code: string) {
+    // 1. Обязательно находим пользователя в базе по пришедшему ID
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    console.log("DEBUG: User found in verify2FA:", user);
+
+    // 2. Проверяем, существует ли он и включен ли у него 2FA
+    if (!user || !user.twoFactorSecret || !user.is2FAEnabled) {
+      throw new AppError(401, "Ошибка авторизации или 2FA не настроен");
+    }
+
+    // 3. Проверяем код через OTPLib
+    const isValid = TwoFactorService.verifyToken(code, user.twoFactorSecret);
+
+    if (!isValid) {
+      throw new AppError(401, "Неверный код 2FA");
+    }
+
+    // 4.Возвращаем ВЕСЬ объект user.
+    return user;
   }
 }

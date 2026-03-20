@@ -43,7 +43,23 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     throw new AppError(400, "Ошибка валидации");
   }
 
-  const { rememberMe, ...user } = await AuthService.login(result.data);
+  const loginResult = await AuthService.login(result.data);
+
+  // ПРОВЕРКА НА 2FA
+  if ("requires2FA" in loginResult && loginResult.requires2FA) {
+    return res.status(200).json({
+      requires2FA: true,
+      userId: loginResult.userId,
+    });
+  }
+
+  // 2. ОБЫЧНЫЙ ВХОД (если 2FA не нужен)
+  // Теперь здесь loginResult гарантированно содержит { user, rememberMe }
+  const { user, rememberMe } = loginResult as {
+    user: any;
+    rememberMe: boolean;
+  };
+
   // Генерируем токены:
   const tokens = TokenService.generateTokens({
     id: user.id,
@@ -267,3 +283,50 @@ export const googleCallback = catchAsync(
     );
   },
 );
+
+///////Реализуем 2FA:
+export const setup2FA = catchAsync(async (req: AuthRequest, res: Response) => {
+  const result = await AuthService.setup2FA(req.user!.id, req.user!.email);
+  return res.json(result);
+});
+
+export const enable2FA = catchAsync(async (req: AuthRequest, res: Response) => {
+  const { code } = req.body;
+  await AuthService.enable2FA(req.user!.id, code);
+  return res.json({ message: "2FA успешно включена" });
+});
+
+export const verify2FA = catchAsync(async (req: Request, res: Response) => {
+  const { userId, code } = req.body;
+
+  // ЛОГ ДЛЯ ПРОВЕРКИ:
+  console.log("BODY RECEIVED:", req.body);
+
+  if (!userId) {
+    throw new AppError(400, "Параметр userId обязателен в теле запроса");
+  }
+
+  // 1. Проверяем код через сервис
+  const user = await AuthService.verify2FA(userId, code);
+
+  // 2. Генерируем сессию (стандартная логика как в login)
+  const tokens = TokenService.generateTokens({
+    id: user.id || userId, // Используем пришедший ID как запасной вариант
+    email: user.email,
+    role: user.role,
+  });
+  await SessionService.saveToken(user.id, tokens.refreshToken);
+
+  res.cookie("refreshToken", tokens.refreshToken, {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/api/identity/auth",
+  });
+
+  return res.json({
+    accessToken: tokens.accessToken,
+    user: { id: user.id, email: user.email, name: user.name, role: user.role },
+  });
+});
