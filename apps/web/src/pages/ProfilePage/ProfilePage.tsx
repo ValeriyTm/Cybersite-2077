@@ -178,6 +178,12 @@ export const ProfilePage = () => {
     }
   };
 
+  //Если ссылка начинается на http, берем её как есть.
+  // Иначе — склеиваем с адресом нашего сервера.
+  const avatarSrc = user?.avatarUrl?.startsWith("http")
+    ? user.avatarUrl
+    : `${API_URL}${user.avatarUrl}`;
+
   return (
     <div className={styles.container}>
       <div className={styles.profileHeader}>
@@ -188,12 +194,9 @@ export const ProfilePage = () => {
           }
         >
           <img
-            src={
-              user?.avatarUrl
-                ? `${API_URL}${user.avatarUrl}`
-                : "/default-avatar.png"
-            }
+            src={user?.avatarUrl ? avatarSrc : "/default-avatar.png"}
             alt="Avatar"
+            referrerPolicy="no-referrer"
             style={{ opacity: isAvatarLoading ? 0.5 : 1 }} // Приглушаем фото при загрузке
           />
           {/* 4. Показываем спиннер поверх фото */}
