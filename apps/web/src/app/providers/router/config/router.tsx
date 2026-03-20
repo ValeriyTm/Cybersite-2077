@@ -6,6 +6,8 @@ import { HomePage } from "@/pages/HomePage/HomePage";
 import { ProfilePage } from "@/pages/ProfilePage/ProfilePage";
 import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage/ForgotPasswordPage";
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage/ResetPasswordPage";
+import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
+import { TermsPage } from "@/pages/Legal/TermsPage";
 
 //Компонент-обертка, который ограничивает доступ к определенным страницам приложения в зависимости от статуса авторизации пользователя.
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -27,6 +29,8 @@ export const router = createBrowserRouter([
     element: <MainLayout />, // Теперь проверка авторизации будет на ВСЕХ страницах
     children: [
       { path: "/", element: <HomePage /> },
+      { path: "/privacy", element: <PrivacyPolicyPage /> },
+      { path: "/terms", element: <TermsPage /> },
       {
         path: "/auth",
         element: (
