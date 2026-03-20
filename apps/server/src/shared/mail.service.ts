@@ -39,4 +39,28 @@ export class MailService {
       `,
     });
   }
+
+  static async sendResetPasswordMail(to: string, link: string) {
+    await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to,
+      subject: `Восстановление пароля на ${process.env.CLIENT_URL}`,
+      text: "",
+      html: `
+      <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px;">
+        <h2 style="color: #333;">Забыли пароль?</h2>
+        <p>Ничего страшного, это случается с лучшими из нас. Нажмите на кнопку ниже, чтобы установить новый пароль:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${link}" 
+             style="background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            Сбросить пароль
+          </a>
+        </div>
+        <p style="color: #666; font-size: 12px;">Эта ссылка действительна в течение 1 часа. Если вы не запрашивали сброс пароля, просто проигнорируйте это письмо.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <p style="font-size: 11px; color: #999;">Если кнопка не работает, скопируйте эту ссылку в браузер: <br/> ${link}</p>
+      </div>
+    `,
+    });
+  }
 }

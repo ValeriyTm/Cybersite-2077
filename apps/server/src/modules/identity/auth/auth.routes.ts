@@ -17,9 +17,13 @@ router.post("/logout", AuthController.logout);
 router.post("/logout-all", authMiddleware, AuthController.logoutAll);
 //Роут для обновления токенов:
 router.get("/refresh", AuthController.refresh);
-//Роут для замены пароля:
+//Роут для замены пароля (из профиля):
 router.post("/change-password", authMiddleware, AuthController.changePassword);
 //Роут для удаления аккаунта:
 router.delete("/delete-account", authMiddleware, AuthController.deleteAccount);
+//Роут для замены пароля (Forgot password):
+router.post("/forgot-password", AuthController.forgotPassword);
+//Роут для сброса пароля (Forgot password):
+router.post("/reset-password", AuthController.resetPassword);
 
 export { router as authRouter };

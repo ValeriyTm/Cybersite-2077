@@ -164,3 +164,41 @@ export const ChangePasswordSchema = z
   });
 
 export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>;
+
+//Схема для валидации введенного email (Forgot Password):
+export const ForgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email({ message: "Некорректный email или пароль" }),
+});
+
+//Схема для обновления пароля (Forgot Password):
+export const ResetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .trim()
+      .min(8, "Пароль должен иметь минимум 8 символов")
+      .max(32, "Пароль должен иметь максимум 32 символа")
+      // Хотя бы одна заглавная буква
+      .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
+      // Хотя бы одна строчная буква
+      .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
+      // Хотя бы одна цифра
+      .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
+      // Хотя бы один спецсимвол
+      .regex(
+        /[^a-zA-Z0-9]/,
+        "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
+
+export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;

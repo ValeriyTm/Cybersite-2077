@@ -5,12 +5,14 @@ import {
   RegisterInput,
   LoginInput,
   ChangePasswordInput,
+  ResetPasswordInput,
 } from "@repo/validation";
 import { randomUUID } from "node:crypto";
 import { MailService } from "../../../shared/mail.service.js";
 import { AppError } from "../../../shared/utils/app-error.js";
 import fs from "node:fs/promises"; // Используем промисы для асинхронности
 import path from "node:path";
+import crypto from "node:crypto";
 
 export class AuthService {
   static async register(data: RegisterInput) {
@@ -182,5 +184,55 @@ export class AuthService {
     // Удаляем пользователя (каскадное удаление токенов сработает, если настроено в Prisma)
     await prisma.token.deleteMany({ where: { userId } });
     return prisma.user.delete({ where: { id: userId } });
+  }
+
+  static async forgotPassword(email: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return; // Для безопасности не говорим, что юзера нет
+
+    // Генерируем токен на 1 час
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 3600000);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { resetPasswordToken: token, resetPasswordExpires: expires },
+    });
+
+    // Отправляем письмо (используй свой MailService)
+    const link = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
+    await MailService.sendResetPasswordMail(email, link);
+  }
+
+  static async resetPassword(data: ResetPasswordInput & { token: string }) {
+    // 1. Ищем юзера, у которого совпадает токен и срок жизни > текущего времени
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: data.token,
+        resetPasswordExpires: {
+          gt: new Date(), // "Greater Than" — срок действия еще не истек
+        },
+      },
+    });
+
+    if (!user) {
+      throw new AppError(
+        400,
+        "Ссылка недействительна или срок её действия истек",
+      );
+    }
+
+    // 2. Хешируем новый пароль
+    const hashedPassword = await argon2.hash(data.password);
+
+    // 3. Обновляем пароль и ОЧИЩАЕМ поля сброса, чтобы токен нельзя было юзать второй раз
+    return prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      },
+    });
   }
 }

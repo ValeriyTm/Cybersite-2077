@@ -4,6 +4,8 @@ import { useAuth } from "@/features/auth/model/auth-store";
 import { MainLayout } from "@/app/ui/MainLayout";
 import { HomePage } from "@/pages/HomePage/HomePage";
 import { ProfilePage } from "@/pages/ProfilePage/ProfilePage";
+import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage/ForgotPasswordPage";
+import { ResetPasswordPage } from "@/pages/ResetPasswordPage/ResetPasswordPage";
 
 //Компонент-обертка, который ограничивает доступ к определенным страницам приложения в зависимости от статуса авторизации пользователя.
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -30,6 +32,22 @@ export const router = createBrowserRouter([
         element: (
           <GuestRoute>
             <AuthCard />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: "/forgot-password",
+        element: (
+          <GuestRoute>
+            <ForgotPasswordPage />
+          </GuestRoute>
+        ),
+      },
+      {
+        path: "/reset-password",
+        element: (
+          <GuestRoute>
+            <ResetPasswordPage />
           </GuestRoute>
         ),
       },

@@ -23,12 +23,25 @@ $api.interceptors.request.use((config) => {
 
 // Обработка ошибки 401 (Реализуем Auto-refresh):
 const refreshAuthLogic = (failedRequest: any) => {
+  const url = failedRequest.response.config.url;
+
   // 1. ПРЕРЫВАНИЕ ЦИКЛА:
   // Если ошибка 401 пришла от САМОГО запроса на рефреш — не пытаемся обновиться снова
   if (failedRequest.response.config.url.includes("/identity/auth/refresh")) {
     return Promise.reject(failedRequest);
   }
 
+  // 2. ИСКЛЮЧЕНИЯ ДЛЯ ПУБЛИЧНЫХ ФОРМ (добавляем сюда):
+  // Чтобы при неверном пароле не вылетало "Сессия не найдена"
+  if (
+    url.includes("/identity/auth/login") ||
+    url.includes("/identity/auth/reset-password") ||
+    url.includes("/identity/auth/forgot-password")
+  ) {
+    return Promise.reject(failedRequest);
+  }
+
+  //3.Логика обновления:
   return axios
     .get(`${API_URL}/api/identity/auth/refresh`, { withCredentials: true })
     .then((tokenRefreshResponse) => {
@@ -58,54 +71,3 @@ createAuthRefreshInterceptor($api, refreshAuthLogic, {
   statusCodes: [401], // На какие коды реагировать
   pauseInstanceWhileRefreshing: true, // ВАЖНО: останавливает другие запросы, пока идет Refresh
 });
-////////////////
-
-// $api.interceptors.response.use(
-//   //Если запрос прошел успешно (код 2xx), просто возвращаем ответ дальше:
-//   (config) => config,
-//   //Обработка ошибок:
-//   async (error) => {
-//     //Сохранение данных изначального запроса, чтобы повторить его позже:
-//     const originalRequest = error.config;
-
-//     //Если ошибка 401 случилась при запросе /refresh,
-//     //значит сессия реально мертва, и мы не пытаемся её обновлять:
-//     if (
-//       error.response?.status === 401 &&
-//       originalRequest.url.includes("/refresh")
-//     ) {
-//       // Просто чистим стор БЕЗ запроса к API (чтобы не зациклиться)
-//       useAuth.getState().setAuth(null, "");
-//       useAuth.setState({ isAuth: false });
-//       return Promise.reject(error);
-//     }
-
-//     //Если сервер вернул 401 и мы еще не пытались обновить токен для этого запроса:
-//     if (error.response?.status === 401 && !originalRequest._isRetry) {
-//       originalRequest._isRetry = true; //Помечаем запрос, чтобы не уйти в бесконечный цикл обновлений.
-//       try {
-//         //Отправка запроса на эндпоинт /refresh для получения новой пары токенов:
-//         const resp = await axios.get(
-//           "http://localhost:3001/api/identity/auth/refresh",
-//           { withCredentials: true },
-//           //Используется стандартный axios, а не $api, чтобы избежать зацикливания.
-//         );
-
-//         //Сохранение нового токена и данных пользователя в глобальный стейт:
-//         useAuth.getState().setAuth(resp.data.user, resp.data.accessToken);
-//         //Повторный запуск изначального запроса, но теперь уже с новым токеном:
-//         return $api.request(originalRequest);
-//       } catch (e) {
-//         // Если рефреш не удался (например, кука удалена),
-//         // просто сбрасываем состояние, не дергая logout на бэкенде
-//         useAuth.getState().setAuth(null, "");
-//         useAuth.setState({ isAuth: false });
-//         throw e;
-
-//         //[TODO] Тут добавить логику автоматического перенаправления на страницу входа при неудачном обновлении токена
-//       }
-//     }
-//     //Если ошибка не 401 или обновление не сработало, пробрасываем ошибку дальше в код:
-//     throw error;
-//   },
-// );

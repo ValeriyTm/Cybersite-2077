@@ -5,6 +5,7 @@ import {
   RegisterSchema,
   LoginSchema,
   ChangePasswordSchema,
+  ResetPasswordSchema,
 } from "@repo/validation";
 import { AuthService } from "./auth.service.js";
 import { TokenService } from "./token.service.js";
@@ -189,3 +190,42 @@ export const deleteAccount = catchAsync(
     res.status(200).json({ message: "Аккаунт успешно удален" });
   },
 );
+
+export const forgotPassword = catchAsync(
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
+    if (!email) throw new AppError(400, "Email обязателен");
+
+    // Вызываем сервис (мы его набросали в прошлом шаге)
+    await AuthService.forgotPassword(email);
+
+    // Всегда отвечаем 200, даже если email нет в базе (защита от сканирования базы)
+    return res.status(200).json({
+      message:
+        "Если такой email зарегистрирован, письмо со ссылкой отправлено.",
+    });
+  },
+);
+
+export const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  // Валидируем пароли через Zod
+  const validation = ResetPasswordSchema.safeParse(req.body);
+  if (!validation.success) {
+    throw new AppError(400, "Пароли не совпадают или слишком простые");
+  }
+
+  const { token } = req.query; // Ожидаем ?token=abc в URL
+  if (!token || typeof token !== "string") {
+    throw new AppError(400, "Токен сброса не передан");
+  }
+
+  // Вызываем сервис
+  await AuthService.resetPassword({
+    ...validation.data,
+    token,
+  });
+
+  return res
+    .status(200)
+    .json({ message: "Пароль успешно изменен. Теперь вы можете войти." });
+});
