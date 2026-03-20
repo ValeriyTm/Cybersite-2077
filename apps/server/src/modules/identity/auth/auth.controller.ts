@@ -327,6 +327,6 @@ export const verify2FA = catchAsync(async (req: Request, res: Response) => {
 
   return res.json({
     accessToken: tokens.accessToken,
-    user: { id: user.id, email: user.email, name: user.name, role: user.role },
+    user: user,
   });
 });
