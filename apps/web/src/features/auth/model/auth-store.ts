@@ -7,7 +7,11 @@ interface AuthState {
   user: any | null;
   accessToken: string | null;
   isAuth: boolean;
-  isLoading: boolean; // Чтобы не "мигало" при загрузке
+  isLoading: boolean;
+  // Поля для 2FA
+  tempUserId: string | null;
+  setTempUserId: (id: string | null) => void;
+  // Методы
   setAuth: (user: any, token: string) => void;
   logout: () => void;
   logoutAll: () => void;
@@ -24,15 +28,19 @@ export const useAuth = create<AuthState>()(
         user: null,
         accessToken: null,
         isAuth: false,
-        isLoading: false, // 1. Изначально ставим false, чтобы checkAuth не блокировался
+        isLoading: false,
+        tempUserId: null,
+
+        // Экшен для временного хранения ID админа при логине
+        setTempUserId: (id) => set({ tempUserId: id }),
 
         setAuth: (user, token) =>
           set({
             user,
             accessToken: token,
-            // Если пользователь передал null или пустой токен — авторизации нет
             isAuth: !!user && !!token,
             isLoading: false,
+            tempUserId: null, // Сбрасываем временный ID при успешном входе
           }),
 
         logout: async () => {
@@ -41,13 +49,6 @@ export const useAuth = create<AuthState>()(
           } catch (e) {
             console.error("Сервер уже удалил сессию или недоступен");
           } finally {
-            // set({
-            //   user: null,
-            //   accessToken: null,
-            //   isAuth: false,
-            //   isLoading: false,
-            // });
-            // Сбрасываем всё через setAuth для консистентности
             get().setAuth(null, "");
             toast.success("Вы вышли из аккаунта");
           }
@@ -57,29 +58,20 @@ export const useAuth = create<AuthState>()(
           try {
             await $api.post("/identity/auth/logout-all");
           } finally {
-            // set({ user: null, accessToken: null, isAuth: false });
             get().setAuth(null, "");
             toast.success("Вы вышли со всех устройств");
           }
         },
 
         checkAuth: async () => {
-          //Используем isRefreshing для защиты от двойного вызова
           if (isRefreshing) return;
-          // Если уже проверяем — второй запрос не пускаем
-
           isRefreshing = true;
           set({ isLoading: true });
 
           try {
-            // Идем на наш эндпоинт, который проверяет куку
             const response = await $api.get("/identity/auth/refresh");
-            // Если сервер ответил успехом — обновляем данные:
-
-            // Используем метод стора, чтобы обновить все флаги разом
             get().setAuth(response.data.user, response.data.accessToken);
           } catch (e) {
-            // Если ошибка (например, 401), сбрасываем состояние
             get().setAuth(null, "");
           } finally {
             isRefreshing = false;
@@ -87,8 +79,16 @@ export const useAuth = create<AuthState>()(
           }
         },
       }),
-      { name: "auth-storage" }, //Имя в localStorage
+      {
+        name: "auth-storage",
+        // Не сохраняем временные данные и флаги загрузки в localStorage
+        partialize: (state) => ({
+          user: state.user,
+          accessToken: state.accessToken,
+          isAuth: state.isAuth,
+        }),
+      },
     ),
-    { name: "AuthStore" }, // Имя стора в панели DevTools
+    { name: "AuthStore" },
   ),
 );

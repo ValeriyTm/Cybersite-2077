@@ -11,7 +11,10 @@ import styles from "../AuthCard/AuthCard.module.scss";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const { setAuth, tempUserId, setTempUserId } = useAuth();
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
   const {
     register,
     handleSubmit,
@@ -21,19 +24,89 @@ export const LoginForm = () => {
     mode: "onBlur",
   });
 
-  const { setAuth } = useAuth();
+  // const { setAuth } = useAuth();
+  // const { setTempUserId } = useAuth();
 
+  // 1. Обработка ПЕРВОГО шага (Email + Password)
   const onSubmit = async (data: LoginInput) => {
     try {
       const res = await $api.post("/identity/auth/login", data);
-      setAuth(res.data.user, res.data.accessToken); // Сохраняем!
+
+      // Если бэкенд говорит, что нужен код:
+      if (res.data.requires2FA) {
+        setTempUserId(res.data.userId); // Сохраняем ID в стор
+        setShow2FA(true); // Переключаем интерфейс
+        toast.success("Введите 6-значный код из приложения");
+        return;
+      }
+
+      // Если 2FA не нужен — обычный вход
+      setAuth(res.data.user, res.data.accessToken);
       toast.success("С возвращением!");
     } catch (e: any) {
-      const message = e.response?.data?.message || "Ошибка входа";
-      // Красивое красное уведомление
-      toast.error(message);
+      toast.error(e.response?.data?.message || "Ошибка входа");
     }
   };
+
+  // 2. Обработка ВТОРОГО шага (Ввод кода 2FA)
+  const onVerify2FA = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (twoFactorCode.length !== 6) return toast.error("Введите 6 цифр");
+
+    setIsVerifying(true);
+    try {
+      const res = await $api.post("/identity/auth/2fa/verify", {
+        userId: tempUserId,
+        code: twoFactorCode,
+      });
+
+      setAuth(res.data.user, res.data.accessToken);
+      toast.success("Личность подтверждена!");
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || "Неверный код");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  // ЕСЛИ НУЖЕН 2FA — ПОКАЗЫВАЕМ ТОЛЬКО ПОЛЕ ДЛЯ КОДА
+  if (show2FA) {
+    return (
+      <form onSubmit={onVerify2FA} className={styles.form}>
+        <div className={styles.field}>
+          <label>Двухфакторная аутентификация</label>
+          <p className={styles.subText}>
+            Введите код из Aegis / Google Authenticator
+          </p>
+          <input
+            type="text"
+            value={twoFactorCode}
+            onChange={(e) =>
+              setTwoFactorCode(e.target.value.replace(/\D/g, ""))
+            }
+            placeholder="000 000"
+            maxLength={6}
+            className={styles.inputCenter}
+            autoFocus
+          />
+        </div>
+        <button
+          type="submit"
+          className={styles.submitBtn}
+          disabled={isVerifying}
+        >
+          {isVerifying ? "Проверка..." : "Войти"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShow2FA(false)}
+          className={styles.backBtn}
+        >
+          Вернуться назад
+        </button>
+      </form>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>

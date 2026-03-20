@@ -34,6 +34,9 @@ export const ProfilePage = () => {
   //Для удаления аккаунта:
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  //Для 2FA:
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [verificationCode, setVerificationCode] = useState("");
 
   // 1. Основная форма профиля:
   const {
@@ -146,6 +149,23 @@ export const ProfilePage = () => {
       logout(); // Очищаем стор и уходим на главную
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Ошибка при удалении");
+    }
+  };
+
+  //Для 2FA:
+  const handleSetup2FA = async () => {
+    const res = await $api.post("/identity/auth/2fa/setup");
+    setQrCode(res.data.qrCodeUrl);
+  };
+
+  const handleEnable2FA = async () => {
+    try {
+      await $api.post("/identity/auth/2fa/enable", { code: verificationCode });
+      toast.success("2FA включена!");
+      setQrCode(null);
+      checkAuth(); // Обновляем данные юзера в сторе
+    } catch (e) {
+      toast.error("Ошибка активации");
     }
   };
 
@@ -521,6 +541,38 @@ JS/Prisma работают с объектами new Date().
           </button>
         </div>
       </div>
+
+      {qrCode && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Настройка 2FA</h3>
+            <p>Отсканируйте QR в Aegis или Google Authenticator:</p>
+            <div className={styles.qrContainer}>
+              <img src={qrCode} alt="QR Code" />
+            </div>
+            <input
+              type="text"
+              maxLength={6}
+              value={verificationCode}
+              onChange={(e) =>
+                setVerificationCode(e.target.value.replace(/\D/g, ""))
+              }
+              placeholder="6-значный код"
+            />
+            <div className={styles.modalActions}>
+              <button onClick={handleEnable2FA} className={styles.saveBtn}>
+                Подтвердить
+              </button>
+              <button
+                onClick={() => setQrCode(null)}
+                className={styles.cancelBtn}
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

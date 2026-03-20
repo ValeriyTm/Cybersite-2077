@@ -214,3 +214,28 @@
     cursor: pointer;
   }
 }
+
+.inputCenter {
+  text-align: center;
+  font-size: 24px !important;
+  letter-spacing: 8px;
+  font-weight: bold;
+}
+
+.subText {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.backBtn {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 13px;
+  &:hover {
+    text-decoration: underline;
+  }
+}
