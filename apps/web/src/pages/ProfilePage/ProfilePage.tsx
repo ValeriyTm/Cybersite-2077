@@ -25,6 +25,7 @@ import styles from "./ProfilePage.module.scss";
 export const ProfilePage = () => {
   const { user, setAuth, accessToken } = useAuth();
   const { logout, logoutAll } = useAuth();
+  const { checkAuth } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   //Стейт для загрузки аватара:
@@ -153,19 +154,27 @@ export const ProfilePage = () => {
   };
 
   //Для 2FA:
+  // Шаг 1: Запрос QR-кода
   const handleSetup2FA = async () => {
-    const res = await $api.post("/identity/auth/2fa/setup");
-    setQrCode(res.data.qrCodeUrl);
+    try {
+      const res = await $api.post("/identity/auth/2fa/setup");
+      setQrCode(res.data.qrCodeUrl);
+    } catch (e) {
+      toast.error("Ошибка при генерации QR-кода");
+    }
   };
 
+  // Шаг 2: Подтверждение кода из приложения
   const handleEnable2FA = async () => {
     try {
       await $api.post("/identity/auth/2fa/enable", { code: verificationCode });
-      toast.success("2FA включена!");
+      toast.success("2FA успешно включена!");
       setQrCode(null);
-      checkAuth(); // Обновляем данные юзера в сторе
-    } catch (e) {
-      toast.error("Ошибка активации");
+      setVerificationCode("");
+      // Обновляем данные пользователя в сторе (чтобы is2FAEnabled стало true)
+      await checkAuth();
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || "Неверный код");
     }
   };
 
@@ -504,6 +513,61 @@ JS/Prisma работают с объектами new Date().
         </div>
       </div>
 
+      <div className={styles.dangerZone}>
+        <h3>Безопасность</h3>
+        <div className={styles.btnGroup}>
+          {/* Отображаем кнопку только для Админов */}
+          {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
+            <button
+              onClick={user.is2FAEnabled ? undefined : handleSetup2FA}
+              className={user.is2FAEnabled ? styles.enabled2FA : styles.btn2FA}
+              disabled={user.is2FAEnabled}
+            >
+              {user.is2FAEnabled ? "2FA Активна ✅" : "Включить 2FA"}
+            </button>
+          )}
+
+          {/* ... твои кнопки выхода и удаления ... */}
+        </div>
+      </div>
+
+      {/* Модальное окно настройки 2FA */}
+      {qrCode && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Настройка защиты</h3>
+            <p>Отсканируйте QR в Aegis или Google Authenticator</p>
+
+            <div className={styles.qrWrapper}>
+              <img src={qrCode} alt="QR Code" />
+            </div>
+
+            <input
+              type="text"
+              maxLength={6}
+              placeholder="000 000"
+              value={verificationCode}
+              onChange={(e) =>
+                setVerificationCode(e.target.value.replace(/\D/g, ""))
+              }
+              className={styles.otpInput}
+            />
+
+            <div className={styles.modalActions}>
+              <button onClick={handleEnable2FA} className={styles.saveBtn}>
+                Активировать
+              </button>
+              <button
+                onClick={() => setQrCode(null)}
+                className={styles.cancelBtn}
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Простое модальное окно (можно потом вынести в UI Kit) */}
       {showDeleteModal && (
         <div className={styles.modalOverlay}>
@@ -541,38 +605,6 @@ JS/Prisma работают с объектами new Date().
           </button>
         </div>
       </div>
-
-      {qrCode && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h3>Настройка 2FA</h3>
-            <p>Отсканируйте QR в Aegis или Google Authenticator:</p>
-            <div className={styles.qrContainer}>
-              <img src={qrCode} alt="QR Code" />
-            </div>
-            <input
-              type="text"
-              maxLength={6}
-              value={verificationCode}
-              onChange={(e) =>
-                setVerificationCode(e.target.value.replace(/\D/g, ""))
-              }
-              placeholder="6-значный код"
-            />
-            <div className={styles.modalActions}>
-              <button onClick={handleEnable2FA} className={styles.saveBtn}>
-                Подтвердить
-              </button>
-              <button
-                onClick={() => setQrCode(null)}
-                className={styles.cancelBtn}
-              >
-                Отмена
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

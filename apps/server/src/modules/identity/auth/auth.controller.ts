@@ -53,12 +53,13 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
+  const { rememberMe, ...user } = loginResult;
+
   // 2. ОБЫЧНЫЙ ВХОД (если 2FA не нужен)
-  // Теперь здесь loginResult гарантированно содержит { user, rememberMe }
-  const { user, rememberMe } = loginResult as {
-    user: any;
-    rememberMe: boolean;
-  };
+  // const { user, rememberMe } = loginResult as {
+  //   user: any;
+  //   rememberMe: boolean;
+  // };
 
   // Генерируем токены:
   const tokens = TokenService.generateTokens({
@@ -68,7 +69,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   });
 
   // Записываем сессию в БД:
-  await SessionService.saveToken(user.id, tokens.refreshToken);
+  await SessionService.saveToken(user.id as string, tokens.refreshToken);
 
   //Задаём настройки куки:
   const cookieOptions: any = {
