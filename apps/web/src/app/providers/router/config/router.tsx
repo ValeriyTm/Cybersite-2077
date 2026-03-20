@@ -8,6 +8,7 @@ import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage/ForgotPasswordPag
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage/ResetPasswordPage";
 import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
 import { TermsPage } from "@/pages/Legal/TermsPage";
+import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
 
 //Компонент-обертка, который ограничивает доступ к определенным страницам приложения в зависимости от статуса авторизации пользователя.
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -27,6 +28,7 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 export const router = createBrowserRouter([
   {
     element: <MainLayout />, // Теперь проверка авторизации будет на ВСЕХ страницах
+    errorElement: <ErrorFallback />, //Внутренняя обработка ошибок.  Если ошибка произойдет внутри любого компонента (например, в ProfilePage), React Router перехватит её первым. Он заменит содержимое страницы на ErrorFallback, но сохранит MainLayout (твою шапку, меню и футер).
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/privacy", element: <PrivacyPolicyPage /> },

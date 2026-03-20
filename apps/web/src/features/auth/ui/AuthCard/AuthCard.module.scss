@@ -239,3 +239,29 @@
     text-decoration: underline;
   }
 }
+
+.actions {
+  display: flex;
+  gap: 12px; // Расстояние между кнопками
+  margin-top: 20px;
+}
+
+.resetBtn {
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e0e0e0;
+    color: #333;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

@@ -139,6 +139,16 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
       >
         {isSubmitting ? "Signing up..." : "Sign up"}
       </button>
+
+      {/* Кнопка сброса */}
+      <button
+        type="button" // Обязательно button, а не submit!
+        onClick={() => reset()}
+        className={styles.resetBtn}
+        disabled={isSubmitting}
+      >
+        Clear
+      </button>
     </form>
   );
 };
