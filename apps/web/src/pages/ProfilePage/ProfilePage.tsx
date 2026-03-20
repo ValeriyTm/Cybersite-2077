@@ -511,10 +511,7 @@ JS/Prisma работают с объектами new Date().
             Удалить аккаунт
           </button>
         </div>
-      </div>
 
-      <div className={styles.dangerZone}>
-        <h3>Безопасность</h3>
         <div className={styles.btnGroup}>
           {/* Отображаем кнопку только для Админов */}
           {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
