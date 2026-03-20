@@ -27,10 +27,10 @@ export const ProfilePage = () => {
   const { logout, logoutAll } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  //Стейт для загрузки аватара:
+  const [isAvatarLoading, setIsAvatarLoading] = useState(false);
   //Для смены пароля:
   const [showPass, setShowPass] = useState(false);
-
   //Для удаления аккаунта:
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -98,6 +98,9 @@ export const ProfilePage = () => {
     const formData = new FormData();
     formData.append("avatar", file);
     try {
+      //Включаем лоадер:
+      setIsAvatarLoading(true);
+
       const res = await $api.post("/identity/profile/avatar", formData);
       //Обновляем store:
       setAuth({ ...user, avatarUrl: res.data.avatarUrl }, accessToken || "");
@@ -107,6 +110,9 @@ export const ProfilePage = () => {
       setIsEditing(false);
     } catch (e) {
       toast.error("Ошибка загрузки файла");
+    } finally {
+      //Выключаем лоадер:
+      setIsAvatarLoading(false);
     }
   };
 
@@ -147,8 +153,10 @@ export const ProfilePage = () => {
     <div className={styles.container}>
       <div className={styles.profileHeader}>
         <div
-          className={styles.avatarWrapper}
-          onClick={() => isEditing && fileInputRef.current?.click()}
+          className={`${styles.avatarWrapper} ${isAvatarLoading ? styles.loading : ""}`}
+          onClick={() =>
+            isEditing && !isAvatarLoading && fileInputRef.current?.click()
+          }
         >
           <img
             src={
@@ -157,8 +165,18 @@ export const ProfilePage = () => {
                 : "/default-avatar.png"
             }
             alt="Avatar"
+            style={{ opacity: isAvatarLoading ? 0.5 : 1 }} // Приглушаем фото при загрузке
           />
-          {isEditing && <div className={styles.avatarOverlay}>Сменить</div>}
+          {/* 4. Показываем спиннер поверх фото */}
+          {isAvatarLoading && (
+            <div className={styles.spinnerOverlay}>
+              <div className={styles.spinner}></div>
+            </div>
+          )}
+
+          {isEditing && !isAvatarLoading && (
+            <div className={styles.avatarOverlay}>Сменить</div>
+          )}
         </div>
         <input
           type="file"
