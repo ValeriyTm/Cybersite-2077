@@ -207,4 +207,12 @@ npx prisma migrate dev
 npx prisma migrate reset
 а затем:
 npx prisma migrate dev
-///////////////////////
+///////////////////////////////////////////////
+////////////////Занимаюсь OAuth + OIDC (Google):
+-На сайте https://console.cloud.google.com/ регаюсь;
+Создаю нового клиента (Web  Application). 
+В "Authorized JavaScript origins" добавляю два URL - своего клиента и сервера. 
+В "Authorized redirect URIs" добавляю роут с сервера (полная ссылка), по которому будет обращаться пользователь для использования OAuth.
+-После создания клиента Google мне даст Clien ID и Client secret, которые я помещаю в .env.
+
+-Для хорошего UX добавляю две кнопки - "Sign up with Google" и "Login with Google". Запросы с них пойдут на один и тот же эндпоинт гугла (если юзер не зареган в гугле, то он зарегается; если есть - то просто войдет).

@@ -1,6 +1,8 @@
 //Тут только логика. Этот кодне знает про req и res, он работает только с данными и базой.
 import argon2 from "argon2";
 import { prisma } from "@repo/database";
+import { TokenService } from "./token.service.js";
+import { SessionService } from "./session.service.js";
 import {
   RegisterInput,
   LoginInput,
@@ -234,5 +236,38 @@ export class AuthService {
         resetPasswordExpires: null,
       },
     });
+  }
+
+  ////////////Реализуем OAuth + OIDC:
+  // apps/server/src/modules/identity/auth/auth.service.ts
+  static async processGoogleUser(googleUser: any) {
+    // 1. Ищем или создаем пользователя
+    let user = await prisma.user.findUnique({
+      where: { email: googleUser.email },
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: googleUser.email,
+          name: googleUser.name,
+          avatarUrl: googleUser.picture, // Сохраняем ссылку на фото из Google
+          isActivated: true, // Google-аккаунты априори подтверждены
+          passwordHash: "", // Для OAuth пароль не нужен, можно оставить пустым или генерировать случайный
+        },
+      });
+    }
+
+    // 2. Генерируем токены
+    const tokens = TokenService.generateTokens({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+
+    // 3. Сохраняем сессию
+    await SessionService.saveToken(user.id, tokens.refreshToken);
+
+    return { user, tokens };
   }
 }

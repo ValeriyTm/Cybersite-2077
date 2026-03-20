@@ -10,6 +10,7 @@ import {
 import { AuthService } from "./auth.service.js";
 import { TokenService } from "./token.service.js";
 import { SessionService } from "./session.service.js";
+import { OAuthService } from "./oauth.service.js";
 import { AppError } from "../../../shared/utils/app-error.js";
 import { catchAsync } from "../../../shared/utils/catch-async.js";
 import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js";
@@ -229,3 +230,40 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
     .status(200)
     .json({ message: "Пароль успешно изменен. Теперь вы можете войти." });
 });
+
+////////////Реализуем OAuth + OIDC:
+// 1. Отправляем юзера в Google
+export const googleAuth = (req: Request, res: Response) => {
+  const url = OAuthService.getGoogleAuthUrl();
+  res.redirect(url);
+};
+
+// 2. Принимаем данные от Google
+export const googleCallback = catchAsync(
+  async (req: Request, res: Response) => {
+    const { code } = req.query;
+
+    if (!code) throw new AppError(400, "Код авторизации не получен");
+
+    // 1. Обмениваем код на данные из Google через OAuthService
+    const googleUser = await OAuthService.getGoogleUser(code as string);
+
+    // 2. Обрабатываем логин/регистрацию через AuthService
+    const { user, tokens } = await AuthService.processGoogleUser(googleUser);
+
+    // 3. Устанавливаем куку (используем те же настройки, что для обычного логина)
+    res.cookie("refreshToken", tokens.refreshToken, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/api/identity/auth",
+    });
+
+    // 4. Редиректим на фронтенд
+    // Передаем accessToken в URL, чтобы фронт его подхватил и заполнил стор
+    return res.redirect(
+      `${process.env.CLIENT_URL}/auth?token=${tokens.accessToken}`,
+    );
+  },
+);
