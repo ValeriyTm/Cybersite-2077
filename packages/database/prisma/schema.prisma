@@ -43,7 +43,7 @@ model User {
   
  // Данные профиля (указываются не на этапе регистрации):
   phone           String?   @unique
-  birthday        DateTime?
+  birthday        DateTime? @db.Date 
   gender          Gender?
 
   // Добавляем роль с дефолтным значением

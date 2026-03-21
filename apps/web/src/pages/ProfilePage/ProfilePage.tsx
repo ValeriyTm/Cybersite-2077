@@ -75,6 +75,18 @@ export const ProfilePage = () => {
   //Сохранение данных профиля:
   const onSubmit = async (data: UpdateProfileInput) => {
     try {
+      let formattedBirthday = null;
+
+      if (data.birthday instanceof Date && !isNaN(data.birthday.getTime())) {
+        // Создаем копию даты, чтобы не мутировать стейт формы
+        const date = new Date(data.birthday);
+        // Устанавливаем время в 12:00 дня (полдень).
+        // Это гарантирует, что при любом сдвиге часового пояса (даже -11 или +12)
+        // дата останется тем же числом в формате UTC.
+        date.setHours(12, 0, 0, 0);
+        formattedBirthday = date.toISOString();
+      }
+
       console.log(data.birthday);
       // Подготавливаем данные для отправки:
       const formattedData = {
@@ -82,10 +94,7 @@ export const ProfilePage = () => {
         // Если в поле birthday лежит объект Date, превращаем его в "YYYY-MM-DD"
         // Если это Date — в ISO, иначе null
         // Если дата введена не полностью, шлем null, чтобы не было 400 ошибки
-        birthday:
-          data.birthday instanceof Date && !isNaN(data.birthday.getTime())
-            ? data.birthday.toISOString()
-            : null,
+        birthday: formattedBirthday,
       };
 
       await $api.patch("/identity/profile/update", formattedData);
