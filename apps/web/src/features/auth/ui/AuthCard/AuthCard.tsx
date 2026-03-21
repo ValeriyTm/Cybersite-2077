@@ -5,42 +5,47 @@ import { FcGoogle } from "react-icons/fc";
 
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
-import { useAuth } from "@/features/auth/model/auth-store";
+import { useAuthStore } from "@/features/auth/model/auth-store";
+import { useProfile } from "@/features/auth/model/use-profile";
 import styles from "./AuthCard.module.scss";
 
 export const AuthCard = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // Достаем нужные методы из стора
-  const { isAuth, checkAuth } = useAuth();
+  // 1. Из стора берем только статус и метод установки авторизации
+  const { isAuth, setAuth } = useAuthStore();
+  // 2. Из хука профиля берем refetch, чтобы принудительно обновить данные после Google OAuth
+  const { refetch } = useProfile();
 
   //Логика определения режима (Login/Register):
   const isActivated = searchParams.get("activated") === "true";
-  const hasToken = !!searchParams.get("token"); // Проверка наличия токена после OAuth
+  const tokenFromUrl = searchParams.get("token"); // Проверка наличия токена после OAuth
 
   const [mode, setMode] = useState<"login" | "register">(
-    isActivated || hasToken ? "login" : "register",
+    isActivated || !!tokenFromUrl ? "login" : "register",
   );
 
   //Обработка успешного OAuth (если вернулись с токеном в URL)
   useEffect(() => {
-    const token = searchParams.get("token");
-    if (token && !isAuth) {
-      // Вызываем checkAuth, чтобы подтвердить сессию по куке и загрузить юзера
-      checkAuth().then(() => {
+    if (tokenFromUrl && !isAuth) {
+      // Сначала сохраняем токен в Zustand
+      setAuth(tokenFromUrl);
+
+      // Затем заставляем React Query скачать данные пользователя
+      refetch().then(() => {
         toast.success("Вход через Google выполнен!");
         navigate("/profile", { replace: true });
       });
     }
-  }, [searchParams, isAuth, checkAuth, navigate]);
+  }, [tokenFromUrl, isAuth, setAuth, refetch, navigate]);
 
   // Если пользователь залогинился (или уже был залогинен), уводим его отсюда (редирект):
   useEffect(() => {
-    if (isAuth) {
+    if (isAuth && !tokenFromUrl) {
       navigate("/profile", { replace: true });
     }
-  }, [isAuth, navigate]);
+  }, [isAuth, navigate, tokenFromUrl]);
 
   //Уведомление об активации почты:
   useEffect(() => {
@@ -57,7 +62,7 @@ export const AuthCard = () => {
   };
 
   // Пока идет редирект, можно вернуть null или спиннер
-  if (isAuth) return null;
+  if (isAuth && !tokenFromUrl) return null;
 
   return (
     <div className={styles.container}>
@@ -69,6 +74,7 @@ export const AuthCard = () => {
         >
           Sign up
         </button>
+
         <button
           className={`${styles.toggleBtn} ${mode === "login" ? styles.active : ""}`}
           onClick={() => setMode("login")}

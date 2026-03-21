@@ -33,7 +33,12 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const onSubmit = async (data: RegisterFormInput) => {
     try {
-      await $api.post("/identity/auth/register", data);
+      // 1. Извлекаем лишния поля confirmPassword и acceptTerms (они нужно только для валидации на фронте), а
+      // restData будет содержать только то, что ждет сервер (email, name, password):
+      const { confirmPassword, acceptTerms, ...registerData } = data as any;
+
+      // 2. Отправляем очищенные от лишних полей данные:
+      await $api.post("/identity/auth/register", registerData);
 
       // 1. Показываем уведомление
       toast.success(

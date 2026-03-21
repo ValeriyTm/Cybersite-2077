@@ -119,25 +119,27 @@ export const UpdateProfileSchema = z
         /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/,
         "Введите корректный номер телефона",
       )
-      .nullish(), //Это поле = поле optional() + nullable()
-    birthday: z.preprocess((arg) => {
-      if (!arg || arg === "") return null;
-      if (arg instanceof Date) return arg;
-      return new Date(arg as string);
-    }, z.date().nullable().optional()),
-    // Для enum в Zod сообщения об ошибках пишутся ВНУТРИ массива значений через запятую
-    gender: z.enum(["MALE", "FEMALE"], {
-      // Этот блок перехватит всё: и пустую строку, и неверный тип
-      errorMap: (issue) => {
-        if (
-          issue.code === "invalid_enum_value" ||
-          issue.code === "invalid_type"
-        ) {
-          return { message: "Пожалуйста, выберите ваш пол" };
-        }
-        return { message: "Ошибка выбора пола" };
-      },
-    }),
+      .nullish(),
+    // birthday: z
+    //   .date({
+    //     invalid_type_error: "Введите корректную дату",
+    //   })
+    //   .max(new Date(), "Дата не может быть в будущем")
+    //   .nullable() // Разрешаем null для базы
+    //   .optional(),
+    birthday: z.coerce
+      .date({
+        invalid_type_error: "Введите корректную дату",
+      })
+      .max(new Date(), "Дата не может быть в будущем")
+      .nullable()
+      .optional(),
+    gender: z
+      .preprocess(
+        (val) => (val === "" ? null : val), // Если пришла пустая строка — превращаем в null
+        z.enum(["MALE", "FEMALE", "OTHER"]).nullable(), // Разрешаем null
+      )
+      .optional(),
   })
   .strict();
 

@@ -1,17 +1,15 @@
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
 import { Outlet } from "react-router";
-import { useAuth } from "@/features/auth/model/auth-store";
+// import { useEffect } from "react";
+import { useProfile } from "@/features/auth/model/use-profile";
+import { useAuthStore } from "@/features/auth/model/auth-store";
 
 export const MainLayout = () => {
-  const checkAuth = useAuth((state) => state.checkAuth);
-  const isLoading = useAuth((state) => state.isLoading);
+  // Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
+  const { isLoading, isError } = useProfile();
+  const isAuth = useAuthStore((state) => state.isAuth);
 
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
-  if (isLoading) {
+  if (isAuth && isLoading) {
     return (
       <div
         style={{ display: "flex", justifyContent: "center", padding: "100px" }}
@@ -21,11 +19,23 @@ export const MainLayout = () => {
     );
   }
 
-  // Outlet — это место, куда React Router подставит текущую страницу (Home, Auth или Profile)
   return (
     <>
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <Outlet />
     </>
   );
 };
+{
+  /* Outlet подставит текущую страницу */
+}

@@ -33,6 +33,23 @@ export class ProfileService {
 
     // Создаем объект для базы
     const updateData: any = { ...data };
+
+    if (data.phone) {
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          phone: data.phone,
+          NOT: { id: userId }, // Ищем везде, КРОМЕ текущего пользователя
+        },
+      });
+
+      if (existingUser) {
+        throw new AppError(
+          400,
+          "Этот номер телефона уже используется другим аккаунтом",
+        );
+      }
+    }
+
     // Если дата пришла строкой, превращаем её в объект Date для Prisma
     if (data.birthday) {
       updateData.birthday = new Date(data.birthday);
@@ -44,8 +61,8 @@ export class ProfileService {
       where: { id: userId },
       data: {
         name: data.name,
-        phone: data.phone || null,
-        gender: data.gender || null,
+        phone: data.phone,
+        gender: data.gender,
         // ВАЖНО: Prisma ожидает объект Date для поля DateTime
         birthday: data.birthday ? new Date(data.birthday) : null,
       },

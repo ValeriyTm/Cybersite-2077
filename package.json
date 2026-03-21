@@ -3,7 +3,7 @@
   "version": "1.0.18",
   "description": "",
   "keywords": [],
-  "license": "ISC",
+  "license": "MIT",
   "author": "",
   "type": "commonjs",
   "main": "index.js",
@@ -14,13 +14,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {},
   "devDependencies": {
     "prettier": "^3.8.1",
     "prettier-plugin-packagejson": "^3.0.2",
     "turbo": "^2.8.17"
   },
-  "packageManager": "npm@11.9.0",
-  "dependencies": {
-    "imask": "^7.6.1"
-  }
+  "packageManager": "npm@11.9.0"
 }

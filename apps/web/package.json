@@ -1,21 +1,25 @@
 {
   "name": "web",
-  "private": true,
   "version": "0.0.1",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "tsc -b && vite build",
+    "dev": "vite",
     "lint:js": "eslint .",
     "lint:js:fix": "eslint . --fix",
-    "preview": "vite preview",
     "lint:style": "stylelint \"src/**/*.scss\"",
-    "lint:style:fix": "stylelint \"src/**/*.scss\" --fix"
+    "lint:style:fix": "stylelint \"src/**/*.scss\" --fix",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@repo/types": "*",
+    "@tanstack/react-query": "^5.91.3",
+    "@tanstack/react-query-devtools": "^5.91.3",
     "axios": "^1.13.6",
     "axios-auth-refresh": "^5.0.2",
+    "imask": "^7.6.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-error-boundary": "^6.1.1",

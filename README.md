@@ -2,6 +2,8 @@
 
 ## Release notes
 
--Смотри файл CHANGELOG.md.
+-[Смотри файл CHANGELOG.md](./CHANGELOG.md).
 
 Технологии:
+
+Features:

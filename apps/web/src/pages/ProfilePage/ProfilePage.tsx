@@ -1,15 +1,19 @@
 import { useState, useRef } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   UpdateProfileSchema,
   ChangePasswordSchema,
   type UpdateProfileInput,
   type ChangePasswordInput,
 } from "@repo/validation";
-import { useAuth } from "@/features/auth/model/auth-store";
+
+import { useProfile } from "@/features/auth/model/use-profile";
 import { $api, API_URL } from "@/shared/api/api";
 import { toast } from "react-hot-toast";
+
+//Иконки и маски:
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import {
   HiOutlineUser,
@@ -19,13 +23,14 @@ import {
 } from "react-icons/hi";
 import { IMaskInput } from "react-imask";
 import IMask from "imask";
-import { Controller } from "react-hook-form";
+//Стили:
 import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage = () => {
-  const { user, setAuth, accessToken } = useAuth();
-  const { logout, logoutAll } = useAuth();
-  const { checkAuth } = useAuth();
+  const { user, isLoading, logout, logoutAll } = useProfile();
+  const queryClient = useQueryClient(); // Пульт управления кэшем
+
+  ////UI-состояния:
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   //Стейт для загрузки аватара:
@@ -39,7 +44,7 @@ export const ProfilePage = () => {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [verificationCode, setVerificationCode] = useState("");
 
-  // 1. Основная форма профиля:
+  //Основная форма профиля:
   const {
     register,
     handleSubmit,
@@ -48,15 +53,16 @@ export const ProfilePage = () => {
     reset,
   } = useForm<UpdateProfileInput>({
     resolver: zodResolver(UpdateProfileSchema),
-    defaultValues: {
+    values: {
       name: user?.name || "",
       phone: user?.phone || "",
       gender: user?.gender || null,
-      birthday: user?.birthday?.split("T")[0] || "",
+      // Превращаем строку из БД в объект Date для формы
+      birthday: user?.birthday ? new Date(user.birthday) : null,
     },
   });
 
-  // 2. Для смены пароля (используем алиасы, чтобы не было конфликта имен):
+  //Форма смены пароля (используем алиасы, чтобы не было конфликта имен):
   const {
     register: regPass,
     handleSubmit: handlePassSubmit,
@@ -66,35 +72,35 @@ export const ProfilePage = () => {
     resolver: zodResolver(ChangePasswordSchema),
   });
 
+  //Сохранение данных профиля:
   const onSubmit = async (data: UpdateProfileInput) => {
-    console.log("Данные из формы перед Axios:", data);
-
     try {
+      console.log(data.birthday);
       // Подготавливаем данные для отправки:
       const formattedData = {
         ...data,
         // Если в поле birthday лежит объект Date, превращаем его в "YYYY-MM-DD"
+        // Если это Date — в ISO, иначе null
+        // Если дата введена не полностью, шлем null, чтобы не было 400 ошибки
         birthday:
-          data.birthday instanceof Date
+          data.birthday instanceof Date && !isNaN(data.birthday.getTime())
             ? data.birthday.toISOString()
-            : data.birthday,
+            : null,
       };
 
-      const response = await $api.patch(
-        "/identity/profile/update",
-        formattedData,
-      );
+      await $api.patch("/identity/profile/update", formattedData);
 
-      // Обновляем стор (там данные уже в формате ISO от сервера)
-      setAuth({ ...user, ...response.data.user }, accessToken || "");
+      //Инвалидируем кэш профиля - это заставит React Query фоново перекачать данные юзера:
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
 
       toast.success("Профиль обновлен");
       setIsEditing(false);
     } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка");
+      toast.error(e.response?.data?.message || "Ошибка обновления");
     }
   };
 
+  //Загрузка аватара в профиле:
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -105,11 +111,14 @@ export const ProfilePage = () => {
       //Включаем лоадер:
       setIsAvatarLoading(true);
 
-      const res = await $api.post("/identity/profile/avatar", formData);
-      //Обновляем store:
-      setAuth({ ...user, avatarUrl: res.data.avatarUrl }, accessToken || "");
-      toast.success("Аватар обновлен");
+      await $api.post("/identity/profile/avatar", formData);
 
+      //Инвалидируем кэш профиля.
+      //(Теперь аватар обновится не только здесь, но и в Хедере,
+      //и в любых других местах, где используется useProfile())
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+
+      toast.success("Аватар обновлен");
       //Выходим из режима редактирования:
       setIsEditing(false);
     } catch (e) {
@@ -120,8 +129,10 @@ export const ProfilePage = () => {
     }
   };
 
-  //Функция-обработчик ошибок валидации
+  //Функция-обработчик ошибок валидации:
   const onFormError = (formErrors: any) => {
+    console.log("ОШИБКИ ВАЛИДАЦИИ:", formErrors);
+
     // Берем первую ошибку из списка
     const fieldError = Object.values(formErrors)[0] as any;
     if (fieldError?.message) {
@@ -147,7 +158,10 @@ export const ProfilePage = () => {
         data: { password: confirmPassword },
       });
       toast.success("Ваш аккаунт удален");
-      logout(); // Очищаем стор и уходим на главную
+      await logout(); // Очищаем стор и уходим на главную
+      //Используем logout() из нашего хука useProfile.
+      // Он сделает запрос на бэкенд, очистит Zustand и ПОЛНОСТЬЮ сотрет кэш React Query,
+      // чтобы данные удаленного юзера не "зависли" в памяти браузера.
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Ошибка при удалении");
     }
@@ -171,18 +185,27 @@ export const ProfilePage = () => {
       toast.success("2FA успешно включена!");
       setQrCode(null);
       setVerificationCode("");
-      // Обновляем данные пользователя в сторе (чтобы is2FAEnabled стало true)
-      await checkAuth();
+
+      //  Инвалидируем запрос профиля. React Query сам перекачает данные юзера,
+      // и поле is2FAEnabled: true мгновенно обновит интерфейс (кнопка станет неактивной).
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Неверный код");
     }
   };
 
-  //Если ссылка начинается на http, берем её как есть.
-  // Иначе — склеиваем с адресом нашего сервера.
+  // 1. Формируем правильный путь к аватару
+  // Теперь берем user из useProfile()
   const avatarSrc = user?.avatarUrl?.startsWith("http")
     ? user.avatarUrl
     : `${API_URL}${user.avatarUrl}`;
+
+  // 2. Логика для кнопки удаления (если нужно)
+  // const isDeleteDisabled = confirmPassword.length < 6;
+
+  // Если данные еще грузятся, можно показать лоадер на всю страницу
+  if (isLoading) return <div>Загрузка профиля...</div>;
+  if (!user) return <Navigate to="/auth" />; // Защита от "пустого" профиля
 
   return (
     <div className={styles.container}>
@@ -219,7 +242,7 @@ export const ProfilePage = () => {
 
         <div className={styles.titleSection}>
           <h1>{user?.name}</h1>
-          <p>{user?.role}</p>
+          <p>{user?.role?.toLowerCase()}</p>
         </div>
 
         {!isEditing && (
@@ -307,6 +330,7 @@ export const ProfilePage = () => {
               </div>
             </div>
 
+            {/*Поле даты рождения:*/}
             <div className={styles.row}>
               <div className={styles.label}>
                 <HiOutlineCalendar /> День рождения{" "}
@@ -321,29 +345,39 @@ export const ProfilePage = () => {
                       render={({ field: { onChange, value } }) => (
                         <IMaskInput
                           mask={Date}
-                          pattern="d.m.Y"
+                          // IMask сам поймет DD.MM.YYYY, если указать блоки
+                          pattern="DD.MM.YYYY"
                           blocks={{
-                            d: { mask: IMask.MaskedRange, from: 1, to: 31 },
-                            m: { mask: IMask.MaskedRange, from: 1, to: 12 },
-                            Y: {
+                            DD: { mask: IMask.MaskedRange, from: 1, to: 31 },
+                            MM: { mask: IMask.MaskedRange, from: 1, to: 12 },
+                            YYYY: {
                               mask: IMask.MaskedRange,
                               from: 1900,
-                              to: 2026,
+                              to: new Date().getFullYear(),
                             },
                           }}
-                          // ВАЖНО: передаем в форму объект Date, который IMask распарсил сам
-                          onAccept={(_, mask) => {
-                            const masked = mask as unknown as { date: Date };
-                            if (masked.date) {
-                              onChange(masked.date);
-                            }
+                          // Важно: typedValue работает в паре с этими функциями
+                          format={(date: Date) =>
+                            date ? date.toLocaleDateString("ru-RU") : ""
+                          }
+                          parse={(str: string) => {
+                            const [d, m, y] = str.split(".");
+                            return new Date(
+                              Number(y),
+                              Number(m) - 1,
+                              Number(d),
+                            );
                           }}
-                          // Чтобы при загрузке данных дата из базы правильно отобразилась в маске
+                          // Самое главное:
                           value={
                             value instanceof Date
                               ? value.toLocaleDateString("ru-RU")
-                              : value || ""
+                              : ""
                           }
+                          onAccept={(_, mask) => {
+                            // typedValue вернет объект Date, если дата полная, или null
+                            onChange(mask.typedValue);
+                          }}
                           className={
                             errors.birthday
                               ? styles.inputError
@@ -353,6 +387,7 @@ export const ProfilePage = () => {
                         />
                       )}
                     />
+
                     {/*Вывод ошибки:*/}
                     {errors.birthday && (
                       <span className={styles.errorText}>
@@ -369,11 +404,6 @@ export const ProfilePage = () => {
                 )}
               </div>
             </div>
-            {/* Примечание: Zod в  схеме строгий: он хочет 1995-05-20.
-Пользователь хочет вводить 20.05.1995.
-JS/Prisma работают с объектами new Date().
-Решение: Мы используем маску для удобства ввода, а в onSubmit приводим всё к общему знаменателю (строке YYYY-MM-DD).
- */}
 
             <div className={styles.row}>
               <div className={styles.label}>
@@ -458,12 +488,14 @@ JS/Prisma работают с объектами new Date().
           <div className={styles.row}>
             <div className={styles.label}>Новый пароль</div>
             <div className={styles.value}>
-              <input
-                type={showPass ? "text" : "password"}
-                {...regPass("newPassword")}
-                placeholder="Минимум 6 символов"
-                className={passErrors.newPassword ? styles.inputError : ""}
-              />
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPass ? "text" : "password"}
+                  {...regPass("newPassword")}
+                  placeholder="Минимум 6 символов"
+                  className={passErrors.newPassword ? styles.inputError : ""}
+                />
+              </div>
               {passErrors.newPassword && (
                 <span className={styles.errorText}>
                   {passErrors.newPassword.message}
@@ -475,12 +507,18 @@ JS/Prisma работают с объектами new Date().
           <div className={styles.row}>
             <div className={styles.label}>Повторите пароль</div>
             <div className={styles.value}>
-              <input
-                type={showPass ? "text" : "password"}
-                {...regPass("confirmPassword")}
-                placeholder="••••••••"
-                className={passErrors.confirmPassword ? styles.inputError : ""}
-              />
+              <div className={styles.passwordWrapper}>
+                {" "}
+                {/* Оборачиваем! */}
+                <input
+                  type={showPass ? "text" : "password"}
+                  {...regPass("confirmPassword")}
+                  placeholder="••••••••"
+                  className={
+                    passErrors.confirmPassword ? styles.inputError : ""
+                  }
+                />
+              </div>
               {passErrors.confirmPassword && (
                 <span className={styles.errorText}>
                   {passErrors.confirmPassword.message}
@@ -519,7 +557,7 @@ JS/Prisma работают с объектами new Date().
           {/* Отображаем кнопку только для Админов */}
           {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
             <button
-              onClick={user.is2FAEnabled ? undefined : handleSetup2FA}
+              onClick={user?.is2FAEnabled ? undefined : handleSetup2FA}
               className={user.is2FAEnabled ? styles.enabled2FA : styles.btn2FA}
               disabled={user.is2FAEnabled}
             >

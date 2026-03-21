@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+// import axios from "axios";
+import { type SubmitHandler } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@repo/validation";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { $api } from "@/shared/api/api";
-import { useAuth } from "@/features/auth/model/auth-store";
+import { useAuthStore } from "@/features/auth/model/auth-store";
 import styles from "../AuthCard/AuthCard.module.scss";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { setAuth, tempUserId, setTempUserId } = useAuth();
+  const { setAuth, tempUserId, setTempUserId } = useAuthStore();
   const [show2FA, setShow2FA] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
@@ -22,13 +23,18 @@ export const LoginForm = () => {
   } = useForm<LoginInput>({
     resolver: zodResolver(LoginSchema),
     mode: "onBlur",
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false, // Инициализируем значения по умолчанию
+    },
   });
 
-  // const { setAuth } = useAuth();
-  // const { setTempUserId } = useAuth();
+  // const { setAuth } = useAuthStore();
+  // const { setTempUserId } = useAuthStore();
 
   // 1. Обработка ПЕРВОГО шага (Email + Password)
-  const onSubmit = async (data: LoginInput) => {
+  const onSubmit: SubmitHandler<LoginInput> = async (data: LoginInput) => {
     try {
       const res = await $api.post("/identity/auth/login", data);
 
@@ -41,7 +47,7 @@ export const LoginForm = () => {
       }
 
       // Если 2FA не нужен — обычный вход
-      setAuth(res.data.user, res.data.accessToken);
+      setAuth(res.data.accessToken);
       toast.success("С возвращением!");
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Ошибка входа");
@@ -60,7 +66,7 @@ export const LoginForm = () => {
         code: twoFactorCode,
       });
 
-      setAuth(res.data.user, res.data.accessToken);
+      setAuth(res.data.accessToken);
       toast.success("Личность подтверждена!");
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Неверный код");

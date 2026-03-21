@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useAuth } from "@/features/auth/model/auth-store"; //Импорт Zustand-храналища с данными о пользователе и токене
+import { useAuthStore } from "@/features/auth/model/auth-store"; //Импорт Zustand-храналища с данными о пользователе и токене
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 
 export const API_URL = "http://localhost:3001";
@@ -13,7 +13,7 @@ export const $api = axios.create({
 //Интерцептор для добавления Access Token к каждому запросу:
 $api.interceptors.request.use((config) => {
   //Получаем Access токен из хранилища:
-  const token = useAuth.getState().accessToken;
+  const token = useAuthStore.getState().accessToken;
   // Добавляем токен к каждому запросу:
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -48,7 +48,7 @@ const refreshAuthLogic = (failedRequest: any) => {
       const { user, accessToken } = tokenRefreshResponse.data;
 
       // Обновляем Store
-      useAuth.getState().setAuth(user, accessToken);
+      useAuthStore.getState().setAuth(user, accessToken);
 
       // Обновляем заголовок в упавшем запросе
       failedRequest.response.config.headers["Authorization"] =
@@ -61,7 +61,7 @@ const refreshAuthLogic = (failedRequest: any) => {
       // Если рефреш не удался, мы просто чистим стейт.
       // Не вызывай тут logout(), если в нем прописан запрос на сервер ($api.post('/logout')),
       // иначе получишь еще один круг 401 ошибок.
-      useAuth.getState().setAuth(null, "");
+      useAuthStore.getState().setAuth(null, "");
       return Promise.reject(err);
     });
 };
