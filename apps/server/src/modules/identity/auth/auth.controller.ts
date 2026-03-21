@@ -6,6 +6,7 @@ import {
   LoginSchema,
   ChangePasswordSchema,
   ResetPasswordSchema,
+  Verify2FASchema,
 } from "@repo/validation";
 import { AuthService } from "./auth.service.js";
 import { TokenService } from "./token.service.js";
@@ -298,24 +299,28 @@ export const enable2FA = catchAsync(async (req: AuthRequest, res: Response) => {
 });
 
 export const verify2FA = catchAsync(async (req: Request, res: Response) => {
-  const { userId, code } = req.body;
+  // ВАЖНО: Добавь валидацию перед вызовом сервиса
+  const result = Verify2FASchema.safeParse(req.body);
 
-  // ЛОГ ДЛЯ ПРОВЕРКИ:
-  console.log("BODY RECEIVED:", req.body);
-
-  if (!userId) {
-    throw new AppError(400, "Параметр userId обязателен в теле запроса");
+  if (!result.success) {
+    return res.status(400).json({
+      errors: result.error.flatten().fieldErrors,
+    });
   }
+
+  // Передаем уже проверенные данные
+  const { userId, code } = result.data;
 
   // 1. Проверяем код через сервис
   const user = await AuthService.verify2FA(userId, code);
 
   // 2. Генерируем сессию (стандартная логика как в login)
   const tokens = TokenService.generateTokens({
-    id: user.id || userId, // Используем пришедший ID как запасной вариант
+    id: user.id,
     email: user.email,
     role: user.role,
   });
+
   await SessionService.saveToken(user.id, tokens.refreshToken);
 
   res.cookie("refreshToken", tokens.refreshToken, {

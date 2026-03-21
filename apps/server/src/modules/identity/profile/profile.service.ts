@@ -20,10 +20,12 @@ export class ProfileService {
         avatarUrl: true,
         isActivated: true,
         createdAt: true,
+        is2FAEnabled: true,
       },
     });
 
     if (!user) throw new AppError(404, "Пользователь не найден");
+    console.log("is2FAEnabled:", user.is2FAEnabled);
 
     return user;
   }

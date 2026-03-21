@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-// import axios from "axios";
-import { type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@repo/validation";
@@ -12,7 +10,8 @@ import styles from "../AuthCard/AuthCard.module.scss";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { setAuth, tempUserId, setTempUserId } = useAuthStore();
+  const { setAuth, tempUserId: storeId, setTempUserId } = useAuthStore();
+  const [localUserId, setLocalUserId] = useState<string | null>(null);
   const [show2FA, setShow2FA] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
@@ -30,9 +29,6 @@ export const LoginForm = () => {
     },
   });
 
-  // const { setAuth } = useAuthStore();
-  // const { setTempUserId } = useAuthStore();
-
   // 1. Обработка ПЕРВОГО шага (Email + Password)
   const onSubmit: SubmitHandler<LoginInput> = async (data: LoginInput) => {
     try {
@@ -40,8 +36,11 @@ export const LoginForm = () => {
 
       // Если бэкенд говорит, что нужен код:
       if (res.data.requires2FA) {
-        setTempUserId(res.data.userId); // Сохраняем ID в стор
-        setShow2FA(true); // Переключаем интерфейс
+        const id = res.data.userId;
+        setLocalUserId(id); // Сохраняем локально (мгновенно)
+        setTempUserId(id); // Сохраняем в глобальный стор (для истории)
+        setShow2FA(true);
+
         toast.success("Введите 6-значный код из приложения");
         return;
       }
@@ -57,17 +56,25 @@ export const LoginForm = () => {
   // 2. Обработка ВТОРОГО шага (Ввод кода 2FA)
   const onVerify2FA = async (e: React.FormEvent) => {
     e.preventDefault();
+    const activeId = localUserId || storeId;
+
     if (twoFactorCode.length !== 6) return toast.error("Введите 6 цифр");
+
+    if (!activeId) {
+      console.error("ОШИБКА: ID не найден ни в сторе, ни локально");
+      return toast.error("Ошибка сессии. Попробуйте войти снова.");
+    }
 
     setIsVerifying(true);
     try {
       const res = await $api.post("/identity/auth/2fa/verify", {
-        userId: tempUserId,
+        userId: activeId,
         code: twoFactorCode,
       });
 
       setAuth(res.data.accessToken);
       toast.success("Личность подтверждена!");
+      setLocalUserId(null);
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Неверный код");
     } finally {
@@ -105,7 +112,11 @@ export const LoginForm = () => {
         </button>
         <button
           type="button"
-          onClick={() => setShow2FA(false)}
+          onClick={() => {
+            setShow2FA(false);
+            setLocalUserId(null); // СБРОС при возврате
+            setTwoFactorCode("");
+          }}
           className={styles.backBtn}
         >
           Вернуться назад

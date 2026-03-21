@@ -72,6 +72,8 @@ export const ProfilePage = () => {
     resolver: zodResolver(ChangePasswordSchema),
   });
 
+  console.log(`is2FAEnabled:`, user?.is2FAEnabled);
+
   //Сохранение данных профиля:
   const onSubmit = async (data: UpdateProfileInput) => {
     try {

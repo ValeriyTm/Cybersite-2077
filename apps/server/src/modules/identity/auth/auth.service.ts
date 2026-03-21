@@ -132,6 +132,7 @@ export class AuthService {
         phone: true,
         birthday: true,
         gender: true,
+        is2FAEnabled: true,
       },
     });
   }
@@ -311,7 +312,6 @@ export class AuthService {
     return prisma.user.update({
       where: { id: userId },
       data: { is2FAEnabled: true },
-      select: { id: true, is2FAEnabled: true },
     });
   }
 

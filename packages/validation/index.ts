@@ -213,3 +213,14 @@ export const ResetPasswordSchema = z
 
 export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;
+
+///////Схема для валидации 2FA кода:
+export const Verify2FASchema = z
+  .object({
+    userId: z.string().uuid("Некорректный формат ID"), // Проверяем, что это UUID
+    code: z
+      .string()
+      .length(6, "Код должен содержать 6 цифр")
+      .regex(/^\d+$/, "Код должен состоять только из цифр"),
+  })
+  .strict(); // Обязательно strict, чтобы не пролезло лишнего
