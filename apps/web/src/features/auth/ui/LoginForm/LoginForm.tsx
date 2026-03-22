@@ -4,11 +4,13 @@ import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@repo/validation";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { $api } from "@/shared/api/api";
 import { useAuthStore } from "@/features/auth/model/auth-store";
 import styles from "../AuthCard/AuthCard.module.scss";
 
 export const LoginForm = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [showPassword, setShowPassword] = useState(false);
   const { setAuth, tempUserId: storeId, setTempUserId } = useAuthStore();
   const [localUserId, setLocalUserId] = useState<string | null>(null);
@@ -26,13 +28,24 @@ export const LoginForm = () => {
       email: "",
       password: "",
       rememberMe: false, // Инициализируем значения по умолчанию
+      captchaToken: "",
     },
   });
 
   // 1. Обработка ПЕРВОГО шага (Email + Password)
   const onSubmit: SubmitHandler<LoginInput> = async (data: LoginInput) => {
+    if (!executeRecaptcha) {
+      toast.error("Капча еще не загружена");
+      return;
+    }
     try {
-      const res = await $api.post("/identity/auth/login", data);
+      // Получаем токен действия 'login'
+      const captchaToken = await executeRecaptcha("login");
+
+      const res = await $api.post("/identity/auth/login", {
+        ...data,
+        captchaToken,
+      });
 
       // Если бэкенд говорит, что нужен код:
       if (res.data.requires2FA) {

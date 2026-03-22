@@ -19,13 +19,19 @@ import crypto from "node:crypto";
 
 export class AuthService {
   static async register(data: RegisterInput) {
-    //1.Проверяем наличие пользователя по этому email в БД:
-    const existingUser = await prisma.user.findUnique({
+    // 1. Проверяем email
+    const existingEmail = await prisma.user.findUnique({
       where: { email: data.email },
     });
-    if (existingUser) {
-      throw new AppError(400, "Ошибка в email или пароле");
-    }
+    if (existingEmail) throw new AppError(400, "Некорректный email или пароль");
+    //Не указываю, что именно email занят, т.к. это путь к брутфорс атакам.
+
+    // 2. ДОБАВЛЯЕМ проверку имени (логина)
+    const existingName = await prisma.user.findUnique({
+      where: { name: data.name },
+    });
+    if (existingName)
+      throw new AppError(400, "Это имя уже занято, выберите другое");
 
     //2.Хэшируем пароль пользователя:
     const passwordHash = await argon2.hash(data.password);

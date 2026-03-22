@@ -7,11 +7,13 @@ import {
   ChangePasswordSchema,
   ResetPasswordSchema,
   Verify2FASchema,
+  ForgotPasswordSchema,
 } from "@repo/validation";
 import { AuthService } from "./auth.service.js";
 import { TokenService } from "./token.service.js";
 import { SessionService } from "./session.service.js";
 import { OAuthService } from "./oauth.service.js";
+import { RecaptchaService } from "../../../shared/services/recaptcha.service.js";
 import { AppError } from "../../../shared/utils/app-error.js";
 import { catchAsync } from "../../../shared/utils/catch-async.js";
 import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js";
@@ -21,6 +23,15 @@ export const register = catchAsync(async (req: Request, res: Response) => {
   const result = RegisterSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({ errors: result.error.flatten().fieldErrors });
+  }
+
+  // 2. СРАЗУ ПРОВЕРЯЕМ КАПЧУ (до того, как лезть в БД и проверять пароль)
+  const isHuman = await RecaptchaService.verify(result.data.captchaToken);
+  if (!isHuman) {
+    throw new AppError(
+      403,
+      "Ошибка безопасности: проверка reCAPTCHA не пройдена",
+    );
   }
 
   const user = await AuthService.register(result.data);
@@ -44,6 +55,16 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     throw new AppError(400, "Ошибка валидации");
   }
 
+  // 2. СРАЗУ ПРОВЕРЯЕМ КАПЧУ (до того, как лезть в БД и проверять пароль)
+  const isHuman = await RecaptchaService.verify(result.data.captchaToken);
+  if (!isHuman) {
+    throw new AppError(
+      403,
+      "Ошибка безопасности: проверка reCAPTCHA не пройдена",
+    );
+  }
+
+  //
   const loginResult = await AuthService.login(result.data);
 
   // ПРОВЕРКА НА 2FA
@@ -212,8 +233,27 @@ export const deleteAccount = catchAsync(
 
 export const forgotPassword = catchAsync(
   async (req: Request, res: Response) => {
-    const { email } = req.body;
+    // 1. ВАЛИДАЦИЯ СХЕМЫ (Zod проверит и email, и наличие captchaToken)
+    const result = ForgotPasswordSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        errors: result.error.flatten().fieldErrors,
+      });
+    }
+
+    const { email, captchaToken } = result.data;
+
     if (!email) throw new AppError(400, "Email обязателен");
+
+    // 2. ПРОВЕРКА КАПЧИ
+    const isHuman = await RecaptchaService.verify(captchaToken);
+    if (!isHuman) {
+      throw new AppError(
+        403,
+        "Ошибка безопасности: проверка reCAPTCHA не пройдена",
+      );
+    }
 
     // Вызываем сервис (мы его набросали в прошлом шаге)
     await AuthService.forgotPassword(email);
@@ -230,12 +270,26 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   // Валидируем пароли через Zod
   const validation = ResetPasswordSchema.safeParse(req.body);
   if (!validation.success) {
-    throw new AppError(400, "Пароли не совпадают или слишком простые");
+    // Лучше возвращать детальные ошибки из Zod, чтобы фронт их подсветил
+    return res.status(400).json({
+      errors: validation.error.flatten().fieldErrors,
+    });
+  }
+
+  // 2. СРАЗУ ПРОВЕРЯЕМ КАПЧУ (до того, как лезть в БД и проверять пароль)
+  const { captchaToken, ...passwordData } = validation.data;
+
+  const isHuman = await RecaptchaService.verify(captchaToken);
+  if (!isHuman) {
+    throw new AppError(
+      403,
+      "Ошибка безопасности: проверка reCAPTCHA не пройдена",
+    );
   }
 
   const { token } = req.query; // Ожидаем ?token=abc в URL
   if (!token || typeof token !== "string") {
-    throw new AppError(400, "Токен сброса не передан");
+    throw new AppError(400, "Токен сброса не передан или некорректен");
   }
 
   // Вызываем сервис

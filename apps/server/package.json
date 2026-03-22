@@ -14,7 +14,7 @@
   "dependencies": {
     "@otplib/preset-default": "^12.0.1",
     "@repo/types": "*",
-    "@repo/validation": "^1.0.0",
+    "@repo/validation": "*",
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

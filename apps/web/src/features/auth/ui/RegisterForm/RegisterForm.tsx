@@ -3,13 +3,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
 import { HiEye, HiEyeOff } from "react-icons/hi"; // Импорт иконок
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 import styles from "../AuthCard/AuthCard.module.scss";
 import { $api } from "@/shared/api/api";
 
 export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const {
     register,
     handleSubmit,
@@ -18,6 +19,9 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
   } = useForm<RegisterFormInput>({
     resolver: zodResolver(RegisterFormSchema),
     mode: "onBlur",
+    defaultValues: {
+      captchaToken: "",
+    },
   });
 
   // Функция, которая сработает, если Zod найдет ошибки
@@ -32,13 +36,23 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   const onSubmit = async (data: RegisterFormInput) => {
+    if (!executeRecaptcha) {
+      toast.error("Капча еще не загружена");
+      return;
+    }
     try {
+      // Получаем токен действия 'register'
+      const captchaToken = await executeRecaptcha("register");
+
       // 1. Извлекаем лишния поля confirmPassword и acceptTerms (они нужно только для валидации на фронте), а
       // restData будет содержать только то, что ждет сервер (email, name, password):
       const { confirmPassword, acceptTerms, ...registerData } = data as any;
 
       // 2. Отправляем очищенные от лишних полей данные:
-      await $api.post("/identity/auth/register", registerData);
+      await $api.post("/identity/auth/register", {
+        ...registerData,
+        captchaToken,
+      });
 
       // 1. Показываем уведомление
       toast.success(

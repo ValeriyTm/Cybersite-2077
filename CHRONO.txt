@@ -224,3 +224,18 @@ npx prisma migrate dev
 
 
 
+//////////////Google reCaptcha v.3
+-Захожу на сайт https://www.google.com/u/1/recaptcha/admin/create
+-Выбираю версию v3, в домены указываю "localhost", указываю название проекта и жму "отправить. Получаю два ключа - ключ сайта и секретный ключ.
+Секретный ключ помещаю в корневой .env (т.к. он используется на сервере), а ключ сайта помещаю в .env внутри папки apps/web.
+-Ставлю пакет:
+npm install react-google-recaptcha-v3 -w web
+-Компонент App (в App.tsx) оборачиваю в GoogleReCaptchaProvider (тут указываю ключ сайта).
+-В форму регистрации, форму логина, на страницу ForgotPasswordPage и ResetPasswordPage добавляю хук useGoogleReCaptcha, а также логику для него. Не забываю в импорте из useForm указать captchaToken: "".
+-Обновляю схемы валидации Zod (для логина, регистрации, forgotPassword и resetPassword).
+-На сервере создаю сервис проверки recaptcha.service.ts (тут указываю секретный ключ).
+-Вызвать проверку на человека в контроллерах (register, login, forgotPassword, resetPassword; вызываю проверку сразу после валидации схемы Zod, но до обращения к БД или своим сервисам) на сервере.
+
+Если GoogleReCaptchaProvider инициализирован успешно, в правом нижнем углу сайта (на страницах логина/регистрации) должен появиться маленький значок (Badge) с логотипом Google и текстом "protected by reCAPTCHA".
+
+//////////////

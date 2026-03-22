@@ -2,6 +2,7 @@ import { useState } from "react"; // 1. Добавляем useState
 import { useSearchParams, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { ResetPasswordSchema, type ResetPasswordInput } from "@repo/validation";
 import { $api } from "@/shared/api/api";
 import { toast } from "react-hot-toast";
@@ -12,6 +13,7 @@ export const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get("token");
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // 3. Стейт для переключения видимости
   const [showPassword, setShowPassword] = useState(false);
@@ -22,13 +24,27 @@ export const ResetPasswordPage = () => {
     formState: { errors, isSubmitting },
   } = useForm<ResetPasswordInput>({
     resolver: zodResolver(ResetPasswordSchema),
+    defaultValues: {
+      captchaToken: "",
+    },
   });
 
   const onSubmit = async (data: ResetPasswordInput) => {
+    if (!executeRecaptcha) {
+      toast.error("Капча еще не загружена");
+      return;
+    }
+
     if (!token) return toast.error("Токен отсутствует");
 
     try {
-      await $api.post(`/identity/auth/reset-password?token=${token}`, data);
+      // Получаем токен действия 'reset_password'
+      const captchaToken = await executeRecaptcha("reset_password");
+
+      await $api.post(`/identity/auth/reset-password?token=${token}`, {
+        ...data,
+        captchaToken,
+      });
       toast.success("Пароль изменен!");
       navigate("/auth?activated=true");
     } catch (e: any) {

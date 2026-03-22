@@ -45,6 +45,8 @@ export const RegisterSchema = z
         /^[a-z0-9_]+$/,
         "Для имени используйте только латиницу, цифры и нижнее подчеркивание",
       ),
+    // Добавляем обязательное поле для токена
+    captchaToken: z.string({ required_error: "Ошибка безопасности" }),
   })
   .strict();
 
@@ -90,6 +92,8 @@ export const LoginSchema = z
     password: z.string().min(1, { message: "Введите пароль" }),
 
     rememberMe: z.boolean().optional().default(false), // Поле для чекбокса "Запомнить меня"
+    // Добавляем обязательное поле для токена
+    captchaToken: z.string({ required_error: "Ошибка безопасности" }),
   })
   .strict();
 
@@ -182,6 +186,7 @@ export const ForgotPasswordSchema = z.object({
     .trim()
     .toLowerCase()
     .email({ message: "Некорректный email или пароль" }),
+  captchaToken: z.string({ required_error: "Ошибка безопасности" }),
 });
 
 //Схема для обновления пароля (Forgot Password):
@@ -204,6 +209,7 @@ export const ResetPasswordSchema = z
         "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
       ),
     confirmPassword: z.string(),
+    captchaToken: z.string({ required_error: "Ошибка безопасности" }),
   })
   .strict()
   .refine((data) => data.password === data.confirmPassword, {

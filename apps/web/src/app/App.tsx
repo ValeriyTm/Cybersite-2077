@@ -2,6 +2,7 @@ import { RouterProvider } from "react-router";
 import { ErrorBoundary } from "react-error-boundary";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { router } from "./providers/router/config/router";
 import { GlobalErrorFallback } from "@/shared/ui/GlobalErrorFallback/GlobalErrorFallback";
 import "./styles/index.css"; //Подключаем тут глобальные стили
@@ -18,14 +19,18 @@ const queryClient = new QueryClient({
 
 export const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ErrorBoundary
-        FallbackComponent={GlobalErrorFallback}
-        onReset={() => (window.location.href = "/")} // Сброс: уводим на главную
-      >
-        <RouterProvider router={router} />
-      </ErrorBoundary>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <GoogleReCaptchaProvider
+      reCaptchaKey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY}
+    >
+      <QueryClientProvider client={queryClient}>
+        <ErrorBoundary
+          FallbackComponent={GlobalErrorFallback}
+          onReset={() => (window.location.href = "/")} // Сброс: уводим на главную
+        >
+          <RouterProvider router={router} />
+        </ErrorBoundary>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </GoogleReCaptchaProvider>
   );
 };

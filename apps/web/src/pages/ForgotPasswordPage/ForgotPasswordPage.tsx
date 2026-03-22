@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import {
   ForgotPasswordSchema,
   type ForgotPasswordInput,
@@ -10,6 +11,8 @@ import { Link } from "react-router";
 import styles from "../ResetPasswordPage/ResetPages.module.scss";
 
 export const ForgotPasswordPage = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const {
     register,
     handleSubmit,
@@ -17,11 +20,25 @@ export const ForgotPasswordPage = () => {
     reset,
   } = useForm<ForgotPasswordInput>({
     resolver: zodResolver(ForgotPasswordSchema),
+    defaultValues: {
+      captchaToken: "",
+    },
   });
 
   const onSubmit = async (data: ForgotPasswordInput) => {
+    if (!executeRecaptcha) {
+      toast.error("Капча еще не загружена");
+      return;
+    }
+
     try {
-      await $api.post("/identity/auth/forgot-password", data);
+      // Получаем токен действия 'forgot_password'
+      const captchaToken = await executeRecaptcha("forgot_password");
+
+      await $api.post("/identity/auth/forgot-password", {
+        ...data,
+        captchaToken,
+      });
       toast.success("Если аккаунт существует, письмо со ссылкой отправлено!");
       reset();
     } catch (e: any) {
