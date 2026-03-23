@@ -1,14 +1,18 @@
+//Библиотека всплывающих уведомлений:
 import { Toaster } from "react-hot-toast";
+//Роутер:
 import { Outlet } from "react-router";
-// import { useEffect } from "react";
-import { useProfile } from "@/features/auth/model/use-profile";
-import { useAuthStore } from "@/features/auth/model/auth-store";
+//Хранилища:
+import { useProfile } from "@/features/auth/model/use-profile"; //Серверный стор
+import { useAuthStore } from "@/features/auth/model/auth-store"; //Клиентский стор
 
 export const MainLayout = () => {
-  // Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
+  //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
   const { isLoading, isError } = useProfile();
+  //Получим статус авторизации:
   const isAuth = useAuthStore((state) => state.isAuth);
 
+  //Если авторизован и идёт загрузка, то покажем универсальный лоадер для всех страниц:
   if (isAuth && isLoading) {
     return (
       <div
@@ -22,16 +26,17 @@ export const MainLayout = () => {
   return (
     <>
       <Toaster
-        position="top-center"
-        reverseOrder={false}
+        position="top-center" //Позиционируем всплывающее уведомление
+        reverseOrder={false} //Определяем порядок появления (при false новые уведомления будут появляться поверх старых)
         toastOptions={{
-          duration: 3000,
+          duration: 3000, //Длительность отображения уведомления
           style: {
-            background: "#333",
-            color: "#fff",
+            background: "#333", //Фон уведомления
+            color: "#fff", //Текст уведомления
           },
         }}
       />
+      {/*Тут поместим дочерние компоненты (children):*/}
       <Outlet />
     </>
   );

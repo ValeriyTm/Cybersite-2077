@@ -1,38 +1,42 @@
+//Библиотека axios для HTTP-запросов:
 import axios from "axios";
-import { useAuthStore } from "@/features/auth/model/auth-store"; //Импорт Zustand-храналища с данными о пользователе и токене
+//Библиотека axios-auth-refresh для того, чтобы ставить в очередь кучу одновременных refresh-запросов к серверу:
 import createAuthRefreshInterceptor from "axios-auth-refresh";
+//Клиентское хранилище с данными о пользователе и токене:
+import { useAuthStore } from "@/features/auth/model/auth-store";
 
+//Адрес сервера:
 export const API_URL = "http://localhost:3001";
 
 //Создание кастомного экземпляра Axios с базовыми настройками:
 export const $api = axios.create({
   baseURL: `${API_URL}/api/`, //Основной адрес сервера
-  withCredentials: true, //Разрешаем передачу кук, т.к. используем refreshToken
+  withCredentials: true, //Заставляем организовать передачу кук, т.к. используем refreshToken
 });
 
-//Интерцептор для добавления Access Token к каждому запросу:
+//Интерцептор для добавления Access Token к каждому запросу [REQUEST]:
 $api.interceptors.request.use((config) => {
-  //Получаем Access токен из хранилища:
+  //Получаем Access токен из клиентского хранилища:
   const token = useAuthStore.getState().accessToken;
-  // Добавляем токен к каждому запросу:
+  //Добавляем токен к каждому запросу в заголовок Authorization:
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-// Обработка ошибки 401 (Реализуем Auto-refresh):
+//Обработка ошибки 401:
 const refreshAuthLogic = (failedRequest: any) => {
   const url = failedRequest.response.config.url;
 
-  // 1. ПРЕРЫВАНИЕ ЦИКЛА:
-  // Если ошибка 401 пришла от САМОГО запроса на рефреш — не пытаемся обновиться снова
+  //1)Защита от бесконечного цикла:
+  //Если сам запрос на обновление токена упал с 401, мы не пытаемся обновиться еще раз, а прекращаем:
   if (failedRequest.response.config.url.includes("/identity/auth/refresh")) {
     return Promise.reject(failedRequest);
   }
 
-  // 2. ИСКЛЮЧЕНИЯ ДЛЯ ПУБЛИЧНЫХ ФОРМ (добавляем сюда):
-  // Чтобы при неверном пароле не вылетало "Сессия не найдена"
+  //2) Исключения для публичных форм:
+  //(если ошибка 401 пришла при попытке входа (неверный пароль), мы не должны запускать обновление токена, так как его еще просто нет)
   if (
     url.includes("/identity/auth/login") ||
     url.includes("/identity/auth/reset-password") ||
@@ -42,32 +46,34 @@ const refreshAuthLogic = (failedRequest: any) => {
   }
 
   //3.Логика обновления:
-  return axios
-    .get(`${API_URL}/api/identity/auth/refresh`, { withCredentials: true })
-    .then((tokenRefreshResponse) => {
-      const { user, accessToken } = tokenRefreshResponse.data;
+  return (
+    axios
+      //Обращаемся к refresh-эндпоинту:
+      .get(`${API_URL}/api/identity/auth/refresh`, { withCredentials: true })
+      .then((tokenRefreshResponse) => {
+        //Извлекаем данные об access token из ответа:
+        const { accessToken } = tokenRefreshResponse.data;
 
-      // Обновляем Store
-      useAuthStore.getState().setAuth(user, accessToken);
+        //Обновляем состояние в клиентском хранилище:
+        useAuthStore.getState().setAuth(accessToken);
 
-      // Обновляем заголовок в упавшем запросе
-      failedRequest.response.config.headers["Authorization"] =
-        `Bearer ${accessToken}`;
+        //Берем изначальный упавший запрос (failedRequest) и вставляем в него уже новый токен:
+        failedRequest.response.config.headers["Authorization"] =
+          `Bearer ${accessToken}`;
 
-      return Promise.resolve();
-    })
-    .catch((err) => {
-      // 2. БЕЗОПАСНАЯ ОЧИСТКА:
-      // Если рефреш не удался, мы просто чистим стейт.
-      // Не вызывай тут logout(), если в нем прописан запрос на сервер ($api.post('/logout')),
-      // иначе получишь еще один круг 401 ошибок.
-      useAuthStore.getState().setAuth(null, "");
-      return Promise.reject(err);
-    });
+        return Promise.resolve();
+      })
+      .catch((err) => {
+        //Если обновить не удалось (сессия истекла везде), то разлогиниваем пользователя:
+        useAuthStore.getState().setAuth(null);
+        return Promise.reject(err);
+      })
+  );
 };
 
-//Инициализируем библиотеку
+//Инициализируем библиотеку (связываем $api с логикой обновления):
+//(Реализуем Auto-refresh) [RESPONSE]
 createAuthRefreshInterceptor($api, refreshAuthLogic, {
-  statusCodes: [401], // На какие коды реагировать
-  pauseInstanceWhileRefreshing: true, // ВАЖНО: останавливает другие запросы, пока идет Refresh
+  statusCodes: [401], //На какие коды реагировать библиотеке
+  pauseInstanceWhileRefreshing: true, //Останавливаем другие запросы, пока идет Refresh (если в момент истечения токена ушло 5 запросов одновременно, Axios поставит 4 из них «на паузу», выполнит 1 запрос на обновление токена, и только потом отправит остальные с новым ключом.)
 });

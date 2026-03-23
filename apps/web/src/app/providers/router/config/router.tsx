@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router";
-import { AuthCard } from "@/features/auth/ui/AuthCard/AuthCard";
+//Клиентское хранилище:
 import { useAuthStore } from "@/features/auth/model/auth-store";
+//Компоненты:
+import { AuthCard } from "@/features/auth/ui/AuthCard/AuthCard";
 import { MainLayout } from "@/app/ui/MainLayout";
 import { HomePage } from "@/pages/HomePage/HomePage";
 import { ProfilePage } from "@/pages/ProfilePage/ProfilePage";
@@ -14,7 +16,7 @@ import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   //Извлекаем статус авторизации из глобального состояния с помощью хука useAuthStore:
   const isAuth = useAuthStore((state) => state.isAuth);
-  // Если пользователь не авторизован, перенаправляем его на страницу /auth:
+  //Если пользователь не авторизован, перенаправляем его на страницу /auth:
   return isAuth ? children : <Navigate to="/auth" replace />;
 };
 
@@ -27,8 +29,8 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 
 export const router = createBrowserRouter([
   {
-    element: <MainLayout />, // Теперь проверка авторизации будет на ВСЕХ страницах
-    errorElement: <ErrorFallback />, //Внутренняя обработка ошибок.  Если ошибка произойдет внутри любого компонента (например, в ProfilePage), React Router перехватит её первым. Он заменит содержимое страницы на ErrorFallback, но сохранит MainLayout (твою шапку, меню и футер).
+    element: <MainLayout />, //Задаем единый визуальны каркас для всех страниц
+    errorElement: <ErrorFallback />, //Внутренняя обработка ошибок.  Если ошибка произойдет внутри любого компонента (например, в ProfilePage), React Router перехватит её первым. Он заменит содержимое страницы на ErrorFallback, но сохранит MainLayout (шапку, меню и футер).
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/privacy", element: <PrivacyPolicyPage /> },

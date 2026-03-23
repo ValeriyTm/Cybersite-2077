@@ -1,11 +1,15 @@
+//Типизируем роли:
 export type UserRole =
   | "USER"
   | "MANAGER"
   | "CONTENT_EDITOR"
   | "ADMIN"
   | "SUPERADMIN";
+
+//Типизируем пол:
 export type UserGender = "MALE" | "FEMALE" | null;
 
+//Типизируем данные юзера:
 export interface IUser {
   id: string;
   email: string;
@@ -20,6 +24,7 @@ export interface IUser {
   createdAt: string;
 }
 
+//Типизируем ответ при авторизации:
 export interface AuthResponse {
   accessToken: string;
   user: IUser;

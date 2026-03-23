@@ -1,13 +1,15 @@
+//Роутер:
 import { Link } from "react-router";
-import { useAuthStore } from "@/features/auth/model/auth-store";
-import { useProfile } from "@/features/auth/model/use-profile";
+//Хранилища:
+import { useAuthStore } from "@/features/auth/model/auth-store"; //Клиентское
+import { useProfile } from "@/features/auth/model/use-profile"; //Серверное
 
 export const HomePage = () => {
-  // 1. Из Zustand берем только статус (для быстрой проверки)
+  //Из Zustand берем статус авторизации пользователя:
   const isAuth = useAuthStore((state) => state.isAuth);
 
-  // 2. Из React Query берем данные пользователя
-  // Мы используем isLoading, чтобы не показывать "Вы не авторизованы", пока идет запрос
+  //Из React Query берем данные пользователя и состояние загрузки.
+  //Используется isLoading, чтобы не показывать "Вы не авторизованы", пока идет запрос.
   const { user, isLoading } = useProfile();
 
   if (isLoading)
@@ -19,7 +21,7 @@ export const HomePage = () => {
     <div
       style={{ padding: "40px", textAlign: "center", fontFamily: "sans-serif" }}
     >
-      <h1>Welcome to Cybersite 🚀</h1>
+      <h1>Welcome to Cybersite ░☣️▒▒▓▓</h1>
 
       {isAuth && user ? (
         <div>

@@ -1,19 +1,26 @@
 import { useState, useRef } from "react";
+//React Hook Form:
 import { useForm, Controller } from "react-hook-form";
+//Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
+//React Query:
 import { useQueryClient } from "@tanstack/react-query";
+//Роутер:
+import { Navigate } from "react-router";
+//Схемы валидации Zod:
 import {
   UpdateProfileSchema,
   ChangePasswordSchema,
   type UpdateProfileInput,
   type ChangePasswordInput,
 } from "@repo/validation";
-
+//Серверное хранилище:
 import { useProfile } from "@/features/auth/model/use-profile";
+//Экземпляр axios и URL сервера:
 import { $api, API_URL } from "@/shared/api/api";
+//Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
-
-//Иконки и маски:
+//Иконки:
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import {
   HiOutlineUser,
@@ -21,21 +28,23 @@ import {
   HiOutlinePhone,
   HiOutlineCalendar,
 } from "react-icons/hi";
+//Библиотека для работы с масками в инпутах:
 import { IMaskInput } from "react-imask";
 import IMask from "imask";
 //Стили:
 import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage = () => {
+  //Используем состояния из серверного хранилища:
   const { user, isLoading, logout, logoutAll } = useProfile();
   const queryClient = useQueryClient(); // Пульт управления кэшем
 
   ////UI-состояния:
-  const [isEditing, setIsEditing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isEditing, setIsEditing] = useState(false); //Редактируется ли сейчас форма или нет.
+  const fileInputRef = useRef<HTMLInputElement>(null); //Ссылка на инпут загрузки аватара
   //Стейт для загрузки аватара:
   const [isAvatarLoading, setIsAvatarLoading] = useState(false);
-  //Для смены пароля:
+  //Для отображения пароля:
   const [showPass, setShowPass] = useState(false);
   //Для удаления аккаунта:
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -57,7 +66,7 @@ export const ProfilePage = () => {
       name: user?.name || "",
       phone: user?.phone || "",
       gender: user?.gender || null,
-      // Превращаем строку из БД в объект Date для формы
+      //Превращаем строку из БД в объект Date для формы:
       birthday: user?.birthday ? new Date(user.birthday) : null,
     },
   });
@@ -72,37 +81,37 @@ export const ProfilePage = () => {
     resolver: zodResolver(ChangePasswordSchema),
   });
 
-  console.log(`is2FAEnabled:`, user?.is2FAEnabled);
-
-  //Сохранение данных профиля:
+  //------Отправка формы для сохранения новых данных профиля:
   const onSubmit = async (data: UpdateProfileInput) => {
     try {
+      // Инициализируем переменную. Если пользователь не ввел дату, на сервер уйдет null:
       let formattedBirthday = null;
 
+      //Проверяем, что в поле лежит реальный объект даты и он валиден:
       if (data.birthday instanceof Date && !isNaN(data.birthday.getTime())) {
-        // Создаем копию даты, чтобы не мутировать стейт формы
+        //Создаем копию даты, чтобы не мутировать стейт формы, т.е. чтобы изменения времени не отразились на том, что пользователь видит в инпуте прямо сейчас:
         const date = new Date(data.birthday);
-        // Устанавливаем время в 12:00 дня (полдень).
-        // Это гарантирует, что при любом сдвиге часового пояса (даже -11 или +12)
-        // дата останется тем же числом в формате UTC.
+        //Устанавливаем время в 12:00 дня (полдень).
+        //Это гарантирует, что при любом сдвиге часового пояса (даже -11 или +12)
+        //дата останется тем же числом в формате UTC:
         date.setHours(12, 0, 0, 0);
+        // Превращаем дату в строку стандарта ISO, которую понимает база данных:
         formattedBirthday = date.toISOString();
       }
 
-      console.log(data.birthday);
-      // Подготавливаем данные для отправки:
+      //Подготавливаем данные для отправки:
       const formattedData = {
         ...data,
-        // Если в поле birthday лежит объект Date, превращаем его в "YYYY-MM-DD"
-        // Если это Date — в ISO, иначе null
-        // Если дата введена не полностью, шлем null, чтобы не было 400 ошибки
+        //Если в поле birthday лежит объект Date, превращаем его в "YYYY-MM-DD", иначе null.
         birthday: formattedBirthday,
       };
 
+      //Отправляем новые данные на сервер:
       await $api.patch("/identity/profile/update", formattedData);
 
-      //Инвалидируем кэш профиля - это заставит React Query фоново перекачать данные юзера:
+      //Инвалидируем кэш профиля - это заставит React Query фоново перекачать актуальные данные юзера:
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      //React Query тут же сам сделает фоновый запрос на сервер, чтобы получить обновленный объект пользователя и обновить UI во всем приложении.
 
       toast.success("Профиль обновлен");
       setIsEditing(false);
@@ -111,22 +120,25 @@ export const ProfilePage = () => {
     }
   };
 
-  //Загрузка аватара в профиле:
+  //-----Загрузка аватара в профиле:
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    //Достаем первый файл из массива выбранных файлов инпута.
+    const file = e.target.files?.[0]; //Оператор ?. страхует от ошибки, если массив пуст.
+    if (!file) return; //Если пользователь открыл окно выбора, но ничего не выбрал и нажал «Отмена», просто выходим из функции.
 
+    //Создаем специальный объект FormData, который необходим для отправки бинарных данных (файлов) через HTTP, так как обычный JSON файлы передавать не умеет:
     const formData = new FormData();
+    //Добавляем файл в объект под ключом "avatar" (именно этот ключ (avatar) должен ожидать multer на бэкенде):
     formData.append("avatar", file);
+
     try {
       //Включаем лоадер:
       setIsAvatarLoading(true);
 
+      //Послыаем данные на сервер:
       await $api.post("/identity/profile/avatar", formData);
 
-      //Инвалидируем кэш профиля.
-      //(Теперь аватар обновится не только здесь, но и в Хедере,
-      //и в любых других местах, где используется useProfile())
+      //Инвалидируем кэш профиля, чтобы получить самые актуальные данные:
       queryClient.invalidateQueries({ queryKey: ["profile"] });
 
       toast.success("Аватар обновлен");
@@ -142,16 +154,18 @@ export const ProfilePage = () => {
 
   //Функция-обработчик ошибок валидации:
   const onFormError = (formErrors: any) => {
-    console.log("ОШИБКИ ВАЛИДАЦИИ:", formErrors);
+    //formErrors - объект со всеми ошибками полей, которые нашел Zod.
+    console.log("Ошибки валидации:", formErrors); //Убрать перед продакшеном
 
-    // Берем первую ошибку из списка
+    //Берем первую ошибку из списка:
     const fieldError = Object.values(formErrors)[0] as any;
+    //Проверяем, есть ли у найденной ошибки текст сообщения:
     if (fieldError?.message) {
       toast.error(fieldError.message, { id: "validation-error" });
     }
   };
 
-  //Для смены пароля:
+  //--------Для смены пароля:
   const onChangePassword = async (data: ChangePasswordInput) => {
     try {
       await $api.post("/identity/auth/change-password", data);
@@ -162,38 +176,42 @@ export const ProfilePage = () => {
     }
   };
 
-  //Для удаления аккаунта:
+  //-------Для удаления аккаунта:
   const onDeleteAccount = async () => {
     try {
       await $api.delete("/identity/auth/delete-account", {
         data: { password: confirmPassword },
       });
       toast.success("Ваш аккаунт удален");
-      await logout(); // Очищаем стор и уходим на главную
+      await logout(); // Очищаем серверный стор и уходим на главную
       //Используем logout() из нашего хука useProfile.
-      // Он сделает запрос на бэкенд, очистит Zustand и ПОЛНОСТЬЮ сотрет кэш React Query,
-      // чтобы данные удаленного юзера не "зависли" в памяти браузера.
+      //Он сделает запрос на бэкенд, очистит Zustand и целиком сотрет кэш React Query,
+      //чтобы данные удаленного юзера не "зависли" в памяти браузера.
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Ошибка при удалении");
     }
   };
 
-  //Для 2FA:
-  // Шаг 1: Запрос QR-кода
+  //------Для 2FA:
+  //Шаг 1: Запрос QR-кода
   const handleSetup2FA = async () => {
     try {
+      //Отправляем запрос на сервер за QR-кодом:
       const res = await $api.post("/identity/auth/2fa/setup");
+      //Записываем полученный url QR-кода в локальный стейт:
       setQrCode(res.data.qrCodeUrl);
     } catch (e) {
       toast.error("Ошибка при генерации QR-кода");
     }
   };
 
-  // Шаг 2: Подтверждение кода из приложения
+  //Шаг 2: Подтверждение кода из приложения
   const handleEnable2FA = async () => {
     try {
+      //Отправляем наш код подтверждения на сервер:
       await $api.post("/identity/auth/2fa/enable", { code: verificationCode });
       toast.success("2FA успешно включена!");
+      //Обнулить ссылку на QR-код и код подтверждения в нашем локальном стейте:
       setQrCode(null);
       setVerificationCode("");
 
@@ -205,21 +223,20 @@ export const ProfilePage = () => {
     }
   };
 
-  // 1. Формируем правильный путь к аватару
-  // Теперь берем user из useProfile()
+  //-------Формируем правильный путь к аватару
+  //Мы можем получать аватар либо с сервера Google, либо с нашего сервера - из-за этого будет отличаться ссылка на аватар:
   const avatarSrc = user?.avatarUrl?.startsWith("http")
     ? user.avatarUrl
     : `${API_URL}${user.avatarUrl}`;
 
-  // 2. Логика для кнопки удаления (если нужно)
-  // const isDeleteDisabled = confirmPassword.length < 6;
-
-  // Если данные еще грузятся, можно показать лоадер на всю страницу
+  // Если данные еще грузятся, можно показать лоадер на всю страницу:
   if (isLoading) return <div>Загрузка профиля...</div>;
+  //Если данных о юзере нет, то перекидываем его на форму регистрации-логина:
   if (!user) return <Navigate to="/auth" />; // Защита от "пустого" профиля
 
   return (
     <div className={styles.container}>
+      {/*Блок с именем, аватаром и кнопкой редактирования:*/}
       <div className={styles.profileHeader}>
         <div
           className={`${styles.avatarWrapper} ${isAvatarLoading ? styles.loading : ""}`}
@@ -227,30 +244,33 @@ export const ProfilePage = () => {
             isEditing && !isAvatarLoading && fileInputRef.current?.click()
           }
         >
+          {/*Аватар:*/}
           <img
+            //Если у пользователя есть ссылка на аватар (user?.avatarUrl), мы используем переменную avatarSrc, иначе берем дефолтный аватар:
             src={user?.avatarUrl ? avatarSrc : "/default-avatar.png"}
-            alt="Avatar"
-            referrerPolicy="no-referrer"
-            style={{ opacity: isAvatarLoading ? 0.5 : 1 }} // Приглушаем фото при загрузке
+            alt="Аватар пользователя"
+            referrerPolicy="no-referrer" //Позволяет аватарам с Google отображаться
+            style={{ opacity: isAvatarLoading ? 0.5 : 1 }} //Пока идет запрос на сервер (isAvatarLoading === true), картинка становится полупрозрачной (0.5).
           />
-          {/* 4. Показываем спиннер поверх фото */}
+          {/*Показываем спиннер поверх фото при загрузке:*/}
           {isAvatarLoading && (
             <div className={styles.spinnerOverlay}>
               <div className={styles.spinner}></div>
             </div>
           )}
-
+          {/*Отображаем контейнер, где указано, что мы можем сменить аватар:*/}
           {isEditing && !isAvatarLoading && (
             <div className={styles.avatarOverlay}>Сменить</div>
           )}
         </div>
+        {/*Инпут для загрузки аватара:*/}
         <input
           type="file"
-          ref={fileInputRef}
+          ref={fileInputRef} //Ссылка на этот элемент
           style={{ display: "none" }}
           onChange={handleAvatarChange}
         />
-
+        {/*Отображаем имя и роль пользователя:*/}
         <div className={styles.titleSection}>
           <h1>{user?.name}</h1>
           <p>{user?.role?.toLowerCase()}</p>
@@ -259,13 +279,14 @@ export const ProfilePage = () => {
         {!isEditing && (
           <button
             className={styles.editMainBtn}
-            onClick={() => setIsEditing(true)}
+            onClick={() => setIsEditing(true)} //При нажатии на кнопку устанавливаем переменную isEditing в true
           >
             Редактировать профиль
           </button>
         )}
       </div>
 
+      {/*Форма с персональными данными:*/}
       <div className={styles.infoGrid}>
         <form onSubmit={handleSubmit(onSubmit, onFormError)}>
           <div className={styles.card}>
@@ -345,20 +366,23 @@ export const ProfilePage = () => {
             <div className={styles.row}>
               <div className={styles.label}>
                 <HiOutlineCalendar /> День рождения{" "}
+                {/*Если включен режим редактирования, показываем звездочку, указывая, что поле обязательно к заполнению:*/}
                 {isEditing && <span className={styles.requiredStar}>*</span>}
               </div>
               <div className={styles.value}>
                 {isEditing ? (
                   <>
+                    {/*<Controller /> — Компонент из RHF. Он нужен, чтобы подружить IMask с состоянием формы:*/}
                     <Controller
                       control={control}
                       name="birthday"
                       render={({ field: { onChange, value } }) => (
                         <IMaskInput
-                          mask={Date}
-                          // IMask сам поймет DD.MM.YYYY, если указать блоки
+                          mask={Date} //Указываем, что работаем с типом данных "Дата"
+                          //IMask сам поймет DD.MM.YYYY, если указать блоки:
                           pattern="DD.MM.YYYY"
                           blocks={{
+                            //Ограничиваем ввод:
                             DD: { mask: IMask.MaskedRange, from: 1, to: 31 },
                             MM: { mask: IMask.MaskedRange, from: 1, to: 12 },
                             YYYY: {
@@ -367,7 +391,7 @@ export const ProfilePage = () => {
                               to: new Date().getFullYear(),
                             },
                           }}
-                          // Важно: typedValue работает в паре с этими функциями
+                          //При помощи format и value переводим объект Date в строку ДД.ММ.ГГГГ (которую видит юзер) и обратно:
                           format={(date: Date) =>
                             date ? date.toLocaleDateString("ru-RU") : ""
                           }
@@ -379,12 +403,14 @@ export const ProfilePage = () => {
                               Number(d),
                             );
                           }}
-                          // Самое главное:
+                          //Гарантируем, что инпут всегда отображает дату в понятном русском формате, если она есть в базе:
                           value={
                             value instanceof Date
                               ? value.toLocaleDateString("ru-RU")
                               : ""
                           }
+                          //При каждом вводе символа маска пытается создать реальный объект Date. Как только дата введена полностью, она попадает в форму, если стерта — в форму уходит null:
+
                           onAccept={(_, mask) => {
                             // typedValue вернет объект Date, если дата полная, или null
                             onChange(mask.typedValue);
@@ -398,7 +424,6 @@ export const ProfilePage = () => {
                         />
                       )}
                     />
-
                     {/*Вывод ошибки:*/}
                     {errors.birthday && (
                       <span className={styles.errorText}>
@@ -416,6 +441,7 @@ export const ProfilePage = () => {
               </div>
             </div>
 
+            {/*Пол:*/}
             <div className={styles.row}>
               <div className={styles.label}>
                 <HiOutlineUser /> Пол{" "}
@@ -520,7 +546,6 @@ export const ProfilePage = () => {
             <div className={styles.value}>
               <div className={styles.passwordWrapper}>
                 {" "}
-                {/* Оборачиваем! */}
                 <input
                   type={showPass ? "text" : "password"}
                   {...regPass("confirmPassword")}
@@ -555,7 +580,7 @@ export const ProfilePage = () => {
       <div className={styles.dangerZone}>
         <h3>Опасная зона</h3>
         <div className={styles.btnGroup}>
-          {/* ... кнопки logout ... */}
+          {/*Сюда когда-нибудь можно переместить кнопки управления сессиями*/}
           <button
             onClick={() => setShowDeleteModal(true)}
             className={styles.deleteBtn}
@@ -564,6 +589,7 @@ export const ProfilePage = () => {
           </button>
         </div>
 
+        {/*Кнопка включения 2FA:*/}
         <div className={styles.btnGroup}>
           {/* Отображаем кнопку только для Админов */}
           {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
@@ -575,8 +601,6 @@ export const ProfilePage = () => {
               {user.is2FAEnabled ? "2FA Активна ✅" : "Включить 2FA"}
             </button>
           )}
-
-          {/* ... твои кнопки выхода и удаления ... */}
         </div>
       </div>
 
@@ -617,7 +641,7 @@ export const ProfilePage = () => {
         </div>
       )}
 
-      {/* Простое модальное окно (можно потом вынести в UI Kit) */}
+      {/*Модальное окно для удаления аккаунта:*/}
       {showDeleteModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -641,8 +665,8 @@ export const ProfilePage = () => {
           </div>
         </div>
       )}
-      {/*  */}
 
+      {/*Управление сессиями:*/}
       <div className={styles.dangerZone}>
         <h3>Управление сессиями</h3>
         <div className={styles.btnGroup}>

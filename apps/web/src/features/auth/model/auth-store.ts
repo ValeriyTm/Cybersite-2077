@@ -1,102 +1,58 @@
+//-----------------------Клиентское хранилище
+//--Оно управляет состоянием авторизации во всем приложении и сохраняет данные в браузере, чтобы после перезагрузки страницы пользователь не «вылетал» из аккаунта.
 import { create } from "zustand";
+//Persist - для сохранения состояния в localStorage; devtools - создаёт интерфейс в браузере.
 import { persist, devtools } from "zustand/middleware";
-import { $api } from "@/shared/api/api";
-import { toast } from "react-hot-toast";
 
+//Типизируем состояние, которое хранится в этом хранилище:
 interface AuthState {
-  // user: any | null;
+  //Наш access token:
   accessToken: string | null;
+  //Авторизован ли пользователь:
   isAuth: boolean;
-  // isLoading: boolean;
   // Поля для 2FA
   tempUserId: string | null;
   setTempUserId: (id: string | null) => void;
   // Методы
   setAuth: (token: string | null) => void;
   clearAuth: () => void;
-  // logout: () => void;
-  // logoutAll: () => void;
-  // checkAuth: () => Promise<void>;
 }
-
-// Глобальный флаг для предотвращения "гонки" запросов (Race Condition):
-// let isRefreshing = false;
 
 export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
       (set) => ({
-        // user: null,
+        //---------Дефолтные значения переменных:
         accessToken: null,
         isAuth: false,
-        // isLoading: false,
         tempUserId: null,
-
-        // Экшен для временного хранения ID админа при логине
+        //---------Actions:
+        //Action для временного хранения ID админа при логине:
         setTempUserId: (id) => set({ tempUserId: id }),
 
+        //Главный action для входа в аккаунт (сохраняет токен,  ставит флаг isAuth: true и очищает временный ID. !!token превращает наличие строки в логическое true):
         setAuth: (token) =>
           set({
-            // user,
             accessToken: token,
             isAuth: !!token,
-            // isLoading: false,
             tempUserId: null, // Сбрасываем временный ID при успешном входе
           }),
 
+        //Action выхода из аккаунта (сбрасываем всё в дефолтные значения):
         clearAuth: () =>
           set({ accessToken: null, isAuth: false, tempUserId: null }),
       }),
-      // logout: async () => {
-      //   try {
-      //     await $api.post("/identity/auth/logout");
-      //   } catch (e) {
-      //     console.error("Сервер уже удалил сессию или недоступен");
-      //   } finally {
-      //     get().setAuth(null, "");
-      //     toast.success("Вы вышли из аккаунта");
-      //   }
-      // },
-      // logout: () => {
-      //   set({ accessToken: null, isAuth: false, tempUserId: null });
-      //   // Очистка кэша React Query произойдет в хуке
-      // },
-
-      // logoutAll: async () => {
-      //   try {
-      //     await $api.post("/identity/auth/logout-all");
-      //   } finally {
-      //     get().setAuth(null, "");
-      //     toast.success("Вы вышли со всех устройств");
-      //   }
-      // },
-
-      // checkAuth: async () => {
-      //   if (isRefreshing) return;
-      //   isRefreshing = true;
-      //   set({ isLoading: true });
-
-      //   try {
-      //     const response = await $api.get("/identity/auth/refresh");
-      //     get().setAuth(response.data.user, response.data.accessToken);
-      //   } catch (e) {
-      //     get().setAuth(null, "");
-      //   } finally {
-      //     isRefreshing = false;
-      //     set({ isLoading: false });
-      //   }
-      // },
-      // }),
       {
-        name: "auth-storage",
-        // Не сохраняем временные данные и флаги загрузки в localStorage
+        //Настройка параметров для localStorage (Persist):
+        name: "auth-storage", //Имя ключа для данных в localStorage
+        //Используем функцию partialize, чтобы не сохранять временные данные и флаги загрузки в localStorage:
         partialize: (state) => ({
-          // user: state.user,
+          //Тут указываем, что нужно сохранять в localStorage:
           accessToken: state.accessToken,
           isAuth: state.isAuth,
         }),
       },
     ),
-    { name: "AuthStore" },
+    { name: "AuthStore" }, //Имя хранилища в Redux DevTools
   ),
 );

@@ -1,22 +1,39 @@
 import { useState } from "react";
+//React Hook Form:
 import { useForm, type SubmitHandler } from "react-hook-form";
+//Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
+//Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
+//Схемы валидации Zod:
 import { LoginSchema, type LoginInput } from "@repo/validation";
+//Иконки:
 import { HiEye, HiEyeOff } from "react-icons/hi";
+//Google reCAPTCHA v3:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+//Экземпляр axios:
 import { $api } from "@/shared/api/api";
+//Клиентское хранилище:
 import { useAuthStore } from "@/features/auth/model/auth-store";
+
 import styles from "../AuthCard/AuthCard.module.scss";
 
 export const LoginForm = () => {
+  //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
   const { executeRecaptcha } = useGoogleReCaptcha();
+
+  //Состояние для пароля (показывать его или нет):
   const [showPassword, setShowPassword] = useState(false);
+
+  //-Состояния для 2FA:
+  //С клиентского стора:
   const { setAuth, tempUserId: storeId, setTempUserId } = useAuthStore();
+  //Локальные:
   const [localUserId, setLocalUserId] = useState<string | null>(null);
   const [show2FA, setShow2FA] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -25,52 +42,60 @@ export const LoginForm = () => {
     resolver: zodResolver(LoginSchema),
     mode: "onBlur",
     defaultValues: {
+      // Инициализируем значения по умолчанию
       email: "",
       password: "",
-      rememberMe: false, // Инициализируем значения по умолчанию
+      rememberMe: false,
       captchaToken: "",
     },
   });
 
-  // 1. Обработка ПЕРВОГО шага (Email + Password)
+  //Отправка формы:
   const onSubmit: SubmitHandler<LoginInput> = async (data: LoginInput) => {
+    //1) Ждем токен от Google.  Если сервис капчи не прогрузился, регистрация блокируется.
     if (!executeRecaptcha) {
       toast.error("Капча еще не загружена");
       return;
     }
+
     try {
-      // Получаем токен действия 'login'
+      //2) Получаем токен действия 'login'
       const captchaToken = await executeRecaptcha("login");
 
+      //3) Отправляем на сервер данные:
       const res = await $api.post("/identity/auth/login", {
         ...data,
+        //Прикладываем токен капчи:
         captchaToken,
       });
 
-      // Если бэкенд говорит, что нужен код:
+      //4) Если бэкенд говорит, что нужен код (когда включена 2FA):
       if (res.data.requires2FA) {
         const id = res.data.userId;
         setLocalUserId(id); // Сохраняем локально (мгновенно)
         setTempUserId(id); // Сохраняем в глобальный стор (для истории)
-        setShow2FA(true);
+        setShow2FA(true); //Устанавливаем переменную необходимости показа окна 2FA как true
 
         toast.success("Введите 6-значный код из приложения");
         return;
       }
 
-      // Если 2FA не нужен — обычный вход
-      setAuth(res.data.accessToken);
+      //5) Если 2FA не нужен, то осуществляем обычный вход:
+      setAuth(res.data.accessToken); //Устанавливаем access token в клиентский store.
       toast.success("С возвращением!");
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Ошибка входа");
     }
   };
 
-  // 2. Обработка ВТОРОГО шага (Ввод кода 2FA)
+  //Ввод кода 2FA:
   const onVerify2FA = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    //1) Берем id пользователя из локального хранилища или из клиентского:
     const activeId = localUserId || storeId;
 
+    //2) Проверки:
     if (twoFactorCode.length !== 6) return toast.error("Введите 6 цифр");
 
     if (!activeId) {
@@ -78,24 +103,26 @@ export const LoginForm = () => {
       return toast.error("Ошибка сессии. Попробуйте войти снова.");
     }
 
-    setIsVerifying(true);
+    setIsVerifying(true); //Устанавливаем статус проверки в true
+
     try {
+      //3) Запрос к серверу с нашим id юзера и введенным кодом:
       const res = await $api.post("/identity/auth/2fa/verify", {
         userId: activeId,
         code: twoFactorCode,
       });
 
-      setAuth(res.data.accessToken);
+      setAuth(res.data.accessToken); //Устанавливаем access token из ответа в клиентский store.
       toast.success("Личность подтверждена!");
-      setLocalUserId(null);
+      setLocalUserId(null); //Обнуляем локальный userId
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Неверный код");
     } finally {
-      setIsVerifying(false);
+      setIsVerifying(false); //Устанавливаем статус проверки в false
     }
   };
 
-  // ЕСЛИ НУЖЕН 2FA — ПОКАЗЫВАЕМ ТОЛЬКО ПОЛЕ ДЛЯ КОДА
+  //Если для пользователя включена 2FA, то показываем только поле для 6-значного кода (окно 2FA):
   if (show2FA) {
     return (
       <form onSubmit={onVerify2FA} className={styles.form}>
@@ -116,6 +143,7 @@ export const LoginForm = () => {
             autoFocus
           />
         </div>
+        {/*Кнопка отправки кода:*/}
         <button
           type="submit"
           className={styles.submitBtn}
@@ -123,11 +151,12 @@ export const LoginForm = () => {
         >
           {isVerifying ? "Проверка..." : "Войти"}
         </button>
+        {/*Кнопка отмены и возврата назад:*/}
         <button
           type="button"
           onClick={() => {
-            setShow2FA(false);
-            setLocalUserId(null); // СБРОС при возврате
+            setShow2FA(false); //Убираем окно 2FA
+            setLocalUserId(null); //Сброс при возврате
             setTwoFactorCode("");
           }}
           className={styles.backBtn}
@@ -140,8 +169,9 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      {/*Поле ввода email:*/}
       <div className={styles.field}>
-        <label>Email address</label>
+        <label>Email</label>
         <input
           {...register("email")}
           placeholder="mail@example.com"
@@ -152,11 +182,12 @@ export const LoginForm = () => {
         )}
       </div>
 
+      {/*Поле ввода пароля:*/}
       <div className={styles.field}>
         <div className={styles.labelWithLink}>
-          <label>Password</label>
+          <label>Пароль</label>
           <a href="/forgot-password" className={styles.forgotLink}>
-            Forgot password?
+            Забыли пароль?
           </a>
         </div>
         <div className={styles.passwordWrapper}>
@@ -166,6 +197,7 @@ export const LoginForm = () => {
             placeholder="••••••••"
             className={errors.password ? styles.inputError : ""}
           />
+          {/*Кнопка "глаза":*/}
           <button
             type="button"
             className={styles.eyeBtn}
@@ -179,20 +211,21 @@ export const LoginForm = () => {
         )}
       </div>
 
-      {/* Ряд с "Запомнить меня" */}
+      {/* Контейнер "Запомнить меня" */}
       <div className={styles.optionsRow}>
         <label className={styles.checkboxLabel}>
           <input type="checkbox" {...register("rememberMe")} />
-          <span>Remember me</span>
+          <span>Запомнить меня</span>
         </label>
       </div>
 
+      {/*Кнопка отправки формы:*/}
       <button
         type="submit"
         disabled={isSubmitting}
         className={styles.submitBtn}
       >
-        {isSubmitting ? "Logging in..." : "Log in"}
+        {isSubmitting ? "Входим..." : "Войти"}
       </button>
     </form>
   );
