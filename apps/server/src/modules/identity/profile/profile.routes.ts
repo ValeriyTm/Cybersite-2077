@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js";
 import * as ProfileController from "./profile.controller.js";
+//Middleware для аутентификации:
+import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js";
+//Middleware для загрузки аватара:
 import { uploadAvatar } from "../../../shared/middlewares/upload.middleware.js";
+//Middleware для авторизации:
 import { roleMiddleware } from "../../../shared/middlewares/role.middleware.js";
 
 const router = Router();
@@ -16,7 +19,7 @@ router.post(
   authMiddleware,
   uploadAvatar.single("avatar"),
   ProfileController.uploadMeAvatar,
-); // Используем .single("avatar"), где "avatar" — имя поля в форме
+); // Метод .single("avatar") говорит Multer, что мы ожидаем загрузку только одного файла и он будет находиться в поле с именем avatar.
 
 //Пример middleware для определенной роли:
 // router.get(

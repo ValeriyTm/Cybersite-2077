@@ -1,13 +1,13 @@
-//Сервис для работы с почтой
+//-----------Сервис для работы с почтой
+//Библиотека для отправки электронных писем:
 import nodemailer from "nodemailer";
 
-// Настройки из твоего .env (используй App Password от Google)
+// Настройки из .env (использую App Password от Google):
 const transporter = nodemailer.createTransport({
   service: "gmail",
   //В старом коде вместо service: "gmail" я бы написал так:
   //   host: process.env.SMTP_HOST,
   //   port: process.env.SMTP_PORT,
-
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD,
@@ -15,6 +15,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export class MailService {
+  //Метод отправки ссылки активации:
   static async sendActivationMail(to: string, link: string) {
     await transporter.sendMail({
       from: process.env.MAIL_USER,
@@ -40,6 +41,7 @@ export class MailService {
     });
   }
 
+  //Метод отправки письма с сылкой восстановления пароля:
   static async sendResetPasswordMail(to: string, link: string) {
     await transporter.sendMail({
       from: process.env.SMTP_USER,

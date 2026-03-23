@@ -1,7 +1,9 @@
+////-------------------------Middleware для авторизации через JWT-токены------
+//(Проверяет, залогинен ли пользователь, прежде чем пустить его к защищенным данным).
 import { Request, Response, NextFunction } from "express";
 import { TokenService } from "../../modules/identity/auth/token.service.js";
 
-// Расширяем стандартный тип Request в Express, чтобы TS не ругался на req.user
+// Расширяем стандартный тип Request в Express, чтобы TS не ругался на req.user:
 export interface AuthRequest extends Request {
   user?: {
     id: string;
@@ -22,13 +24,13 @@ export const authMiddleware = (
       return res.status(401).json({ message: "Пользователь не авторизован" });
     }
 
-    // 2.Формат заголовка обычно: "Bearer <token>", поэтому выделяем token:
+    // 2.Формат заголовка обычно: "Bearer <token>", поэтому извлекаем token:
     const accessToken = authHeader.split(" ")[1];
     if (!accessToken) {
       return res.status(401).json({ message: "Токен не найден" });
     }
 
-    // 3.Проверяем валидность токена через наш TokenService:
+    // 3.Проверяем валидность токена через наш TokenService (расшифровка JWT-токена, проверка подписи и срока годности):
     const userData = TokenService.validateAccessToken(accessToken) as any;
     if (!userData) {
       return res

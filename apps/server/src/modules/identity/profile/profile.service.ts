@@ -1,14 +1,16 @@
 import { prisma } from "@repo/database";
+//Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
 import { UpdateProfileInput } from "@repo/validation";
 import fs from "node:fs/promises";
 import path from "node:path";
 export class ProfileService {
+  //Получаем данные о пользователе из БД:
   static async getProfile(userId: string) {
-    //Получаем данные о пользователе из БД:
+    //1) Получаем данные из БД:
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      // Выбираем только нужные поля (пароль и токены светить нельзя):
+      //Выбираем только нужные поля (пароль и токены светить нельзя):
       select: {
         id: true,
         email: true,
@@ -23,27 +25,28 @@ export class ProfileService {
         is2FAEnabled: true,
       },
     });
-
     if (!user) throw new AppError(404, "Пользователь не найден");
-    console.log("is2FAEnabled:", user.is2FAEnabled);
 
+    //2) Передаём данные контроллеру:
     return user;
   }
 
+  //Обновляем данные о пользователе в БД:
   static async updateProfile(userId: string, data: UpdateProfileInput) {
     console.log("Данные для обновления:", data);
 
-    // Создаем объект для базы
+    //1) Создаем объект для базы, содержащий пришедшие данные:
     const updateData: any = { ...data };
 
+    //2) Проверки:
+    //Проверяем по уникальному номеру телефона:
     if (data.phone) {
       const existingUser = await prisma.user.findFirst({
         where: {
           phone: data.phone,
-          NOT: { id: userId }, // Ищем везде, КРОМЕ текущего пользователя
+          NOT: { id: userId }, // Ищем везде, кроме текущего пользователя
         },
       });
-
       if (existingUser) {
         throw new AppError(
           400,
@@ -52,20 +55,19 @@ export class ProfileService {
       }
     }
 
-    // Если дата пришла строкой, превращаем её в объект Date для Prisma
+    //Если дата пришла строкой, превращаем её в объект Date для Prisma:
     if (data.birthday) {
       updateData.birthday = new Date(data.birthday);
     }
-    //В schema.prisma поле birthday имеет тип DateTime. Явное преобразование через new Date() добавляет время по умолчанию (00:00:00), что полностью удовлетворяет базу данных.
+    //В schema.prisma поле birthday имеет тип DateTime. Явное преобразование через new Date()
 
-    //Обновляем данные в БД:
+    //3) Обновляем данные в БД и возвращаем ответ контроллеру в виде выбранных полей:
     return prisma.user.update({
       where: { id: userId },
       data: {
         name: data.name,
         phone: data.phone,
         gender: data.gender,
-        // ВАЖНО: Prisma ожидает объект Date для поля DateTime
         birthday: data.birthday ? new Date(data.birthday) : null,
       },
       select: {
@@ -80,28 +82,29 @@ export class ProfileService {
     });
   }
 
+  //Обновляем ссылку на аватар пользователя в БД:
   static async updateAvatar(userId: string, filename: string) {
-    // 1.Ищем текущего юзера, чтобы узнать старый аватар:
+    //1) Ищем текущего юзера, чтобы узнать старый аватар:
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { avatarUrl: true },
     });
 
-    // 2.Если старый аватар есть, удаляем файл с диска:
+    //2) Если старый аватар есть, удаляем файл с диска:
     if (user?.avatarUrl) {
-      // Путь к файлу: убираем начальный "/" и сопоставляем с папкой на сервере
+      //Старый путь к файлу: убираем начальный "/" и сопоставляем с папкой на сервере
       const oldPath = path.join(process.cwd(), user.avatarUrl);
       try {
-        await fs.unlink(oldPath);
+        await fs.unlink(oldPath); //Удаляем старый путь
       } catch (e) {
         console.error("Не удалось удалить старый аватар:", e);
         // Не кидаем ошибку дальше, чтобы загрузка нового не сорвалась
       }
     }
 
-    //3.Создаём новый аватар:
+    //3) Создаём новый аватар:
     //Создаём путь для сохранения аватара:
-    const avatarUrl = `/uploads/avatars/${filename}`;
+    const avatarUrl = `/uploads/avatars/${filename}`; //Путь на сервере
     //Сохраняем путь аватарки в профиль пользователя в БД:
     return prisma.user.update({
       where: { id: userId },
