@@ -7,27 +7,27 @@ import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 //Схемы валидации Zod:
 import { LoginSchema, type LoginInput } from "@repo/validation";
-//Иконки:
-import { HiEye, HiEyeOff } from "react-icons/hi";
 //Google reCAPTCHA v3:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Экземпляр axios:
 import { $api } from "@/shared/api/api";
 //Клиентское хранилище:
 import { useAuthStore } from "@/features/auth/model/auth-store";
-
+//Компоненты:
+import { PasswordField } from "@/shared/ui/PasswordField";
+//Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
+import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 
 export const LoginForm = () => {
   //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  //Состояние для пароля (показывать его или нет):
-  const [showPassword, setShowPassword] = useState(false);
-
-  //-Состояния для 2FA:
   //С клиентского стора:
   const { setAuth, tempUserId: storeId, setTempUserId } = useAuthStore();
+
+  const { handleAuthSubmit } = useAuthSubmit<LoginInput>();
+
   //Локальные:
   const [localUserId, setLocalUserId] = useState<string | null>(null);
   const [show2FA, setShow2FA] = useState(false);
@@ -183,33 +183,19 @@ export const LoginForm = () => {
       </div>
 
       {/*Поле ввода пароля:*/}
-      <div className={styles.field}>
-        <div className={styles.labelWithLink}>
-          <label>Пароль</label>
-          <a href="/forgot-password" className={styles.forgotLink}>
-            Забыли пароль?
-          </a>
-        </div>
-        <div className={styles.passwordWrapper}>
-          <input
-            {...register("password")}
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-            className={errors.password ? styles.inputError : ""}
-          />
-          {/*Кнопка "глаза":*/}
-          <button
-            type="button"
-            className={styles.eyeBtn}
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <HiEyeOff /> : <HiEye />}
-          </button>
-        </div>
-        {errors.password && (
-          <span className={styles.errorText}>{errors.password.message}</span>
-        )}
-      </div>
+      <PasswordField
+        label={
+          <div className={styles.labelWithLink}>
+            <span>Пароль</span>
+            <a href="/forgot-password" className={styles.forgotLink}>
+              Забыли пароль?
+            </a>
+          </div>
+        }
+        registration={register("password")}
+        error={errors.password}
+        placeholder="••••••••"
+      />
 
       {/* Контейнер "Запомнить меня" */}
       <div className={styles.optionsRow}>

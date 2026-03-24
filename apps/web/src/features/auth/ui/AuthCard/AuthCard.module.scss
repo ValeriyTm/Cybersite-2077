@@ -175,24 +175,31 @@
   }
 }
 
+// .labelWithLink {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   margin-bottom: 6px;
+
+//   label {
+//     margin-bottom: 0;
+//   }
+// }
 .labelWithLink {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-
-  label {
-    margin-bottom: 0;
-  }
+  justify-content: space-between; // Расталкивает текст и ссылку по краям
+  align-items: center; // Выравнивает их по вертикали
+  width: 100%; // Важно: чтобы контейнер занял всю ширину метки
+  gap: 10px; // Небольшой отступ, если экран будет очень узким
 }
 
 .forgotLink {
-  font-size: 12px;
-  color: #666;
+  font-size: 0.85rem;
+  color: var(--primary-color); // Или твой цвет ссылки
   text-decoration: none;
+
   &:hover {
     text-decoration: underline;
-    color: #000;
   }
 }
 

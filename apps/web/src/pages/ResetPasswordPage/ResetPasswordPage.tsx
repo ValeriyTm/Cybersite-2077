@@ -1,15 +1,24 @@
-import { useState } from "react"; // 1. Добавляем useState
+//Роутер:
 import { useSearchParams, useNavigate } from "react-router";
+//React Hook Form:
 import { useForm } from "react-hook-form";
+//Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
+//Google reCAPTCHA v3:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+//Схемы валидации Zod:
 import { ResetPasswordSchema, type ResetPasswordInput } from "@repo/validation";
+//Экземпляр axios:
 import { $api } from "@/shared/api/api";
+//Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
+//Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+//Стили:
 import styles from "./ResetPages.module.scss";
 
 export const ResetPasswordPage = () => {
+  //Извлекаем токен из параметров в адресной строке:
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 

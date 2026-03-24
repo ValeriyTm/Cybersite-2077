@@ -5,15 +5,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
-//Иконки:
-import { HiEye, HiEyeOff } from "react-icons/hi";
 //Google reCAPTCHA v3:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Экземпляр axios:
 import { $api } from "@/shared/api/api";
 //Схемы валидации Zod:
 import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
-
+//Компоненты:
+import { PasswordField } from "@/shared/ui/PasswordField";
+//Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
 
 export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
@@ -122,44 +122,20 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
       </div>
 
       {/*Поле ввода пароля:*/}
-      <div className={styles.field}>
-        <label>Пароль</label>
-        <div className={styles.passwordWrapper}>
-          <input
-            {...register("password")}
-            //Меняем отображение пароля в зависимости от состояния showPassword:
-            type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-          />
-          {/*Кнопка "глаза":*/}
-          <button
-            type="button"
-            className={styles.eyeBtn}
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {/*Меняем иконку в зависимости от состояния showPassword:*/}
-            {showPassword ? <HiEyeOff /> : <HiEye />}
-          </button>
-        </div>
-        {errors.password && (
-          <span className={styles.errorText}>{errors.password.message}</span>
-        )}
-      </div>
+      <PasswordField
+        label="Пароль"
+        registration={register("password")}
+        error={errors.password}
+        placeholder="••••••••"
+      />
 
       {/*Поле ввода пароля для подтверждения:*/}
-      <div className={styles.field}>
-        <label>Подтвердить пароль</label>
-        <input
-          {...register("confirmPassword")}
-          type={showPassword ? "text" : "password"}
-          placeholder="••••••••"
-        />
-        {errors.confirmPassword && (
-          <span className={styles.errorText}>
-            {errors.confirmPassword.message}
-          </span>
-        )}
-      </div>
+      <PasswordField
+        label="Подтвердить пароль"
+        registration={register("confirmPassword")}
+        error={errors.confirmPassword}
+        placeholder="••••••••"
+      />
 
       {/*Чекбокс с согласиями:*/}
       <div className={styles.checkboxField}>
