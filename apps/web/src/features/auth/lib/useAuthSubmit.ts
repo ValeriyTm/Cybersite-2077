@@ -1,5 +1,8 @@
+//Роутер:
 import { useNavigate } from "react-router";
+//Google reCAPTCHA v3:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+//Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 
 interface AuthSubmitOptions<T> {
@@ -11,25 +14,29 @@ interface AuthSubmitOptions<T> {
 }
 
 export const useAuthSubmit = <T>() => {
+  //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
   const { executeRecaptcha } = useGoogleReCaptcha();
   const navigate = useNavigate();
 
   const handleAuthSubmit = async (options: AuthSubmitOptions<T>, data: T) => {
+    //1) Ждем токен от Google.  Если сервис капчи не прогрузился, регистрация блокируется.
     if (!executeRecaptcha) {
       toast.error("Защита ReCaptcha еще не готова");
       return;
     }
 
     try {
-      // 1. Получаем токен капчи
+      //2) Получаем токен капчи:
       const captchaToken = await executeRecaptcha(options.action);
 
-      // 2. Выполняем API запрос
-      const res = await options.apiCall({ ...data, captchaToken });
+      //3) Выполняем запрос к серверу:
+      const res = await options.apiCall({ ...data, captchaToken }); ////Прикладываем данные и токен капчи:
 
-      // 3. Обрабатываем успех
+      //4) Обрабатываем успех:
+      //Выводим всплывающее уведомление:
       if (options.successMessage) toast.success(options.successMessage);
       if (options.onSuccess) options.onSuccess(res);
+      //Редирект на другую страницу:
       if (options.redirectPath) navigate(options.redirectPath);
 
       return res;

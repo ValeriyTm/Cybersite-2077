@@ -14,6 +14,8 @@ import { $api } from "@/shared/api/api";
 import { toast } from "react-hot-toast";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+//Кастомные хуки:
+import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
 import styles from "./ResetPages.module.scss";
 
@@ -21,6 +23,8 @@ export const ResetPasswordPage = () => {
   //Извлекаем токен из параметров в адресной строке:
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
+
+  const { handleAuthSubmit } = useAuthSubmit<ResetPasswordInput>();
 
   const navigate = useNavigate();
 
@@ -39,32 +43,19 @@ export const ResetPasswordPage = () => {
   });
 
   const onSubmit = async (data: ResetPasswordInput) => {
-    //1) Ждем токен от Google.  Если сервис капчи не прогрузился, регистрация блокируется.
-    if (!executeRecaptcha) {
-      toast.error("Капча еще не загружена");
-      return;
-    }
-
     //Если в параметрах адресной строки нет токена сброса:
     if (!token) return toast.error("Токен отсутствует");
 
-    try {
-      //2) Получаем токен действия 'reset_password'
-      const captchaToken = await executeRecaptcha("reset_password");
-
-      //3) Отправляем на сервер данные:
-      await $api.post(`/identity/auth/reset-password?token=${token}`, {
-        ...data,
-        //Прикладываем токен капчи:
-        captchaToken,
-      });
-
-      toast.success("Пароль изменен!");
-      //Редирект пользователя:
-      navigate("/auth?activated=true");
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка");
-    }
+    await handleAuthSubmit(
+      {
+        action: "reset_password",
+        apiCall: (payload) =>
+          $api.post(`/identity/auth/reset-password?token=${token}`, payload),
+        successMessage: "Пароль успешно изменен!",
+        redirectPath: "/auth?activated=true",
+      },
+      data,
+    );
   };
 
   if (!token)

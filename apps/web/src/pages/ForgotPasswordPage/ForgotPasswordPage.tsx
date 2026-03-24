@@ -15,11 +15,13 @@ import { $api } from "@/shared/api/api";
 import { toast } from "react-hot-toast";
 //Роутер:
 import { Link } from "react-router";
+//Кастомные хуки:
+import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
 import styles from "../ResetPasswordPage/ResetPages.module.scss";
 
 export const ForgotPasswordPage = () => {
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { handleAuthSubmit } = useAuthSubmit<ForgotPasswordInput>();
 
   const {
     register,
@@ -34,29 +36,20 @@ export const ForgotPasswordPage = () => {
   });
 
   const onSubmit = async (data: ForgotPasswordInput) => {
-    //1) Ждем токен от Google.  Если сервис капчи не прогрузился, регистрация блокируется.
-    if (!executeRecaptcha) {
-      toast.error("Капча еще не загружена");
-      return;
-    }
-
-    try {
-      //2) Получаем токен действия 'forgot_password':
-      const captchaToken = await executeRecaptcha("forgot_password");
-
-      //3) Отправляем на сервер данные:
-      await $api.post("/identity/auth/forgot-password", {
-        ...data,
-        //Прикладываем токен капчи:
-        captchaToken,
-      });
-
-      toast.success("Если аккаунт существует, письмо со ссылкой отправлено!");
-      //Обнуляем форму:
-      reset();
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка запроса");
-    }
+    await handleAuthSubmit(
+      {
+        action: "forgot_password",
+        apiCall: (payload) =>
+          $api.post("/identity/auth/forgot-password", payload),
+        successMessage:
+          "Если аккаунт существует, письмо со ссылкой отправлено!",
+        onSuccess: () => {
+          // Очищаем инпут после успешной отправки
+          reset();
+        },
+      },
+      data,
+    );
   };
 
   return (

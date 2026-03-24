@@ -13,12 +13,17 @@ import { $api } from "@/shared/api/api";
 import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+//Кастомные хуки:
+import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
 
 export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
   //Состояние для пароля (показывать его или нет):
   const [showPassword, setShowPassword] = useState(false);
+
+  //Кастомный хук:
+  const { handleAuthSubmit } = useAuthSubmit<RegisterFormInput>();
 
   //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -50,43 +55,29 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   const onSubmit = async (data: RegisterFormInput) => {
-    //1) Ждем токен от Google.  Если сервис капчи не прогрузился, регистрация блокируется.
-    if (!executeRecaptcha) {
-      toast.error("Капча еще не загружена");
-      return;
-    }
+    await handleAuthSubmit(
+      {
+        action: "register",
+        apiCall: (payload) => {
+          //Очищаем данные прямо в вызове API:
+          const { confirmPassword, acceptTerms, ...registerData } =
+            payload as any;
+          return $api.post("/identity/auth/register", registerData);
+        },
+        successMessage:
+          "Регистрация успешна! Проверьте почту для активации аккаунта.",
+        onSuccess: () => {
+          //Очищаем форму (reset берем из useForm):
+          reset();
 
-    try {
-      //2) Получаем токен действия 'register':
-      const captchaToken = await executeRecaptcha("register");
-
-      //3) Извлекаем лишния поля confirmPassword и acceptTerms (они нужно только для валидации на фронте), а
-      //registerData будет содержать только то, что ждет сервер (email, name, password):
-      const { confirmPassword, acceptTerms, ...registerData } = data as any;
-
-      //4) Отправляем на сервер очищенные от лишних полей данные:
-      await $api.post("/identity/auth/register", {
-        ...registerData,
-        //Прикладываем токен капчи:
-        captchaToken,
-      });
-
-      //5) Показываем уведомление
-      toast.success(
-        "Регистрация успешна! Проверьте почту для активации аккаунта.",
-      );
-
-      //6) Очищаем форму (необязательно, но полезно для UX)
-      reset();
-
-      //7) Редиректим на вкладку логина (логика в AuthCard) через 1.5 секунды, чтобы юзер успел прочитать сообщение
-      setTimeout(() => {
-        onSuccess();
-      }, 1500);
-    } catch (e: any) {
-      const message = e.response?.data?.message || "Ошибка при регистрации";
-      toast.error(message);
-    }
+          //Делаем задержку перед переключением на логин (onSuccess пришел из пропсов AuthCard):
+          setTimeout(() => {
+            onSuccess();
+          }, 1500);
+        },
+      },
+      data,
+    );
   };
 
   return (

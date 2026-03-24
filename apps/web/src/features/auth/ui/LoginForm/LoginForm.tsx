@@ -7,21 +7,20 @@ import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 //Схемы валидации Zod:
 import { LoginSchema, type LoginInput } from "@repo/validation";
-//Google reCAPTCHA v3:
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Экземпляр axios:
 import { $api } from "@/shared/api/api";
 //Клиентское хранилище:
 import { useAuthStore } from "@/features/auth/model/auth-store";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+//Кастомные хуки:
+import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
-import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 
 export const LoginForm = () => {
-  //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
-  const { executeRecaptcha } = useGoogleReCaptcha();
+  // //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
+  // const { executeRecaptcha } = useGoogleReCaptcha();
 
   //С клиентского стора:
   const { setAuth, tempUserId: storeId, setTempUserId } = useAuthStore();
@@ -52,40 +51,36 @@ export const LoginForm = () => {
 
   //Отправка формы:
   const onSubmit: SubmitHandler<LoginInput> = async (data: LoginInput) => {
-    //1) Ждем токен от Google.  Если сервис капчи не прогрузился, регистрация блокируется.
-    if (!executeRecaptcha) {
-      toast.error("Капча еще не загружена");
-      return;
-    }
+    //Добавляем await, чтобы сработало переключение isSubmitting:
+    await handleAuthSubmit(
+      {
+        action: "login",
+        apiCall: (payload) => $api.post("/identity/auth/login", payload),
+        //Тут обрабатываем случай 2FA:
+        onSuccess: (res) => {
+          // Если сервер говорит, что нужна 2FA:
+          if (res.data.requires2FA) {
+            const id = res.data.userId;
 
-    try {
-      //2) Получаем токен действия 'login'
-      const captchaToken = await executeRecaptcha("login");
+            setLocalUserId(id); // Для мгновенного показа
+            setTempUserId(id); // Для истории в сторе
+            setShow2FA(true); // Переключаем интерфейс на ввод кода (устанавливаем переменную необходимости показа окна 2FA как true)
 
-      //3) Отправляем на сервер данные:
-      const res = await $api.post("/identity/auth/login", {
-        ...data,
-        //Прикладываем токен капчи:
-        captchaToken,
-      });
+            toast.success("Введите 6-значный код из приложения");
+            return; // Прерываем выполнение, чтобы далее не срабатывал основной вход (именно этот обработчик)
+          }
 
-      //4) Если бэкенд говорит, что нужен код (когда включена 2FA):
-      if (res.data.requires2FA) {
-        const id = res.data.userId;
-        setLocalUserId(id); // Сохраняем локально (мгновенно)
-        setTempUserId(id); // Сохраняем в глобальный стор (для истории)
-        setShow2FA(true); //Устанавливаем переменную необходимости показа окна 2FA как true
-
-        toast.success("Введите 6-значный код из приложения");
-        return;
-      }
-
-      //5) Если 2FA не нужен, то осуществляем обычный вход:
-      setAuth(res.data.accessToken); //Устанавливаем access token в клиентский store.
-      toast.success("С возвращением!");
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка входа");
-    }
+          // Если 2FA не нужна — просто логинимся:
+          if (res.data.accessToken) {
+            setAuth(res.data.accessToken); //Устанавливаем access token в клиентский store.
+            toast.success("С возвращением!");
+            // Редирект сработает автоматически, если указан redirectPath в опциях
+          }
+        },
+        redirectPath: "/profile", // Куда идем, если 2FA не нужна
+      },
+      data,
+    );
   };
 
   //Ввод кода 2FA:
