@@ -47,6 +47,7 @@ app.use(
           "https://*.googleusercontent.com", // Используем маску для надежности
           "http://localhost:3001",
         ],
+
         // Запрещает использование опасных функций (DOM sinks) без специальных политик:
         "require-trusted-types-for": ["'script'"],
         // Разрешаем политику DOMPurify

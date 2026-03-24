@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 //Роутер:
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearchParams, useLocation } from "react-router";
 //Библиотека для показа всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 //Иконка:
@@ -19,6 +19,7 @@ export const AuthCard = () => {
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   //Из клиентского стора берем только статус авторизации и метод его установки:
   const { isAuth, setAuth } = useAuthStore();
@@ -61,12 +62,13 @@ export const AuthCard = () => {
 
   //Уведомление об активации почты (если состояние активации меняется, то выводим уведомление):
   useEffect(() => {
-    if (isActivated) {
+    //Проверяем, что параметр isActivated есть, и мы находимся именно на странице авторизации
+    if (isActivated && location.pathname === "/auth") {
       toast.success("Почта подтверждена! Теперь вы можете войти", {
-        id: "activation-success", // Параметр id нужен, чтобы сообщение не спамило при перезагрузке.
+        id: "activation-success",
       });
     }
-  }, [isActivated]);
+  }, [isActivated, location.pathname]);
 
   //Функция ухода на Google OAuth (Бэкенд-эндпоинт):
   const handleGoogleLogin = () => {
@@ -76,6 +78,12 @@ export const AuthCard = () => {
 
   //Пока идет редирект, можно вернуть null или спиннер
   if (isAuth && !tokenFromUrl) return null;
+
+  const handleSuccess = () => {
+    // Что делать, если юзер вошел или зарегистрировался?
+    // Например, закрыть модалку или перенаправить на главную:
+    console.log("Действие успешно завершено!");
+  };
 
   return (
     <div className={styles.container}>
@@ -118,7 +126,7 @@ export const AuthCard = () => {
         {/* Рендерим нужную форму */}
         {/* Передаем функцию переключения в форму регистрации */}
         {mode === "login" ? (
-          <LoginForm />
+          <LoginForm onSuccess={handleSuccess} onVerify2FA={handleSuccess} />
         ) : (
           <RegisterForm onSuccess={() => setMode("login")} />
           //onSuccess={() => setMode("login")} — это пропс для регистрации: если юзер успешно создал аккаунт, карточка сама переключит его на экран входа.

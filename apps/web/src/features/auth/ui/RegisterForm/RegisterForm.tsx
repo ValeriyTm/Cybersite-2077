@@ -12,6 +12,7 @@ import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
 //Кастомные хуки:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
@@ -81,32 +82,21 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {/*handleSubmit — это обертка, которая сначала проверяет данные через Zod. Если всё ок — запускает onSubmit, если есть ошибки — вызывает onFormError (показ уведомлений).*/}
 
       {/*Поле ввода имени:*/}
-      <div className={styles.field}>
-        <label>Имя</label>
-        <input
-          //Подключаем поле к состоянию формы (React Hook Form):
-          {...register("name")}
-          placeholder="Ваше имя"
-          className={errors.name ? styles.inputError : ""}
-        />
-        {/*Используем errors.<имя поля, взятое из ...register(тут имя)>:*/}
-        {errors.name && (
-          <span className={styles.errorText}>{errors.name.message}</span>
-        )}
-      </div>
+      <Input
+        label="Имя"
+        placeholder="Иван"
+        registration={register("name")}
+        error={errors.name}
+      />
 
       {/*Поле ввода email:*/}
-      <div className={styles.field}>
-        <label>Email</label>
-        <input
-          {...register("email")}
-          placeholder="mail@example.com"
-          className={errors.email ? styles.inputError : ""}
-        />
-        {errors.email && (
-          <span className={styles.errorText}>{errors.email.message}</span>
-        )}
-      </div>
+      <Input
+        label="Email"
+        type="email"
+        placeholder="mail@example.com"
+        registration={register("email")}
+        error={errors.email}
+      />
 
       {/*Поле ввода пароля:*/}
       <PasswordField

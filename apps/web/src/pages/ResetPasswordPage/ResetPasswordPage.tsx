@@ -53,7 +53,7 @@ export const ResetPasswordPage = () => {
         apiCall: (payload) =>
           $api.post(`/identity/auth/reset-password?token=${token}`, payload),
         successMessage: "Пароль успешно изменен!",
-        redirectPath: "/auth?activated=true",
+        redirectPath: "/auth",
       },
       data,
     );

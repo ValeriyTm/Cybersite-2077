@@ -37,7 +37,7 @@ const formatUserResponse = (user: any, rememberMe = false) => ({
   birthday: user.birthday,
   gender: user.gender,
   is2FAEnabled: user.is2FAEnabled,
-  rememberMe,
+  // rememberMe,
 });
 
 export class AuthService {

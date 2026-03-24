@@ -87,10 +87,13 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     );
   }
 
-  //3) Передаём данные сервису для проверки на корректность введенных данных, активирован ли пользователь и не является ли запрос ботом. А тот нам передаёт ответ (ошибку или данные пользователя с полем необходимости пройти 2FA):
+  //3) Извлекаем значение rememberMe из запроса клиента:
+  const { rememberMe } = result.data;
+
+  //4) Передаём данные сервису для проверки на корректность введенных данных, активирован ли пользователь и не является ли запрос ботом. А тот нам передаёт ответ (ошибку или данные пользователя с полем необходимости пройти 2FA):
   const loginResult = await AuthService.login(result.data);
 
-  //4) Проверка на необходимость 2FA:
+  //5) Проверка на необходимость 2FA:
   if ("requires2FA" in loginResult && loginResult.requires2FA) {
     return res.status(200).json({
       requires2FA: true,
@@ -101,20 +104,20 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 
   //Если 2FA не нужна, идем далее:
 
-  //5) Извлекаем из ответа от сервиса данные о пользователе и поле rememberMe:
-  const { rememberMe, ...user } = loginResult;
+  //6) Извлекаем из ответа от сервиса данные о пользователе и поле rememberMe:
+  const { ...user } = loginResult;
 
-  //6) Генерируем токены:
+  //7) Генерируем токены:
   const tokens = TokenService.generateTokens({
     id: user.id,
     email: user.email,
     role: user.role,
   });
 
-  //7) Записываем сессию в БД:
+  //8) Записываем сессию в БД:
   await SessionService.saveToken(user.id as string, tokens.refreshToken);
 
-  //8) Задаём настройки куки:
+  //9) Задаём настройки куки:
   const cookieOptions: any = {
     httpOnly: true, // Защита от XSS
     secure: process.env.NODE_ENV === "production", // Только HTTPS в продакшене
@@ -123,14 +126,18 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   };
 
   if (rememberMe) {
+    // Если rememberMe === true — 7 дней, иначе — null (сессионная кука):
     cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 дней
+  } else {
+    // Явно удаляем свойства, если они могли попасть туда случайно:
+    delete cookieOptions.maxAge;
+    delete cookieOptions.expires;
   }
-  // Если rememberMe === true — 7 дней, иначе — null (сессионная кука):
 
   //Посылаем куки:
   res.cookie("refreshToken", tokens.refreshToken, cookieOptions);
 
-  //9) Посылаем ответ пользователю:
+  //10) Посылаем ответ пользователю:
   res.status(200).json({
     message: "Вход выполнен успешно",
     accessToken: tokens.accessToken, //Отправляю пользователю Access токен

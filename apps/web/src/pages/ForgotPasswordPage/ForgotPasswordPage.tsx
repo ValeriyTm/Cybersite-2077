@@ -2,8 +2,7 @@
 import { useForm } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
-//Google reCAPTCHA v3:
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+
 //Схемы валидации Zod:
 import {
   ForgotPasswordSchema,
@@ -11,14 +10,14 @@ import {
 } from "@repo/validation";
 //Экземпляр axios:
 import { $api } from "@/shared/api/api";
-//Библиотека всплывающих уведомлений:
-import { toast } from "react-hot-toast";
+
 //Роутер:
 import { Link } from "react-router";
 //Кастомные хуки:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Компоненты:
 import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
 //Стили:
 import styles from "../ResetPasswordPage/ResetPages.module.scss";
 
@@ -60,14 +59,13 @@ export const ForgotPasswordPage = () => {
         <h1>Восстановление</h1>
         <p>Введите Email, указанный при регистрации</p>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            {...register("email")}
+          <Input
+            label="Email"
+            type="email"
             placeholder="mail@example.com"
-            className={errors.email ? styles.inputError : ""}
+            registration={register("email")}
+            error={errors.email}
           />
-          {errors.email && (
-            <span className={styles.error}>{errors.email.message}</span>
-          )}
 
           <Button
             type="submit"

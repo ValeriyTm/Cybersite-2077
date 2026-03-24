@@ -21,6 +21,8 @@ import { useProfileActions } from "./useProfileActions";
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
 import { TwoFactorModal } from "@/features/auth/ui/TwoFactorModal";
+import { DeleteAccountModal } from "@/features/auth/ui/DeleteAccountModal";
+import { Input } from "@/shared/ui/Input";
 //Стили:
 import styles from "./ProfilePage.module.scss";
 
@@ -124,12 +126,6 @@ export const ProfilePage = () => {
         </div>
 
         {!isEditing && (
-          // <button
-          //   className={styles.editMainBtn}
-          //   onClick={() => setIsEditing(true)} //При нажатии на кнопку устанавливаем переменную isEditing в true
-          // >
-          //   Редактировать профиль
-          // </button>
           <Button
             type="button"
             variant="secondary"
@@ -152,17 +148,10 @@ export const ProfilePage = () => {
               <div className={styles.value}>
                 {isEditing ? (
                   <>
-                    <input
-                      {...register("name")}
-                      className={errors.name ? styles.inputError : ""}
-                      placeholder="Ваше имя"
+                    <Input
+                      registration={register("name")}
+                      error={errors.name}
                     />
-                    {/*Вывод ошибки:*/}
-                    {errors.name && (
-                      <span className={styles.errorText}>
-                        {errors.name.message}
-                      </span>
-                    )}
                   </>
                 ) : (
                   <span>{user?.name}</span>
@@ -427,37 +416,14 @@ export const ProfilePage = () => {
 
       {/*Модальное окно для удаления аккаунта:*/}
       {showDeleteModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h2>Удаление аккаунта</h2>
-            <p>Это действие необратимо❗. Введите пароль для подтверждения:</p>
-            <form onSubmit={handleDeleteSubmit(onDeleteAccount)}>
-              <PasswordField
-                label="Подтверждение паролем"
-                registration={regDelete("confirmPassword")} //Имя из схемы Zod
-                error={deleteErrors.confirmPassword}
-              />
-
-              <div className={styles.modalActions}>
-                <Button
-                  type="button"
-                  variant="primary"
-                  onClick={() => setShowDeleteModal(false)}
-                >
-                  Отмена
-                </Button>
-                <Button
-                  type="submit"
-                  variant="danger"
-                  isLoading={isDeleting}
-                  loadingText="Удаление..."
-                >
-                  Удалить навсегда
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <DeleteAccountModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onSubmit={handleDeleteSubmit(onDeleteAccount)}
+          registration={regDelete("confirmPassword")}
+          error={deleteErrors.confirmPassword}
+          isLoading={isDeleting}
+        />
       )}
 
       {/*Управление сессиями:*/}
