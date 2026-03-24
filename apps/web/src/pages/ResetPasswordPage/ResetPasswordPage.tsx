@@ -14,6 +14,7 @@ import { $api } from "@/shared/api/api";
 import { toast } from "react-hot-toast";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+import { Button } from "@/shared/ui/Button";
 //Кастомные хуки:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
@@ -90,13 +91,14 @@ export const ResetPasswordPage = () => {
             error={errors.confirmPassword}
           />
 
-          <button
+          <Button
             type="submit"
-            disabled={isSubmitting}
-            className={styles.submitBtn}
+            variant="primary"
+            isLoading={isSubmitting}
+            loadingText="Сохранение..."
           >
-            {isSubmitting ? "Сохранение..." : "Сбросить пароль"}
-          </button>
+            Обновить пароль
+          </Button>
         </form>
       </div>
     </div>

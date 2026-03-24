@@ -5,14 +5,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
-//Google reCAPTCHA v3:
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Экземпляр axios:
 import { $api } from "@/shared/api/api";
 //Схемы валидации Zod:
 import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+import { Button } from "@/shared/ui/Button";
 //Кастомные хуки:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
@@ -24,9 +23,6 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   //Кастомный хук:
   const { handleAuthSubmit } = useAuthSubmit<RegisterFormInput>();
-
-  //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const {
     register,
@@ -147,23 +143,25 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
       </div>
 
       {/*Кнопка отправки:*/}
-      <button
+      <Button
         type="submit"
-        disabled={isSubmitting} //Пока запрос идет, кнопка блокируется
-        className={styles.submitBtn}
+        variant="primary"
+        isLoading={isSubmitting}
+        loadingText="Регистрируемся..."
       >
-        {isSubmitting ? "Регистрируемся..." : "Зарегистрироваться"}
-      </button>
+        Зарегистрироваться
+      </Button>
 
       {/* Кнопка сброса формы:*/}
-      <button
-        type="button" //Обязательно button, а не submit
-        onClick={() => reset()} //При клике вызываем функцию reset()
-        className={styles.resetBtn}
-        disabled={isSubmitting}
+      <Button
+        type="button"
+        variant="secondary"
+        isLoading={isSubmitting}
+        loadingText="Очищаем..."
+        onClick={() => reset()}
       >
         Очистить форму
-      </button>
+      </Button>
     </form>
   );
 };

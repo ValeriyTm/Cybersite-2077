@@ -17,6 +17,8 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router";
 //Кастомные хуки:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
+//Компоненты:
+import { Button } from "@/shared/ui/Button";
 //Стили:
 import styles from "../ResetPasswordPage/ResetPages.module.scss";
 
@@ -67,9 +69,14 @@ export const ForgotPasswordPage = () => {
             <span className={styles.error}>{errors.email.message}</span>
           )}
 
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Отправка..." : "Получить ссылку"}
-          </button>
+          <Button
+            type="submit"
+            variant="primary"
+            isLoading={isSubmitting}
+            loadingText="Отправка..."
+          >
+            Получить ссылку
+          </Button>
         </form>
         <Link title="Go back" to="/auth" className={styles.backLink}>
           Вернуться к логину

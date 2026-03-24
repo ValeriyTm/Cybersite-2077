@@ -1,5 +1,62 @@
-$primary-color: #ff4500;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 50%; // По умолчанию на всю ширину для форм
+  gap: 8px;
 
-.button {
-  color: $primary-color;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Варианты кнопок
+.primary {
+  background-color: var(--primary-color, #007bff);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-hover, #0056b3);
+  }
+}
+
+.secondary {
+  background-color: #6c757d;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: #5a6268;
+  }
+}
+
+.outline {
+  background-color: transparent;
+  border: 2px solid var(--primary-color, #007bff);
+  color: var(--primary-color, #007bff);
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-color, #007bff);
+    color: white;
+  }
+}
+
+.danger {
+  background-color: #dc3545;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: #c82333;
+  }
 }

@@ -19,13 +19,14 @@ import IMask from "imask";
 import { useProfileActions } from "./useProfileActions";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+import { Button } from "@/shared/ui/Button";
+import { TwoFactorModal } from "@/features/auth/ui/TwoFactorModal";
 //Стили:
 import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage = () => {
   //Используем состояния из серверного хранилища:
   const { user, isLoading, logout, logoutAll } = useProfile();
-  // const queryClient = useQueryClient(); // Пульт управления кэшем
 
   const {
     isEditing,
@@ -56,7 +57,7 @@ export const ProfilePage = () => {
     handleSubmit,
     control,
     reset,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isSubmitting },
   } = profileForm;
 
   //Извлекаем методы формы смены пароля (используем алиасы, чтобы не было конфликта имен):
@@ -123,12 +124,19 @@ export const ProfilePage = () => {
         </div>
 
         {!isEditing && (
-          <button
-            className={styles.editMainBtn}
-            onClick={() => setIsEditing(true)} //При нажатии на кнопку устанавливаем переменную isEditing в true
+          // <button
+          //   className={styles.editMainBtn}
+          //   onClick={() => setIsEditing(true)} //При нажатии на кнопку устанавливаем переменную isEditing в true
+          // >
+          //   Редактировать профиль
+          // </button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setIsEditing(true)}
           >
             Редактировать профиль
-          </button>
+          </Button>
         )}
       </div>
 
@@ -313,23 +321,24 @@ export const ProfilePage = () => {
 
           {isEditing && (
             <div className={styles.actions}>
-              <button
+              <Button
                 type="button"
-                className={styles.cancelBtn}
+                variant="secondary"
                 onClick={() => {
                   setIsEditing(false);
                   reset();
                 }}
               >
                 Отмена
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className={styles.saveBtn}
-                disabled={!isDirty}
+                variant="primary"
+                isLoading={isSubmitting}
+                loadingText="Сохраняем..."
               >
                 Сохранить
-              </button>
+              </Button>
             </div>
           )}
         </form>
@@ -361,13 +370,14 @@ export const ProfilePage = () => {
           />
 
           <div className={styles.actions}>
-            <button
+            <Button
               type="submit"
-              className={styles.saveBtn}
-              disabled={isPassSubmitting}
+              variant="outline"
+              isLoading={isPassSubmitting}
+              loadingText="Обновление..."
             >
-              {isPassSubmitting ? "Обновление..." : "Обновить пароль"}
-            </button>
+              Обновить пароль
+            </Button>
           </div>
         </form>
       </div>
@@ -378,12 +388,14 @@ export const ProfilePage = () => {
         <h3>Опасная зона</h3>
         <div className={styles.btnGroup}>
           {/*Сюда когда-нибудь можно переместить кнопки управления сессиями*/}
-          <button
+
+          <Button
+            type="button"
+            variant="danger"
             onClick={() => setShowDeleteModal(true)}
-            className={styles.deleteBtn}
           >
             Удалить аккаунт
-          </button>
+          </Button>
         </div>
 
         {/*Кнопка включения 2FA:*/}
@@ -403,39 +415,14 @@ export const ProfilePage = () => {
 
       {/* Модальное окно настройки 2FA */}
       {qrCode && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h3>Настройка защиты</h3>
-            <p>Отсканируйте QR в Aegis или Google Authenticator</p>
-
-            <div className={styles.qrWrapper}>
-              <img src={qrCode} alt="QR Code" />
-            </div>
-
-            <input
-              type="text"
-              maxLength={6}
-              placeholder="000 000"
-              value={verificationCode}
-              onChange={(e) =>
-                setVerificationCode(e.target.value.replace(/\D/g, ""))
-              }
-              className={styles.otpInput}
-            />
-
-            <div className={styles.modalActions}>
-              <button onClick={handleEnable2FA} className={styles.saveBtn}>
-                Активировать
-              </button>
-              <button
-                onClick={() => setQrCode(null)}
-                className={styles.cancelBtn}
-              >
-                Отмена
-              </button>
-            </div>
-          </div>
-        </div>
+        <TwoFactorModal
+          qrCode={qrCode}
+          verificationCode={verificationCode}
+          setVerificationCode={setVerificationCode}
+          onActivate={handleEnable2FA}
+          onClose={() => setQrCode(null)}
+          // isLoading={is2FALoading}
+        />
       )}
 
       {/*Модальное окно для удаления аккаунта:*/}
@@ -452,16 +439,21 @@ export const ProfilePage = () => {
               />
 
               <div className={styles.modalActions}>
-                <button type="button" onClick={() => setShowDeleteModal(false)}>
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className={styles.deleteBtn}
-                  disabled={isDeleting}
+                <Button
+                  type="button"
+                  variant="primary"
+                  onClick={() => setShowDeleteModal(false)}
                 >
-                  {isDeleting ? "Удаление..." : "Удалить навсегда"}
-                </button>
+                  Отмена
+                </Button>
+                <Button
+                  type="submit"
+                  variant="danger"
+                  isLoading={isDeleting}
+                  loadingText="Удаление..."
+                >
+                  Удалить навсегда
+                </Button>
               </div>
             </form>
           </div>
@@ -472,12 +464,13 @@ export const ProfilePage = () => {
       <div className={styles.dangerZone}>
         <h3>Управление сессиями</h3>
         <div className={styles.btnGroup}>
-          <button onClick={logout} className={styles.logoutBtn}>
+          <Button type="button" variant="secondary" onClick={logout}>
             Выйти из аккаунта
-          </button>
-          <button onClick={logoutAll} className={styles.logoutAllBtn}>
+          </Button>
+
+          <Button type="button" variant="danger" onClick={logoutAll}>
             Выйти со всех устройств
-          </button>
+          </Button>
         </div>
       </div>
     </div>

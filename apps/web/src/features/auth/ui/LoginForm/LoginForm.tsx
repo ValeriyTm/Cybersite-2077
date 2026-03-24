@@ -13,6 +13,7 @@ import { $api } from "@/shared/api/api";
 import { useAuthStore } from "@/features/auth/model/auth-store";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
+import { Button } from "@/shared/ui/Button";
 //Кастомные хуки:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
@@ -201,13 +202,14 @@ export const LoginForm = () => {
       </div>
 
       {/*Кнопка отправки формы:*/}
-      <button
+      <Button
         type="submit"
-        disabled={isSubmitting}
-        className={styles.submitBtn}
+        variant="primary"
+        isLoading={isSubmitting}
+        loadingText="Входим..."
       >
-        {isSubmitting ? "Входим..." : "Войти"}
-      </button>
+        Войти
+      </Button>
     </form>
   );
 };

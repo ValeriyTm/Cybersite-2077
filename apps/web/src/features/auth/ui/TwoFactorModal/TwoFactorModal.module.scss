@@ -1,0 +1,82 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px); // Размытие заднего фона
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--card-bg, #ffffff);
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  text-align: center;
+
+  h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    color: var(--text-main, #1a1a1a);
+  }
+
+  p {
+    color: var(--text-muted, #666);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+  }
+}
+
+.qrWrapper {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e9ecef;
+
+  img {
+    display: block;
+    width: 200px;
+    height: 200px;
+  }
+}
+
+.otpInput {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.5rem;
+  text-align: center;
+  letter-spacing: 0.5rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: var(--primary-color, #007bff);
+  }
+
+  &::placeholder {
+    letter-spacing: normal;
+    font-size: 1rem;
+  }
+}
+
+.modalActions {
+  display: flex;
+  flex-direction: column; // Кнопки друг под другом для мобилок
+  gap: 10px;
+}
