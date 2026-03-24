@@ -349,7 +349,7 @@ export const ProfilePage = () => {
 
           <PasswordField
             label="Новый пароль"
-            placeholder="Минимум 6 символов"
+            placeholder="Минимум 8 символов"
             registration={regPass("newPassword")}
             error={passErrors.newPassword}
           />
