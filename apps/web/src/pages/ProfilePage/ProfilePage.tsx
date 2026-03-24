@@ -6,7 +6,6 @@ import { Navigate } from "react-router";
 //Серверное хранилище:
 import { useProfile } from "@/features/auth/model/use-profile";
 //Иконки:
-import { HiEye, HiEyeOff } from "react-icons/hi";
 import {
   HiOutlineUser,
   HiOutlineMail,
@@ -18,6 +17,8 @@ import { IMaskInput } from "react-imask";
 import IMask from "imask";
 //Кастомный хук:
 import { useProfileActions } from "./useProfileActions";
+//Компоненты:
+import { PasswordField } from "@/shared/ui/PasswordField";
 //Стили:
 import styles from "./ProfilePage.module.scss";
 
@@ -31,16 +32,13 @@ export const ProfilePage = () => {
     setIsEditing,
     showDeleteModal,
     setShowDeleteModal,
-    showPass,
-    setShowPass,
-    confirmPassword,
-    setConfirmPassword,
     qrCode,
     setQrCode,
     verificationCode,
     setVerificationCode,
     profileForm,
     passForm,
+    deleteForm,
     onSubmit,
     onFormError,
     handleAvatarChange,
@@ -67,6 +65,13 @@ export const ProfilePage = () => {
     handleSubmit: handlePassSubmit,
     formState: { errors: passErrors, isSubmitting: isPassSubmitting },
   } = passForm;
+
+  // Извлекаем методы и состояния из формы удаления аккаунта:
+  const {
+    register: regDelete,
+    handleSubmit: handleDeleteSubmit,
+    formState: { errors: deleteErrors, isSubmitting: isDeleting },
+  } = deleteForm;
 
   const fileInputRef = useRef<HTMLInputElement>(null); //Ссылка на инпут загрузки аватара
 
@@ -330,79 +335,30 @@ export const ProfilePage = () => {
         </form>
       </div>
 
-      {/*Смена пароля:*/}
+      {/*Секция смены пароля:*/}
       <div className={styles.card} style={{ marginTop: "24px" }}>
         <div className={styles.header}>
           <h2>Безопасность</h2>
         </div>
-
         <form onSubmit={handlePassSubmit(onChangePassword)}>
-          <div className={styles.row}>
-            <div className={styles.label}>Текущий пароль</div>
-            <div className={styles.value}>
-              <div className={styles.passwordWrapper}>
-                <input
-                  type={showPass ? "text" : "password"}
-                  {...regPass("oldPassword")}
-                  placeholder="••••••••"
-                  className={passErrors.oldPassword ? styles.inputError : ""}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className={styles.eyeBtn}
-                >
-                  {showPass ? <HiEyeOff /> : <HiEye />}
-                </button>
-              </div>
-              {passErrors.oldPassword && (
-                <span className={styles.errorText}>
-                  {passErrors.oldPassword.message}
-                </span>
-              )}
-            </div>
-          </div>
+          <PasswordField
+            label="Текущий пароль"
+            registration={regPass("oldPassword")}
+            error={passErrors.oldPassword}
+          />
 
-          <div className={styles.row}>
-            <div className={styles.label}>Новый пароль</div>
-            <div className={styles.value}>
-              <div className={styles.passwordWrapper}>
-                <input
-                  type={showPass ? "text" : "password"}
-                  {...regPass("newPassword")}
-                  placeholder="Минимум 6 символов"
-                  className={passErrors.newPassword ? styles.inputError : ""}
-                />
-              </div>
-              {passErrors.newPassword && (
-                <span className={styles.errorText}>
-                  {passErrors.newPassword.message}
-                </span>
-              )}
-            </div>
-          </div>
+          <PasswordField
+            label="Новый пароль"
+            placeholder="Минимум 6 символов"
+            registration={regPass("newPassword")}
+            error={passErrors.newPassword}
+          />
 
-          <div className={styles.row}>
-            <div className={styles.label}>Повторите пароль</div>
-            <div className={styles.value}>
-              <div className={styles.passwordWrapper}>
-                {" "}
-                <input
-                  type={showPass ? "text" : "password"}
-                  {...regPass("confirmPassword")}
-                  placeholder="••••••••"
-                  className={
-                    passErrors.confirmPassword ? styles.inputError : ""
-                  }
-                />
-              </div>
-              {passErrors.confirmPassword && (
-                <span className={styles.errorText}>
-                  {passErrors.confirmPassword.message}
-                </span>
-              )}
-            </div>
-          </div>
+          <PasswordField
+            label="Повторите пароль"
+            registration={regPass("confirmPassword")}
+            error={passErrors.confirmPassword}
+          />
 
           <div className={styles.actions}>
             <button
@@ -488,21 +444,26 @@ export const ProfilePage = () => {
           <div className={styles.modal}>
             <h2>Удаление аккаунта</h2>
             <p>Это действие необратимо❗. Введите пароль для подтверждения:</p>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Ваш пароль"
-            />
-            <div className={styles.modalActions}>
-              <button onClick={() => setShowDeleteModal(false)}>Отмена</button>
-              <button
-                onClick={onDeleteAccount}
-                className={styles.confirmDelete}
-              >
-                Я понимаю, удалить мой аккаунт
-              </button>
-            </div>
+            <form onSubmit={handleDeleteSubmit(onDeleteAccount)}>
+              <PasswordField
+                label="Подтверждение паролем"
+                registration={regDelete("confirmPassword")} //Имя из схемы Zod
+                error={deleteErrors.confirmPassword}
+              />
+
+              <div className={styles.modalActions}>
+                <button type="button" onClick={() => setShowDeleteModal(false)}>
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  className={styles.deleteBtn}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Удаление..." : "Удалить навсегда"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

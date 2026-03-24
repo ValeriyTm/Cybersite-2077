@@ -141,7 +141,7 @@ export const UpdateProfileSchema = z
     gender: z
       .preprocess(
         (val) => (val === "" ? null : val), // Если пришла пустая строка — превращаем в null
-        z.enum(["MALE", "FEMALE", "OTHER"]).nullable(), // Разрешаем null
+        z.enum(["MALE", "FEMALE"]).nullable(), // Разрешаем null
       )
       .optional(),
   })
@@ -230,3 +230,10 @@ export const Verify2FASchema = z
       .regex(/^\d+$/, "Код должен состоять только из цифр"),
   })
   .strict(); // Обязательно strict, чтобы не пролезло лишнего
+
+///////Схема для удаления аккаунта:
+export const DeleteAccountSchema = z.object({
+  confirmPassword: z.string().min(1, "Введите пароль для подтверждения"),
+});
+
+export type DeleteAccountInput = z.infer<typeof DeleteAccountSchema>;

@@ -11,8 +11,10 @@ import { type IUser } from "@repo/types";
 import {
   UpdateProfileSchema,
   ChangePasswordSchema,
+  DeleteAccountSchema,
   type UpdateProfileInput,
   type ChangePasswordInput,
+  type DeleteAccountInput,
 } from "@repo/validation";
 //Серверное хранилище:
 import { useProfile } from "@/features/auth/model/use-profile";
@@ -24,22 +26,19 @@ import { toast } from "react-hot-toast";
 export const useProfileActions = (user: IUser | null | undefined) => {
   //Почему добавил типы null и undefined - Zod/Prisma любят null, а React Query возвращает undefined, пока данные загружаются.
   const queryClient = useQueryClient();
-
+  const { logout } = useProfile();
   //--------------Состояния-----------------------
   //Стейт для состояния того, редактируется ли сейчас форма или нет:
   const [isEditing, setIsEditing] = useState(false);
   //Стейт для загрузки аватара:
   const [isAvatarLoading, setIsAvatarLoading] = useState(false);
-  //Для отображения пароля:
-  const [showPass, setShowPass] = useState(false);
   //Для удаления аккаунта:
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
   //Для 2FA:
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [verificationCode, setVerificationCode] = useState("");
   //----------------Инициализация форм------------
-  //Основная форма профиля:
+  ////Основная форма профиля:
   const profileForm = useForm<UpdateProfileInput>({
     resolver: zodResolver(UpdateProfileSchema),
     values: {
@@ -51,9 +50,20 @@ export const useProfileActions = (user: IUser | null | undefined) => {
     },
   });
 
-  //Форма смены пароля:
+  ////Форма смены пароля:
   const passForm = useForm<ChangePasswordInput>({
     resolver: zodResolver(ChangePasswordSchema),
+  });
+
+  //Достаем метод reset из этой формы (называем его resetPass для ясности)
+  const { reset: resetPass } = passForm;
+
+  ////Форма удаления аккаунта:
+  const deleteForm = useForm<DeleteAccountInput>({
+    resolver: zodResolver(DeleteAccountSchema),
+    defaultValues: {
+      confirmPassword: "",
+    },
   });
 
   //------------Helper---------
@@ -160,12 +170,14 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   };
 
   // -------Для удаления аккаунта:
-  const onDeleteAccount = async () => {
+  const onDeleteAccount = async (data: DeleteAccountInput) => {
     try {
       await $api.delete("/identity/auth/delete-account", {
-        data: { password: confirmPassword },
+        data: { password: data.confirmPassword },
       });
+
       toast.success("Ваш аккаунт удален");
+
       await logout(); // Очищаем серверный стор и уходим на главную
       //Используем logout() из нашего хука useProfile.
       //Он сделает запрос на бэкенд, очистит Zustand и целиком сотрет кэш React Query,
@@ -213,10 +225,6 @@ export const useProfileActions = (user: IUser | null | undefined) => {
     setIsEditing,
     showDeleteModal,
     setShowDeleteModal,
-    showPass,
-    setShowPass,
-    confirmPassword,
-    setConfirmPassword,
     qrCode,
     setQrCode,
     verificationCode,
@@ -224,6 +232,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
     //Возвращаем формы целиком:
     profileForm,
     passForm,
+    deleteForm,
     //Обработчики:
     onSubmit,
     onFormError,

@@ -43,8 +43,8 @@ export const useProfile = () => {
     } finally {
       //Чистим localStorage:
       clearAuth();
-      // чтобы следующий вошедший пользователь не увидел данные предыдущего на долю секунды.
-      queryClient.removeQueries({ queryKey: ["profile"] }); // Чистим кэш
+      //Чистим кэш, чтобы следующий вошедший пользователь не увидел данные предыдущего на долю секунды:
+      queryClient.removeQueries({ queryKey: ["profile"] });
     }
   };
 
