@@ -11,14 +11,7 @@ import { ResetPasswordPage } from "@/pages/ResetPasswordPage/ResetPasswordPage";
 import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
 import { TermsPage } from "@/pages/Legal/TermsPage";
 import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
-
-//Компонент-обертка, который ограничивает доступ к определенным страницам приложения в зависимости от статуса авторизации пользователя.
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  //Извлекаем статус авторизации из глобального состояния с помощью хука useAuthStore:
-  const isAuth = useAuthStore((state) => state.isAuth);
-  //Если пользователь не авторизован, перенаправляем его на страницу /auth:
-  return isAuth ? children : <Navigate to="/auth" replace />;
-};
+import { ProtectedRoute } from "../ui/ProtectedRoute";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
