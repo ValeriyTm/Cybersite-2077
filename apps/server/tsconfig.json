@@ -7,7 +7,7 @@
     "baseUrl": ".",
     // Настраиваем алиас для пакета validation, указывая путь к его исходному файлу:
     "paths": {
-      "@repo/validation": ["../../packages/validation/index.ts"]
+      "@repo/validation": ["../../packages/validation/src/index.ts"]
     },
     "outDir": "./dist", //Папка, куда попадет готовый скомпилированный JavaScript код после запуска команды npm run build.
 
@@ -25,6 +25,10 @@
     "forceConsistentCasingInFileNames": true
   },
   // Указываем, какие файлы включать в компиляцию, добавляя путь к пакету validation:
-  "include": ["src/**/*", "../../packages/validation/index.ts"],
+  "include": [
+    "src/**/*",
+    "../../packages/validation/index.ts",
+    "vitest.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
