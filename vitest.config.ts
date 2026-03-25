@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom", // Чтобы тестировать и логику, и компоненты
+    setupFiles: ["./vitest.setup.ts"], //Чтобы подключить методы testing library
     alias: {
       "@repo/validation": path.resolve(__dirname, "./packages/validation/src"),
       "@repo/types": path.resolve(__dirname, "./packages/types/src"),

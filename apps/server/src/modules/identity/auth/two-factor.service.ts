@@ -1,7 +1,7 @@
 ////-------------------------Сервис для реализации 2FA------------
 //Используем старый формат библиотек (require) в современном проекте на ES-модулях (import/export):
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
+import { createRequire } from "module"; // Поскольку проект использует ESM, то обычного require в нем нет, а эта функция создает его вручную.
+const require = createRequire(import.meta.url); //Создаём require относительно этого файла.
 
 //Подключаем ядро для работы с OTP (One-Time Password):
 const { authenticator } = require("@otplib/preset-default");
