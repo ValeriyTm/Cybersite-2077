@@ -16,7 +16,7 @@ import {
 import { IMaskInput } from "react-imask";
 import IMask from "imask";
 //Кастомный хук:
-import { useProfileActions } from "./useProfileActions";
+import { useProfileActions } from "@/features/auth/lib/useProfileActions";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
