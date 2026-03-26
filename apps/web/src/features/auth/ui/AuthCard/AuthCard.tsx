@@ -11,10 +11,15 @@ import { RegisterForm } from "../RegisterForm";
 //Хранилища:
 import { useAuthStore } from "@/features/auth/model/auth-store"; //Клиентское
 import { useProfile } from "@/features/auth/model/use-profile"; //Серверное
-
+//Стили:
 import styles from "./AuthCard.module.scss";
 
-export const AuthCard = () => {
+//Для пропсов (нужны для работы Storybook):
+interface AuthCardProps {
+  initialMode?: "login" | "register";
+}
+
+export const AuthCard = ({ initialMode }: AuthCardProps) => {
   //Извлекаем параметры из адресной строки (например, ?activated=true или ?token=abc).)
   const [searchParams] = useSearchParams();
 
@@ -32,7 +37,7 @@ export const AuthCard = () => {
 
   //Если в URL есть токен (после Google) или флаг активации, сразу показываем форму «Входа» (login), иначе — «Регистрацию»:
   const [mode, setMode] = useState<"login" | "register">(
-    isActivated || !!tokenFromUrl ? "login" : "register",
+    initialMode || (isActivated || !!tokenFromUrl ? "login" : "register"),
   );
 
   //Обработка успешного OAuth (если вернулись с токеном в URL):

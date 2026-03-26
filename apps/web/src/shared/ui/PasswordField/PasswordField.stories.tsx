@@ -8,7 +8,7 @@ const meta: Meta<typeof PasswordField> = {
     layout: "centered",
   },
   tags: ["autodocs"],
-  // Мокаем registration, чтобы React Hook Form не выдавал ошибки
+  // Мокаем registration, чтобы React Hook Form не выдавал ошибки:
   args: {
     label: "Пароль",
     registration: {
