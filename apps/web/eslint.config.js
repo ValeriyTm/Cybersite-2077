@@ -6,6 +6,7 @@ import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
+import cypress from "eslint-plugin-cypress";
 
 //Для работы с абсолютными путями в ESLint, нужно указать __dirname и __filename,
 //так как в модулях ES эти переменные не определены по умолчанию:
@@ -26,10 +27,14 @@ export default tseslint.config(
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
+      cypress: cypress,
     },
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser, // Разрешает использование 'window', 'document' и т.д.
+      globals: {
+        ...globals.browser, // Разрешает использование 'window', 'document' и т.д.
+        ...cypress.environments.globals, //Добавляем глобальные переменные cy, it, describe
+      },
       parserOptions: {
         tsconfigRootDir: __dirname, // Устанавливает корневой каталог для поиска tsconfig
         project: ["./tsconfig.app.json", "./tsconfig.node.json"],

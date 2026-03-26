@@ -8,7 +8,12 @@
     "useDefineForClassFields": true, //Заставляет поля в классах работать по стандарту ECMAScript (важно для корректного поведения логики в некоторых библиотеках).
     "lib": ["ESNext", "DOM", "DOM.Iterable"], // Говорит TS, какие типы «знать» по умолчанию.
     "module": "ESNext", //Использует самый современный формат модулей.
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"], //Добавляет поддержку специфических типов Vite, Vitest и testing-library
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "cypress"
+    ], //Добавляет поддержку специфических типов Vite, Vitest и testing-library
     "skipLibCheck": true, //Не проверять типы внутри node_modules
 
     // В monorepo мы импортируем код из ../../packages,
@@ -39,5 +44,10 @@
     "noFallthroughCasesInSwitch": true //Защита от багов в switch, когда забыл написать break.
   },
   //Проверять только файлы внутри папки src + Vite env types:
-  "include": ["src", "vite-env.d.ts", "../../packages/validation/**/*.ts"]
+  "include": [
+    "src",
+    "vite-env.d.ts",
+    "../../packages/validation/**/*.ts",
+    "cypress"
+  ]
 }
