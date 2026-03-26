@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
@@ -14,41 +17,35 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 //Задаём массив настроек:
-export default tseslint.config(
-  {
-    //Игнорируем папку сборки, чтобы ESLint не проверял сгенерированные файлы:
-    ignores: ["dist"],
+export default tseslint.config({
+  //Игнорируем папку сборки, чтобы ESLint не проверял сгенерированные файлы:
+  ignores: ["dist"],
+}, //Включаем базовые конфигурации для JavaScript и TypeScript, а также регистрируем правила для React Hooks и React Refresh:
+js.configs.recommended, ...tseslint.configs.recommended, {
+  files: ["**/*.{ts,tsx}"], // Применять эти правила только к TS и React файлам
+  plugins: {
+    "react-hooks": reactHooks,
+    "react-refresh": reactRefresh,
+    cypress: cypress,
   },
-  //Включаем базовые конфигурации для JavaScript и TypeScript, а также регистрируем правила для React Hooks и React Refresh:
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ["**/*.{ts,tsx}"], // Применять эти правила только к TS и React файлам
-    plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
-      cypress: cypress,
+  languageOptions: {
+    ecmaVersion: 2020,
+    globals: {
+      ...globals.browser, // Разрешает использование 'window', 'document' и т.д.
+      ...cypress.environments.globals, //Добавляем глобальные переменные cy, it, describe
     },
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: {
-        ...globals.browser, // Разрешает использование 'window', 'document' и т.д.
-        ...cypress.environments.globals, //Добавляем глобальные переменные cy, it, describe
-      },
-      parserOptions: {
-        tsconfigRootDir: __dirname, // Устанавливает корневой каталог для поиска tsconfig
-        project: ["./tsconfig.app.json", "./tsconfig.node.json"],
-      },
-    },
-    //Тут активируем конкретные проверки для React Hooks и React Refresh, а также разрешаем экспорт констант в правилах React Refresh:
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+    parserOptions: {
+      tsconfigRootDir: __dirname, // Устанавливает корневой каталог для поиска tsconfig
+      project: ["./tsconfig.app.json", "./tsconfig.node.json"],
     },
   },
-  //Строка для устранения конфликтов с Prettier (всегда последняя):
-  eslintConfigPrettier,
-);
+  //Тут активируем конкретные проверки для React Hooks и React Refresh, а также разрешаем экспорт констант в правилах React Refresh:
+  rules: {
+    ...reactHooks.configs.recommended.rules,
+    "react-refresh/only-export-components": [
+      "warn",
+      { allowConstantExport: true },
+    ],
+  },
+}, //Строка для устранения конфликтов с Prettier (всегда последняя):
+eslintConfigPrettier, storybook.configs["flat/recommended"]);

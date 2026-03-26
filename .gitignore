@@ -31,3 +31,6 @@ docs/
 # Папка от Prisma:
 generated/
 
+
+*storybook.log
+storybook-static
