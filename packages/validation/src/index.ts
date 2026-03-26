@@ -124,13 +124,7 @@ export const UpdateProfileSchema = z
         "Введите корректный номер телефона",
       )
       .nullish(),
-    // birthday: z
-    //   .date({
-    //     invalid_type_error: "Введите корректную дату",
-    //   })
-    //   .max(new Date(), "Дата не может быть в будущем")
-    //   .nullable() // Разрешаем null для базы
-    //   .optional(),
+
     birthday: z.coerce
       .date({
         invalid_type_error: "Введите корректную дату",

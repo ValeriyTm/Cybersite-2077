@@ -2,10 +2,12 @@ import { defineConfig } from "vitest/config";
 import { fileURLToPath } from "node:url";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "@vitest/browser-playwright";
+import path from "node:path"; /////
 
 //Пути, которые будем использовать для алиасов:
-const srcPath = fileURLToPath(new URL("./src", import.meta.url));
-const storybookPath = fileURLToPath(new URL("./.storybook", import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url)); /////
+const srcPath = path.resolve(__dirname, "./src");
+const storybookPath = path.resolve(__dirname, "./.storybook");
 
 export default defineConfig({
   test: {
