@@ -1,0 +1,88 @@
+.avatarWrapper {
+  position: relative;
+  width: 120px; // Стандартный размер для профиля
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden; // Чтобы картинка не вылезала за круг
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+
+  // Сама картинка
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Гарантирует, что лицо не растянется
+    transition: opacity 0.3s ease;
+  }
+
+  // Эффект при наведении
+  &:hover {
+    .avatarOverlay {
+      opacity: 1;
+    }
+    border-color: #3b82f6; // Подсвечиваем рамку при наведении
+  }
+}
+
+// Контейнер для спиннера
+.spinnerOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6); // Полупрозрачный фон поверх фото
+}
+
+// Стили самого спиннера
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #3b82f6; // Цвет активной части спиннера
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+// Надпись "Сменить" при редактировании (Пункт 10.1)
+.avatarOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 8px 0;
+  background: rgba(0, 0, 0, 0.5); // Черная плашка снизу
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  font-weight: 500;
+  opacity: 0; // По умолчанию скрыта, появляется при hover
+  transition: opacity 0.3s ease;
+  pointer-events: none; // Чтобы клик шел сквозь надпись на обертку
+}
+
+// Анимация вращения
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Варианты размеров (для Storybook)
+.sm {
+  width: 40px;
+  height: 40px;
+}
+.md {
+  width: 80px;
+  height: 80px;
+}
+.lg {
+  width: 150px;
+  height: 150px;
+}

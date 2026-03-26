@@ -68,10 +68,13 @@ export const useProfileActions = (user: IUser | null | undefined) => {
 
   //------------Helper---------
   //-------Формируем правильный путь к аватару
-  //Мы можем получать аватар либо с сервера Google, либо с нашего сервера - из-за этого будет отличаться ссылка на аватар:
-  const avatarSrc = user?.avatarUrl?.startsWith("http")
-    ? user.avatarUrl
-    : `${API_URL}${user?.avatarUrl}`;
+  //Мы можем получать аватар либо с сервера Google, либо с нашего сервера, либо вообще дефолтное изображение возтмем
+  //- из-за этого будет отличаться ссылка на аватар:
+  const avatarSrc = user?.avatarUrl
+    ? user.avatarUrl.startsWith("http")
+      ? user.avatarUrl
+      : `${API_URL}${user.avatarUrl}`
+    : "/default-avatar.png";
 
   //-----------------Обработчики----------------
   //------Отправка формы для сохранения новых данных профиля:

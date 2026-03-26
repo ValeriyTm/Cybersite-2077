@@ -22,6 +22,7 @@ import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
 import { TwoFactorModal } from "@/features/auth/ui/TwoFactorModal";
 import { DeleteAccountModal } from "@/features/auth/ui/DeleteAccountModal";
+import { Avatar } from "@/shared/ui/Avatar";
 import { Input } from "@/shared/ui/Input";
 //Стили:
 import styles from "./ProfilePage.module.scss";
@@ -87,31 +88,14 @@ export const ProfilePage = () => {
     <div className={styles.container}>
       {/*Блок с именем, аватаром и кнопкой редактирования:*/}
       <div className={styles.profileHeader}>
-        <div
-          className={`${styles.avatarWrapper} ${isAvatarLoading ? styles.loading : ""}`}
+        <Avatar
+          src={avatarSrc}
+          isAvatarLoading={isAvatarLoading}
+          isEditing={isEditing}
           onClick={() =>
             isEditing && !isAvatarLoading && fileInputRef.current?.click()
           }
-        >
-          {/*Аватар:*/}
-          <img
-            //Если у пользователя есть ссылка на аватар (user?.avatarUrl), мы используем переменную avatarSrc, иначе берем дефолтный аватар:
-            src={user?.avatarUrl ? avatarSrc : "/default-avatar.png"}
-            alt="Аватар пользователя"
-            referrerPolicy="no-referrer" //Позволяет аватарам с Google отображаться
-            style={{ opacity: isAvatarLoading ? 0.5 : 1 }} //Пока идет запрос на сервер (isAvatarLoading === true), картинка становится полупрозрачной (0.5).
-          />
-          {/*Показываем спиннер поверх фото при загрузке:*/}
-          {isAvatarLoading && (
-            <div className={styles.spinnerOverlay}>
-              <div className={styles.spinner}></div>
-            </div>
-          )}
-          {/*Отображаем контейнер, где указано, что мы можем сменить аватар:*/}
-          {isEditing && !isAvatarLoading && (
-            <div className={styles.avatarOverlay}>Сменить</div>
-          )}
-        </div>
+        />
         {/*Инпут для загрузки аватара:*/}
         <input
           type="file"
