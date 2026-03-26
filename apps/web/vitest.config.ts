@@ -1,43 +1,50 @@
-// apps/web/vitest.config.ts
 import { defineConfig } from "vitest/config";
-import path from "path";
-import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { playwright } from '@vitest/browser-playwright';
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+import { fileURLToPath } from "node:url";
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
+import { playwright } from "@vitest/browser-playwright";
 
-// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
+//Пути, которые будем использовать для алиасов:
+const srcPath = fileURLToPath(new URL("./src", import.meta.url));
+const storybookPath = fileURLToPath(new URL("./.storybook", import.meta.url));
+
 export default defineConfig({
   test: {
-    projects: [{
-      extends: true,
-      test: {
-        globals: true,
-        environment: "jsdom",
-        alias: {
-          // Это должно указывать на твой src
-          "@": path.resolve(__dirname, "./src")
-        }
-      }
-    }, {
-      extends: true,
-      plugins: [
-      // The plugin will run tests for the stories defined in your Storybook config
-      // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-      storybookTest({
-        configDir: path.join(dirname, '.storybook')
-      })],
-      test: {
-        name: 'storybook',
-        browser: {
-          enabled: true,
-          headless: true,
-          provider: playwright({}),
-          instances: [{
-            browser: 'chromium'
-          }]
-        }
-      }
-    }]
-  }
+    globals: true,
+    environment: "jsdom",
+
+    //Важно алиасы поместить не глобально, а в каждый проект отдельно:
+    projects: [
+      //Unit-тесты:
+      {
+        name: "unit",
+        test: {
+          include: ["src/**/*.test.{ts,tsx}"],
+          environment: "jsdom",
+          alias: {
+            "@": srcPath,
+          },
+        },
+      },
+      //Тесты Storybook:
+      {
+        name: "storybook",
+        plugins: [
+          storybookTest({
+            configDir: storybookPath,
+          }),
+        ],
+        test: {
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [{ browser: "chromium" }],
+          },
+          alias: {
+            "@": srcPath,
+          },
+        },
+      },
+    ],
+  },
 });
