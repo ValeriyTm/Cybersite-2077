@@ -126,30 +126,8 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  minLength: 3
-                  maxLength: 20
-                  example: "user_123"
-                birthday:
-                  type: string
-                  format: date
-                  nullable: true
-                  description: Дата рождения (ДД.ММ.ГГГГ в UI, YYYY-MM-DD на сервере)
-                  example: "1995-05-20"
-                phone:
-                  type: string
-                  nullable: true
-                  description: Номер телефона в международном формате
-                  example: "+7 (999) 123-45-67"
-                gender:
-                  type: string
-                  nullable: true
-                  enum: [MALE, FEMALE]
-                  description: Пол пользователя (Enum из Prisma)
-                  example: "MALE"
+              $ref: "#/components/schemas/UserUpdateRequest"
+
       responses:
         "200":
           description: Успешное обновление профиля
@@ -175,11 +153,11 @@ paths:
       requestBody:
         required: true
         content:
-          multipart/form-data: # 🎯 Важно: для загрузки файлов используем этот тип
+          multipart/form-data:
             schema:
               type: object
               properties:
-                avatar: # Название поля в твоем FormData
+                avatar:
                   type: string
                   format: binary
                   description: Файл изображения (jpg, png)
@@ -263,8 +241,7 @@ paths:
                 type: object
                 properties:
                   accessToken:
-                    type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZjFmZjA2LTI2NjgtNGNhNi1hMTk5LTVhNGY3NDJjYTAyYSIsImVtYWlsIjoiZG9zZW4zMEB0dXRhbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NDYxMTEyNywiZXhwIjoxNzc0NjExNzI3fQ.NMpQPb1K2fttT-xEbO2dscsjEfB_UGtiJCgoqKu9wBg"
+                    $ref: "../components/schemas.yaml#/AccessToken"
                   user:
                     $ref: "../components/schemas.yaml#/User"
 
@@ -331,11 +308,7 @@ paths:
               required: [password]
               properties:
                 password:
-                  type: string
-                  format: password
-                  minLength: 1
-                  description: Текущий пароль пользователя
-                  example: "SafePassword123!"
+                  $ref: "../components/schemas.yaml#/UserPassword"
       responses:
         "204":
           description: Успех в удалении аккаунта
@@ -407,14 +380,9 @@ paths:
               required: [email]
               properties:
                 email:
-                  type: string
-                  format: email
-                  minLength: 1
-                  example: "test@example.com"
+                  $ref: "../components/schemas.yaml#/UserEmail"
                 captchaToken:
-                  type: string
-                  description: Токен от Google ReCaptcha
-                  example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+                  $ref: "../components/schemas.yaml#/CaptchaToken"
       responses:
         "200":
           description: Письмо со ссылкой на восстановление пароля отправлено юзеру
@@ -446,24 +414,14 @@ paths:
           application/json:
             schema:
               type: object
-              required: [token, password, confirmPassword, captchaToken]
+              required: [password, confirmPassword, captchaToken]
               properties:
                 password:
-                  type: string
-                  format: password
-                  minLength: 1
-                  description: Новый пароль пользователя
-                  example: "SafePassword123!"
+                  $ref: "../components/schemas.yaml#/UserPassword"
                 confirmPassword:
-                  type: string
-                  format: password
-                  minLength: 1
-                  description: Новый пароль пользователя (повторное введение)
-                  example: "SafePassword123!"
+                  $ref: "../components/schemas.yaml#/UserPassword"
                 captchaToken:
-                  type: string
-                  description: Токен от Google ReCaptcha
-                  example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+                  $ref: "../components/schemas.yaml#/CaptchaToken"
       responses:
         "200":
           description: Пароль успешно изменен
@@ -635,39 +593,22 @@ components:
           description: Для имени используйте только латиницу, цифры и нижнее подчеркивание
           example: "user_123"
         email:
-          type: string
-          format: email
-          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-          example: "test@example.com"
+          $ref: "../components/schemas.yaml#/UserEmail"
         password:
-          type: string
-          format: password
-          minLength: 8
-          maxLength: 32
-          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,32}$'
-          description: Пароль должен содержать заглавную букву, цифру и спецсимвол
-          example: "SafePassword123!"
+          $ref: "../components/schemas.yaml#/UserPassword"
         captchaToken:
-          type: string
-          description: Токен от Google ReCaptcha
-          example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+          $ref: "../components/schemas.yaml#/CaptchaToken"
 
     LoginRequest:
       type: object
       required: [email, password, captchaToken, rememberMe]
       properties:
         email:
-          type: string
-          format: email
-          example: "test@example.com"
+          $ref: "../components/schemas.yaml#/UserEmail"
         password:
-          type: string
-          format: password
-          example: "SafePassword123!"
+          $ref: "../components/schemas.yaml#/UserPassword"
         captchaToken:
-          type: string
-          description: Токен от Google ReCaptcha
-          example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+          $ref: "../components/schemas.yaml#/CaptchaToken"
         rememberMe:
           type: boolean
           description: флаг для определения типа куки, которые будут отправлены сервером.
@@ -679,8 +620,7 @@ components:
           type: string
           example: "Вход выполнен успешно"
         accessToken:
-          type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZjFmZjA2LTI2NjgtNGNhNi1hMTk5LTVhNGY3NDJjYTAyYSIsImVtYWlsIjoiZG9zZW4zMEB0dXRhbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NDU4NTgyOSwiZXhwIjoxNzc0NTg2NDI5fQ.rX1lLR2vD0JTX2C_ruo3zqkkN6_odEw9cI8460Oav90"
+          $ref: "../components/schemas.yaml#/AccessToken"
         user:
           $ref: "#/components/schemas/User"
 
@@ -702,25 +642,37 @@ components:
       required: [currentPassword, confirmPassword, newPassword]
       properties:
         currentPassword:
-          type: string
-          format: password
-          minLength: 1
-          description: Текущий пароль пользователя
-          example: "SafePassword123!"
+          $ref: "../components/schemas.yaml#/UserPassword"
         confirmPassword:
-          type: string
-          format: password
-          minLength: 1
-          description: Текущий пароль пользователя (повторное введение)
-          example: "SafePassword123!"
+          $ref: "../components/schemas.yaml#/UserPassword"
         newPassword:
-          type: string
-          format: password
-          minLength: 8
-          maxLength: 32
-          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,32}$'
-          description: Новый пароль пользователя
-          example: "SafePassword1234!"
+          $ref: "../components/schemas.yaml#/UserPassword"
 
     User:
       $ref: "../components/schemas.yaml#/User"
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 20
+          example: "user_123"
+        birthday:
+          type: string
+          format: date
+          nullable: true
+          description: Дата рождения (ДД.ММ.ГГГГ в UI, YYYY-MM-DD на сервере)
+          example: "1995-05-20"
+        phone:
+          type: string
+          nullable: true
+          description: Номер телефона в международном формате
+          example: "+7 (999) 123-45-67"
+        gender:
+          type: string
+          nullable: true
+          enum: [MALE, FEMALE]
+          description: Пол пользователя (Enum из Prisma)
+          example: "MALE"

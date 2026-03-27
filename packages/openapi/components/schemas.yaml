@@ -14,10 +14,7 @@ User:
       description: Уникальный идентификатор пользователя (уникальный)
       example: "dff1ff06-2668-4ca6-a199-5a4f742ca02a"
     email:
-      type: string
-      format: email
-      description: Электронная почта (уникальная)
-      example: "test@example.com"
+      $ref: "#/UserEmail"
     name:
       type: string
       description: Имя пользователя (логин) (уникальное)
@@ -53,3 +50,28 @@ User:
       type: boolean
       description: Включена ли двухфакторная аутентификация для этого юзера
       example: false
+
+UserPassword:
+  type: string
+  format: password
+  minLength: 8
+  maxLength: 32
+  pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,32}$'
+  description: Пароль должен содержать заглавную букву, строчную, цифру и спецсимвол.
+  example: "SafePass123!"
+
+UserEmail:
+  type: string
+  format: email
+  pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+  description: Электронная почта
+  example: "test@example.com"
+
+CaptchaToken:
+  type: string
+  description: Токен от Google ReCaptcha
+  example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+
+AccessToken:
+  type: string
+  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZjFmZjA2LTI2NjgtNGNhNi1hMTk5LTVhNGY3NDJjYTAyYSIsImVtYWlsIjoiZG9zZW4zMEB0dXRhbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NDU4NTgyOSwiZXhwIjoxNzc0NTg2NDI5fQ.rX1lLR2vD0JTX2C_ruo3zqkkN6_odEw9cI8460Oav90"
