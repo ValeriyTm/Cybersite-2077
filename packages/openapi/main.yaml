@@ -42,3 +42,10 @@ paths:
     $ref: "./modules/identity.yaml#/paths/~1profile~1update"
   /api/identity/profile/avatar:
     $ref: "./modules/identity.yaml#/paths/~1profile~1avatar"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

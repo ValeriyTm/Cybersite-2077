@@ -70,6 +70,10 @@ paths:
       responses:
         "200":
           description: Успешный вход или шаг 2FA
+          # В ответе в куках помещаем refresh-токен:
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/SetRefreshCookie"
           content:
             application/json:
               schema:
@@ -102,8 +106,9 @@ paths:
       tags:
         - Profile
       summary: Получение данных текущего пользователя
-      description: Возвращает полную информацию о профиле для ProfilePage (Пункт 11.3)
+      description: Возвращает полную информацию о профиле для ProfilePage
       security:
+        # Для доступа к этому эндпоинту нужен JWT токен (Access token):
         - bearerAuth: []
       responses:
         "200":
@@ -228,13 +233,22 @@ paths:
 
   /refresh:
     post:
-      tags:
-        - Auth
+      tags: [Auth]
       summary: Обновление пары токенов (access и refresh)
+      # Куки (refresh токен) в запросе:
+      parameters:
+        - in: cookie
+          name: refreshToken #Имя куки, которое ищет бэкенд
+          required: true
+          schema:
+            type: string
       description: Сервер принимает refreshToken из куки и выдает новую пару токенов.
       responses:
         "200":
           description: Токены обновлены
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/SetRefreshCookie"
           content:
             application/json:
               schema:
@@ -525,6 +539,9 @@ paths:
       responses:
         "200":
           description: Успешный вход - выдаются токены и информация о пользователе
+          headers:
+            Set-Cookie:
+              $ref: "#/components/headers/SetRefreshCookie"
           content:
             application/json:
               schema:
@@ -676,3 +693,10 @@ components:
           enum: [MALE, FEMALE]
           description: Пол пользователя (Enum из Prisma)
           example: "MALE"
+
+  headers:
+    SetRefreshCookie:
+      description: Установка Refresh-токена в HttpOnly куку
+      schema:
+        type: string
+        example: "refreshToken=abc123...; HttpOnly; Secure; SameSite=Strict; Path=/api/identity/auth/refresh"
