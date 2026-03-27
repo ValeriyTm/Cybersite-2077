@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info:
+  title: Cybersite 2077 API Documentation
+  version: 1.0.0
+paths:
+  # Подключаем пути из модуля Identity
+  /api/identity/auth/register:
+    $ref: "./modules/identity.yaml#/paths/~1register"
+  /api/identity/auth/login:
+    $ref: "./modules/identity.yaml#/paths/~1login"

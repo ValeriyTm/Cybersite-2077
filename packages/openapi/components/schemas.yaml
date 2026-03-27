@@ -1,0 +1,55 @@
+User:
+  type: object
+  description: Базовая модель пользователя (Identity)
+  required:
+    - id
+    - email
+    - name
+    - role
+    - is2FAEnabled
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Уникальный идентификатор пользователя (уникальный)
+      example: "dff1ff06-2668-4ca6-a199-5a4f742ca02a"
+    email:
+      type: string
+      format: email
+      description: Электронная почта (уникальная)
+      example: "test@example.com"
+    name:
+      type: string
+      description: Имя пользователя (логин) (уникальное)
+      example: "user_123"
+    role:
+      type: string
+      enum: [USER, MANAGER, CONTENT_EDITOR, ADMIN, SUPERADMIN]
+      desctiption: Роль пользователя в системе
+      example: "USER"
+    avatarUrl:
+      type: string
+      nullable: true
+      description: Ссылка на изображение профиля (на файл на сервере бэкенда или в Google)
+      example: "/uploads/avatars/user-1.jpg"
+    birthday:
+      type: string
+      format: date
+      nullable: true
+      description: Дата рождения (ДД.ММ.ГГГГ в UI, YYYY-MM-DD на сервере)
+      example: "1995-05-20"
+    phone:
+      type: string
+      nullable: true
+      description: Номер телефона в международном формате
+      example: "+7 (999) 123-45-67"
+    gender:
+      type: string
+      nullable: true
+      enum: [MALE, FEMALE]
+      description: Пол пользователя (Enum из Prisma)
+      example: "MALE"
+    is2FAEnabled:
+      type: boolean
+      description: Включена ли двухфакторная аутентификация для этого юзера
+      example: false

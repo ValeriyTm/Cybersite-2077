@@ -1,0 +1,725 @@
+tags:
+  - name: подмодуль Auth (модуль Identity)
+    description: Регистрация, логин и управление сессиями
+  - name: подмодуль Profile (модуль Identity)
+    description: Данные пользователя и настройки профиля
+
+paths:
+  /register:
+    post:
+      tags:
+        - Auth
+      summary: Регистрация нового пользователя
+      description: Создает аккаунт и отправляет письмо для подтверждения
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Успешная регистрация и создание записи в БД в таблице Users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Пользователь создан!"
+                  user:
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: "dff1ff06-2668-4ca6-a199-5a4f742ca02a"
+                      email:
+                        type: string
+                        format: email
+                        example: "test@example.com"
+        "400":
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                EmailConflict:
+                  value: { "message": "Некорректный email или пароль" }
+                  summary: Скрытая ошибка дубликата почты
+                NameConflict:
+                  value: { "message": "Это имя уже занято, выберите другое" }
+                  summary: Ошибка дубликата логина
+
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Авторизация (Логин)
+      description: Стандартный вход в профиль пользователя. Если включена 2FA, возвращает информацию для второго шага
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Успешный вход или шаг 2FA
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/AuthSuccessResponse"
+                  - $ref: "#/components/schemas/Login2FARequiredResponse"
+        "401":
+          description: Неверный логин или пароль
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Неверный email или пароль"
+        "403":
+          description: Аккаунт не активирован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Аккаунт не активирован. Проверьте почту."
+
+  /profile/me:
+    get:
+      tags: -Profile
+      summary: Получение данных текущего пользователя
+      description: Возвращает полную информацию о профиле для ProfilePage (Пункт 11.3)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Данные профиля успешно получены
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/User"
+
+  /profile/update:
+    patch:
+      tags:
+        - Profile
+      summary: Редактирование текстовых данных профиля
+      description: Обновление имени, даты рождения, телефона и пола пользователя
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+                  example: "user_123"
+                birthday:
+                  type: string
+                  format: date
+                  nullable: true
+                  description: Дата рождения (ДД.ММ.ГГГГ в UI, YYYY-MM-DD на сервере)
+                  example: "1995-05-20"
+                phone:
+                  type: string
+                  nullable: true
+                  description: Номер телефона в международном формате
+                  example: "+7 (999) 123-45-67"
+                gender:
+                  type: string
+                  nullable: true
+                  enum: [MALE, FEMALE]
+                  description: Пол пользователя (Enum из Prisma)
+                  example: "MALE"
+      responses:
+        "200":
+          description: Успешное обновление профиля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Профиль успешно обновлен"
+                  user:
+                    $ref: "../components/schemas.yaml#/User"
+
+  /profile/avatar:
+    patch:
+      tags:
+        - Profile
+      summary: Загрузка или обновление аватара
+      description: Принимает файл изображения и сохраняет на сервере
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data: # 🎯 Важно: для загрузки файлов используем этот тип
+            schema:
+              type: object
+              properties:
+                avatar: # Название поля в твоем FormData
+                  type: string
+                  format: binary
+                  description: Файл изображения (jpg, png)
+      responses:
+        "200":
+          description: Аватар успешно обновлен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Аватар обновлен"
+                  avatarUrl:
+                    type: string
+                    example: "/uploads/avatars/avatar-1774609004286-587742782.jpg"
+        "400":
+          description: Аватар не удалось загрузить
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Только изображения (jpeg, jpg, png, webp) до 2МБ"
+
+  /logout:
+    post:
+      tags:
+        - Auth
+      summary: Выход из текущей сессии
+      description: Удаляет Refresh-токен из куки и инвалидирует текущую сессию
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Успешный выход
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Выход выполнен успешно"
+
+  /logout-all:
+    post:
+      tags:
+        - Auth
+      summary: Выход со всех устройств
+      description: Инвалидирует все активные сессии пользователя в базе данных
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Все сессии завершены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Выход со всех устройств выполнен успешно"
+
+  /refresh:
+    post:
+      tags:
+        - Auth
+      summary: Обновление пары токенов (access и refresh)
+      description: Сервер принимает refreshToken из куки и выдает новую пару токенов.
+      responses:
+        "200":
+          description: Токены обновлены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZjFmZjA2LTI2NjgtNGNhNi1hMTk5LTVhNGY3NDJjYTAyYSIsImVtYWlsIjoiZG9zZW4zMEB0dXRhbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NDYxMTEyNywiZXhwIjoxNzc0NjExNzI3fQ.NMpQPb1K2fttT-xEbO2dscsjEfB_UGtiJCgoqKu9wBg"
+                  user:
+                    $ref: "../components/schemas.yaml#/User"
+
+        "401":
+          description: Refresh-токен невалиден или просрочен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Сессия не найдена"
+
+  /change-password:
+    patch:
+      tags:
+        - Auth
+      summary: Смена пароля из профиля
+      description: Изменение пароля пользователя в форме в профиле
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "200":
+          description: Успешное изменение пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Пароль успешно изменен"
+        "400":
+          description: Неудачное изменение пароля (текущий пароль введен неверно)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Текущий пароль введен неверно"
+
+  /delete-account:
+    delete:
+      tags:
+        - Auth
+      summary: Удаление аккаунта
+      description: Полное удаление аккаунта пользователя
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password:
+                  type: string
+                  format: password
+                  minLength: 1
+                  description: Текущий пароль пользователя
+                  example: "SafePassword123!"
+      responses:
+        "204":
+          description: Успех в удалении аккаунта
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Аккаунт успешно удален"
+        "400":
+          description: Неудача в удалении аккаунта
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Неверный пароль для удаления аккаунта"
+
+  /activate/{token}:
+    get:
+      tags:
+        - Auth
+      summary: Активация аккаунта
+      description: Принимает токен из ссылки в письме, активирует пользователя в БД и перенаправляет на фронтенд
+      parameters:
+        - name: token
+          in: path
+          required: true
+          description: Уникальный токен активации из письма
+          schema:
+            type: string
+            example: "abc123token"
+      responses:
+        "302":
+          description: Успешная активация. Редирект на фронтенд с параметром успеха.
+          headers:
+            Location:
+              description: URL фронтенда с флагом активации
+              schema:
+                type: string
+                example: "http://localhost:5173/auth?activated=true"
+        "400":
+          description: Токен невалиден или срок его действия истек
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Неверный или просроченный токен активации"
+
+  /forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Запрос на восстановление пароля
+      description: Отправляет письмо с токеном на email для перехода на форму восстановления пароля
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  minLength: 1
+                  example: "test@example.com"
+                captchaToken:
+                  type: string
+                  description: Токен от Google ReCaptcha
+                  example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+      responses:
+        "200":
+          description: Письмо со ссылкой на восстановление пароля отправлено юзеру
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Если такой email зарегистрирован, письмо со ссылкой отправлено."
+
+  /reset-password:
+    post:
+      tags:
+        - Auth
+      summary: Установка нового пароля
+      description: Восстановление пароля (использует токен из письма для смены пароля)
+      parameters:
+        -name: token
+        in: query
+        required: true
+        schema:
+          type: string
+          example: "0b6fe4cea681b84f160396eb8ba00c96c8937cf78fbcf561d08613f73dadc267"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password, confirmPassword, captchaToken]
+              properties:
+                password:
+                  type: string
+                  format: password
+                  minLength: 1
+                  description: Новый пароль пользователя
+                  example: "SafePassword123!"
+                confirmPassword:
+                  type: string
+                  format: password
+                  minLength: 1
+                  description: Новый пароль пользователя (повторное введение)
+                  example: "SafePassword123!"
+                captchaToken:
+                  type: string
+                  description: Токен от Google ReCaptcha
+                  example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+      responses:
+        "200":
+          description: Пароль успешно изменен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Пароль успешно изменен. Теперь вы можете войти."
+
+  /2fa/setup:
+    get:
+      tags:
+        - Auth
+      summary: Инициация настройки 2FA
+      description: На сервере генерируется секретный ключ и QR-код для сканирования в приложении (Google Authenticator). Ссылка на qr-код посылается клиенту
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Данные для настройки получены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  qrCodeUrl:
+                    type: string
+                    example: "data:image/png;base64,..."
+                    description: Ссылка для отображения QR-кода
+
+  /2fa/enable:
+    post:
+      tags:
+        - Auth
+      summary: Активация 2FA
+      description: Проверяет первый код из приложения и окончательно активирует 2FA для аккаунта пользователя
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code:
+                  type: string
+                  pattern: "^[0-9]{6}$"
+                  example: "123456"
+                  description: 6-значный код из приложения аутентификатора
+      responses:
+        "200":
+          description: Активация 2FA для аккаунта пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "2FA успешно включена"
+        "400":
+          description: Неверный код подтверждения
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Неверный код подтверждения"
+
+  /2fa/verify:
+    post:
+      tags:
+        - Auth
+      summary: Проверка кода 2FA при входе в аккаунт
+      description: Принимает временный ID пользователя и 6-значный код из приложения для завершения авторизации.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId, code] # 🎯 userId берем из ответа /login
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+                  description: Временный идентификатор пользователя
+                  example: "a14c494e-2e2f-4622-9218-d5f5e770b09c"
+                code:
+                  type: string
+                  description: Шестизначный код из Google Authenticator
+                  pattern: "^[0-9]{6}$"
+                  example: "123456"
+      responses:
+        "200":
+          description: Успешный вход - выдаются токены и информация о пользователе
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/AuthSuccessResponse"
+        "401":
+          description: Ошибка идентификации пользователя при входе с 2FA
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Неверный код 2FA"
+
+  /google:
+    get:
+      tags:
+        - Auth
+      summary: Инициация входа через Google (OAuth + OIDC)
+      description: Перенаправляет пользователя на страницу выбора аккаунта Google.
+      responses:
+        "302":
+          description: Редирект на Google OAuth сервер
+          headers:
+            Location:
+              schema:
+                type: string
+                example: "https://accounts.google.com?..."
+
+  /google/callback:
+    get:
+      tags:
+        - Auth
+      summary: Обработка ответа от Google (OAuth + OIDC)
+      description: Принимает код авторизации от Google, обменивает его на профиль пользователя и выдает токены нашего приложения.
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Код авторизации, предоставленный Google
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Успешный вход. Редирект на фронтенд с токеном в URL или установка Refresh-куки.
+          headers:
+            Location:
+              schema:
+                type: string
+                example: "http://localhost:5173/auth/success?token=..."
+        "400":
+          description: Ошибка авторизации (неверный код или отмена пользователем)
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [name, email, password, captchaToken]
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 20
+          pattern: ^[a-z0-9_]+$
+          description: Для имени используйте только латиницу, цифры и нижнее подчеркивание
+          example: "user_123"
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          example: "test@example.com"
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 32
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,32}$'
+          description: Пароль должен содержать заглавную букву, цифру и спецсимвол
+          example: "SafePassword123!"
+        captchaToken:
+          type: string
+          description: Токен от Google ReCaptcha
+          example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+
+    LoginRequest:
+      type: object
+      required: [email, password, captchaToken, rememberMe]
+      properties:
+        email:
+          type: string
+          format: email
+          example: "test@example.com"
+        password:
+          type: string
+          format: password
+          example: "SafePassword123!"
+        captchaToken:
+          type: string
+          description: Токен от Google ReCaptcha
+          example: "0cAFcWeA5GUva0glN3oazkHic0c2eNxVim-nvkuBAAwcwF2EkqBECmcAupWopACqRiMPpFQ_715TUVPgg0g-WwiI3VYRj5nZz46id_mOtz3biQJMUIKnrUEKEylXtUT0gIckOylmSCfsz55G2GsL14nr6gcrDx-Cj9IDZlGtCQs8WMfzdIY6mjTZB7dyPph6NmgZqB-eRn0aUxQgCDlUcyoVApdcDjTCXPcjNoNOSpvnwbCNgIeK9fWTAxRPNzpNpowe5PUJzV79Gw6yZtzffWcHfhiSLshybtBAF-i9gF7__0gK0GHOQyAwGnAMgwp5sRsNvuMOcHwhmzzeFyFQGHG6qHylUDQRsC-5jJsBrAKkZIm-EGWmFUi-ETi3YgEHM1Kx7Kw4cOcyJVBHLOadAGAlKKjrRpiHDvYGFI27Tasi2JYwb3557M2wpi6mhM1hY1bzHsY1-EQ0kOvZzfOrPP2w37E7GKoGVjyzfmZ3CTHIv1UftvxBJxcNRM1O57TsDgn5oJ452ADDKHAlFHNnlOaWfFvfthV9HE1WD8QQCKMGt0EKOMa2H7TL2d5m4JpbzFGPXPoDmJQdkZeKvvHWmGai4fZYb7_rKxIUcjdalLiO3--VynJL92q_SIvVjhnjXn0rLemFpuvFpBIZEjB1_Qvg2pdXce4UsV-Rtr4e8C6iBAMJSEL-Yrnbz598mU2QL1NrNtAYfYhW7XGhlrLU1nrUEMboj17YMyNB1UBby6-wW4GfFI6GDz2Q7LB6J3fAk-E02GKx_TDJbI5vxt8b7XN2Eul8GVIQeC1wmBXW12eqeo2dJOlXovH6-JJ03PoKGOP4hU_ZH7TTr6gI9eB86fiBbmN8bF3t91v_3iBswXF_Rd2Hx8H7f-SqjLZC5Qgh9w_U479aXHveRKz66bbcymP2RB6k6tIl5o3T4jT2LtOxdhd-A6JljwVhdbWHru913cPY_lXHhYcZWDNLRjh4-Xb4urrObVU1cq3gz9U4sXjCsIPCXx-jvRzsodHo-SNdcPl2E2ertfMxnJQHE2a1CSL94YD66JrEpM0MAokxTSRz32GAxNqL8aqRROPKyeDj59p8tsYmaEoEjUg3YxxXIDOxJiut3D50CkVuxDRsXN5y1qdUwAsKTbFCncYBvNcFp22yRE_3sGm43L1ST7W40Z752fskSI1BGV41vWogYs4d-tD8dhzjiBoamVG3jlQro7SqbaUeMcNNI1gkfeRboMflfZkvFyqDlSf19gl06Q21hSpPhnmvKSRQ8N_T_0ZIj1RyDqa1jVkDqWKJ61cYEHPu3oEe_tgCUSrk033WTq5JJxf70HIq7bvRfPUUfTC_QMWR-m8RwnbA_GbR48aQWuL13wHwSz0RDdUhoBZcSxIFboV8-Z_LNqvJ7iGOmXTvVOMZU43JtD5hOCGLhr0-boC8K-TbNeLiypxRfISl_1k7S-WyweuL2tIhUoW5wscIUsBMpHWRJldPhoqCLLZxLVtt13gKh_orTJ0g0eZilEAihY9JcEQRQmhw-Oea-GYx7KXPnqAZsqL-wWe-_4keupoxlmlz2c3_hhQyIzVZyDbaY7SdiZxN8gBFJUfeNzzEoUsd8E6cvMaIeD0RZFCqtunlFfEkhgU8t-mgjjt0ekCVelKZwxK4GY0YqUtfXPtMN3SMBYkE_9DXTfQ_dnpixELZu1JRZ_usam_3uuF_iunYu_9Aj8hKLee_YkSmhSnZruVvG1aIWn2_HqqHekOJJer0jH0A8mN_uqAVXC6B7JGOVFISVM7gBF6OWIZ1TSpy9V825LnyTwkUI7Mv2SfQYNWDddL9i8MepCi4zBYchatEFzkLiQECvi3l66zwE-NnNKRXGk3LJTclNMayNIYzBfxmgGZRCTnxSIpWMfbVzXjp98S9Y_5IR4JGeypZIXA5woLog71L0CIJVC5HyHMOpD-jRRPJLA_TAkItwjipLtziOllfymvmDzyfsn7s-e2s5Tgt6S7-ZEPnCsFjRQZuH6jXh7LEpoKGxpWLNnrPqbNR-QR9kdgVtY4CTGZUTcwMXxYFT31a19NUNfcAJBceU0qOzY67C0j-MZHFEQ93S4E3otYJSObAG79ma_1sCTPe1819v0n3f4y03e"
+        rememberMe:
+          type: boolean
+          description: флаг для определения типа куки, которые будут отправлены сервером.
+
+    AuthSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Вход выполнен успешно"
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZjFmZjA2LTI2NjgtNGNhNi1hMTk5LTVhNGY3NDJjYTAyYSIsImVtYWlsIjoiZG9zZW4zMEB0dXRhbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NDU4NTgyOSwiZXhwIjoxNzc0NTg2NDI5fQ.rX1lLR2vD0JTX2C_ruo3zqkkN6_odEw9cI8460Oav90"
+        user:
+          $ref: "#/components/schemas/User"
+
+    Login2FARequiredResponse:
+      type: object
+      properties:
+        requires2FA:
+          type: boolean
+          description: Флаг, необходимый для включения 2FA (заставляет пользователя проходить второй этап для входа в аккаунт)
+          example: true
+        userId:
+          type: string
+          format: uuid
+          description: ID пользователя для последующей верификации кода
+          example: "a14c494e-2e2f-4622-9218-d5f5e770b09c"
+
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, confirmPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          format: password
+          minLength: 1
+          description: Текущий пароль пользователя
+          example: "SafePassword123!"
+        confirmPassword:
+          type: string
+          format: password
+          minLength: 1
+          description: Текущий пароль пользователя (повторное введение)
+          example: "SafePassword123!"
+        newPassword:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 32
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,32}$'
+          description: Новый пароль пользователя
+          example: "SafePassword1234!"
+
+    User:
+      $ref: "../components/schemas.yaml#/User"
