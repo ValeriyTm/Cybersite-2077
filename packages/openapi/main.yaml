@@ -2,9 +2,43 @@ openapi: 3.0.3
 info:
   title: Cybersite 2077 API Documentation
   version: 1.0.0
+  # Подключаем пути из модуля Identity:
 paths:
-  # Подключаем пути из модуля Identity
+  # api/identity/auth:
   /api/identity/auth/register:
     $ref: "./modules/identity.yaml#/paths/~1register"
   /api/identity/auth/login:
     $ref: "./modules/identity.yaml#/paths/~1login"
+  /api/identity/auth/logout:
+    $ref: "./modules/identity.yaml#/paths/~1logout"
+  /api/identity/auth/logout-all:
+    $ref: "./modules/identity.yaml#/paths/~1logout-all"
+  /api/identity/auth/refresh:
+    $ref: "./modules/identity.yaml#/paths/~1refresh"
+  /api/identity/auth/change-password:
+    $ref: "./modules/identity.yaml#/paths/~1change-password"
+  /api/identity/auth/delete-account:
+    $ref: "./modules/identity.yaml#/paths/~1delete-account"
+  /api/identity/auth/activate/{token}:
+    $ref: "./modules/identity.yaml#/paths/~1activate~1{token}"
+  /api/identity/auth/forgot-password:
+    $ref: "./modules/identity.yaml#/paths/~1forgot-password"
+  /api/identity/auth/reset-password:
+    $ref: "./modules/identity.yaml#/paths/~1reset-password"
+  /api/identity/auth/2fa/setup:
+    $ref: "./modules/identity.yaml#/paths/~12fa~1setup"
+  /api/identity/auth/2fa/enable:
+    $ref: "./modules/identity.yaml#/paths/~12fa~1enable"
+  /api/identity/auth/2fa/verify:
+    $ref: "./modules/identity.yaml#/paths/~12fa~1verify"
+  /api/identity/auth/google/:
+    $ref: "./modules/identity.yaml#/paths/~1google"
+  /api/identity/auth/google/callback:
+    $ref: "./modules/identity.yaml#/paths/~1google~1callback"
+  # api/identity/profile:
+  /api/identity/profile/me:
+    $ref: "./modules/identity.yaml#/paths/~1profile~1me"
+  /api/identity/profile/update:
+    $ref: "./modules/identity.yaml#/paths/~1profile~1update"
+  /api/identity/profile/avatar:
+    $ref: "./modules/identity.yaml#/paths/~1profile~1avatar"

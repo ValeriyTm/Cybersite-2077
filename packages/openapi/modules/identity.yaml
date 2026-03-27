@@ -99,7 +99,8 @@ paths:
 
   /profile/me:
     get:
-      tags: -Profile
+      tags:
+        - Profile
       summary: Получение данных текущего пользователя
       description: Возвращает полную информацию о профиле для ProfilePage (Пункт 11.3)
       security:
@@ -569,7 +570,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "../components/schemas.yaml#/AuthSuccessResponse"
+                $ref: "#/components/schemas/AuthSuccessResponse"
         "401":
           description: Ошибка идентификации пользователя при входе с 2FA
           content:
