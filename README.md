@@ -1,5 +1,7 @@
 # Cybersite-2077
 
+![Логотип приложения](MainLogo.png)
+
 Read this in other languages:
 
 - [English](./README_ENG.md)
