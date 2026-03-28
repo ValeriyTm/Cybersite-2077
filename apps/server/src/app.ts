@@ -11,8 +11,9 @@ import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 import { xssClean } from "./shared/middlewares/xss-clean.js";
 //Middleware для защиты всех эндпоинтов от DDoS и brute force (Rate Limiting):
 import { commonLimiter } from "./shared/middlewares/rate-limiter.js";
-//Роутер для модуля Identity:
+//Роутеры для модулей:
 import { identityRouter } from "./modules/identity/identity.routes.js";
+import catalogRouter from "./modules/catalog/catalog.routes.js";
 
 //Создаём экземпляр приложения Express:
 const app = express();
@@ -101,6 +102,8 @@ app.use("/uploads", express.static("uploads"));
 //----------------------------Подключаем роуты модулей:--------
 //Роуты для модуля Identity:
 app.use("/api/identity", identityRouter);
+//Роуты для модуля Catalog:
+app.use("/api/catalog", catalogRouter);
 //Тестовый эндпоинт для проверки работоспособности сервера (Health Check):
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });

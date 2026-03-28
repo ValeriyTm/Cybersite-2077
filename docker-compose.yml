@@ -72,7 +72,56 @@ services:
     depends_on:
       - redis
 
+  # Поисковый движок:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
+    container_name: cybersite_elasticsearch
+    restart: always
+    environment:
+      - node.name=es-node-01
+      - cluster.name=cybersite-search
+      - discovery.type=single-node
+      # Полное отключение безопасности для локальной разработки 🛡️
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      # Настройки CORS для браузера
+      - http.cors.enabled=true
+      - 'http.cors.allow-origin="*"'
+      - http.cors.allow-headers=X-Requested-With,Content-Type,Content-Length,Authorization
+      # Лимиты памяти
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  # Визуализация и мониторинг (дашборды):
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cybersite_grafana
+    restart: always
+    ports:
+      - "3050:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - elasticsearch
+
 volumes:
+  # Для PostgreSQL:
   postgres_data:
+  # Для Redis:
   redis_data:
+  # Для MongoDB:
   mongodb_data:
+  # Для Elascticsearch:
+  es_data:
+  # Для Grafana:
+  grafana_data:

@@ -13,6 +13,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^9.3.4",
     "@otplib/preset-default": "^12.0.1",
     "@repo/types": "*",
     "@repo/validation": "*",
