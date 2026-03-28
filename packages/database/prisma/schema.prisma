@@ -13,7 +13,7 @@ datasource db {
 }
 
 ///////////////////////////////////////
-
+//------------Схемы для модуля Identity:----------
 enum Role {
   USER
   MANAGER
@@ -94,8 +94,8 @@ model Token {
   @@index([userId])    // Индекс для быстрого поиска всех сессий юзера
   @@map("tokens")
 }
-
-// Модель для склада (для модуля Warehouse)
+//------------Схемы для модуля Warehouse:----------
+// Модель для склада:
 model Warehouse {
   id        String   @id @default(uuid())
   name      String
@@ -109,7 +109,8 @@ model Warehouse {
   @@map("warehouses")
 }
 
-// Модуль для таблицы заказа (для модуля Ordering)
+//------------Схемы для модуля Ordering:----------
+// Модуль для таблицы заказа:
 model Order {
   id              String    @id @default(uuid())
   
@@ -134,4 +135,147 @@ model Order {
 
   @@index([deliveryPoint], type: Gist)
   @@map("orders")
+}
+
+//------------Схемы для модуля Catalog:----------
+//Таблица брендов:
+model Brand {
+  id          String       @id @default(uuid())
+  name        String       @unique // "Honda"
+  country     String       // "Japan"
+  slug        String       @unique // "honda" (для URL: /catalog/motorcycles/honda)
+  
+  motorcycles Motorcycle[] // Связь: один бренд -> много мотоциклов
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+//Таблица мотоциклов:
+model Motorcycle {
+  id               String           @id @default(uuid())
+  model            String           // "CBR 1000RR Fireblade"
+  slug             String           @unique // "cbr-1000rr-fireblade"
+  
+  brandId          String
+  brand            Brand            @relation(fields: [brandId], references: [id])
+  category         MotoCategory    // Enum: Sport, Scooter, ...
+  year             Int
+  displacement     Int              //Объем двигателя (см3)
+  power            Float?           //Мощность (л.с.)
+  topSpeed         Int?             //Макс. скорость (км/ч)
+  fuelConsumption  Float?           //Расход топлива (л/100км)
+  
+  engineType       String?          //V4, four-stroke
+  fuelSystem       String?          //Injection. Airbox with front dynamic air intakes. 4 Weber-Marelli 48-mm throttle bodies with 4 injectors and latest generation Ride-by-Wire engine management. Choice of three different engine maps selectable by the rider with bike in motion: T (Track), S (Sport), R 
+  coolingSystem    CoolingType?     //Enum: Liquid, Air, Oil
+  gearbox          GearboxType?     //"6-speed"
+  transmission     TransmissionType?          //"Chain", "Cardan", "Belt"
+  
+  frontTyre        String?          //120/70-ZR17 
+  rearTyre         String?          //200/55-ZR17 
+  frontBrakes      String?          //Double disc. ABS. Ø 330 mm floating double disc with aluminium flange Brembo STYLEMA® 4-piston mono-block radial calipers Radial pump and metal braid brake pipe-
+  rearBrakes       String?          //Single disc. ABS. Brembo Ø 32 mm 2 isolated piston caliper Pump with integrated tank and metal braid pipe
+  
+  colors           String[]         //Массив строк: ['Racing Black', 'Fluo Red', 'Racing White']
+  starter          StarterType?     //Enum: Electric, Kick, Electric & kick
+  comments         String?          @db.Text
+  
+  rating           Float            @default(0) //Рейтинг 0-5
+  price            Int              //Цена в рублях
+
+// Ссылка на глобальную категорию (Мотоциклы)
+  siteCategoryId   String
+  siteCategory     SiteCategory       @relation(fields: [siteCategoryId], references: [id])
+
+  // Список всех картинок этого мотоцикла
+  images       ProductImage[]
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+//Таблица категорий:
+model SiteCategory {
+  id          String       @id @default(uuid())
+  name        String       @unique // "Мотоциклы"
+  slug        String       @unique // "motorcycles"
+  imageUrl    String?      // Картинка для главной карточки категории
+  description String?      @db.Text
+
+  // Связь с мотоциклами
+  motorcycles Motorcycle[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+
+//Таблица изображений:
+model ProductImage {
+  id           String     @id @default(uuid())
+  url          String     // Путь к файлу или URL (напр. /uploads/honda-cbr.jpg)
+  isMain       Boolean    @default(false) // Главное фото для превью
+  
+  motorcycleId String
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime   @default(now())
+}
+
+//Перечисления для типизации:
+enum MotoCategory {
+  ALLROUND            @map("Allround")
+  ATV                 @map("ATV")
+  CLASSIC             @map("Classic")
+  CROSS_MOTOCROSS     @map("Cross / motocross")
+  CUSTOM_CRUISER      @map("Custom / cruiser")
+  ENDURO_OFFROAD      @map("Enduro / offroad")
+  MINIBIKE_CROSS      @map("Minibike, cross")
+  MINIBIKE_SPORT      @map("Minibike, sport")
+  NAKED_BIKE          @map("Naked bike")
+  PROTOTYPE_CONCEPT   @map("Prototype / concept model")
+  SCOOTER             @map("Scooter")
+  SPEEDWAY            @map("Speedway")
+  SPORT               @map("Sport")
+  SPORT_TOURING       @map("Sport touring")
+  SUPER_MOTARD        @map("Super motard")
+  TOURING             @map("Touring")
+  TRIAL               @map("Trial")
+  UNSPECIFIED         @map("Unspecified category")
+}
+
+enum CoolingType {
+  AIR                 @map("Air")
+  LIQUID              @map("Liquid")
+  OIL_AIR             @map("Oil & air")
+}
+
+enum GearboxType {
+  SPEED1              @map("1-speed")
+  SPEED2              @map("2-speed")
+  SPEED2AUTOMATIC     @map("2-speed automatic")
+  SPEED3              @map("3-speed")
+  SPEED3AUTOMATIC     @map("3-speed automatic")
+  SPEED4              @map("4-speed")
+  SPEED4WITHREVERSE   @map("4-speed with reverse")
+  SPEED5              @map("5-speed")
+  SPEED5WITHREVERSE   @map("5-speed with reverse")
+  SPEED6              @map("6-speed")
+  SPEED6WITHREVERSE   @map("6-speed with reverse")
+  SPEED7              @map("7-speed")
+  SPEED8              @map("8-speed")
+  AUTOMATIC           @map("Automatic")
+}
+
+enum TransmissionType {
+  BELT                @map("Belt")
+  CHAIN               @map("Chain")
+  CARDAN              @map("Cardan")
+}
+
+enum StarterType {
+  ELECTRIC            @map("Electric")
+  ELECTRIC_KICK       @map("Electric & kick")
+  KICK                @map("Kick")
 }
