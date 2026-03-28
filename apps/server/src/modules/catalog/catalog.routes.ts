@@ -9,6 +9,8 @@ const router = Router();
 router.get("/categories", catalogController.getCategories);
 //Список брендов с пагинацией для страницы (/api/catalog/brands?page=1&limit=20):
 router.get("/brands", catalogController.getBrands);
+//Поиск (/api/catalog/motorcycles):
+router.get("/motorcycles", catalogController.getMotorcycles);
 //Временный роут для ручного запуска синхронизации:
 router.get("/sync-search", async (req, res, next) => {
   try {

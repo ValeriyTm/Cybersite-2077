@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { catalogService } from "./catalog.service.js";
+import { searchService } from "./search.service.js";
 
 export class CatalogController {
   //Получение главных категорий:
@@ -46,6 +47,34 @@ export class CatalogController {
         page,
         pages,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getMotorcycles(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Собираем все фильтры из строки запроса (?brandSlug=honda&year=2021)
+      const filters = {
+        brandSlug: req.query.brandSlug as string,
+        minPrice: req.query.minPrice
+          ? parseInt(req.query.minPrice as string)
+          : undefined,
+        maxPrice: req.query.maxPrice
+          ? parseInt(req.query.maxPrice as string)
+          : undefined,
+        year: req.query.year ? parseInt(req.query.year as string) : undefined,
+        category: req.query.category as string,
+        minDisplacement: req.query.minDisplacement
+          ? parseInt(req.query.minDisplacement as string)
+          : undefined,
+        page: parseInt(req.query.page as string) || 1,
+        limit: parseInt(req.query.limit as string) || 20,
+        sortBy: req.query.sortBy as string,
+      };
+
+      const result = await searchService.searchMotorcycles(filters);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
