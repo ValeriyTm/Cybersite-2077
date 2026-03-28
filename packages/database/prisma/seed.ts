@@ -1,4 +1,4 @@
-//Seed-скрипт для создания дефолтного админа при запуске миграций.
+//=========Seed-скрипт для заполнения БД данными=============//
 import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -70,7 +70,7 @@ async function main() {
 
   //3)-------Заполняем таблицу брендов из csv-файла:-------------
   console.log("Импортируем бренды...");
-  const brandsMap = new Map(); // Для быстрого поиска ID по названию
+  const brandsMap = new Map(); //Для быстрого поиска ID по названию
 
   const brandsPath = path.resolve(__dirname, "./data/brands.csv");
   const brandsStream = fs.createReadStream(brandsPath).pipe(csv());
@@ -90,7 +90,7 @@ async function main() {
   }
 
   //4)-------Заполняем таблицу мотоциклов из csv-файла:-------------
-  //Сопоставляем типы:
+  //Сопоставляем типы (слева типы в CSV, а справа в Prisma):
   const categoryMap: Record<string, any> = {
     Allround: "ALLROUND",
     ATV: "ATV",
@@ -142,23 +142,30 @@ async function main() {
   };
 
   //Начало процесса:
-  console.log("🏍️ Импортируем модели мотоциклов...");
+  console.log("Импортируем модели мотоциклов...");
   const motoPath = path.resolve(__dirname, "./data/motorcycles.csv");
   const motoStream = fs.createReadStream(motoPath).pipe(csv());
 
   let count = 0;
   for await (const row of motoStream) {
-    // console.log("Текущая строка:", row);
+    //console.log("Текущая строка:", row); - отображение того, как компьютер считывает построчно CSV-файл.
     const brandId = brandsMap.get(row.Brand.trim());
     if (!brandId) continue;
 
     try {
-      //Генерируем уникальный slug на основе модели
+      //Генерируем уникальный slug на основе модели и её даты производства:
       const fullModelName = `${row.Model}${row.Year}`;
       const modelSlug = slugify(fullModelName);
 
-      await prisma.motorcycle.create({
-        data: {
+      const defaultImageUrl = "/public/defaults/default-card-icon.jpg"; //Путь к дефолтному изображению
+
+      await prisma.motorcycle.upsert({
+        where: { slug: modelSlug }, // Ищем по уникальному слагу
+        update: {
+          price: parseInt(row.Price) || 0, // Можно обновить только цены, например
+        },
+        create: {
+          //Слева - название в модели Prisma, справа - название столбца в CSV файле.
           model: row.Model,
           slug: modelSlug,
           brandId: brandId,
@@ -170,7 +177,7 @@ async function main() {
           fuelConsumption: parseFloat(row.FuelConsumption) || null,
           price: parseInt(row.Price) || 0,
           rating: parseFloat(row.Rating) || 0,
-          // Маппинг ENUMS (Приводим к тем значениям, что в @map)
+          //Маппинг ENUMS:
           category: categoryMap[row.Category] || undefined,
           coolingSystem: coolingMap[row.CoolingSystem] || undefined,
           starter: starterMap[row.Starter] || undefined,
@@ -178,7 +185,7 @@ async function main() {
             ? row.Transmission.toUpperCase()
             : undefined,
           gearbox: gearboxMap[row.Gearbox] || undefined,
-          // Текстовые поля
+          //Текстовые поля:
           engineType: row.EngineType || null,
           fuelSystem: row.FuelSystem || null,
           frontTyre: row.FrontTyre || null,
@@ -193,11 +200,20 @@ async function main() {
                   .map((c: string) => c.trim())
                   .filter(Boolean)
               : [],
+          //Изображение:
+          images: {
+            create: [
+              {
+                url: defaultImageUrl,
+                isMain: true,
+              },
+            ],
+          },
         },
       });
       count++;
     } catch (e) {
-      // Пропускаем дубликаты slug, если они есть:
+      //Пропускаем дубликаты slug, если они образуются:
       console.error(`⚠️Пропущен ${row.Model}: ${e.message}`);
     }
   }
