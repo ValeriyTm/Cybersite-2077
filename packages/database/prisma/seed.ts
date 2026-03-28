@@ -5,12 +5,32 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/index.js";
 import * as argon2 from "argon2";
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import csv from "csv-parser";
+
+//-------------------Настройка подключения:-----------
 const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
+//-------------------Хелперы:-----------
+// Хелпер для создания URL (slug):
+const slugify = (text: string) =>
+  text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-");
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+//-------------------Функция сидирования:-----------
 async function main() {
+  //1)-------Создаём дефолтного админа в табилце Users:-------------
   //Email для дефолтного админа:
   const adminEmail = "admin@cybersite2077.com";
 
@@ -36,8 +56,157 @@ async function main() {
   } else {
     console.log("ℹ️ Дефолтный админ уже существует");
   }
+
+  //2)-------Создаём категорию мотоциклов:-------------
+  const motoCategory = await prisma.siteCategory.upsert({
+    where: { slug: "motorcycles" },
+    update: {},
+    create: {
+      name: "Мотоциклы",
+      slug: "motorcycles",
+      description: "Все мировые бренды мотоциклов",
+    },
+  });
+
+  //3)-------Заполняем таблицу брендов из csv-файла:-------------
+  console.log("Импортируем бренды...");
+  const brandsMap = new Map(); // Для быстрого поиска ID по названию
+
+  const brandsPath = path.resolve(__dirname, "./data/brands.csv");
+  const brandsStream = fs.createReadStream(brandsPath).pipe(csv());
+
+  for await (const row of brandsStream) {
+    const brandName = row.Brand.trim();
+    const brand = await prisma.brand.upsert({
+      where: { name: brandName },
+      update: {},
+      create: {
+        name: brandName,
+        country: row.Country || "Unknown",
+        slug: slugify(brandName),
+      },
+    });
+    brandsMap.set(brandName, brand.id);
+  }
+
+  //4)-------Заполняем таблицу мотоциклов из csv-файла:-------------
+  //Сопоставляем типы:
+  const categoryMap: Record<string, any> = {
+    Allround: "ALLROUND",
+    ATV: "ATV",
+    Classic: "CLASSIC",
+    "Cross / motocross": "CROSS_MOTOCROSS",
+    "Custom / cruiser": "CUSTOM_CRUISER",
+    "Enduro / offroad": "ENDURO_OFFROAD",
+    "Minibike, cross": "MINIBIKE_CROSS",
+    "Minibike, sport": "MINIBIKE_SPORT",
+    "Naked bike": "NAKED_BIKE",
+    "Prototype / concept model": "PROTOTYPE_CONCEPT",
+    Scooter: "SCOOTER",
+    Speedway: "SPEEDWAY",
+    Sport: "SPORT",
+    "Sport touring": "SPORT_TOURING",
+    "Super motard": "SUPER_MOTARD",
+    Touring: "TOURING",
+    Trial: "TRIAL",
+    "Unspecified category": "UNSPECIFIED",
+  };
+
+  const coolingMap: Record<string, any> = {
+    Air: "AIR",
+    Liquid: "LIQUID",
+    "Oil & air": "OIL_AIR",
+  };
+
+  const starterMap: Record<string, any> = {
+    Electric: "ELECTRIC",
+    "Electric & kick": "ELECTRIC_KICK",
+    Kick: "KICK",
+  };
+
+  const gearboxMap: Record<string, any> = {
+    "1-speed": "SPEED1",
+    "2-speed": "SPEED2",
+    "2-speed automatic": "SPEED2AUTOMATIC",
+    "3-speed": "SPEED3",
+    "3-speed automatic": "SPEED3AUTOMATIC",
+    "4-speed": "SPEED4",
+    "4-speed with reverse": "SPEED4WITHREVERSE",
+    "5-speed": "SPEED5",
+    "5-speed with reverse": "SPEED5WITHREVERSE",
+    "6-speed": "SPEED6",
+    "6-speed with reverse": "SPEED6WITHREVERSE",
+    "7-speed": "SPEED7",
+    "8-speed": "SPEED8",
+    Automatic: "AUTOMATIC",
+  };
+
+  //Начало процесса:
+  console.log("🏍️ Импортируем модели мотоциклов...");
+  const motoPath = path.resolve(__dirname, "./data/motorcycles.csv");
+  const motoStream = fs.createReadStream(motoPath).pipe(csv());
+
+  let count = 0;
+  for await (const row of motoStream) {
+    // console.log("Текущая строка:", row);
+    const brandId = brandsMap.get(row.Brand.trim());
+    if (!brandId) continue;
+
+    try {
+      //Генерируем уникальный slug на основе модели
+      const fullModelName = `${row.Model}${row.Year}`;
+      const modelSlug = slugify(fullModelName);
+
+      await prisma.motorcycle.create({
+        data: {
+          model: row.Model,
+          slug: modelSlug,
+          brandId: brandId,
+          siteCategoryId: motoCategory.id,
+          year: parseInt(row.Year) || 0,
+          displacement: parseInt(row.Displacement) || 0,
+          power: parseFloat(row.Power) || null,
+          topSpeed: parseInt(row.TopSpeed) || null,
+          fuelConsumption: parseFloat(row.FuelConsumption) || null,
+          price: parseInt(row.Price) || 0,
+          rating: parseFloat(row.Rating) || 0,
+          // Маппинг ENUMS (Приводим к тем значениям, что в @map)
+          category: categoryMap[row.Category] || undefined,
+          coolingSystem: coolingMap[row.CoolingSystem] || undefined,
+          starter: starterMap[row.Starter] || undefined,
+          transmission: row.Transmission
+            ? row.Transmission.toUpperCase()
+            : undefined,
+          gearbox: gearboxMap[row.Gearbox] || undefined,
+          // Текстовые поля
+          engineType: row.EngineType || null,
+          fuelSystem: row.FuelSystem || null,
+          frontTyre: row.FrontTyre || null,
+          rearTyre: row.RearTyre || null,
+          frontBrakes: row.FrontBrakes || null,
+          rearBrakes: row.RearBrakes || null,
+          comments: row.Comments || null,
+          //Обработка цветов:
+          colors:
+            row.Colors && row.Colors !== "{}"
+              ? row.Colors.split(",")
+                  .map((c: string) => c.trim())
+                  .filter(Boolean)
+              : [],
+        },
+      });
+      count++;
+    } catch (e) {
+      // Пропускаем дубликаты slug, если они есть:
+      console.error(`⚠️Пропущен ${row.Model}: ${e.message}`);
+    }
+  }
+  console.log(
+    `✅ Успешно! Создано ${brandsMap.size} брендов и ${count} моделей.`,
+  );
 }
 
+//-------------------Запуск сидирования:-----------
 main()
   .then(async () => {
     await prisma.$disconnect();
