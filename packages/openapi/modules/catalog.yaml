@@ -1,0 +1,142 @@
+tags:
+  - name: Catalog
+    description: Навигация, бренды и поиск мототехники
+
+paths:
+  # 1.Главные карточки раздела "/catalog" (мотоциклы, мотоэкипировка, запчасти):
+  /categories:
+    get:
+      tags: [Catalog]
+      summary: Список корневых категорий
+      responses:
+        "200":
+          description: Три главные карточки категорий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/SiteCategory"
+
+  # 2.Список брендов для страницы "/catalog/motorcycles":
+  /brands:
+    get:
+      tags: [Catalog]
+      summary: Список брендов с пагинацией
+      parameters:
+        # Имя бренда:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+          # Ограничение по количеству выводимых карточек:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        "200":
+          description: Список всех брендов
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "../components/schemas.yaml#/Brand"
+                  total:
+                    type: integer
+
+  # 3.Поиск и фильтрация для страницы "/catalog/motorcycles/{brand}":
+  /motorcycles:
+    get:
+      tags: [Catalog]
+      summary: Поиск мотоциклов с фильтрами
+      parameters:
+        # URL бренда:
+        - name: brandSlug
+          in: query
+          required: true
+          schema: { type: string }
+        # Мои фильтры:
+        - name: minPrice
+          in: query
+          schema: { type: integer }
+        - name: maxPrice
+          in: query
+          schema: { type: integer }
+        - name: year
+          in: query
+          schema: { type: integer }
+        - name: category
+          in: query
+          schema: { $ref: "../components/schemas.yaml#/MotoCategory" }
+        - name: minDisplacement
+          in: query
+          schema: { type: integer }
+        - name: minPower
+          in: query
+          schema: { type: number }
+        - name: transmission
+          in: query
+          schema: { $ref: "../components/schemas.yaml#/TransmissionType" }
+        - name: minRating
+          in: query
+          schema: { type: number, minimum: 0, maximum: 5 }
+        # Пагинация и сортировка:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: sortBy
+          in: query
+          schema:
+            {
+              type: string,
+              enum:
+                [
+                  price_asc,
+                  price_desc,
+                  year_desc,
+                  rating_desc,
+                  name_asc,
+                  name_desc,
+                ],
+            }
+      responses:
+        "200":
+          description: Отфильтрованный список мотоциклов
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "../components/schemas.yaml#/MotorcycleShort"
+                  total:
+                    type: integer
+
+  # 4.Детальная информация для страницы "/catalog/motorcycles/{brand}/{model}":
+  /motorcycles/{brandSlug}/{modelSlug}:
+    get:
+      tags: [Catalog]
+      summary: Полная информация о конкретной модели
+      parameters:
+        # URL бренда:
+        - name: brandSlug
+          in: path
+          required: true
+          schema: { type: string }
+          # URL модели:
+        - name: modelSlug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Все технические данные и изображения 🖼️
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/MotorcycleFull"

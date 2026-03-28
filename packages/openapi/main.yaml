@@ -42,6 +42,15 @@ paths:
     $ref: "./modules/identity.yaml#/paths/~1profile~1update"
   /api/identity/profile/avatar:
     $ref: "./modules/identity.yaml#/paths/~1profile~1avatar"
+    # apu/catalog:
+  /api/catalog/categories:
+    $ref: "./modules/catalog.yaml#/paths/~1categories"
+  /api/catalog/brands:
+    $ref: "./modules/catalog.yaml#/paths/~1brands"
+  /api/catalog/motorcycles:
+    $ref: "./modules/catalog.yaml#/paths/~1motorcycles"
+  /api/catalog/motorcycles/{brandSlug}/{modelSlug}:
+    $ref: "./modules/catalog.yaml#/paths/~1motorcycles~1{brandSlug}~1{modelSlug}"
 
 components:
   securitySchemes:

@@ -75,3 +75,283 @@ CaptchaToken:
 AccessToken:
   type: string
   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZjFmZjA2LTI2NjgtNGNhNi1hMTk5LTVhNGY3NDJjYTAyYSIsImVtYWlsIjoiZG9zZW4zMEB0dXRhbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NDU4NTgyOSwiZXhwIjoxNzc0NTg2NDI5fQ.rX1lLR2vD0JTX2C_ruo3zqkkN6_odEw9cI8460Oav90"
+
+MotorcycleShort:
+  type: object
+  required: [id, model, slug, price, year, displacement, mainImage]
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: ebe237bc-2944-418e-99f3-9d4f7802ee21
+    model:
+      type: string
+      example: "Peugeot Metropolis Allure"
+    slug:
+      type: string
+      example: "peugeot-metropolis-allure2019"
+    price:
+      type: integer
+      description: "Цена в рублях"
+      example: 800000
+    year:
+      type: integer
+      example: 2023
+    displacement:
+      type: integer
+      description: "Объем двигателя в см3"
+      example: 750
+    rating:
+      type: number
+      format: float
+      example: 4.8
+    mainImage:
+      type: string
+      description: "URL главного изображения"
+      example: "/uploads/defaults/default-card-icon.jpg"
+    brandName:
+      type: string
+      description: "Название бренда (чтобы не делать лишний запрос)"
+      example: "Honda"
+
+MotorcycleFull:
+  type: object
+  required:
+    [
+      id,
+      model,
+      slug,
+      brandId,
+      siteCategoryId,
+      price,
+      year,
+      displacement,
+      rating,
+      images,
+    ]
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: ebe237bc-2944-418e-99f3-9d4f7802ee21
+    model:
+      type: string
+      example: "Peugeot Metropolis Allure"
+    slug:
+      type: string
+      example: "peugeot-metropolis-allure2019"
+
+    # Связи (объекты для удобства фронтенда):
+    brand:
+      $ref: "#/Brand"
+    siteCategory:
+      type: object
+      properties:
+        name: { type: string, example: "Мотоциклы" }
+        slug: { type: string, example: "motorcycles" }
+
+    # Основные характеристики:
+    category:
+      $ref: "#/MotoCategory"
+    year:
+      type: integer
+      example: 2023
+    displacement:
+      type: integer
+      description: "Объем двигателя (см3)"
+      example: 750
+    power:
+      type: number
+      nullable: true
+      description: "Мощность (л.с.)"
+      example: 217.6
+    topSpeed:
+      type: integer
+      nullable: true
+      description: "Макс. скорость (км/ч)"
+      example: 299
+    fuelConsumption:
+      type: number
+      nullable: true
+      description: "Расход топлива (л/100км)"
+      example: 6.3
+    engineType:
+      type: string
+      nullable: true
+      example: "Single cylinder, four-stroke"
+    fuelSystem:
+      type: string
+      nullable: true
+    coolingSystem:
+      $ref: "#/CoolingType"
+    gearbox:
+      $ref: "#/GearboxType"
+    transmission:
+      $ref: "#/TransmissionType"
+    starter:
+      $ref: "#/StarterType"
+    frontTyre:
+      type: string
+      nullable: true
+    rearTyre:
+      type: string
+      nullable: true
+    frontBrakes:
+      type: string
+      nullable: true
+    rearBrakes:
+      type: string
+      nullable: true
+    colors:
+      type: array
+      items:
+        type: string
+      example: ["Grand Prix Red", "Matte Pearl Morion Black"]
+    comments:
+      type: string
+      nullable: true
+      description: "Подробное описание или примечания"
+    rating:
+      type: number
+      format: float
+      example: 4.9
+    price:
+      type: integer
+      description: "Цена в рублях"
+      example: 800000
+    images:
+      type: array
+      items:
+        $ref: "#/ProductImage"
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+
+ProductImage:
+  type: object
+  properties:
+    id: { type: string, format: uuid }
+    url: { type: string, example: "/uploads/honda-cbr.jpg" }
+    isMain: { type: boolean, example: true }
+
+MotoCategory:
+  type: string
+  enum:
+    - "Allround"
+    - "ATV"
+    - "Classic"
+    - "Cross / motocross"
+    - "Custom / cruiser"
+    - "Enduro / offroad"
+    - "Minibike, cross"
+    - "Minibike, sport"
+    - "Naked bike"
+    - "Prototype / concept model"
+    - "Scooter"
+    - "Speedway"
+    - "Sport"
+    - "Sport touring"
+    - "Super motard"
+    - "Touring"
+    - "Trial"
+    - "Unspecified category"
+
+CoolingType:
+  type: string
+  enum:
+    - "Air"
+    - "Liquid"
+    - "Oil & air"
+
+GearboxType:
+  type: string
+  enum:
+    - "1-speed"
+    - "2-speed"
+    - "2-speed automatic"
+    - "3-speed"
+    - "3-speed automatic"
+    - "4-speed"
+    - "4-speed with reverse"
+    - "5-speed"
+    - "5-speed with reverse"
+    - "6-speed"
+    - "6-speed with reverse"
+    - "7-speed"
+    - "8-speed"
+    - "Automatic"
+
+TransmissionType:
+  type: string
+  enum:
+    - "Belt"
+    - "Chain"
+    - "Cardan"
+
+StarterType:
+  type: string
+  enum:
+    - "Electric"
+    - "Electric & kick"
+    - "Kick"
+
+Brand:
+  type: object
+  required: [id, name, country, slug]
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "0c8f92a1-5954-4ae1-96c6-75527c941219"
+    name:
+      type: string
+      description: "Название бренда"
+      example: "Honda"
+    country:
+      type: string
+      description: "Страна происхождения бренда"
+      example: "Japan"
+    slug:
+      type: string
+      description: "URL-имя для роутинга /catalog/motorcycles/{slug}"
+      example: "honda"
+    # Добавим это поле, так как в Prisma есть обратная связь motorcycles[]
+    # На бэкенде мы сможем легко посчитать количество через _count
+    motorcyclesCount:
+      type: integer
+      description: "Количество моделей этого бренда в базе"
+      example: 1200
+
+SiteCategory:
+  type: object
+  required: [id, name, slug]
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "54b3891f-e914-4dfc-9a0b-616ff74d8810"
+    name:
+      type: string
+      description: "Название категории (мотоциклы, мотоэкипировка, запчасти)"
+      example: "Мотоциклы"
+    slug:
+      type: string
+      description: "URL-имя для роутинга /catalog/{slug}"
+      example: "motorcycles"
+    imageUrl:
+      type: string
+      nullable: true
+      description: "Ссылка на изображение для карточки категории"
+      example: "/uploads/defaults/category-moto.jpg"
+    description:
+      type: string
+      nullable: true
+      description: "Краткое описание раздела"
+      example: "Самый полный каталог мировой мототехники"
+    motorcyclesCount:
+      type: integer
+      description: "Общее количество товаров в этой категории"
+      example: 34520
