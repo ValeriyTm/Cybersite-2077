@@ -68,6 +68,27 @@ async function main() {
     },
   });
 
+  //Создаём оставшиеся категории:
+  await prisma.siteCategory.upsert({
+    where: { slug: "equipment" },
+    update: {},
+    create: {
+      name: "Мотоэкипировка",
+      slug: "equipment",
+      description: "Самая надежная мотоэкипировка",
+    },
+  });
+
+  await prisma.siteCategory.upsert({
+    where: { slug: "spare" },
+    update: {},
+    create: {
+      name: "Запчасти",
+      slug: "spare",
+      description: "Запчасти и детали под любую модель",
+    },
+  });
+
   //3)-------Заполняем таблицу брендов из csv-файла:-------------
   console.log("Импортируем бренды...");
   const brandsMap = new Map(); //Для быстрого поиска ID по названию

@@ -32,6 +32,7 @@ export class SearchService {
         year: doc.year,
         price: doc.price,
         displacement: doc.displacement,
+        createdAt: doc.createdAt,
         power: doc.power,
         transmission: doc.transmission,
         rating: doc.rating,

@@ -1,0 +1,65 @@
+.CatalogPage {
+  min-height: 100vh;
+  background-color: #080808; // Ультра-черный фон для киберпанк стиля
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  max-width: 1200px;
+  width: 100%;
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+.pageTitle {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #a9cc29;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin: 0 0 16px 0;
+
+  // Небольшой текстовый градиент для премиальности
+  // background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.6) 100%);
+  // -webkit-background-clip: text;
+  // -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.4);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  width: 100%;
+  max-width: 1200px;
+  // 3 карточки в ряд на десктопе, в колонку на мобилках
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 40px;
+
+  // Если карточек всего 3, центрируем их
+  justify-content: center;
+}
+
+// Плавное появление всей страницы при загрузке
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.CatalogPage {
+  animation: fadeIn 0.8s ease-out forwards;
+}

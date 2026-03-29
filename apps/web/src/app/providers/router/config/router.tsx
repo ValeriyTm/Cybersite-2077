@@ -12,6 +12,8 @@ import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
 import { TermsPage } from "@/pages/Legal/TermsPage";
 import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
 import { ProtectedRoute } from "../ui/ProtectedRoute";
+import { CatalogPage } from "@/pages/CatalogPage/CatalogPage";
+import { BrandPage } from "@/pages/BrandPage/BrandPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -59,6 +61,14 @@ export const router = createBrowserRouter([
             <ProfilePage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/catalog",
+        element: <CatalogPage />,
+      },
+      {
+        path: "/catalog/motorcycles",
+        element: <BrandPage />,
       },
       { path: "*", element: <div>404</div> },
     ],

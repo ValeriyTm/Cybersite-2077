@@ -38,6 +38,9 @@ export const HomePage = () => {
           <Link to="/auth">Войти / Зарегистрироваться</Link>
         </div>
       )}
+      <Link to="/catalog" style={{ marginRight: "10px" }}>
+        В каталог
+      </Link>
     </div>
   );
 };
