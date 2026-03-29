@@ -22,6 +22,7 @@ export const MotorcyclesPage: React.FC = () => {
     minDisplacement: undefined as number | undefined,
     maxDisplacement: undefined as number | undefined,
     minPower: undefined as number | undefined,
+    maxPower: undefined as number | undefined,
     category: undefined as string | undefined,
     transmission: undefined as string | undefined,
     minRating: undefined as number | undefined,
@@ -149,6 +150,21 @@ export const MotorcyclesPage: React.FC = () => {
               ...prev,
               minYear: min,
               maxYear: max,
+              page: 1,
+            }))
+          }
+        />
+
+        {/*Фильтр по мощности:*/}
+        <RangeFilter
+          label="Мощность (л.с.)"
+          min={filters.minPower}
+          max={filters.maxPower}
+          onChange={(min, max) =>
+            setFilters((prev) => ({
+              ...prev,
+              minPower: min,
+              maxPower: max,
               page: 1,
             }))
           }

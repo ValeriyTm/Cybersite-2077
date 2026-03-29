@@ -20,6 +20,7 @@ export const MotorcycleCard: React.FC<{ data: MotorcycleShort }> = ({
         <div className={styles.specs}>
           <span>{data.year} г.</span>
           <span>{data.displacement} см³</span>
+          <span>{data.power} л.с.</span>
         </div>
         <div className={styles.footer}>
           <span className={styles.price}>{data.price.toLocaleString()} ₽</span>

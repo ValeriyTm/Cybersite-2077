@@ -63,6 +63,8 @@ export class SearchService {
       transmission,
       minDisplacement,
       maxDisplacement,
+      minPower,
+      maxPower,
       page = 1,
       limit = 20,
       sortBy,
@@ -122,6 +124,18 @@ export class SearchService {
       });
     }
 
+    if (minPower || maxPower) {
+      query.bool.filter.push({
+        range: {
+          power: {
+            // Убедись, что поле в Elastic называется power
+            gte: Number(minPower) || 0,
+            lte: Number(maxPower) || 9999,
+          },
+        },
+      });
+    }
+
     if (transmission) {
       // Убираем term и .keyword, используем match 🎯
       query.bool.filter.push({ match: { transmission: transmission } });
@@ -129,9 +143,27 @@ export class SearchService {
 
     // Сортировка
     let sort: any = [{ _score: "desc" }]; // По умолчанию по релевантности
+    //Алфавитный порядок (А-Я):
+    if (sortBy === "name_asc") {
+      sort = [{ "model.keyword": "asc" }]; // Используем .keyword для строк
+    }
+
+    //Алфавитный порядок (Я-А):
+    if (sortBy === "name_desc") {
+      sort = [{ "model.keyword": "desc" }]; // Теперь Z-A заработает
+    }
+
+    //Цена:
     if (sortBy === "price_asc") sort = [{ price: "asc" }];
     if (sortBy === "price_desc") sort = [{ price: "desc" }];
+
+    //Год выпуска:
     if (sortBy === "year_desc") sort = [{ year: "desc" }];
+
+    //Рейтинг (от высокого к низкому):
+    if (sortBy === "rating_desc") {
+      sort = [{ rating: "desc" }]; // Убедись, что поле в Elastic называется rating
+    }
 
     const result = await esClient.search({
       index: this.indexName,

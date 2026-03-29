@@ -79,6 +79,12 @@ export class CatalogController {
         maxDisplacement: req.query.maxDisplacement
           ? parseInt(req.query.maxDisplacement as string)
           : undefined,
+        minPower: req.query.minPower
+          ? parseInt(req.query.minPower as string)
+          : undefined,
+        maxPower: req.query.maxPower
+          ? parseInt(req.query.maxPower as string)
+          : undefined,
         page: parseInt(req.query.page as string) || 1,
         limit: parseInt(req.query.limit as string) || 20,
         sortBy: req.query.sortBy as string,

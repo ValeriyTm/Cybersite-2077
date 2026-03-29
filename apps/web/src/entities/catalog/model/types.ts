@@ -46,6 +46,7 @@ export interface MotorcycleShort {
   year: number;
   price: number;
   displacement: number;
+  power: number;
   rating: number;
   mainImage: string; // URL того самого дефолтного фото или из галереи
 }
