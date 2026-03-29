@@ -65,10 +65,18 @@ export class CatalogController {
         maxPrice: req.query.maxPrice
           ? parseInt(req.query.maxPrice as string)
           : undefined,
-        year: req.query.year ? parseInt(req.query.year as string) : undefined,
+        minYear: req.query.minYear
+          ? parseInt(req.query.minYear as string)
+          : undefined,
+        maxYear: req.query.maxYear
+          ? parseInt(req.query.maxYear as string)
+          : undefined,
         category: req.query.category as string,
         minDisplacement: req.query.minDisplacement
           ? parseInt(req.query.minDisplacement as string)
+          : undefined,
+        maxDisplacement: req.query.maxDisplacement
+          ? parseInt(req.query.maxDisplacement as string)
           : undefined,
         page: parseInt(req.query.page as string) || 1,
         limit: parseInt(req.query.limit as string) || 20,

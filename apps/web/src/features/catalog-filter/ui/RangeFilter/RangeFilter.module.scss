@@ -1,0 +1,48 @@
+.RangeFilter {
+  margin-bottom: 24px;
+}
+
+.label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: #444;
+  }
+
+  &:focus {
+    border-color: #f39c12;
+  }
+
+  // Убираем стрелочки у инпута number
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.divider {
+  color: #444;
+}

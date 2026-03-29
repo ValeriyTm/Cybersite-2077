@@ -29,13 +29,13 @@ export class SearchService {
         brand: doc.brand.name,
         brandSlug: doc.brand.slug,
         category: doc.category,
-        year: doc.year,
-        price: doc.price,
-        displacement: doc.displacement,
+        year: Number(doc.year) || 0,
+        price: Number(doc.price) || 0,
+        displacement: Number(doc.displacement) || 0,
         createdAt: doc.createdAt,
-        power: doc.power,
+        power: Number(doc.power) || 0,
         transmission: doc.transmission,
-        rating: doc.rating,
+        rating: Number(doc.rating) || 0,
         mainImage:
           doc.images?.[0]?.url || "/public/defaults/default-card-icon.jpg",
       },
@@ -57,9 +57,11 @@ export class SearchService {
       brandSlug,
       minPrice,
       maxPrice,
-      year,
+      minYear,
+      maxYear,
       category,
       minDisplacement,
+      maxDisplacement,
       page = 1,
       limit = 20,
       sortBy,
@@ -74,7 +76,7 @@ export class SearchService {
 
     // 1. Фильтр по бренду (обязательно для страницы бренда)
     if (brandSlug) {
-      query.bool.filter.push({ term: { brandSlug: brandSlug } });
+      query.bool.filter.push({ match: { brandSlug: brandSlug } });
     }
 
     // 2. Диапазон цен
@@ -90,8 +92,15 @@ export class SearchService {
     }
 
     // 3. Год выпуска
-    if (year) {
-      query.bool.filter.push({ term: { year: year } });
+    if (minYear || maxYear) {
+      query.bool.filter.push({
+        range: {
+          year: {
+            gte: minYear || 1900,
+            lte: maxYear || 2100, // 🎯 Теперь "До" работает
+          },
+        },
+      });
     }
 
     // 4. Категория (Allround, Sport и т.д.)
@@ -100,9 +109,14 @@ export class SearchService {
     }
 
     // 5. Объем двигателя (от...)
-    if (minDisplacement) {
+    if (minDisplacement || maxDisplacement) {
       query.bool.filter.push({
-        range: { displacement: { gte: minDisplacement } },
+        range: {
+          displacement: {
+            gte: minDisplacement || 0,
+            lte: maxDisplacement || 99999, // 🎯 Теперь "До" работает
+          },
+        },
       });
     }
 
@@ -122,11 +136,14 @@ export class SearchService {
 
     return {
       // Превращаем формат Elastic обратно в массив объектов
-      items: result.hits.hits.map((hit) => hit._source),
+      items: result.hits.hits.map((hit: any) => ({
+        ...(hit._source as any), // Распаковываем данные документа
+        id: hit._id, //Явно добавляем id из метаданных Elastic
+      })),
       total:
         typeof result.hits.total === "number"
           ? result.hits.total
-          : result.hits.total?.value,
+          : (result.hits.total as any)?.value || 0,
     };
   }
 }

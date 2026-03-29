@@ -1,0 +1,49 @@
+.SelectFilter {
+  margin-bottom: 24px;
+}
+
+.label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select {
+  width: 100%;
+  appearance: none; // Убираем стандартную стрелочку 🎯
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: #f39c12;
+  }
+
+  option {
+    background: #111;
+    color: #fff;
+  }
+}
+
+.arrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #f39c12;
+  font-size: 0.7rem;
+  pointer-events: none; // Чтобы клик проходил сквозь стрелку в селект
+}

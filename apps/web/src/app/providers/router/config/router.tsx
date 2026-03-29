@@ -14,6 +14,7 @@ import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
 import { ProtectedRoute } from "../ui/ProtectedRoute";
 import { CatalogPage } from "@/pages/CatalogPage/CatalogPage";
 import { BrandPage } from "@/pages/BrandPage/BrandPage";
+import { MotorcyclesPage } from "@/pages/MotorcyclesPage/MotorcyclesPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -63,12 +64,16 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/catalog",
-        element: <CatalogPage />,
+        path: "/catalog/motorcycles/:brandSlug",
+        element: <MotorcyclesPage />,
       },
       {
         path: "/catalog/motorcycles",
         element: <BrandPage />,
+      },
+      {
+        path: "/catalog",
+        element: <CatalogPage />,
       },
       { path: "*", element: <div>404</div> },
     ],
