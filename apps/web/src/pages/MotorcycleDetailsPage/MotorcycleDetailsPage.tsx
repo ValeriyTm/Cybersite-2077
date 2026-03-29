@@ -3,51 +3,39 @@ import { useParams } from "react-router";
 import { fetchMotorcycleBySlug, type MotorcycleFull } from "@/entities/catalog";
 import styles from "./MotorcycleDetailsPage.module.scss";
 
-const STATIC_URL = "http://localhost:3001/static";
-const DEFAULT_IMG = `${STATIC_URL}/defaults/default-card-icon.jpg`;
+const STATIC_URL = "http://localhost:3001/static/motorcycles";
+const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg`;
 
 export const MotorcycleDetailsPage: React.FC = () => {
   const { brandSlug, slug } = useParams<{ brandSlug: string; slug: string }>();
   const [data, setData] = useState<MotorcycleFull | null>(null);
-
   //Стейт для активного фото:
-  const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [activeImage, setActiveImage] = useState<string>("");
 
-  const [gallery, setGallery] = useState<string[]>([]);
+  // useEffect(() => {
+  //   if (brandSlug && slug) {
+  //     fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
+  //       setData(res);
+  //       setActiveImage(`${STATIC_URL}/motorcycles/${slug}.jpg`);
+  //     });
+  //   }
+  // }, [brandSlug, slug]);
 
   useEffect(() => {
     if (brandSlug && slug) {
       fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
         setData(res);
-        setActiveImage(`${STATIC_URL}/motorcycles/${slug}.jpg`);
+        // 🎯 Умная установка главного фото:
+        // Если в базе есть помеченное как isMain — берем его, иначе первое из списка, иначе дефолт
+        const mainImg =
+          res.images?.find((img) => img.isMain)?.url || res.images?.[0]?.url;
+
+        setActiveImage(mainImg ? `${STATIC_URL}/${mainImg}` : DEFAULT_IMG);
       });
     }
   }, [brandSlug, slug]);
 
-  useEffect(() => {
-    if (slug) {
-      const potentialImages = [
-        `${STATIC_URL}/motorcycles/${slug}.jpg`, // Главное
-        `${STATIC_URL}/motorcycles/${slug}-1.jpg`, // Доп 1
-        `${STATIC_URL}/motorcycles/${slug}-2.jpg`, // Доп 2
-        `${STATIC_URL}/motorcycles/${slug}-3.jpg`, // Доп 3
-      ];
-      setGallery(potentialImages);
-    }
-  }, [slug]);
-
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
-
-  const handleImageError = (
-    e: React.SyntheticEvent<HTMLImageElement, Event>,
-  ) => {
-    const target = e.currentTarget;
-    // Если по слагу ничего не нашлось (404) — ставим дефолт 🛡️
-    if (target.src !== DEFAULT_IMG) {
-      target.src = DEFAULT_IMG;
-      target.style.opacity = "0.5"; // Делаем заглушку чуть бледнее для стиля
-    }
-  };
 
   return (
     <main className={styles.Page}>
@@ -60,44 +48,27 @@ export const MotorcycleDetailsPage: React.FC = () => {
                 src={activeImage}
                 alt={data.model}
                 className={styles.mainImg}
-                onError={handleImageError}
               />
             </div>
 
             {/* Список миниатюр */}
-            <div className={styles.thumbnails}>
-              {/* 1. Сначала ВСЕГДА выводим основное изображение (по слагу) 🎯 */}
-              <div
-                className={`${styles.thumbWrapper} ${activeImage === `${STATIC_URL}/motorcycles/${slug}.jpg` ? styles.activeThumb : ""}`}
-                onClick={() =>
-                  setActiveImage(`${STATIC_URL}/motorcycles/${slug}.jpg`)
-                }
-              >
-                <img
-                  src={`${STATIC_URL}/motorcycles/${slug}.jpg`}
-                  alt="Main"
-                  className={styles.thumbImg}
-                  onError={handleImageError}
-                />
+            {data.images?.length > 0 && (
+              <div className={styles.thumbnails}>
+                {data.images.map((img) => (
+                  <div
+                    key={img.id}
+                    className={`${styles.thumbWrapper} ${activeImage === `${STATIC_URL}/${img.url}` ? styles.activeThumb : ""}`}
+                    onClick={() => setActiveImage(`${STATIC_URL}/${img.url}`)}
+                  >
+                    <img
+                      src={`${STATIC_URL}/${img.url}`}
+                      alt="thumb"
+                      className={styles.thumbImg}
+                    />
+                  </div>
+                ))}
               </div>
-
-              {/* 2. Затем выводим дополнительные изображения из базы, если они есть */}
-              {gallery.map((url, index) => (
-                <div
-                  key={index}
-                  className={styles.thumbWrapper}
-                  onClick={() => setActiveImage(url)}
-                >
-                  <img
-                    src={url}
-                    onError={(e) =>
-                      (e.currentTarget.parentElement!.style.display = "none")
-                    }
-                    className={styles.thumbImg}
-                  />
-                </div>
-              ))}
-            </div>
+            )}
           </div>
 
           <div className={styles.mainInfo}>

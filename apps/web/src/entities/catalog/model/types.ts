@@ -67,7 +67,7 @@ export interface MotorcycleFull extends MotorcycleShort {
   colors: string[];
   starter: string;
   comments: string;
-  images: { id: string; url: string }[];
+  images: { id: string; url: string; isMain: boolean }[];
 }
 
 export interface MotorcycleResponse {

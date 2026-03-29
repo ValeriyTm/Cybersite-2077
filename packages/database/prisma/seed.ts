@@ -222,15 +222,6 @@ async function main() {
                   .map((c: string) => c.trim())
                   .filter(Boolean)
               : [],
-          //Изображение:
-          images: {
-            create: [
-              {
-                url: `${modelSlug}.jpg`,
-                isMain: true,
-              },
-            ],
-          },
         },
       });
       count++;
@@ -257,4 +248,4 @@ main()
     process.exit(1);
   });
 
-//Запуск скрипта командой "npx prisma db seed"
+//Запуск скрипта командой "npx prisma db seed" из папки packages/database

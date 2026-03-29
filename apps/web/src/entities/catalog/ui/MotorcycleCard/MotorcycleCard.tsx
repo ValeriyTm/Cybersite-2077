@@ -9,11 +9,16 @@ const DEFAULT_IMG = `${STATIC_URL}/defaults/default-card-icon.jpg`;
 export const MotorcycleCard: React.FC<{ data: MotorcycleShort }> = ({
   data,
 }) => {
-  const { model, slug, mainImage } = data;
+  const getImageUrl = (path: string | null | undefined) => {
+    if (!path) return DEFAULT_IMG;
 
-  const getOptimisticUrl = () => {
-    if (!slug) return DEFAULT_IMG;
-    return `${STATIC_URL}/motorcycles/${slug}.jpg`;
+    // Если в базе путь "/defaults/...", просто добавляем домен
+    if (path.startsWith("/")) {
+      return `${STATIC_URL}${path}`;
+    }
+
+    // Если это просто имя файла (напр. "yamaha-r1.jpg"), ищем в папке motorcycles
+    return `${STATIC_URL}/motorcycles/${path}`;
   };
 
   return (
@@ -23,7 +28,7 @@ export const MotorcycleCard: React.FC<{ data: MotorcycleShort }> = ({
     >
       <div className={styles.imageBox}>
         <img
-          src={getOptimisticUrl()}
+          src={getImageUrl(data.mainImage)}
           alt={data.model}
           className={styles.img}
           onError={(e) => {
@@ -33,8 +38,9 @@ export const MotorcycleCard: React.FC<{ data: MotorcycleShort }> = ({
             target.src = DEFAULT_IMG;
           }}
         />
-        {data.rating > 4.5 && <span className={styles.badge}>Top Rated</span>}
+        {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
       </div>
+
       <div className={styles.info}>
         <h3 className={styles.model}>{data.model}</h3>
         <div className={styles.specs}>
