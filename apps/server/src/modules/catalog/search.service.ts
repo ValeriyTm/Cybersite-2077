@@ -60,6 +60,7 @@ export class SearchService {
       minYear,
       maxYear,
       category,
+      transmission,
       minDisplacement,
       maxDisplacement,
       page = 1,
@@ -105,7 +106,8 @@ export class SearchService {
 
     // 4. Категория (Allround, Sport и т.д.)
     if (category) {
-      query.bool.filter.push({ term: { category: category } });
+      // Убираем term и .keyword, используем match 🎯
+      query.bool.filter.push({ match: { category: category } });
     }
 
     // 5. Объем двигателя (от...)
@@ -118,6 +120,11 @@ export class SearchService {
           },
         },
       });
+    }
+
+    if (transmission) {
+      // Убираем term и .keyword, используем match 🎯
+      query.bool.filter.push({ match: { transmission: transmission } });
     }
 
     // Сортировка

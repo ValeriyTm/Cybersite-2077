@@ -72,6 +72,7 @@ export class CatalogController {
           ? parseInt(req.query.maxYear as string)
           : undefined,
         category: req.query.category as string,
+        transmission: req.query.transmission as string,
         minDisplacement: req.query.minDisplacement
           ? parseInt(req.query.minDisplacement as string)
           : undefined,
