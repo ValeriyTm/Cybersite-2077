@@ -3,30 +3,73 @@ import { useParams } from "react-router";
 import { fetchMotorcycleBySlug, type MotorcycleFull } from "@/entities/catalog";
 import styles from "./MotorcycleDetailsPage.module.scss";
 
+const STATIC_URL = "http://localhost:3001/static";
+const DEFAULT_IMG = `${STATIC_URL}/defaults/default-card-icon.jpg`;
+
 export const MotorcycleDetailsPage: React.FC = () => {
   const { brandSlug, slug } = useParams<{ brandSlug: string; slug: string }>();
   const [data, setData] = useState<MotorcycleFull | null>(null);
 
-  console.log("Параметры из URL:", brandSlug, slug);
+  //Стейт для активного фото:
+  const [activeImage, setActiveImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (brandSlug && slug) fetchMotorcycleBySlug(brandSlug, slug).then(setData);
+    if (brandSlug && slug) {
+      fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
+        setData(res);
+        setActiveImage(`${STATIC_URL}/motorcycles/${slug}.jpg`);
+      });
+    }
   }, [brandSlug, slug]);
 
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
+
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
+    const target = e.currentTarget;
+    // Если по слагу ничего не нашлось (404) — ставим дефолт 🛡️
+    if (target.src !== DEFAULT_IMG) {
+      target.src = DEFAULT_IMG;
+      target.style.opacity = "0.5"; // Делаем заглушку чуть бледнее для стиля
+    }
+  };
 
   return (
     <main className={styles.Page}>
       <div className={styles.container}>
         {/* 1. Секция Hero: Фото и главные параметры */}
         <section className={styles.hero}>
-          <div className={styles.gallery}>
-            <img
-              src={data.mainImage}
-              alt={data.model}
-              className={styles.mainImg}
-            />
-            {/* Тут позже добавим миниатюры галереи */}
+          <div className={styles.gallerySection}>
+            <div className={styles.mainImageWrapper}>
+              <img
+                src={activeImage}
+                alt={data.model}
+                className={styles.mainImg}
+                onError={handleImageError}
+              />
+            </div>
+
+            {/* Список миниатюр */}
+            {data.images?.length > 0 && (
+              <div className={styles.thumbnails}>
+                {data.images.map((img) => (
+                  // 🎯 ДОБАВЛЯЕМ ОБЕРТКУ С КЛАССОМ thumbWrapper
+                  <div
+                    key={img.id}
+                    className={`${styles.thumbWrapper} ${activeImage === img.url ? styles.activeThumb : ""}`}
+                    onClick={() => setActiveImage(img.url)}
+                  >
+                    <img
+                      src={img.url}
+                      alt="thumb"
+                      className={styles.thumbImg} // 🎯 Добавь и этот класс для картинки
+                      onError={handleImageError}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className={styles.mainInfo}>

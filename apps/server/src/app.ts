@@ -91,8 +91,8 @@ app.use(hpp()); // Защищает и req.query, и req.body (т.к. стоит
 //Извлекаем данные из кук:
 app.use(cookieParser());
 
-//Открываем папку apps/server/uploads для раздачи:
-app.use("/uploads", express.static("uploads"));
+//Открываем папку apps/server/uploads для раздачи по пути домен/static/:
+app.use("/static", express.static("uploads"));
 
 //Выводим в консоль данные, полученные от клиента:
 // app.use((req, res, next) => {
