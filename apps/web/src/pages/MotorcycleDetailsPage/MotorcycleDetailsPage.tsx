@@ -13,6 +13,8 @@ export const MotorcycleDetailsPage: React.FC = () => {
   //Стейт для активного фото:
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
+  const [gallery, setGallery] = useState<string[]>([]);
+
   useEffect(() => {
     if (brandSlug && slug) {
       fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
@@ -21,6 +23,18 @@ export const MotorcycleDetailsPage: React.FC = () => {
       });
     }
   }, [brandSlug, slug]);
+
+  useEffect(() => {
+    if (slug) {
+      const potentialImages = [
+        `${STATIC_URL}/motorcycles/${slug}.jpg`, // Главное
+        `${STATIC_URL}/motorcycles/${slug}-1.jpg`, // Доп 1
+        `${STATIC_URL}/motorcycles/${slug}-2.jpg`, // Доп 2
+        `${STATIC_URL}/motorcycles/${slug}-3.jpg`, // Доп 3
+      ];
+      setGallery(potentialImages);
+    }
+  }, [slug]);
 
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
 
@@ -68,17 +82,18 @@ export const MotorcycleDetailsPage: React.FC = () => {
               </div>
 
               {/* 2. Затем выводим дополнительные изображения из базы, если они есть */}
-              {data.images?.map((img) => (
+              {gallery.map((url, index) => (
                 <div
-                  key={img.id}
-                  className={`${styles.thumbWrapper} ${activeImage === img.url ? styles.activeThumb : ""}`}
-                  onClick={() => setActiveImage(img.url)}
+                  key={index}
+                  className={styles.thumbWrapper}
+                  onClick={() => setActiveImage(url)}
                 >
                   <img
-                    src={img.url}
-                    alt="Thumbnail"
+                    src={url}
+                    onError={(e) =>
+                      (e.currentTarget.parentElement!.style.display = "none")
+                    }
                     className={styles.thumbImg}
-                    onError={handleImageError}
                   />
                 </div>
               ))}

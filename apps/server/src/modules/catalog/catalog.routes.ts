@@ -21,6 +21,7 @@ router.get("/sync-search", async (req, res, next) => {
     next(error); // Пробрасываем ошибку в глобальный обработчик
   }
 });
+//Не забывать перед каждой синхронизацией удалять старые данные DELETE-запросом на http://localhost:9200/motorcycles
 
 //Получение информации о конкретном мотоцикле (/api/catalog/:brandSlug/:slug):
 router.get("/:brandSlug/:slug", catalogController.getMotorcycle);
