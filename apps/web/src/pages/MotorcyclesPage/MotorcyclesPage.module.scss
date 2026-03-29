@@ -2,22 +2,20 @@
   display: flex;
   min-height: 100vh;
   background: #080808;
-  max-width: 1440px; // Или 100% для всей ширины
-  margin: 0 auto;
+
+  width: 100%; // Обязательно на всю ширину
+  max-width: 1440px; // Или 1600px, если хочешь пошире
+  margin: 0 auto; // Центрирует этот широкий контейнер
+
   padding: 40px 20px;
-  gap: 40px; // Расстояние между сайдбаром и карточками
+  gap: 40px;
+  box-sizing: border-box; // Чтобы паддинги не раздували ширину
 }
 
 .Sidebar {
   width: 300px;
   flex-shrink: 0; // Сайдбар не должен сжиматься
   // ... твои стили сайдбара
-}
-
-.Content {
-  flex-grow: 1; // Занимает всё оставшееся место справа 🎯
-  display: flex;
-  flex-direction: column;
 }
 
 .sidebarTitle {
@@ -28,13 +26,6 @@
   letter-spacing: 1px;
 }
 
-.topBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
 .title {
   font-size: 2.2rem;
   color: #fff;
@@ -42,7 +33,6 @@
   line-height: 1.2;
 
   span {
-    // Если "Aprilia" вынесена в span
     display: block;
     color: #f39c12;
     font-size: 1.8rem;
@@ -112,7 +102,10 @@
 
 // Стили для индикатора загрузки поверх сетки ⏳
 .Content {
-  position: relative; // Для позиционирования оверлея
+  flex-grow: 1;
+  display: flex; // Важно для расположения пагинации под сеткой
+  flex-direction: column;
+  position: relative; // Нужно для overlay
 }
 
 .loadingOverlay {
@@ -131,4 +124,56 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   pointer-events: none; // Чтобы клики проходили сквозь него
+}
+
+//Пагинация:
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 50px;
+  padding: 20px 0;
+}
+
+.numbers {
+  display: flex;
+  gap: 8px;
+}
+
+.pageBtn {
+  width: 40px;
+  height: 40px;
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.active {
+    background: #f39c12;
+    border-color: #f39c12;
+    color: #000;
+    font-weight: 700;
+  }
+
+  &:hover:not(.active) {
+    border-color: #f39c12;
+  }
+}
+
+.navBtn {
+  background: none;
+  border: 1px solid #333;
+  color: #f39c12;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
 }

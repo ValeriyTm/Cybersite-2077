@@ -11,6 +11,7 @@ export const MotorcyclesPage: React.FC = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
   const [items, setItems] = useState<MotorcycleShort[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
 
   //Состояние всех фильтров:
   const [filters, setFilters] = useState({
@@ -41,9 +42,13 @@ export const MotorcyclesPage: React.FC = () => {
       // Проверяем, что в ответе ЕСТЬ items, прежде чем их сетить 🎯
       if (res && Array.isArray(res.items)) {
         setItems(res.items);
+        setTotalPages(res.pages);
       } else {
         setItems([]); // Если данных нет — очищаем список
       }
+
+      console.log("Всего моделей:", res.total);
+      console.log("Всего страниц:", res.pages);
     } catch (error) {
       console.error("Ошибка загрузки:", error);
       setItems([]); // В случае ошибки тоже ставим пустой массив
@@ -68,6 +73,12 @@ export const MotorcyclesPage: React.FC = () => {
   // Логика обновления фильтров
   const updateFilter = (key: string, value: any) => {
     setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
+  };
+
+  // Хендлер смены страницы
+  const handlePageChange = (newPage: number) => {
+    setFilters((prev) => ({ ...prev, page: newPage }));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Опции для категорий:
@@ -189,27 +200,24 @@ export const MotorcyclesPage: React.FC = () => {
 
       {/*2) Карточки и сортировка:*/}
       <main className={styles.Content}>
+        <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1>
+        {/*2.1.Сортировка:*/}
         <header className={styles.topBar}>
-          <h1 className={styles.title}>Мотоциклы {brandSlug}</h1>
-          {/*2.1.Сортировка:*/}
-
-          <header className={styles.topBar}>
-            <div className={styles.sorting}>
-              <span className={styles.sortLabel}>Сортировать:</span>
-              <select
-                className={styles.sortSelect}
-                value={filters.sortBy}
-                onChange={(e) => updateFilter("sortBy", e.target.value)}
-              >
-                <option value="name_asc">По алфавиту (А-Я)</option>
-                <option value="name_desc">По алфавиту (Я-А)</option>
-                <option value="price_asc">Сначала дешевые</option>
-                <option value="price_desc">Сначала дорогие</option>
-                <option value="year_desc">Сначала новые</option>
-                <option value="rating_desc">Высокий рейтинг</option>
-              </select>
-            </div>
-          </header>
+          <div className={styles.sorting}>
+            <span className={styles.sortLabel}>Сортировать:</span>
+            <select
+              className={styles.sortSelect}
+              value={filters.sortBy}
+              onChange={(e) => updateFilter("sortBy", e.target.value)}
+            >
+              <option value="name_asc">По алфавиту (А-Я)</option>
+              <option value="name_desc">По алфавиту (Я-А)</option>
+              <option value="price_asc">Сначала дешевые</option>
+              <option value="price_desc">Сначала дорогие</option>
+              <option value="year_desc">Сначала новые</option>
+              <option value="rating_desc">Высокий рейтинг</option>
+            </select>
+          </div>
         </header>
 
         {/*2.2.Карточки:*/}
@@ -221,6 +229,59 @@ export const MotorcyclesPage: React.FC = () => {
             <MotorcycleCard key={moto.id} data={moto} />
           ))}
         </div>
+
+        {/*2.3.Пагинация:*/}
+        {totalPages > 1 && (
+          <footer className={styles.pagination}>
+            <button
+              disabled={filters.page === 1}
+              onClick={() => handlePageChange(filters.page - 1)}
+              className={styles.navBtn}
+            >
+              &laquo;
+            </button>
+
+            <div className={styles.numbers}>
+              {(() => {
+                const pages = [];
+                const maxButtons = 5; // Сколько максимум кнопок с цифрами мы хотим видеть
+
+                // 1. Вычисляем начальную страницу
+                let startPage = Math.max(1, filters.page - 2);
+
+                // 2. Вычисляем конечную страницу
+                let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+                // 3. Корректируем начало, если мы в самом конце списка
+                if (endPage - startPage < maxButtons - 1) {
+                  startPage = Math.max(1, endPage - maxButtons + 1);
+                }
+
+                // 4. Генерируем кнопки без дублей 🎯
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i} // Теперь ключ всегда уникален (1, 2, 3...)
+                      onClick={() => handlePageChange(i)}
+                      className={`${styles.pageBtn} ${filters.page === i ? styles.active : ""}`}
+                    >
+                      {i}
+                    </button>,
+                  );
+                }
+                return pages;
+              })()}
+            </div>
+
+            <button
+              disabled={filters.page === totalPages}
+              onClick={() => handlePageChange(filters.page + 1)}
+              className={styles.navBtn}
+            >
+              &raquo;
+            </button>
+          </footer>
+        )}
       </main>
     </div>
   );

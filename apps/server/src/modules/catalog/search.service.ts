@@ -36,8 +36,7 @@ export class SearchService {
         power: Number(doc.power) || 0,
         transmission: doc.transmission,
         rating: Number(doc.rating) || 0,
-        mainImage:
-          doc.images?.[0]?.url || "/public/defaults/default-card-icon.jpg",
+        mainImage: doc.images?.[0]?.url || "/defaults/default-card-icon.jpg",
       },
     ]);
 
@@ -168,10 +167,16 @@ export class SearchService {
     const result = await esClient.search({
       index: this.indexName,
       from: (page - 1) * limit,
-      size: limit,
+      size: limit, //Мой лимит (обычно 20)
       query,
       sort,
     });
+
+    // Считаем общее количество документов
+    const totalItems =
+      typeof result.hits.total === "number"
+        ? result.hits.total
+        : (result.hits.total as any)?.value || 0;
 
     return {
       // Превращаем формат Elastic обратно в массив объектов
@@ -183,6 +188,8 @@ export class SearchService {
         typeof result.hits.total === "number"
           ? result.hits.total
           : (result.hits.total as any)?.value || 0,
+      page: Number(page),
+      pages: Math.ceil(totalItems / limit) || 1,
     };
   }
 }

@@ -178,7 +178,7 @@ async function main() {
       const fullModelName = `${row.Model}${row.Year}`;
       const modelSlug = slugify(fullModelName);
 
-      const defaultImageUrl = "/public/defaults/default-card-icon.jpg"; //Путь к дефолтному изображению
+      const defaultImageUrl = "/defaults/default-card-icon.jpg"; //Путь к дефолтному изображению
 
       await prisma.motorcycle.upsert({
         where: { slug: modelSlug }, // Ищем по уникальному слагу
