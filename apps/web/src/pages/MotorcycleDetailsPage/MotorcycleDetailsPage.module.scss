@@ -156,3 +156,17 @@ h2 {
   height: 100%;
   object-fit: cover; // Миниатюру можно и подрезать для красоты
 }
+
+//Рекомендации:
+.relatedSection {
+  margin-top: 100px;
+  padding-top: 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}

@@ -119,13 +119,14 @@ export const MotorcyclesPage: React.FC = () => {
 
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/motorcycles" },
-    { label: brandSlug, href: `/catalog/motorcycles/${brandSlug}` }, // Текущая страница
+    {
+      label: brandSlug?.toUpperCase(),
+      href: `/catalog/motorcycles/${brandSlug}`,
+    }, // Текущая страница
   ];
 
   return (
     <div className={styles.Page}>
-      <Breadcrumbs items={breadcrumbs} />
-
       {/*1) Сайдбар с фильтрами:*/}
       <aside className={styles.Sidebar}>
         {/*Тут фильтры:*/}
@@ -211,6 +212,7 @@ export const MotorcyclesPage: React.FC = () => {
 
       {/*2) Карточки и сортировка:*/}
       <main className={styles.Content}>
+        <Breadcrumbs items={breadcrumbs} />
         <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1>
         {/*2.1.Topbar:*/}
         <header className={styles.topBar}>

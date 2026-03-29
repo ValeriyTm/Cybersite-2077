@@ -206,6 +206,60 @@ export class SearchService {
       pages: Math.ceil(totalItems / limit) || 1,
     };
   }
+
+  //Поиск аналогичных мотоциклов (рекомендации):
+  async getRelatedMotorcycles(motorcycle: any, limit = 4) {
+    //[Отбор происходит по принципу «похожий класс + похожий объём».Мы ищем мотоциклы только из той же категории. Elastic старается в первую очередь подсунуть модели того же производителя. Мы ищем модели с объёмом +/- 30% от текущего.]
+    // 1. Собираем только те фильтры, которые реально существуют в объекте 🛡️
+    const must: any[] = [];
+    const should: any[] = [];
+
+    if (motorcycle.category) {
+      must.push({ term: { "category.keyword": motorcycle.category } });
+    }
+
+    if (motorcycle.brandSlug) {
+      should.push({ term: { "brandSlug.keyword": motorcycle.brandSlug } });
+    }
+
+    if (motorcycle.displacement && motorcycle.displacement > 0) {
+      should.push({
+        range: {
+          displacement: {
+            gte: Math.floor(motorcycle.displacement * 0.7),
+            lte: Math.ceil(motorcycle.displacement * 1.3),
+          },
+        },
+      });
+    }
+
+    const query = {
+      bool: {
+        must,
+        // ВАЖНО: Добавляем should только если в нем есть элементы 🎯
+        ...(should.length > 0 && { should }),
+        must_not: [
+          { term: { _id: motorcycle.id } }, // Исключаем текущую модель из рекомендаций
+        ],
+        // Минимум одно совпадение из should не обязательно (т.к. есть must),
+        // но если хотим, чтобы should влиял на порядок - оставляем так.
+      },
+    };
+
+    // 🎯 ЛОГ ДЛЯ ОТЛАДКИ (Посмотри его в консоли сервера при ошибке!)
+    // console.log('DEBUG RELATED QUERY:', JSON.stringify(query, null, 2));
+
+    const result = await esClient.search({
+      index: this.indexName,
+      size: limit,
+      query,
+    });
+
+    return result.hits.hits.map((hit: any) => ({
+      ...(hit._source as object),
+      id: hit._id,
+    }));
+  }
 }
 
 export const searchService = new SearchService();

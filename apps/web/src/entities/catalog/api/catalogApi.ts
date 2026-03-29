@@ -4,6 +4,7 @@ import {
   type BrandResponse,
   type MotorcycleFilters,
   type MotorcycleResponse,
+  type MotorcycleShort,
   type MotorcycleFull,
 } from "../model/types";
 import { API_URL } from "@/shared/api/api";
@@ -42,5 +43,16 @@ export const fetchMotorcycleBySlug = async (
   const { data } = await axios.get(
     `${API_URL}/api/catalog/${brandSlug}/${slug}`,
   );
+  return data;
+};
+
+export const fetchRelatedMotorcycles = async (
+  slug: string,
+): Promise<MotorcycleShort[]> => {
+  const { data } = await axios.get(
+    `${API_URL}/api/catalog/motorcycles/${slug}/related`,
+  );
+
+  // Возвращаем массив айтемов (обычно Elastic отдает их напрямую в теле ответа)
   return data;
 };

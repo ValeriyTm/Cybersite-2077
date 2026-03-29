@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { fetchMotorcycleBySlug, type MotorcycleFull } from "@/entities/catalog";
+import {
+  fetchMotorcycleBySlug,
+  fetchRelatedMotorcycles,
+  type MotorcycleFull,
+} from "@/entities/catalog";
 import { SpecRow } from "@/shared/ui/SpecRow";
+import { MotorcycleCard } from "@/entities/catalog";
+import { type MotorcycleShort } from "@/entities/catalog/model/types";
+
 //Компонент Breadcrumbs:
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
 //Стили
@@ -15,6 +22,8 @@ export const MotorcycleDetailsPage: React.FC = () => {
   const [data, setData] = useState<MotorcycleFull | null>(null);
   //Стейт для активного фото:
   const [activeImage, setActiveImage] = useState<string>("");
+  //Стейт для рекомендаций:
+  const [related, setRelated] = useState<MotorcycleShort[]>([]);
 
   useEffect(() => {
     if (brandSlug && slug) {
@@ -29,6 +38,18 @@ export const MotorcycleDetailsPage: React.FC = () => {
       });
     }
   }, [brandSlug, slug]);
+
+  useEffect(() => {
+    if (slug) {
+      // 1. Очищаем старые рекомендации перед загрузкой новых 🧹
+      setRelated([]);
+
+      // 2. Загружаем новые
+      fetchRelatedMotorcycles(slug)
+        .then(setRelated)
+        .catch((err) => console.error("Ошибка загрузки рекомендаций:", err));
+    }
+  }, [slug]);
 
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
 
@@ -116,6 +137,18 @@ export const MotorcycleDetailsPage: React.FC = () => {
             <SpecRow label="Дополнительная информация" value={data.comments} />
           </div>
         </section>
+
+        {/*Рекомендации:*/}
+        {related.length > 0 && (
+          <section className={styles.relatedSection}>
+            <h2 className={styles.sectionTitle}>Похожие модели</h2>
+            <div className={styles.relatedGrid}>
+              {related.map((moto) => (
+                <MotorcycleCard key={moto.id} data={moto} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );

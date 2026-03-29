@@ -121,6 +121,20 @@ export class CatalogController {
       next(error);
     }
   }
+
+  //Поиск аналогичных мотоциклов (рекомендации):
+  async getRelated(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { slug } = req.params;
+      const motorcycle = await catalogService.getMotorcycleBySlug(slug);
+      if (!motorcycle) return res.status(404).send();
+
+      const related = await searchService.getRelatedMotorcycles(motorcycle);
+      res.json(related);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const catalogController = new CatalogController();
