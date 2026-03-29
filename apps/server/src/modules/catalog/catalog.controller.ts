@@ -28,10 +28,12 @@ export class CatalogController {
       //Вытаскиваем параметры из адресной строки и приводим к числам с дефолтными значениями:
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
+      const search = req.query.search as string; //Забираем строку поиска
 
       const { items, total, pages } = await catalogService.getBrands(
         page,
         limit,
+        search,
       );
 
       //Мапим результат, чтобы соответствовать схеме Brand из OpenAPI:

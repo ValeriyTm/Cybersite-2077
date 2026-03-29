@@ -102,3 +102,32 @@
     cursor: not-allowed;
   }
 }
+
+.searchContainer {
+  width: 100%;
+  max-width: 500px;
+  margin: 30px auto 0;
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 16px 24px;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.1rem;
+  outline: none;
+  transition: all 0.3s ease;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:focus {
+    border-color: #f39c12;
+    box-shadow: 0 0 20px rgba(243, 156, 18, 0.1);
+    background: #151515;
+  }
+}

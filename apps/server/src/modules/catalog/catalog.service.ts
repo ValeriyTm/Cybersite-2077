@@ -20,11 +20,17 @@ export class CatalogService {
   }
 
   //Получение списка брендов:
-  async getBrands(page: number = 1, limit: number = 20) {
+  async getBrands(page: number = 1, limit: number = 20, search?: string) {
     const skip = (page - 1) * limit;
+
+    // Создаем объект фильтрации
+    const where = search
+      ? { name: { contains: search, mode: "insensitive" as const } }
+      : {};
 
     const [items, total] = await Promise.all([
       prisma.brand.findMany({
+        where, // Применяем поиск по имени
         skip,
         take: limit,
         select: {
@@ -38,7 +44,7 @@ export class CatalogService {
         },
         orderBy: { name: "asc" }, //Сортируем по алфавиту по умолчанию
       }),
-      prisma.brand.count(),
+      prisma.brand.count({ where }), // Считаем количество только найденных брендов
     ]);
 
     return {

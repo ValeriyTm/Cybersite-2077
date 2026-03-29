@@ -1,24 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { fetchBrands, type Brand, BrandCard } from "@/entities/catalog";
+import debounce from "lodash/debounce";
 import styles from "./BrandPage.module.scss";
 
 export const BrandPage: React.FC = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const LIMIT = 24;
+  // 🎯 Дебаунс поиска, чтобы не спамить сервер на каждую букву
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setSearch(value);
+      setCurrentPage(1); // При поиске всегда возвращаемся на 1 страницу
+    }, 500),
+    [],
+  );
 
   useEffect(() => {
     setIsLoading(true);
-    fetchBrands(currentPage, LIMIT)
+    fetchBrands(currentPage, 24, search)
       .then((data) => {
         setBrands(data.items);
         setTotalPages(data.pages);
       })
       .finally(() => setIsLoading(false));
-  }, [currentPage]);
+  }, [currentPage, search]);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -57,6 +66,16 @@ export const BrandPage: React.FC = () => {
       <header className={styles.header}>
         <h1 className={styles.title}>Мировые бренды</h1>
         <p className={styles.subtitle}>Более 500 производителей в нашей базе</p>
+
+        {/* 🔍 Поле поиска */}
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Найти бренд (напр. Honda)..."
+            className={styles.searchInput}
+            onChange={(e) => debouncedSearch(e.target.value)}
+          />
+        </div>
       </header>
 
       <div className={styles.grid}>

@@ -13,9 +13,10 @@ export const fetchSiteCategories = async (): Promise<SiteCategory[]> => {
 export const fetchBrands = async (
   page: number = 1,
   limit: number = 24,
+  search?: string,
 ): Promise<BrandResponse> => {
   const { data } = await axios.get(`${API_URL}/api/catalog/brands`, {
-    params: { page, limit },
+    params: { page, limit, search },
   });
   return data;
 };
