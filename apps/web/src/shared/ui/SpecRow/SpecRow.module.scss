@@ -1,0 +1,25 @@
+.specRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  span {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  //   strong {
+  //     color: #ffffff;
+  //     font-weight: 500;
+  //     text-align: right;
+  //   }
+}
+
+.noData {
+  color: rgb(128, 128, 128);
+  font-weight: normal; /* по желанию, чтобы "Нет данных" не бросалось в глаза */
+}

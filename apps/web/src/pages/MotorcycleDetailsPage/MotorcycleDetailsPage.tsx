@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { fetchMotorcycleBySlug, type MotorcycleFull } from "@/entities/catalog";
+import { SpecRow } from "@/shared/ui/SpecRow";
 import styles from "./MotorcycleDetailsPage.module.scss";
 
 const STATIC_URL = "http://localhost:3001/static/motorcycles";
@@ -88,52 +89,27 @@ export const MotorcycleDetailsPage: React.FC = () => {
           <h2 className={styles.sectionTitle}>Технические характеристики</h2>
           <div className={styles.specsGrid}>
             {/*Характеристики:*/}
-            <div className={styles.specRow}>
-              <span>Тип двигателя:</span> <strong>{data.engineType}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Мощность:</span> <strong>{data.power} л.с.</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Максимальная скорость, км/ч:</span>{" "}
-              <strong>{data.topSpeed}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Коробка передач:</span> <strong>{data.gearbox}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Стартер:</span> <strong>{data.starter}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Топливная система:</span> <strong>{data.fuelSystem}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Система охлаждения:</span>{" "}
-              <strong>{data.coolingSystem}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Трансмиссия:</span> <strong>{data.transmission}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Заднее колесо:</span> <strong>{data.rearTyre}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Переднее колесо:</span> <strong>{data.frontTyre}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Задние тормоза:</span> <strong>{data.rearBrakes}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Передние тормоза:</span> <strong>{data.frontBrakes}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Расход топлива, л/100км:</span>{" "}
-              <strong>{data.fuelConsumption}</strong>
-            </div>
-            <div className={styles.specRow}>
-              <span>Дополнительная информация:</span>{" "}
-              <strong>{data.comments}</strong>
-            </div>
+
+            <SpecRow label="Тип двигателя" value={data.engineType} />
+            <SpecRow label="Мощность" value={data.power} />
+            <SpecRow
+              label="Максимальная скорость, км/ч"
+              value={data.topSpeed}
+            />
+            <SpecRow label="Коробка передач" value={data.gearbox} />
+            <SpecRow label="Стартер" value={data.starter} />
+            <SpecRow label="Топливная система" value={data.fuelSystem} />
+            <SpecRow label="Система охлаждения" value={data.coolingSystem} />
+            <SpecRow label="Трансмиссия" value={data.transmission} />
+            <SpecRow label="Заднее колесо" value={data.rearTyre} />
+            <SpecRow label="Переднее колесо" value={data.frontTyre} />
+            <SpecRow label="Задние тормоза" value={data.rearBrakes} />
+            <SpecRow label="Передние тормоза" value={data.frontBrakes} />
+            <SpecRow
+              label="Расход топлива, л/100км"
+              value={data.fuelConsumption}
+            />
+            <SpecRow label="Дополнительная информация" value={data.comments} />
           </div>
         </section>
       </div>

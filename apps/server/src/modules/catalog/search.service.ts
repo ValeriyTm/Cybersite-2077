@@ -50,10 +50,11 @@ export class SearchService {
     }
   }
 
-  //Основной поискс фильтрами:
+  //Основной поиск по моделям с фильтрами:
   async searchMotorcycles(filters: any) {
     const {
       brandSlug,
+      search,
       minPrice,
       maxPrice,
       minYear,
@@ -75,6 +76,19 @@ export class SearchService {
         filter: [], // Условия фильтрации (не влияют на релевантность, работают быстро)
       },
     };
+
+    // 🎯 2. Добавляем логику поиска по названию модели
+    if (search) {
+      query.bool.must.push({
+        match: {
+          model: {
+            query: search,
+            fuzziness: "AUTO", // Прощает опечатки (напр. "Yamha" вместо "Yamaha")
+            operator: "and", // Ищет все слова из запроса
+          },
+        },
+      });
+    }
 
     // 1. Фильтр по бренду (обязательно для страницы бренда)
     if (brandSlug) {

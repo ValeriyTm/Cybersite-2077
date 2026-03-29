@@ -27,6 +27,7 @@ export const MotorcyclesPage: React.FC = () => {
     category: undefined as string | undefined,
     transmission: undefined as string | undefined,
     minRating: undefined as number | undefined,
+    search: "",
     sortBy: "name_asc" as string,
   });
 
@@ -201,8 +202,20 @@ export const MotorcyclesPage: React.FC = () => {
       {/*2) Карточки и сортировка:*/}
       <main className={styles.Content}>
         <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1>
-        {/*2.1.Сортировка:*/}
+        {/*2.1.Topbar:*/}
         <header className={styles.topBar}>
+          {/*2.1.1.Поиск:*/}
+          <div className={styles.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Поиск по модели (напр. CBR 1000)..."
+              className={styles.searchInput}
+              onChange={(e) => updateFilter("search", e.target.value)}
+            />
+            <span className={styles.searchIcon}>🔍</span>
+          </div>
+
+          {/*2.1.2.Сортировка*/}
           <div className={styles.sorting}>
             <span className={styles.sortLabel}>Сортировать:</span>
             <select

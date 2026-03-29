@@ -48,6 +48,7 @@
 
 .topBar {
   display: flex;
+  flex-direction: column;
   justify-content: space-between; // Разносит заголовок влево, сортировку вправо 🎯
   align-items: center;
   margin-bottom: 30px;
@@ -176,4 +177,47 @@
     opacity: 0.2;
     cursor: not-allowed;
   }
+}
+
+//Поиск:
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.searchWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 16px 12px 45px; // Отступ слева под иконку
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #f39c12;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.1);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.4;
+  font-size: 1.1rem;
 }

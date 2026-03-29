@@ -60,6 +60,7 @@ export class CatalogController {
       // Собираем все фильтры из строки запроса (?brandSlug=honda&year=2021)
       const filters = {
         brandSlug: req.query.brandSlug as string,
+        search: req.query.search as string,
         minPrice: req.query.minPrice
           ? parseInt(req.query.minPrice as string)
           : undefined,
