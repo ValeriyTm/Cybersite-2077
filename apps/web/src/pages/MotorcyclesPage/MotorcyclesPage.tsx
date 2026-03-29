@@ -233,35 +233,41 @@ export const MotorcyclesPage: React.FC = () => {
         {/*2.3.Пагинация:*/}
         {totalPages > 1 && (
           <footer className={styles.pagination}>
+            {/* 1. В самое начало 🎯 */}
             <button
+              className={styles.navBtn}
+              disabled={filters.page === 1}
+              onClick={() => handlePageChange(1)}
+              title="В начало"
+            >
+              &laquo;&laquo;
+            </button>
+
+            {/* 2. На одну назад */}
+            <button
+              className={styles.navBtn}
               disabled={filters.page === 1}
               onClick={() => handlePageChange(filters.page - 1)}
-              className={styles.navBtn}
             >
               &laquo;
             </button>
 
+            {/* 3. Числа страниц (наш цикл из прошлого шага) */}
             <div className={styles.numbers}>
               {(() => {
                 const pages = [];
-                const maxButtons = 5; // Сколько максимум кнопок с цифрами мы хотим видеть
-
-                // 1. Вычисляем начальную страницу
+                const maxButtons = 5;
                 let startPage = Math.max(1, filters.page - 2);
-
-                // 2. Вычисляем конечную страницу
                 let endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
-                // 3. Корректируем начало, если мы в самом конце списка
                 if (endPage - startPage < maxButtons - 1) {
                   startPage = Math.max(1, endPage - maxButtons + 1);
                 }
 
-                // 4. Генерируем кнопки без дублей 🎯
                 for (let i = startPage; i <= endPage; i++) {
                   pages.push(
                     <button
-                      key={i} // Теперь ключ всегда уникален (1, 2, 3...)
+                      key={i}
                       onClick={() => handlePageChange(i)}
                       className={`${styles.pageBtn} ${filters.page === i ? styles.active : ""}`}
                     >
@@ -273,12 +279,23 @@ export const MotorcyclesPage: React.FC = () => {
               })()}
             </div>
 
+            {/* 4. На одну вперед */}
             <button
+              className={styles.navBtn}
               disabled={filters.page === totalPages}
               onClick={() => handlePageChange(filters.page + 1)}
-              className={styles.navBtn}
             >
               &raquo;
+            </button>
+
+            {/* 5. В самый конец 🎯 */}
+            <button
+              className={styles.navBtn}
+              disabled={filters.page === totalPages}
+              onClick={() => handlePageChange(totalPages)}
+              title="В конец"
+            >
+              &raquo;&raquo;
             </button>
           </footer>
         )}
