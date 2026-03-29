@@ -45,31 +45,36 @@
 .pagination {
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 20px;
-  background: #111;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.numbers {
+  display: flex;
+  gap: 8px;
 }
 
 .pageBtn {
-  background: transparent;
+  min-width: 40px;
+  height: 40px;
+  background: #111;
   border: 1px solid #333;
   color: #fff;
-  padding: 10px 24px;
-  border-radius: 30px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 600;
+  transition: all 0.2s ease;
+  font-weight: 500;
 
-  &:hover:not(:disabled) {
+  &:hover:not(.active) {
     border-color: #f39c12;
-    color: #f39c12;
   }
 
-  &:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
+  &.active {
+    background: #f39c12; // Оранжевый для активной страницы 🎯
+    border-color: #f39c12;
+    color: #000;
+    font-weight: 700;
+    cursor: default;
   }
 }
 
@@ -79,5 +84,21 @@
 
   strong {
     color: #fff;
+  }
+}
+
+.navBtn {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #333;
+  color: #f39c12;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 }
