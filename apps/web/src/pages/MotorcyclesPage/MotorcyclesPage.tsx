@@ -6,6 +6,8 @@ import { RangeFilter } from "@/features/catalog-filter/ui/RangeFilter/RangeFilte
 import styles from "./MotorcyclesPage.module.scss";
 import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
 import debounce from "lodash/debounce";
+//Компонент Breadcrumbs:
+import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
 
 export const MotorcyclesPage: React.FC = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
@@ -110,12 +112,20 @@ export const MotorcyclesPage: React.FC = () => {
     { value: "Cardan", label: "Кардан" },
   ];
 
-  // console.log(
-  //   "IDs в текущем списке:",
-  //   items.map((m) => m.id),
-  // );
+  // const capitalize = (str) => {
+  //   if (!str) return "";
+  //   return str[0].toUpperCase() + str.slice(1).toLowerCase();
+  // };
+
+  const breadcrumbs = [
+    { label: "Каталог", href: "/catalog/motorcycles" },
+    { label: brandSlug, href: `/catalog/motorcycles/${brandSlug}` }, // Текущая страница
+  ];
+
   return (
     <div className={styles.Page}>
+      <Breadcrumbs items={breadcrumbs} />
+
       {/*1) Сайдбар с фильтрами:*/}
       <aside className={styles.Sidebar}>
         {/*Тут фильтры:*/}

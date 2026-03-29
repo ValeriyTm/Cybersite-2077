@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchBrands, type Brand, BrandCard } from "@/entities/catalog";
 import debounce from "lodash/debounce";
+//Компонент Breadcrumbs:
+import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+//Стили:
 import styles from "./BrandPage.module.scss";
 
 export const BrandPage: React.FC = () => {
@@ -61,8 +64,14 @@ export const BrandPage: React.FC = () => {
     return pages;
   };
 
+  const breadcrumbs = [
+    { label: "Каталог", href: "/catalog/motorcycles" }, // Текущая страница
+  ];
+
   return (
     <main className={styles.BrandsPage}>
+      {/*Breadcrumbs:*/}
+      <Breadcrumbs items={breadcrumbs} />
       <header className={styles.header}>
         <h1 className={styles.title}>Мировые бренды</h1>
         <p className={styles.subtitle}>Более 500 производителей в нашей базе</p>

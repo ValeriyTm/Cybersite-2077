@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { fetchMotorcycleBySlug, type MotorcycleFull } from "@/entities/catalog";
 import { SpecRow } from "@/shared/ui/SpecRow";
+//Компонент Breadcrumbs:
+import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+//Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
 
 const STATIC_URL = "http://localhost:3001/static/motorcycles";
@@ -13,20 +16,11 @@ export const MotorcycleDetailsPage: React.FC = () => {
   //Стейт для активного фото:
   const [activeImage, setActiveImage] = useState<string>("");
 
-  // useEffect(() => {
-  //   if (brandSlug && slug) {
-  //     fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
-  //       setData(res);
-  //       setActiveImage(`${STATIC_URL}/motorcycles/${slug}.jpg`);
-  //     });
-  //   }
-  // }, [brandSlug, slug]);
-
   useEffect(() => {
     if (brandSlug && slug) {
       fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
         setData(res);
-        // 🎯 Умная установка главного фото:
+        // Умная установка главного фото:
         // Если в базе есть помеченное как isMain — берем его, иначе первое из списка, иначе дефолт
         const mainImg =
           res.images?.find((img) => img.isMain)?.url || res.images?.[0]?.url;
@@ -38,9 +32,19 @@ export const MotorcycleDetailsPage: React.FC = () => {
 
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
 
+  //Breadcrumbs:
+  const breadcrumbs = [
+    { label: "Каталог", href: "/catalog/motorcycles" },
+    { label: data.brand.name, href: `/catalog/motorcycles/${data.brand.slug}` },
+    { label: data.model }, // Текущая страница без ссылки
+  ];
+
   return (
     <main className={styles.Page}>
       <div className={styles.container}>
+        {/*Breadcrumbs:*/}
+        <Breadcrumbs items={breadcrumbs} />
+
         {/* 1. Секция Hero: Фото и главные параметры */}
         <section className={styles.hero}>
           <div className={styles.gallerySection}>
