@@ -15,6 +15,7 @@ import { ProtectedRoute } from "../ui/ProtectedRoute";
 import { CatalogPage } from "@/pages/CatalogPage/CatalogPage";
 import { BrandPage } from "@/pages/BrandPage/BrandPage";
 import { MotorcyclesPage } from "@/pages/MotorcyclesPage/MotorcyclesPage";
+import { MotorcycleDetailsPage } from "@/pages/MotorcycleDetailsPage/MotorcycleDetailsPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
             <ProfilePage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/catalog/motorcycles/:brandSlug/:slug",
+        element: <MotorcycleDetailsPage />,
       },
       {
         path: "/catalog/motorcycles/:brandSlug",

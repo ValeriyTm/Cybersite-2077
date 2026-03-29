@@ -41,14 +41,33 @@ export interface MotorcycleShort {
   id: string;
   model: string;
   slug: string;
-  brand: string; // Название бренда (напр. "Honda")
+  brand: { name: string; country: string; slug: string };
   brandSlug: string; // Для роутинга
   year: number;
   price: number;
   displacement: number;
   power: number;
   rating: number;
-  mainImage: string; // URL того самого дефолтного фото или из галереи
+  mainImage: string;
+}
+
+export interface MotorcycleFull extends MotorcycleShort {
+  category: string;
+  topSpeed: number;
+  fuelConsumption: number;
+  engineType: string;
+  fuelSystem: string;
+  coolingSystem: string;
+  gearbox: string;
+  transmission: string;
+  frontTyre: string;
+  rearTyre: string;
+  frontBrakes: string;
+  rearBrakes: string;
+  colors: string[];
+  starter: string;
+  comments: string;
+  images: { id: string; url: string }[];
 }
 
 export interface MotorcycleResponse {

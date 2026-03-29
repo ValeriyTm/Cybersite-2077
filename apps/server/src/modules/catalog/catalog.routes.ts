@@ -9,7 +9,7 @@ const router = Router();
 router.get("/categories", catalogController.getCategories);
 //Список брендов с пагинацией для страницы (/api/catalog/brands?page=1&limit=20):
 router.get("/brands", catalogController.getBrands);
-//Поиск (/api/catalog/motorcycles):
+//Получение всех мотоциклов одного бренда (/api/catalog/motorcycles):
 router.get("/motorcycles", catalogController.getMotorcycles);
 //Временный роут для ручного запуска синхронизации:
 router.get("/sync-search", async (req, res, next) => {
@@ -20,5 +20,8 @@ router.get("/sync-search", async (req, res, next) => {
     next(error); // Пробрасываем ошибку в глобальный обработчик
   }
 });
+
+//Получение информации о конкретном мотоцикле (/api/catalog/:brandSlug/:slug):
+router.get("/:brandSlug/:slug", catalogController.getMotorcycle);
 
 export default router;

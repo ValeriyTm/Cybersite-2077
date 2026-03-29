@@ -5,5 +5,10 @@ export {
   fetchSiteCategories,
   fetchBrands,
   fetchMotorcycles,
+  fetchMotorcycleBySlug,
 } from "./api/catalogApi";
-export { type SiteCategory, type Brand } from "./model/types";
+export {
+  type SiteCategory,
+  type Brand,
+  type MotorcycleFull,
+} from "./model/types";

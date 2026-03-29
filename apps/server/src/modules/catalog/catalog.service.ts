@@ -54,6 +54,19 @@ export class CatalogService {
       pages: Math.ceil(total / limit),
     };
   }
+
+  //Получение данных о конкретном мотоцикле:
+  async getMotorcycleBySlug(slug: string) {
+    // Достаем из БД всё: бренд, категорию и все изображения
+    return await prisma.motorcycle.findUnique({
+      where: { slug },
+      include: {
+        brand: true,
+        siteCategory: true,
+        images: true, // Галерея фото
+      },
+    });
+  }
 }
 
 export const catalogService = new CatalogService();

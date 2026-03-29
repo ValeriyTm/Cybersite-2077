@@ -4,6 +4,7 @@ import {
   type BrandResponse,
   type MotorcycleFilters,
   type MotorcycleResponse,
+  type MotorcycleFull,
 } from "../model/types";
 import { API_URL } from "@/shared/api/api";
 
@@ -31,5 +32,15 @@ export const fetchMotorcycles = async (
   const { data } = await axios.get(`${API_URL}/api/catalog/motorcycles`, {
     params: filters,
   });
+  return data;
+};
+
+export const fetchMotorcycleBySlug = async (
+  brandSlug: string,
+  slug: string,
+): Promise<MotorcycleFull> => {
+  const { data } = await axios.get(
+    `${API_URL}/api/catalog/${brandSlug}/${slug}`,
+  );
   return data;
 };

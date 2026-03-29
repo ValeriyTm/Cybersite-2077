@@ -6,6 +6,7 @@ import styles from "./MotorcycleCard.module.scss";
 export const MotorcycleCard: React.FC<{ data: MotorcycleShort }> = ({
   data,
 }) => {
+  console.log("CARD DATA:", data.brandSlug, data.slug);
   return (
     <Link
       to={`/catalog/motorcycles/${data.brandSlug}/${data.slug}`}

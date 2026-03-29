@@ -1,0 +1,94 @@
+.Page {
+  min-height: 100vh;
+  background: #080808;
+  color: #fff;
+  padding: 60px 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr; // Фото шире, инфо уже
+  gap: 60px;
+  margin-bottom: 80px;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mainImg {
+  width: 100%;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  line-height: 1;
+}
+
+.brandBadge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: #f39c12;
+  color: #000;
+  font-weight: 800;
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f39c12;
+  margin-bottom: 30px;
+}
+
+// 🎯 Сетка характеристик "Бортовой компьютер"
+.specsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // В две колонки
+  gap: 20px 60px;
+  margin-top: 40px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.specRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  span {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  strong {
+    color: #fff;
+    font-weight: 500;
+    text-align: right;
+  }
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  border-left: 4px solid #f39c12;
+  padding-left: 20px;
+  margin-bottom: 40px;
+}

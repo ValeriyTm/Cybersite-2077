@@ -22,7 +22,7 @@ export class CatalogController {
     }
   }
 
-  //Получение списка брендов с пагинацией
+  //Получение списка всех брендов мотоциклов:
   async getBrands(req: Request, res: Response, next: NextFunction) {
     try {
       //Вытаскиваем параметры из адресной строки и приводим к числам с дефолтными значениями:
@@ -54,6 +54,7 @@ export class CatalogController {
     }
   }
 
+  //Получение всех мотоциклов конкретного бренда:
   async getMotorcycles(req: Request, res: Response, next: NextFunction) {
     try {
       // Собираем все фильтры из строки запроса (?brandSlug=honda&year=2021)
@@ -92,6 +93,29 @@ export class CatalogController {
 
       const result = await searchService.searchMotorcycles(filters);
       res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //Получение информации о конкретном мотоцикле:
+  async getMotorcycle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { brandSlug, slug } = req.params;
+      const motorcycle = await catalogService.getMotorcycleBySlug(slug);
+
+      if (!motorcycle) {
+        return res.status(404).json({ message: "Мотоцикл не найден" });
+      }
+
+      // Проверяем на соответствие бренду (для SEO и безопасности)
+      // if (motorcycle.brand.slug !== brandSlug) {
+      //   return res.status(400).json({
+      //     message: 'Несоответствие бренда и модели'
+      //   });
+      // }
+
+      res.status(200).json(motorcycle);
     } catch (error) {
       next(error);
     }
