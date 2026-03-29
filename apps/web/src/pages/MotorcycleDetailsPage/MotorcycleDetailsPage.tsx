@@ -51,25 +51,38 @@ export const MotorcycleDetailsPage: React.FC = () => {
             </div>
 
             {/* Список миниатюр */}
-            {data.images?.length > 0 && (
-              <div className={styles.thumbnails}>
-                {data.images.map((img) => (
-                  // 🎯 ДОБАВЛЯЕМ ОБЕРТКУ С КЛАССОМ thumbWrapper
-                  <div
-                    key={img.id}
-                    className={`${styles.thumbWrapper} ${activeImage === img.url ? styles.activeThumb : ""}`}
-                    onClick={() => setActiveImage(img.url)}
-                  >
-                    <img
-                      src={img.url}
-                      alt="thumb"
-                      className={styles.thumbImg} // 🎯 Добавь и этот класс для картинки
-                      onError={handleImageError}
-                    />
-                  </div>
-                ))}
+            <div className={styles.thumbnails}>
+              {/* 1. Сначала ВСЕГДА выводим основное изображение (по слагу) 🎯 */}
+              <div
+                className={`${styles.thumbWrapper} ${activeImage === `${STATIC_URL}/motorcycles/${slug}.jpg` ? styles.activeThumb : ""}`}
+                onClick={() =>
+                  setActiveImage(`${STATIC_URL}/motorcycles/${slug}.jpg`)
+                }
+              >
+                <img
+                  src={`${STATIC_URL}/motorcycles/${slug}.jpg`}
+                  alt="Main"
+                  className={styles.thumbImg}
+                  onError={handleImageError}
+                />
               </div>
-            )}
+
+              {/* 2. Затем выводим дополнительные изображения из базы, если они есть */}
+              {data.images?.map((img) => (
+                <div
+                  key={img.id}
+                  className={`${styles.thumbWrapper} ${activeImage === img.url ? styles.activeThumb : ""}`}
+                  onClick={() => setActiveImage(img.url)}
+                >
+                  <img
+                    src={img.url}
+                    alt="Thumbnail"
+                    className={styles.thumbImg}
+                    onError={handleImageError}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className={styles.mainInfo}>

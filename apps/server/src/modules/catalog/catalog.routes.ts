@@ -11,7 +11,8 @@ router.get("/categories", catalogController.getCategories);
 router.get("/brands", catalogController.getBrands);
 //Получение всех мотоциклов одного бренда (/api/catalog/motorcycles):
 router.get("/motorcycles", catalogController.getMotorcycles);
-//Временный роут для ручного запуска синхронизации:
+//Временный роут для ручного запуска синхронизации
+//(http://localhost:3001/api/catalog/sync-search):
 router.get("/sync-search", async (req, res, next) => {
   try {
     await searchService.syncAllMotorcycles();
