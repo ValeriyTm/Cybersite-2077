@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router";
 import { fetchMotorcycles, MotorcycleCard } from "@/entities/catalog";
-import { type MotorcycleShort } from "@/entities/catalog/model/types";
 import { RangeFilter } from "@/features/catalog-filter/ui/RangeFilter/RangeFilter";
 import styles from "./MotorcyclesPage.module.scss";
 import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
@@ -19,7 +18,7 @@ export const MotorcyclesPage = () => {
   const { filters, updateFilters } = useMotorcycleFilters();
 
   //Получаем UI-настройки из Zustand:
-  const { viewMode, totalItems, setTotalItems } = useCatalogStore();
+  // const { viewMode, totalItems, setTotalItems } = useCatalogStore();
 
   //Кэширование и состояние загрузки из react query:
   const { data, isLoading } = useQuery({
@@ -29,30 +28,7 @@ export const MotorcyclesPage = () => {
     placeholderData: (previousData) => previousData,
     // Кэшируем результат на 5 минут, чтобы при кнопке "Назад" всё было мгновенно
     staleTime: 5 * 60 * 1000,
-    // onSuccess: (res) => setTotalItems(res.total), // Синхронизируем кол-во со стором
   });
-
-  // const [items, setItems] = useState<MotorcycleShort[]>([]);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [totalPages, setTotalPages] = useState(1);
-
-  //Состояние всех фильтров:
-  // const [filters, setFilters] = useState({
-  //   page: 1,
-  //   search: "",
-  //   minPrice: undefined as number | undefined,
-  //   maxPrice: undefined as number | undefined,
-  //   minYear: undefined as number | undefined,
-  //   maxYear: undefined as number | undefined,
-  //   minDisplacement: undefined as number | undefined,
-  //   maxDisplacement: undefined as number | undefined,
-  //   minPower: undefined as number | undefined,
-  //   maxPower: undefined as number | undefined,
-  //   category: undefined as string | undefined,
-  //   transmission: undefined as string | undefined,
-  //   minRating: undefined as number | undefined,
-  //   sortBy: "name_asc" as string,
-  // });
 
   // Опции для категорий:
   const CATEGORY_OPTIONS = [
@@ -90,9 +66,19 @@ export const MotorcyclesPage = () => {
     }, // Текущая страница
   ];
 
-  const handleSearch = debounce((value: string) => {
-    updateFilters({ search: value });
-  }, 500);
+  //--------Debounce для поиска (дебаунс для фильтров зашит в комоненте фильтра):--------
+  const debouncedSearch = React.useMemo(
+    () =>
+      debounce((value: string) => {
+        updateFilters({ search: value, page: 1 }); // Обновляем URL спустя 500мс
+      }, 500),
+    [updateFilters], // Зависимость от функции обновления
+  );
+
+  // Очистка при размонтировании (хорошая практика)
+  React.useEffect(() => {
+    return () => debouncedSearch.cancel();
+  }, [debouncedSearch]);
 
   return (
     <div className={styles.Page}>
@@ -170,7 +156,7 @@ export const MotorcyclesPage = () => {
               placeholder="Поиск по модели (напр. CBR 1000)..."
               className={styles.searchInput}
               defaultValue={filters.search}
-              onChange={(e) => updateFilters({ search: e.target.value })}
+              onChange={(e) => debouncedSearch(e.target.value)}
             />
             <span className={styles.searchIcon}>🔍</span>
           </div>
@@ -198,7 +184,7 @@ export const MotorcyclesPage = () => {
           <div className={styles.loadingOverlay}>Обновление...</div>
         )}
         <div className={styles.grid}>
-          {/* Мапим data.items вместо старого стейта items 🎯 */}
+          {/* Мапим data.items вместо старого стейта items */}
           {data?.items?.map((moto) => (
             <MotorcycleCard key={moto.id} data={moto} />
           ))}
@@ -272,7 +258,7 @@ export const MotorcyclesPage = () => {
               &raquo;
             </button>
 
-            {/* 5. В самый конец 🎯 */}
+            {/* 5. В самый конец */}
             <button
               className={styles.navBtn}
               disabled={filters.page === (data?.pages || 1)}

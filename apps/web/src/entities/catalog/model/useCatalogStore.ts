@@ -10,7 +10,7 @@ interface CatalogState {
   toggleSidebar: () => void;
   setViewMode: (mode: "grid" | "list") => void;
 
-  // Мы НЕ храним здесь сами фильтры (они полетят в URL),
+  // Мы не храним здесь сами фильтры (они полетят в URL),
   // но можем хранить общее кол-во найденных моделей для заголовка
   totalItems: number;
   setTotalItems: (total: number) => void;
