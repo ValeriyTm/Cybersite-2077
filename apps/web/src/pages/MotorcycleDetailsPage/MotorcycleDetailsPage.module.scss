@@ -170,3 +170,26 @@ h2 {
   gap: 20px;
   margin-top: 30px;
 }
+
+//Цвета:
+.colorsWrapper {
+  display: flex;
+  flex-direction: column; // Цвета будут идти списком друг под другом
+  gap: 4px;
+  align-items: flex-end; // Прижимаем к правому краю, как и остальные значения
+}
+
+.colorItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.colorDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%; // Делаем кружок
+  border: 1px solid rgba(255, 255, 255, 0.2); // Тонкая рамка, чтобы светлые цвета не сливались
+  display: inline-block;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); // Легкая тень для объема
+}

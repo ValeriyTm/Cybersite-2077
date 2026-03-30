@@ -169,7 +169,7 @@ async function main() {
 
   let count = 0;
   for await (const row of motoStream) {
-    //console.log("Текущая строка:", row); - отображение того, как компьютер считывает построчно CSV-файл.
+    console.log("Текущая строка:", row); // отображение того, как компьютер считывает построчно CSV-файл.
     const brandId = brandsMap.get(row.Brand.trim());
     if (!brandId) continue;
 
@@ -178,8 +178,25 @@ async function main() {
       const fullModelName = `${row.Model}${row.Year}`;
       const modelSlug = slugify(fullModelName);
 
-      // const standardImageUrl = `/defaults/${modelSlug}.jpg`;
-      // const defaultImageUrl = "/defaults/default-card-icon.jpg"; //Путь к дефолтному изображению
+      /////Цвета:
+      // 1. Извлекаем значение из колонки Colors 🎨
+      const rawColors = row.ColorsSets || "";
+
+      // 2. Превращаем строку в массив, используя ";" как разделитель 🎯
+      const processedColors = rawColors
+        ? rawColors
+            .split(";") // Режем по точке с запятой
+            .map((item) => item.trim()) // Убираем лишние пробелы по краям
+            .filter((item) => item.length > 0) // Удаляем пустые элементы, если они есть
+        : [];
+
+      // 3. Лог для контроля (чтобы убедиться, что всё летит правильно)
+      if (processedColors.length > 0) {
+        console.log(
+          `🎨 Цвета для ${row.Model || "мотоцикла"}:`,
+          processedColors,
+        );
+      }
 
       await prisma.motorcycle.upsert({
         where: { slug: modelSlug }, // Ищем по уникальному слагу
@@ -216,12 +233,7 @@ async function main() {
           rearBrakes: row.RearBrakes || null,
           comments: row.Comments || null,
           //Обработка цветов:
-          colors:
-            row.Colors && row.Colors !== "{}"
-              ? row.Colors.split(",")
-                  .map((c: string) => c.trim())
-                  .filter(Boolean)
-              : [],
+          colors: processedColors,
         },
       });
       count++;

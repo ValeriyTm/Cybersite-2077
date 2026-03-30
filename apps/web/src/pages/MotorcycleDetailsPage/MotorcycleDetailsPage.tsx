@@ -135,6 +135,28 @@ export const MotorcycleDetailsPage: React.FC = () => {
               value={data.fuelConsumption}
             />
             <SpecRow label="Дополнительная информация" value={data.comments} />
+            {/*Поле с цветами:*/}
+            <div className={styles.specRow}>
+              <span>Доступные цвета</span>
+              <div className={styles.colorsWrapper}>
+                {data.colors && data.colors.length > 0 ? (
+                  data.colors.map((color, index) => (
+                    <div key={index} className={styles.colorItem}>
+                      {/* Кружок с цветом:*/}
+                      <span
+                        className={styles.colorDot}
+                        style={{ backgroundColor: color.toLowerCase() }}
+                        title={color}
+                      />
+                      {/* Название цвета */}
+                      <strong>{color}</strong>
+                    </div>
+                  ))
+                ) : (
+                  <strong>Не указано</strong>
+                )}
+              </div>
+            </div>
           </div>
         </section>
 
