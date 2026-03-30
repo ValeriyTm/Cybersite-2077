@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { useAuthStore } from "@/features/auth/model/auth-store";
 import { TOP_BRANDS } from "../model/items";
+import debounce from "lodash/debounce";
+import { type MotorcycleShort } from "@/entities/catalog/model/types";
+import axios from "axios";
 import styles from "./Header.module.scss";
 
 type MainCategory = "moto" | "gear" | "parts";
@@ -12,6 +15,45 @@ export const Header = () => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   //Состояние выбранной категории:
   const [activeMainCat, setActiveMainCat] = useState<MainCategory>("moto");
+
+  //Состояние для поиска с подсказками:
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<MotorcycleShort[]>([]);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  // Дебаунс запроса к API
+  const fetchSuggestions = useMemo(
+    () =>
+      debounce(async (q: string) => {
+        try {
+          const { data } = await axios.get(
+            `http://localhost:3001/api/catalog/search/suggest?q=${q}`,
+          );
+          setSuggestions(data);
+        } catch (e) {
+          console.error(e);
+        }
+      }, 300),
+    [],
+  );
+
+  // Закрытие при клике мимо:
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSuggestions([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    if (val.length >= 2) fetchSuggestions(val);
+    else setSuggestions([]);
+  };
 
   return (
     <header className={styles.Header}>
@@ -136,8 +178,45 @@ export const Header = () => {
           </div>
 
           {/* Поиск с подсказками (Autocomplete) */}
-          <div className={styles.searchBox}>
-            <input type="text" placeholder="Поиск по каталогу" />
+          <div className={styles.searchBox} ref={searchRef}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleInputChange}
+              placeholder="Поиск по каталогу"
+            />
+            {suggestions.length > 0 && (
+              <div className={styles.suggestions}>
+                {suggestions.map((moto) => {
+                  const linkToImage = moto.mainImage
+                    ? `http://localhost:3001/static/motorcycles/${moto.mainImage}`
+                    : "http://localhost:3001/static/defaults/default-card-icon.jpg";
+                  return (
+                    <Link
+                      key={moto.id}
+                      to={`/catalog/motorcycles/${moto.brandSlug}/${moto.slug}`}
+                      className={styles.suggestItem}
+                      onClick={() => {
+                        setSuggestions([]);
+                        setSearchQuery("");
+                      }}
+                    >
+                      <div className={styles.suggestImg}>
+                        <img src={linkToImage} alt="" />
+                      </div>
+                      <div className={styles.suggestInfo}>
+                        <span className={styles.suggestModel}>
+                          {moto.model}
+                        </span>
+                        <span className={styles.suggestYear}>
+                          {moto.year} г.
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
             <button>Найти</button>
             {/* Тут будет выпадающий список результатов от Elastic */}
           </div>

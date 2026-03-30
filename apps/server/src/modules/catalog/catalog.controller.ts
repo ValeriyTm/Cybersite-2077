@@ -135,6 +135,19 @@ export class CatalogController {
       next(error);
     }
   }
+
+  //Поиск с выводом предположений:
+  async getSuggestions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.length < 2) return res.json([]); // Ищем от 2-х символов
+
+      const suggestions = await searchService.suggestMotorcycles(query);
+      res.json(suggestions);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const catalogController = new CatalogController();

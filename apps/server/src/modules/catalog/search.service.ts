@@ -36,7 +36,7 @@ export class SearchService {
         power: Number(doc.power) || 0,
         transmission: doc.transmission,
         rating: Number(doc.rating) || 0,
-        mainImage: doc.images?.[0]?.url || "/defaults/default-card-icon.jpg",
+        mainImage: doc.images?.[0]?.url || "",
       },
     ]);
 
@@ -256,6 +256,29 @@ export class SearchService {
     });
 
     return result.hits.hits.map((hit: any) => ({
+      ...(hit._source as object),
+      id: hit._id,
+    }));
+  }
+
+  //Поиск с выводом предположений:
+  async suggestMotorcycles(query: string) {
+    const result = await esClient.search({
+      index: this.indexName,
+      size: 7, //Показываем только 7 лучших совпадений
+      query: {
+        match_phrase_prefix: {
+          //Ищет по первым буквам слов
+          model: {
+            query: query,
+          },
+        },
+      },
+      // Возвращаем только нужные поля для подсказки
+      _source: ["id", "model", "slug", "brandSlug", "mainImage", "year"],
+    });
+
+    return result.hits.hits.map((hit) => ({
       ...(hit._source as object),
       id: hit._id,
     }));

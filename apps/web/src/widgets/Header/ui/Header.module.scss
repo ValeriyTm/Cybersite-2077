@@ -298,4 +298,85 @@
   }
 }
 
-///////////////////////////
+////Подсказки при поиске:
+.searchBox {
+  position: relative; // 🎯 Обязательно для вылета списка
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  margin-top: 2px;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+  z-index: 1200;
+}
+
+.suggestItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  text-decoration: none;
+  transition: background 0.2s;
+  border-bottom: 1px solid #222;
+
+  &:last-child {
+    border: none;
+  }
+
+  &:hover {
+    background: #252525;
+    .suggestModel {
+      color: #f39c12;
+    } // Оранжевый при наведении 🎯
+  }
+}
+
+.suggestImg {
+  width: 50px;
+  height: 35px;
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.suggestInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestModel {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.suggestYear {
+  color: #666;
+  font-size: 0.75rem;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
