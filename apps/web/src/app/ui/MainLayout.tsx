@@ -5,6 +5,8 @@ import { Outlet } from "react-router";
 //Хранилища:
 import { useProfile } from "@/features/auth/model/use-profile"; //Серверный стор
 import { useAuthStore } from "@/features/auth/model/auth-store"; //Клиентский стор
+//Виджеты:
+import { Header } from "@/widgets/Header/ui/Header";
 
 export const MainLayout = () => {
   //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
@@ -36,8 +38,13 @@ export const MainLayout = () => {
           },
         }}
       />
-      {/*Тут поместим дочерние компоненты (children):*/}
-      <Outlet />
+
+      <Header />
+
+      {/* Основной контент страницы */}
+      <main className="content-wrapper">
+        <Outlet />
+      </main>
     </>
   );
 };
