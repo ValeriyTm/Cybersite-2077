@@ -7,6 +7,7 @@ export const useMotorcycleFilters = () => {
   // Читаем параметры из URL:
   const filters = {
     page: Number(searchParams.get("page")) || 1,
+    limit: Number(searchParams.get("limit")) || 20,
     search: searchParams.get("search") || "",
     sortBy: searchParams.get("sortBy") || "name_asc",
     minPrice: searchParams.get("minPrice") || undefined,

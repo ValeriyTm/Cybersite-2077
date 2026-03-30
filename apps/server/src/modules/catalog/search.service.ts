@@ -180,7 +180,7 @@ export class SearchService {
 
     const result = await esClient.search({
       index: this.indexName,
-      from: (page - 1) * limit,
+      from: (page - 1) * limit, //Расчёт зависит от переданного лимита
       size: limit, //Мой лимит (обычно 20)
       query,
       sort,

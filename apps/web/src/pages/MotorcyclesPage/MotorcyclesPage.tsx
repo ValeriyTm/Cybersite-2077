@@ -10,15 +10,15 @@ import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
 import { useMotorcycleFilters } from "@/entities/catalog/lib/useMotorcycleFilters";
 import { useCatalogStore } from "@/entities/catalog/model/useCatalogStore";
 import { useQuery } from "@tanstack/react-query";
+import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 
 export const MotorcyclesPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
 
   //Фильтры из URL:
   const { filters, updateFilters } = useMotorcycleFilters();
-
   //Получаем UI-настройки из Zustand:
-  // const { viewMode, totalItems, setTotalItems } = useCatalogStore();
+  const { viewMode, setViewMode } = useCatalogStore();
 
   //Кэширование и состояние загрузки из react query:
   const { data, isLoading } = useQuery({
@@ -177,16 +177,51 @@ export const MotorcyclesPage = () => {
               <option value="rating_desc">Высокий рейтинг</option>
             </select>
           </div>
+
+          {/*2.1.3.Переключатели режима отображения:*/}
+          <div className={styles.displayControls}>
+            {/*Переключатель лимита: */}
+            <div className={styles.limitSwitch}>
+              <span>Отображать:</span>
+              {[20, 40].map((val) => (
+                <button
+                  key={val}
+                  className={`${styles.limitBtn} ${filters.limit === val ? styles.active : ""}`}
+                  onClick={() => updateFilters({ limit: val, page: 1 })}
+                >
+                  {val}
+                </button>
+              ))}
+            </div>
+
+            {/*Переключатель вида Grid/List: */}
+            <div className={styles.viewSwitch}>
+              <button
+                className={viewMode === "grid" ? styles.active : ""}
+                onClick={() => setViewMode("grid")}
+                title="Плиткой"
+              >
+                <LuLayoutGrid /> {/* Твоя иконка сетки */}
+              </button>
+              <button
+                className={viewMode === "list" ? styles.active : ""}
+                onClick={() => setViewMode("list")}
+                title="Списком"
+              >
+                <LuLayoutList /> {/* Твоя иконка списка */}
+              </button>
+            </div>
+          </div>
         </header>
 
         {/*2.2.Карточки:*/}
         {isLoading && (
           <div className={styles.loadingOverlay}>Обновление...</div>
         )}
-        <div className={styles.grid}>
+        <div className={viewMode === "grid" ? styles.grid : styles.list}>
           {/* Мапим data.items вместо старого стейта items */}
           {data?.items?.map((moto) => (
-            <MotorcycleCard key={moto.id} data={moto} />
+            <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />
           ))}
 
           {/* Если ничего не нашли */}
@@ -200,7 +235,7 @@ export const MotorcyclesPage = () => {
         {/*2.3.Пагинация:*/}
         {data?.pages && data.pages > 1 && (
           <footer className={styles.pagination}>
-            {/* 1. В самое начало 🎯 */}
+            {/*Кнопка "в самое начало":*/}
             <button
               className={styles.navBtn}
               disabled={filters.page === 1}
@@ -210,7 +245,7 @@ export const MotorcyclesPage = () => {
               &laquo;&laquo;
             </button>
 
-            {/* 2. На одну назад */}
+            {/*Кнопка "на одну назад": */}
             <button
               className={styles.navBtn}
               disabled={filters.page === 1}
@@ -219,7 +254,7 @@ export const MotorcyclesPage = () => {
               &laquo;
             </button>
 
-            {/* 3. Числа страниц (наш цикл из прошлого шага) */}
+            {/*Отображение числа страниц:*/}
             <div className={styles.numbers}>
               {(() => {
                 const pages = [];
@@ -248,7 +283,7 @@ export const MotorcyclesPage = () => {
               })()}
             </div>
 
-            {/* 4. На одну вперед */}
+            {/*Кнопка "на одну вперед":*/}
             <button
               className={styles.navBtn}
               // Берем totalPages прямо из данных React Query
@@ -258,7 +293,7 @@ export const MotorcyclesPage = () => {
               &raquo;
             </button>
 
-            {/* 5. В самый конец */}
+            {/*Кнопка "в самый конец":*/}
             <button
               className={styles.navBtn}
               disabled={filters.page === (data?.pages || 1)}

@@ -1,30 +1,48 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
+
+// Тип для режима отображения
+export type ViewMode = "grid" | "list";
 
 interface CatalogState {
-  // UI Состояния
-  isSidebarOpen: boolean;
-  viewMode: "grid" | "list";
+  // 1. Состояние отображения (сетка или список)
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
 
-  // Методы управления
-  toggleSidebar: () => void;
-  setViewMode: (mode: "grid" | "list") => void;
-
-  // Мы не храним здесь сами фильтры (они полетят в URL),
-  // но можем хранить общее кол-во найденных моделей для заголовка
+  // 2. Общее количество найденных моделей (для заголовков и статистики)
   totalItems: number;
   setTotalItems: (total: number) => void;
+
+  // 3. Состояние боковой панели фильтров (скрыта/показана)
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
 }
 
 export const useCatalogStore = create<CatalogState>()(
-  devtools((set) => ({
-    isSidebarOpen: true,
-    viewMode: "grid",
-    totalItems: 0,
+  devtools(
+    persist(
+      (set) => ({
+        // Начальные значения
+        viewMode: "grid",
+        totalItems: 0,
+        isSidebarOpen: true,
 
-    toggleSidebar: () =>
-      set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
-    setViewMode: (mode) => set({ viewMode: mode }),
-    setTotalItems: (total) => set({ totalItems: total }),
-  })),
+        // Экшены (действия)
+        setViewMode: (mode) => set({ viewMode: mode }),
+
+        setTotalItems: (total) => set({ totalItems: total }),
+
+        toggleSidebar: () =>
+          set((state) => ({
+            isSidebarOpen: !state.isSidebarOpen,
+          })),
+      }),
+      {
+        // Браузер запомнит, что пользователь выбрал "Список",
+        // и при следующем заходе на сайт сразу включит этот режим.
+        name: "catalog-storage",
+        partialize: (state) => ({ viewMode: state.viewMode }), // Сохраняем только режим вида
+      },
+    ),
+  ),
 );

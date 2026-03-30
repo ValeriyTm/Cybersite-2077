@@ -221,3 +221,48 @@
   opacity: 0.4;
   font-size: 1.1rem;
 }
+
+//Стили для переключателей режима отображения:
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+
+  // Внутри карточки в режиме list
+  :global(.Card) {
+    flex-direction: row; // Выстраиваем в линию
+    height: 60px;
+    padding: 10px 20px;
+
+    .imageBox {
+      display: none;
+    } // 🎯 Прячем картинку
+    .info {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+}
+
+.limitSwitch {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+
+  button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-weight: 700;
+
+    &.active {
+      color: #fff;
+    } // Активный лимит - белый
+  }
+}
