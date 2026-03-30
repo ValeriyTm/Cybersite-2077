@@ -26,12 +26,6 @@ export const BrandPage = () => {
 
   const totalPages = data?.pages || 1;
 
-  // const [brands, setBrands] = useState<Brand[]>([]);
-  // const [search, setSearch] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [totalPages, setTotalPages] = useState(1);
-  // const [isLoading, setIsLoading] = useState(false);
-
   // 3. Универсальная функция обновления URL
   const updateParams = (
     newParams: Record<string, string | number | undefined>,
@@ -44,57 +38,6 @@ export const BrandPage = () => {
     if (!newParams.page) params.set("page", "1"); // Сброс на 1 при поиске
     setSearchParams(params);
   };
-
-  // // 🎯 Дебаунс поиска, чтобы не спамить сервер на каждую букву
-  // const debouncedSearch = useCallback(
-  //   debounce((value: string) => {
-  //     setSearch(value);
-  //     setCurrentPage(1); // При поиске всегда возвращаемся на 1 страницу
-  //   }, 500),
-  //   [],
-  // );
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   fetchBrands(currentPage, 24, search)
-  //     .then((data) => {
-  //       setBrands(data.items);
-  //       setTotalPages(data.pages);
-  //     })
-  //     .finally(() => setIsLoading(false));
-  // }, [currentPage, search]);
-
-  // const handlePageChange = (page: number) => {
-  //   if (page < 1 || page > totalPages) return;
-  //   setCurrentPage(page);
-  //   window.scrollTo({ top: 0, behavior: "smooth" });
-  // };
-
-  // 🎯 Функция генерации массива страниц
-  // const renderPageNumbers = () => {
-  //   const pages = [];
-  //   const maxVisible = 5; // Сколько кнопок с числами показывать вокруг текущей
-
-  //   let start = Math.max(1, currentPage - 2);
-  //   let end = Math.min(totalPages, start + maxVisible - 1);
-
-  //   if (end === totalPages) {
-  //     start = Math.max(1, end - maxVisible + 1);
-  //   }
-
-  //   for (let i = start; i <= end; i++) {
-  //     pages.push(
-  //       <button
-  //         key={i}
-  //         onClick={() => handlePageChange(i)}
-  //         className={`${styles.pageBtn} ${currentPage === i ? styles.active : ""}`}
-  //       >
-  //         {i}
-  //       </button>,
-  //     );
-  //   }
-  //   return pages;
-  // };
 
   // 4. Дебаунс для поиска
   const debouncedSearch = useMemo(

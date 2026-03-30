@@ -193,3 +193,86 @@ h2 {
   display: inline-block;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); // Легкая тень для объема
 }
+
+//Стили табов:
+.tabsNav {
+  display: flex;
+  gap: 30px;
+  margin-top: 50px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 15px;
+
+  button {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    position: relative;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.activeTab {
+      color: #f39c12; // Оранжевый из макета 🎯
+
+      // Линия под активной вкладкой
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -16px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #f39c12;
+      }
+    }
+  }
+}
+
+.tabContent {
+  display: inline-flex;
+  align-items: start;
+  padding-top: 40px;
+  min-height: 400px; // Чтобы страница не "прыгала" при переключении
+
+  p {
+    text-align: left;
+  }
+}
+
+.staticText {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  max-width: 800px;
+
+  h3 {
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  p {
+    margin-bottom: 15px;
+  }
+}
+
+.downloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #f39c12;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s;
+
+  &:hover {
+    background: #f39c12;
+    color: #000;
+  }
+}

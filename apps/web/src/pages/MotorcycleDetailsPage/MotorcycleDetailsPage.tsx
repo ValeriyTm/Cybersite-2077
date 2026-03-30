@@ -17,6 +17,8 @@ import styles from "./MotorcycleDetailsPage.module.scss";
 const STATIC_URL = "http://localhost:3001/static/motorcycles";
 const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg`;
 
+type TabType = "specs" | "description" | "warranty" | "docs";
+
 export const MotorcycleDetailsPage: React.FC = () => {
   const { brandSlug, slug } = useParams<{ brandSlug: string; slug: string }>();
   const [data, setData] = useState<MotorcycleFull | null>(null);
@@ -24,6 +26,8 @@ export const MotorcycleDetailsPage: React.FC = () => {
   const [activeImage, setActiveImage] = useState<string>("");
   //Стейт для рекомендаций:
   const [related, setRelated] = useState<MotorcycleShort[]>([]);
+  //Стейт для табов:
+  const [activeTab, setActiveTab] = useState<TabType>("specs");
 
   useEffect(() => {
     if (brandSlug && slug) {
@@ -102,62 +106,204 @@ export const MotorcycleDetailsPage: React.FC = () => {
             <div className={styles.brandBadge}>{data.brand.name}</div>
             <div className={styles.price}>{data.price.toLocaleString()} ₽</div>
             <p className={styles.description}>
-              {data.year} года выпуска, категория: {data.category}. Объем
-              двигателя {data.displacement} см³.
+              {data.year} года выпуска. Объем двигателя {data.displacement} см³.
             </p>
             <p className={styles.description}>Текущий рейтинг: {data.rating}</p>
           </div>
         </section>
 
         {/* 2. Таблица характеристик:*/}
-        <section className={styles.specsSection}>
-          <h2 className={styles.sectionTitle}>Технические характеристики</h2>
-          <div className={styles.specsGrid}>
-            {/*Характеристики:*/}
 
-            <SpecRow label="Тип двигателя" value={data.engineType} />
-            <SpecRow label="Мощность" value={data.power} />
-            <SpecRow
-              label="Максимальная скорость, км/ч"
-              value={data.topSpeed}
-            />
-            <SpecRow label="Коробка передач" value={data.gearbox} />
-            <SpecRow label="Стартер" value={data.starter} />
-            <SpecRow label="Топливная система" value={data.fuelSystem} />
-            <SpecRow label="Система охлаждения" value={data.coolingSystem} />
-            <SpecRow label="Трансмиссия" value={data.transmission} />
-            <SpecRow label="Заднее колесо" value={data.rearTyre} />
-            <SpecRow label="Переднее колесо" value={data.frontTyre} />
-            <SpecRow label="Задние тормоза" value={data.rearBrakes} />
-            <SpecRow label="Передние тормоза" value={data.frontBrakes} />
-            <SpecRow
-              label="Расход топлива, л/100км"
-              value={data.fuelConsumption}
-            />
-            <SpecRow label="Дополнительная информация" value={data.comments} />
-            {/*Поле с цветами:*/}
-            <div className={styles.specRow}>
-              <span>Доступные цвета</span>
-              <div className={styles.colorsWrapper}>
-                {data.colors && data.colors.length > 0 ? (
-                  data.colors.map((color, index) => (
-                    <div key={index} className={styles.colorItem}>
-                      {/* Кружок с цветом:*/}
-                      <span
-                        className={styles.colorDot}
-                        style={{ backgroundColor: color.toLowerCase() }}
-                        title={color}
-                      />
-                      {/* Название цвета */}
-                      <strong>{color}</strong>
-                    </div>
-                  ))
-                ) : (
-                  <strong>Не указано</strong>
-                )}
+        {/* Navbar для табов: */}
+        <nav className={styles.tabsNav}>
+          <button
+            className={activeTab === "specs" ? styles.activeTab : ""}
+            onClick={() => setActiveTab("specs")}
+          >
+            Технические характеристики
+          </button>
+          <button
+            className={activeTab === "description" ? styles.activeTab : ""}
+            onClick={() => setActiveTab("description")}
+          >
+            Описание
+          </button>
+          <button
+            className={activeTab === "warranty" ? styles.activeTab : ""}
+            onClick={() => setActiveTab("warranty")}
+          >
+            Гарантия
+          </button>
+          <button
+            className={activeTab === "docs" ? styles.activeTab : ""}
+            onClick={() => setActiveTab("docs")}
+          >
+            Документы
+          </button>
+        </nav>
+
+        {/* Контент: */}
+        <section className={styles.tabContent}>
+          {/*Контент характеристик:*/}
+          {activeTab === "specs" && (
+            <div className={styles.specsGrid}>
+              <SpecRow label="Категория" value={data.category} />
+              <SpecRow label="Тип двигателя" value={data.engineType} />
+              <SpecRow label="Мощность" value={data.power} />
+              <SpecRow
+                label="Максимальная скорость, км/ч"
+                value={data.topSpeed}
+              />
+              <SpecRow label="Коробка передач" value={data.gearbox} />
+              <SpecRow label="Стартер" value={data.starter} />
+              <SpecRow label="Топливная система" value={data.fuelSystem} />
+              <SpecRow label="Система охлаждения" value={data.coolingSystem} />
+              <SpecRow label="Трансмиссия" value={data.transmission} />
+              <SpecRow label="Заднее колесо" value={data.rearTyre} />
+              <SpecRow label="Переднее колесо" value={data.frontTyre} />
+              <SpecRow label="Задние тормоза" value={data.rearBrakes} />
+              <SpecRow label="Передние тормоза" value={data.frontBrakes} />
+              <SpecRow
+                label="Расход топлива, л/100км"
+                value={data.fuelConsumption}
+              />
+              <SpecRow
+                label="Дополнительная информация"
+                value={data.comments}
+              />
+              {/*Поле с цветами:*/}
+              <div className={styles.specRow}>
+                <span>Доступные цвета</span>
+                <div className={styles.colorsWrapper}>
+                  {data.colors && data.colors.length > 0 ? (
+                    data.colors.map((color, index) => (
+                      <div key={index} className={styles.colorItem}>
+                        {/* Кружок с цветом:*/}
+                        <span
+                          className={styles.colorDot}
+                          style={{ backgroundColor: color.toLowerCase() }}
+                          title={color}
+                        />
+                        {/* Название цвета */}
+                        <strong>{color}</strong>
+                      </div>
+                    ))
+                  ) : (
+                    <strong>Не указано</strong>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/*Контент описания:*/}
+          {activeTab === "description" && (
+            <div className={styles.staticText}>
+              <h3>О модели {data.model}:</h3>
+              <p>
+                Эта модель создана для тех, кто не привык искать компромиссы
+                между стилем и производительностью.
+              </p>
+              <p>
+                Этот мотоцикл сочетает в себе передовые технологии своего
+                времени. Сочетание выверенной эргономики и инженерных решений
+                делает каждый выезд предсказуемым и захватывающим.
+              </p>
+              <p>Основные преимущества:</p>
+              <ul>
+                <li>
+                  <strong>Надежность:</strong> каждая деталь спроектирована с
+                  учетом высоких нагрузок и длительной эксплуатации.
+                </li>
+                <li>
+                  <strong>Комфорт:</strong> посадка снижает усталость райдера
+                  при длительных поездках.
+                </li>
+                <li>
+                  <strong>Эстетика:</strong> дизайн, который притягивает взгляды
+                  и подчеркивает индивидуальность владельца.
+                </li>
+              </ul>
+              <p>
+                Все модели проходят строгий контроль качества перед поступлением
+                в продажу.
+              </p>
+            </div>
+          )}
+
+          {/*Контент гарантии:*/}
+          {activeTab === "warranty" && (
+            <div className={styles.staticText}>
+              <h3>Гарантийные обязательства</h3>
+              <p>
+                Стандартные условия гарантии на основной ассортимент мототехники
+                устанавливают гарантийный срок эксплуатации 30 (тридцать)
+                календарных дней с момента продажи или 20 (двадцать) моточасов
+                для техники, оборудованной счётчиком моточасов, в зависимости от
+                того, какое из указанных событий наступит раньше. Для ряда
+                моделей и брендов действуют отдельные условия гарантии.
+              </p>
+              <p>
+                Обслуживание производится в авторизованных сервисных центрах по
+                всей стране.
+              </p>
+              <p>
+                Для осуществления гарантийного обслуживания при розничной
+                покупке техники в салоне-магазине Покупателю надо прибыть с
+                СЕРВИСНОЙ КНИЖКОЙ (РУКОВОДСТВОМ ПО ЭКСПЛУАТАЦИИ), с транспортным
+                средством (ТС) к Продавцу, либо в авторизованный сервисный
+                центр, уполномоченный выполнять гарантийное обслуживание
+                приобретенного ТС. Рекомендуется предварительно согласовать с
+                представителем Продавца вопросы по гарантийному обслуживанию
+                (ремонту, замене)
+              </p>
+              <p>
+                Для осуществления гарантийного обслуживания при покупке через
+                интернет-магазин Покупателю надо представить:
+              </p>
+              <ul>
+                <li>
+                  правильно и без помарок и исправлений заполненный ГАРАНТИЙНЫЙ
+                  ТАЛОН, в котором должны быть указаны модель и серийный номер
+                  изделия, дата продажи и печать торгующей организации;
+                </li>
+                <li>документ, подтверждающий покупку (товарная накладная);</li>
+                <li>товар в полной комплектации;</li>
+                <li>
+                  экземпляр Договора купли-продажи, подписанный сторонами,
+                  аналогичный экземпляру Договора купли-продажи, находящемуся у
+                  Продавца.
+                </li>
+              </ul>
+              <p>
+                Обращаем также Ваше внимание на то, что при получении и оплате
+                заказа покупатель в присутствии курьера обязан проверить
+                комплектацию и внешний вид изделия на предмет отсутствия
+                физических дефектов (царапин, трещин, сколов и т.п.) и полноту
+                комплектации. После отъезда курьера, либо доставки транспортной
+                компанией, претензии по этим вопросам не принимаются.
+              </p>
+            </div>
+          )}
+
+          {/*Контент с документацией:*/}
+          {activeTab === "docs" && (
+            <div className={styles.docsSection}>
+              <h3>Документация</h3>
+              <p>
+                Вы можете скачать полное руководство пользователя и сервисную
+                книжку:
+              </p>
+              <a
+                href="http://localhost:3001/static/docs/manual.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className={styles.downloadBtn}
+              >
+                📄 Скачать Manual.pdf (2.4 MB)
+              </a>
+            </div>
+          )}
         </section>
 
         {/*Рекомендации:*/}
