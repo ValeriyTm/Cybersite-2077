@@ -8,81 +8,51 @@ import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFi
 import debounce from "lodash/debounce";
 //Компонент Breadcrumbs:
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+import { useMotorcycleFilters } from "@/entities/catalog/lib/useMotorcycleFilters";
+import { useCatalogStore } from "@/entities/catalog/model/useCatalogStore";
+import { useQuery } from "@tanstack/react-query";
 
-export const MotorcyclesPage: React.FC = () => {
+export const MotorcyclesPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
-  const [items, setItems] = useState<MotorcycleShort[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalPages, setTotalPages] = useState(1);
 
-  //Состояние всех фильтров:
-  const [filters, setFilters] = useState({
-    page: 1,
-    minPrice: undefined as number | undefined,
-    maxPrice: undefined as number | undefined,
-    minYear: undefined as number | undefined,
-    maxYear: undefined as number | undefined,
-    minDisplacement: undefined as number | undefined,
-    maxDisplacement: undefined as number | undefined,
-    minPower: undefined as number | undefined,
-    maxPower: undefined as number | undefined,
-    category: undefined as string | undefined,
-    transmission: undefined as string | undefined,
-    minRating: undefined as number | undefined,
-    search: "",
-    sortBy: "name_asc" as string,
+  //Фильтры из URL:
+  const { filters, updateFilters } = useMotorcycleFilters();
+
+  //Получаем UI-настройки из Zustand:
+  const { viewMode, totalItems, setTotalItems } = useCatalogStore();
+
+  //Кэширование и состояние загрузки из react query:
+  const { data, isLoading } = useQuery({
+    queryKey: ["motorcycles", brandSlug, filters],
+    queryFn: () => fetchMotorcycles({ brandSlug, ...filters }),
+    // Магия: при переключении страниц старые данные не пропадают мгновенно (нет мерцания)
+    placeholderData: (previousData) => previousData,
+    // Кэшируем результат на 5 минут, чтобы при кнопке "Назад" всё было мгновенно
+    staleTime: 5 * 60 * 1000,
+    // onSuccess: (res) => setTotalItems(res.total), // Синхронизируем кол-во со стором
   });
 
-  // 2. Функция загрузки (вынесена отдельно для дебаунса)
-  const loadData = async (currentFilters: typeof filters) => {
-    if (!brandSlug) return;
-    setIsLoading(true);
-    try {
-      const res = await fetchMotorcycles({
-        brandSlug: brandSlug,
-        ...currentFilters,
-      });
-      // Проверяем, что в ответе ЕСТЬ items, прежде чем их сетить 🎯
-      if (res && Array.isArray(res.items)) {
-        setItems(res.items);
-        setTotalPages(res.pages);
-      } else {
-        setItems([]); // Если данных нет — очищаем список
-      }
+  // const [items, setItems] = useState<MotorcycleShort[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [totalPages, setTotalPages] = useState(1);
 
-      console.log("Всего моделей:", res.total);
-      console.log("Всего страниц:", res.pages);
-    } catch (error) {
-      console.error("Ошибка загрузки:", error);
-      setItems([]); // В случае ошибки тоже ставим пустой массив
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 3. Создаем "отложенную" версию загрузки ⏳
-  const debouncedLoad = React.useCallback(
-    debounce((f: typeof filters) => loadData(f), 500),
-    [brandSlug],
-  );
-
-  // 4. Следим за изменением фильтров
-  useEffect(() => {
-    debouncedLoad(filters);
-    // При размонтировании отменяем отложенный вызов
-    return () => debouncedLoad.cancel();
-  }, [filters, debouncedLoad]);
-
-  // Логика обновления фильтров
-  const updateFilter = (key: string, value: any) => {
-    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
-  };
-
-  // Хендлер смены страницы
-  const handlePageChange = (newPage: number) => {
-    setFilters((prev) => ({ ...prev, page: newPage }));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  //Состояние всех фильтров:
+  // const [filters, setFilters] = useState({
+  //   page: 1,
+  //   search: "",
+  //   minPrice: undefined as number | undefined,
+  //   maxPrice: undefined as number | undefined,
+  //   minYear: undefined as number | undefined,
+  //   maxYear: undefined as number | undefined,
+  //   minDisplacement: undefined as number | undefined,
+  //   maxDisplacement: undefined as number | undefined,
+  //   minPower: undefined as number | undefined,
+  //   maxPower: undefined as number | undefined,
+  //   category: undefined as string | undefined,
+  //   transmission: undefined as string | undefined,
+  //   minRating: undefined as number | undefined,
+  //   sortBy: "name_asc" as string,
+  // });
 
   // Опции для категорий:
   const CATEGORY_OPTIONS = [
@@ -112,11 +82,6 @@ export const MotorcyclesPage: React.FC = () => {
     { value: "Cardan", label: "Кардан" },
   ];
 
-  // const capitalize = (str) => {
-  //   if (!str) return "";
-  //   return str[0].toUpperCase() + str.slice(1).toLowerCase();
-  // };
-
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/motorcycles" },
     {
@@ -124,6 +89,10 @@ export const MotorcyclesPage: React.FC = () => {
       href: `/catalog/motorcycles/${brandSlug}`,
     }, // Текущая страница
   ];
+
+  const handleSearch = debounce((value: string) => {
+    updateFilters({ search: value });
+  }, 500);
 
   return (
     <div className={styles.Page}>
@@ -137,15 +106,9 @@ export const MotorcyclesPage: React.FC = () => {
           label="Цена (₽)"
           min={filters.minPrice}
           max={filters.maxPrice}
-          onChange={(min, max) => {
-            setFilters((prev) => ({
-              ...prev,
-              minPrice: min,
-              maxPrice: max,
-              page: 1,
-            }));
-          }}
-          // step={1000}
+          onChange={(min, max) =>
+            updateFilters({ minPrice: min, maxPrice: max })
+          }
         />
 
         {/*Фильтр по объему двигателя:*/}
@@ -154,28 +117,16 @@ export const MotorcyclesPage: React.FC = () => {
           min={filters.minDisplacement}
           max={filters.maxDisplacement}
           onChange={(min, max) =>
-            setFilters((prev) => ({
-              ...prev,
-              minDisplacement: min,
-              maxDisplacement: max,
-              page: 1,
-            }))
+            updateFilters({ minDisplacement: min, maxDisplacement: max })
           }
         />
 
         {/*Фильтр по году выпуска:*/}
         <RangeFilter
           label="Год выпуска"
-          min={filters.minYear} // 👈 Убедись, что в useState есть minYear
-          max={filters.maxYear} // 👈 И maxYear
-          onChange={(min, max) =>
-            setFilters((prev) => ({
-              ...prev,
-              minYear: min,
-              maxYear: max,
-              page: 1,
-            }))
-          }
+          min={filters.minYear}
+          max={filters.maxYear}
+          onChange={(min, max) => updateFilters({ minYear: min, maxYear: max })}
         />
 
         {/*Фильтр по мощности:*/}
@@ -184,12 +135,7 @@ export const MotorcyclesPage: React.FC = () => {
           min={filters.minPower}
           max={filters.maxPower}
           onChange={(min, max) =>
-            setFilters((prev) => ({
-              ...prev,
-              minPower: min,
-              maxPower: max,
-              page: 1,
-            }))
+            updateFilters({ minPower: min, maxPower: max })
           }
         />
 
@@ -198,7 +144,7 @@ export const MotorcyclesPage: React.FC = () => {
           label="Категория"
           value={filters.category}
           options={CATEGORY_OPTIONS}
-          onChange={(val) => updateFilter("category", val)}
+          onChange={(val) => updateFilters({ category: val })}
         />
 
         {/*Фильтр по трансмиссии:*/}
@@ -206,7 +152,7 @@ export const MotorcyclesPage: React.FC = () => {
           label="Тип привода"
           value={filters.transmission}
           options={TRANSMISSION_OPTIONS}
-          onChange={(val) => updateFilter("transmission", val)}
+          onChange={(val) => updateFilters({ transmission: val })}
         />
       </aside>
 
@@ -214,6 +160,7 @@ export const MotorcyclesPage: React.FC = () => {
       <main className={styles.Content}>
         <Breadcrumbs items={breadcrumbs} />
         <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1>
+        <h3>Найдено моделей: {data?.total || 0}</h3>
         {/*2.1.Topbar:*/}
         <header className={styles.topBar}>
           {/*2.1.1.Поиск:*/}
@@ -222,7 +169,8 @@ export const MotorcyclesPage: React.FC = () => {
               type="text"
               placeholder="Поиск по модели (напр. CBR 1000)..."
               className={styles.searchInput}
-              onChange={(e) => updateFilter("search", e.target.value)}
+              defaultValue={filters.search}
+              onChange={(e) => updateFilters({ search: e.target.value })}
             />
             <span className={styles.searchIcon}>🔍</span>
           </div>
@@ -233,7 +181,7 @@ export const MotorcyclesPage: React.FC = () => {
             <select
               className={styles.sortSelect}
               value={filters.sortBy}
-              onChange={(e) => updateFilter("sortBy", e.target.value)}
+              onChange={(e) => updateFilters({ sortBy: e.target.value })}
             >
               <option value="name_asc">По алфавиту (А-Я)</option>
               <option value="name_desc">По алфавиту (Я-А)</option>
@@ -250,19 +198,27 @@ export const MotorcyclesPage: React.FC = () => {
           <div className={styles.loadingOverlay}>Обновление...</div>
         )}
         <div className={styles.grid}>
-          {items?.map((moto) => (
+          {/* Мапим data.items вместо старого стейта items 🎯 */}
+          {data?.items?.map((moto) => (
             <MotorcycleCard key={moto.id} data={moto} />
           ))}
+
+          {/* Если ничего не нашли */}
+          {!isLoading && data?.items?.length === 0 && (
+            <div className={styles.empty}>
+              Ничего не найдено по вашему запросу
+            </div>
+          )}
         </div>
 
         {/*2.3.Пагинация:*/}
-        {totalPages > 1 && (
+        {data?.pages && data.pages > 1 && (
           <footer className={styles.pagination}>
             {/* 1. В самое начало 🎯 */}
             <button
               className={styles.navBtn}
               disabled={filters.page === 1}
-              onClick={() => handlePageChange(1)}
+              onClick={() => updateFilters({ page: 1 })}
               title="В начало"
             >
               &laquo;&laquo;
@@ -272,7 +228,7 @@ export const MotorcyclesPage: React.FC = () => {
             <button
               className={styles.navBtn}
               disabled={filters.page === 1}
-              onClick={() => handlePageChange(filters.page - 1)}
+              onClick={() => updateFilters({ page: filters.page - 1 })}
             >
               &laquo;
             </button>
@@ -282,6 +238,8 @@ export const MotorcyclesPage: React.FC = () => {
               {(() => {
                 const pages = [];
                 const maxButtons = 5;
+                const totalPages = data?.pages || 1;
+
                 let startPage = Math.max(1, filters.page - 2);
                 let endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
@@ -293,7 +251,7 @@ export const MotorcyclesPage: React.FC = () => {
                   pages.push(
                     <button
                       key={i}
-                      onClick={() => handlePageChange(i)}
+                      onClick={() => updateFilters({ page: i })}
                       className={`${styles.pageBtn} ${filters.page === i ? styles.active : ""}`}
                     >
                       {i}
@@ -307,8 +265,9 @@ export const MotorcyclesPage: React.FC = () => {
             {/* 4. На одну вперед */}
             <button
               className={styles.navBtn}
-              disabled={filters.page === totalPages}
-              onClick={() => handlePageChange(filters.page + 1)}
+              // Берем totalPages прямо из данных React Query
+              disabled={filters.page === (data?.pages || 1)}
+              onClick={() => updateFilters({ page: filters.page + 1 })}
             >
               &raquo;
             </button>
@@ -316,8 +275,8 @@ export const MotorcyclesPage: React.FC = () => {
             {/* 5. В самый конец 🎯 */}
             <button
               className={styles.navBtn}
-              disabled={filters.page === totalPages}
-              onClick={() => handlePageChange(totalPages)}
+              disabled={filters.page === (data?.pages || 1)}
+              onClick={() => updateFilters({ page: data?.pages || 1 })}
               title="В конец"
             >
               &raquo;&raquo;

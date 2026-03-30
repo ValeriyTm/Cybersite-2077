@@ -23,6 +23,7 @@ export interface BrandResponse {
 
 export interface MotorcycleFilters {
   brandSlug: string;
+  search: string;
   minPrice?: number;
   maxPrice?: number;
   minYear?: number;
@@ -31,6 +32,7 @@ export interface MotorcycleFilters {
   minDisplacement?: number;
   maxDisplacement?: number;
   minPower?: number;
+  maxPower?: number;
   transmission?: string;
   minRating?: number;
   page?: number;

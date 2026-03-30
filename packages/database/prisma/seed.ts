@@ -179,24 +179,15 @@ async function main() {
       const modelSlug = slugify(fullModelName);
 
       /////Цвета:
-      // 1. Извлекаем значение из колонки Colors 🎨
+      //Извлекаем значение из колонки Colors:
       const rawColors = row.ColorsSets || "";
-
-      // 2. Превращаем строку в массив, используя ";" как разделитель 🎯
+      //Превращаем строку в массив, используя ";" как разделитель:
       const processedColors = rawColors
         ? rawColors
             .split(";") // Режем по точке с запятой
             .map((item) => item.trim()) // Убираем лишние пробелы по краям
             .filter((item) => item.length > 0) // Удаляем пустые элементы, если они есть
         : [];
-
-      // 3. Лог для контроля (чтобы убедиться, что всё летит правильно)
-      if (processedColors.length > 0) {
-        console.log(
-          `🎨 Цвета для ${row.Model || "мотоцикла"}:`,
-          processedColors,
-        );
-      }
 
       await prisma.motorcycle.upsert({
         where: { slug: modelSlug }, // Ищем по уникальному слагу
