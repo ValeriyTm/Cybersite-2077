@@ -1,5 +1,7 @@
 .BrandCard {
   display: flex;
+  justify-content: center;
+  flex-direction: row;
   padding: 24px;
   background: #151515;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -22,6 +24,7 @@
 
 .info {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
   color: rgba(255, 255, 255, 0.4);
@@ -30,4 +33,37 @@
 
 .dot {
   color: #f39c12;
+}
+
+.frame {
+  display: flex;
+  justify-content: center; /* Центровка по горизонтали */
+  align-items: center;
+  background-color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 20%;
+  overflow: hidden;
+  border: 1px solid #f39c12;
+}
+
+.logo {
+  // width: 40px;
+  // height: 40px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  object-fit: scale-down;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.count {
+  padding-left: 2px;
 }

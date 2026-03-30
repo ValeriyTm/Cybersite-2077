@@ -144,6 +144,7 @@ model Brand {
   name        String       @unique // "Honda"
   country     String       // "Japan"
   slug        String       @unique // "honda" (для URL: /catalog/motorcycles/honda)
+  image       String?
   
   motorcycles Motorcycle[] // Связь: один бренд -> много мотоциклов
 

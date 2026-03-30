@@ -38,6 +38,7 @@ export class CatalogService {
           name: true,
           country: true,
           slug: true,
+          image: true,
           _count: {
             select: { motorcycles: true }, //motorcyclesCount из OpenAPI
           },

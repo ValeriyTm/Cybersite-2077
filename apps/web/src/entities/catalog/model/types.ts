@@ -12,6 +12,7 @@ export interface Brand {
   country: string;
   slug: string;
   motorcyclesCount: number;
+  image: string;
 }
 
 export interface BrandResponse {
