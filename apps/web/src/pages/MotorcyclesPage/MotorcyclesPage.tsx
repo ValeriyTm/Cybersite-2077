@@ -11,6 +11,8 @@ import { useMotorcycleFilters } from "@/entities/catalog/lib/useMotorcycleFilter
 import { useCatalogStore } from "@/entities/catalog/model/useCatalogStore";
 import { useQuery } from "@tanstack/react-query";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
+//Для SEO:
+import { Helmet } from "react-helmet-async";
 
 export const MotorcyclesPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
@@ -83,6 +85,10 @@ export const MotorcyclesPage = () => {
     return () => debouncedSearch.cancel();
   }, [debouncedSearch]);
 
+  //-------------SEO:-----------------------//
+  const seoTitle = `Каталог мотоциклов ${brandSlug?.toUpperCase()}: все модели и поколения | CyberBike`;
+  const seoDescription = `Полный список моделей ${slug?.toUpperCase()} с техническими характеристиками, фото и ценами. Найдено моделей: ${data?.total || 0}.`;
+
   return (
     <div className={styles.Page}>
       {/*1) Сайдбар с фильтрами:*/}
@@ -147,6 +153,11 @@ export const MotorcyclesPage = () => {
 
       {/*2) Карточки и сортировка:*/}
       <main className={styles.Content}>
+        <Helmet>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+        </Helmet>
+
         <Breadcrumbs items={breadcrumbs} />
         {/* <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1> */}
         <h1 className={styles.title}>

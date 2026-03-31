@@ -8,6 +8,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 //Google reCAPTCHA v3:
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+//React Helmet для SEO:
+import { HelmetProvider } from "react-helmet-async";
 //Мой роутер:
 import { router } from "./providers/router/config/router";
 //Компонент, который отобразится при глобальной ошибке:
@@ -30,12 +32,14 @@ export const App = () => {
       reCaptchaKey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY}
     >
       <QueryClientProvider client={queryClient}>
-        <ErrorBoundary
-          FallbackComponent={GlobalErrorFallback}
-          onReset={() => (window.location.href = "/")} // Сброс: уводим на главную
-        >
-          <RouterProvider router={router} />
-        </ErrorBoundary>
+        <HelmetProvider>
+          <ErrorBoundary
+            FallbackComponent={GlobalErrorFallback}
+            onReset={() => (window.location.href = "/")} // Сброс: уводим на главную
+          >
+            <RouterProvider router={router} />
+          </ErrorBoundary>
+        </HelmetProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </GoogleReCaptchaProvider>

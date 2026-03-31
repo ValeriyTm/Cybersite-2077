@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
   fetchMotorcycleBySlug,
@@ -8,7 +8,8 @@ import {
 import { SpecRow } from "@/shared/ui/SpecRow";
 import { MotorcycleCard } from "@/entities/catalog";
 import { type MotorcycleShort } from "@/entities/catalog/model/types";
-
+//Для SEO:
+import { Helmet } from "react-helmet-async";
 //Компонент Breadcrumbs:
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
 //Стили
@@ -19,7 +20,7 @@ const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg
 
 type TabType = "specs" | "description" | "warranty" | "docs";
 
-export const MotorcycleDetailsPage: React.FC = () => {
+export const MotorcycleDetailsPage = () => {
   const { brandSlug, slug } = useParams<{ brandSlug: string; slug: string }>();
   const [data, setData] = useState<MotorcycleFull | null>(null);
   //Стейт для активного фото:
@@ -57,6 +58,11 @@ export const MotorcycleDetailsPage: React.FC = () => {
 
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
 
+  //Формируем SEO-строки:
+  const seoTitle = `${data.brand.name} ${data.model} ${data.year} г.в. — Характеристики и цены | CyberBike`;
+  const seoDescription = `Подробные технические характеристики ${data.brand.name} ${data.model}: двигатель ${data.displacement} см³, мощность ${data.power} л.с. Цвета: ${data.colors?.join(", ")}. Узнайте всё о модели на CyberBike.`;
+  const ogImage = activeImage || `${STATIC_URL}/defaults/default-card-icon.jpg`;
+
   //Breadcrumbs:
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/motorcycles" },
@@ -66,6 +72,17 @@ export const MotorcycleDetailsPage: React.FC = () => {
 
   return (
     <main className={styles.Page}>
+      {/*SEO:*/}
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        {/* Соцсети (Open Graph) */}
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:type" content="product" />
+      </Helmet>
+
       <div className={styles.container}>
         {/*Breadcrumbs:*/}
         <Breadcrumbs items={breadcrumbs} />
