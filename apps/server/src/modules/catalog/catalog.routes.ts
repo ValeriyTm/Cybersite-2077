@@ -5,6 +5,9 @@ import { searchService } from "./search.service.js";
 
 const router = Router();
 
+//Для получения sitemap.xml:
+//(должно быть доступно по адресу домен/api/catalog/sitemap.xml):
+router.get("/sitemap.xml", catalogController.getSitemap);
 //Получение главных категорий (/api/catalog/categories):
 router.get("/categories", catalogController.getCategories);
 //Список брендов с пагинацией для страницы (/api/catalog/brands?page=1&limit=20):

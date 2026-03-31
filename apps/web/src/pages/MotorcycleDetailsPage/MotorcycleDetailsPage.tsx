@@ -59,8 +59,8 @@ export const MotorcycleDetailsPage = () => {
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
 
   //Формируем SEO-строки:
-  const seoTitle = `${data.brand.name} ${data.model} ${data.year} г.в. — Характеристики и цены | CyberBike`;
-  const seoDescription = `Подробные технические характеристики ${data.brand.name} ${data.model}: двигатель ${data.displacement} см³, мощность ${data.power} л.с. Цвета: ${data.colors?.join(", ")}. Узнайте всё о модели на CyberBike.`;
+  const seoTitle = `${data.brand.name} ${data.model} ${data.year} г.в. — Характеристики и цены | CyberSite2077`;
+  const seoDescription = `Подробные технические характеристики ${data.brand.name} ${data.model}: двигатель ${data.displacement} см³, мощность ${data.power} л.с. Цвета: ${data.colors?.join(", ")}. Узнайте всё о модели на CyberSite2077.`;
   const ogImage = activeImage || `${STATIC_URL}/defaults/default-card-icon.jpg`;
 
   //Breadcrumbs:
@@ -70,10 +70,37 @@ export const MotorcycleDetailsPage = () => {
     { label: data.model }, // Текущая страница без ссылки
   ];
 
+  //Объект микроразметки:
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${data.brand.name} ${data.model}`,
+    image: [`http://localhost:3001/static/motorcycles/${data.mainImage}`],
+    description: `Технические характеристики ${data.model}: ${data.displacement} см³, ${data.power} л.с.`,
+    brand: {
+      "@type": "Brand",
+      name: data.brand.name,
+    },
+    offers: {
+      "@type": "Offer",
+      url: window.location.href,
+      priceCurrency: "RUB",
+      price: data.price,
+      itemCondition: "https://schema.orgNewCondition",
+      availability: "https://schema.orgInStock", // 🎯 Указываем, что в наличии
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: data.rating,
+      reviewCount: "85", // 🎯 Пока захардкодим число отзывов, позже прикрутим реальное
+    },
+  };
+
   return (
     <main className={styles.Page}>
       {/*SEO:*/}
       <Helmet>
+        {/*Мета-теги:*/}
         <title>{seoTitle}</title>
         <meta name="description" content={seoDescription} />
         {/* Соцсети (Open Graph) */}
@@ -81,6 +108,9 @@ export const MotorcycleDetailsPage = () => {
         <meta property="og:description" content={seoDescription} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:type" content="product" />
+
+        {/*JSON-LD микроразметка:*/}
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
       <div className={styles.container}>

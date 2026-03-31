@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { catalogService } from "./catalog.service.js";
 import { searchService } from "./search.service.js";
+import { sitemapService } from "./sitemap.service.js";
 
 export class CatalogController {
   //Получение главных категорий:
@@ -147,6 +148,13 @@ export class CatalogController {
     } catch (error) {
       next(error);
     }
+  }
+
+  //Для отдачи sitemap:
+  async getSitemap(req: Request, res: Response) {
+    const xml = await sitemapService.generateSitemapXml();
+    res.header("Content-Type", "application/xml"); //Поисковик поймет, что это XML
+    res.send(xml);
   }
 }
 

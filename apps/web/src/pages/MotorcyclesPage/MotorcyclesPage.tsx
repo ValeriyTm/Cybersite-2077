@@ -163,7 +163,7 @@ export const MotorcyclesPage = () => {
         <h1 className={styles.title}>
           {slug === "all"
             ? `Результаты поиска: ${filters.search}`
-            : `Мотоциклы ${slug?.toUpperCase()}`}
+            : `Мотоциклы ${brandSlug?.toUpperCase()}`}
         </h1>
         <h3>Найдено моделей: {data?.total || 0}</h3>
         {/*2.1.Topbar:*/}
