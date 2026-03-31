@@ -91,7 +91,7 @@ export class SearchService {
     }
 
     // 1. Фильтр по бренду (обязательно для страницы бренда)
-    if (brandSlug) {
+    if (brandSlug && brandSlug !== "all") {
       query.bool.filter.push({ match: { brandSlug: brandSlug } });
     }
 

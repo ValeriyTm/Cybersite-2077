@@ -15,6 +15,8 @@ import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 export const MotorcyclesPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
 
+  const { slug } = useParams<{ slug: string }>();
+
   //Фильтры из URL:
   const { filters, updateFilters } = useMotorcycleFilters();
   //Получаем UI-настройки из Zustand:
@@ -60,6 +62,7 @@ export const MotorcyclesPage = () => {
 
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/motorcycles" },
+    { label: slug === "all" ? "Поиск по всему каталогу" : slug?.toUpperCase() },
     {
       label: brandSlug?.toUpperCase(),
       href: `/catalog/motorcycles/${brandSlug}`,
@@ -145,7 +148,12 @@ export const MotorcyclesPage = () => {
       {/*2) Карточки и сортировка:*/}
       <main className={styles.Content}>
         <Breadcrumbs items={breadcrumbs} />
-        <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1>
+        {/* <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1> */}
+        <h1 className={styles.title}>
+          {slug === "all"
+            ? `Результаты поиска: ${filters.search}`
+            : `Мотоциклы ${slug?.toUpperCase()}`}
+        </h1>
         <h3>Найдено моделей: {data?.total || 0}</h3>
         {/*2.1.Topbar:*/}
         <header className={styles.topBar}>

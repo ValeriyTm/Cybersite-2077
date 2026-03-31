@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAuthStore } from "@/features/auth/model/auth-store";
 import { TOP_BRANDS } from "../model/items";
 import debounce from "lodash/debounce";
@@ -15,6 +15,8 @@ export const Header = () => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   //Состояние выбранной категории:
   const [activeMainCat, setActiveMainCat] = useState<MainCategory>("moto");
+
+  const navigate = useNavigate();
 
   //Состояние для поиска с подсказками:
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,6 +55,17 @@ export const Header = () => {
     setSearchQuery(val);
     if (val.length >= 2) fetchSuggestions(val);
     else setSuggestions([]);
+  };
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (searchQuery.trim().length >= 2) {
+      // 🎯 Переходим в общий каталог с активным поиском
+      navigate(
+        `/catalog/motorcycles/all?search=${encodeURIComponent(searchQuery)}`,
+      );
+      setSuggestions([]); // Закрываем подсказки
+    }
   };
 
   return (
@@ -178,13 +191,20 @@ export const Header = () => {
           </div>
 
           {/* Поиск с подсказками (Autocomplete) */}
-          <div className={styles.searchBox} ref={searchRef}>
+          <form
+            className={styles.searchBox}
+            onSubmit={handleSearchSubmit}
+            ref={searchRef}
+          >
             <input
               type="text"
               value={searchQuery}
               onChange={handleInputChange}
+              onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
               placeholder="Поиск по каталогу"
             />
+            <button type="submit">Найти</button>
+
             {suggestions.length > 0 && (
               <div className={styles.suggestions}>
                 {suggestions.map((moto) => {
@@ -217,9 +237,7 @@ export const Header = () => {
                 })}
               </div>
             )}
-            <button>Найти</button>
-            {/* Тут будет выпадающий список результатов от Elastic */}
-          </div>
+          </form>
 
           {/* Блок пользователя и Заглушки */}
           <div className={styles.userActions}>
