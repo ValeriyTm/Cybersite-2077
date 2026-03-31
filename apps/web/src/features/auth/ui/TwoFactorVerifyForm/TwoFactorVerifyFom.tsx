@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useAuthStore } from "@/features/auth/model/auth-store";
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
 import { $api } from "@/shared/api/api";
 import { Button } from "@/shared/ui/Button/Button";
 import { Input } from "@/shared/ui/Input/Input";

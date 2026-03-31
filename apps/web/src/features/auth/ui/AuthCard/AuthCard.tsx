@@ -9,8 +9,8 @@ import { FcGoogle } from "react-icons/fc";
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
 //Хранилища:
-import { useAuthStore } from "@/features/auth/model/auth-store"; //Клиентское
-import { useProfile } from "@/features/auth/model/use-profile"; //Серверное
+import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентское
+import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
 //Стили:
 import styles from "./AuthCard.module.scss";
 

@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 //Клиентское хранилище:
-import { useAuthStore } from "@/features/auth/model/auth-store";
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
 //Компоненты:
 import { AuthCard } from "@/features/auth/ui/AuthCard/AuthCard";
 import { MainLayout } from "@/app/ui/MainLayout";

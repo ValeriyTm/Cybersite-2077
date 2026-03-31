@@ -17,7 +17,7 @@ import {
   type DeleteAccountInput,
 } from "@repo/validation";
 //Серверное хранилище:
-import { useProfile } from "@/features/auth/model/use-profile";
+import { useProfile } from "@/features/auth/model/useProfile";
 //Экземпляр axios и URL сервера:
 import { $api, API_URL } from "@/shared/api/api";
 //Библиотека для всплывающих уведомлений:

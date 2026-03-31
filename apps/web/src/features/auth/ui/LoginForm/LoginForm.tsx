@@ -12,7 +12,7 @@ import { LoginSchema, type LoginInput } from "@repo/validation";
 //Экземпляр axios:
 import { $api } from "@/shared/api/api";
 //Клиентское хранилище:
-import { useAuthStore } from "@/features/auth/model/auth-store";
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";

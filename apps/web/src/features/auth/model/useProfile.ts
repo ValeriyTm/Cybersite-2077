@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 //Экземпляр axios:
 import { $api } from "@/shared/api/api";
 //Клиентское хранилище:
-import { useAuthStore } from "./auth-store";
+import { useAuthStore } from "./useAuthStore";
 //Тип данных (информация о пользователи), приходящих от сервера:
 import { type IUser } from "@repo/types";
 

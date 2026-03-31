@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form";
 //Роутер:
 import { Navigate } from "react-router";
 //Серверное хранилище:
-import { useProfile } from "@/features/auth/model/use-profile";
+import { useProfile } from "@/features/auth/model/useProfile";
 //Иконки:
 import {
   HiOutlineUser,

@@ -10,10 +10,10 @@ interface AuthState {
   accessToken: string | null;
   //Авторизован ли пользователь:
   isAuth: boolean;
-  // Поля для 2FA
+  //Поля для 2FA:
   tempUserId: string | null;
   setTempUserId: (id: string | null) => void;
-  // Методы
+  //Методы (actions):
   setAuth: (token: string | null) => void;
   clearAuth: () => void;
 }

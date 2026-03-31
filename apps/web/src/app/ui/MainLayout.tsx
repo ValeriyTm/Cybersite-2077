@@ -3,8 +3,8 @@ import { Toaster } from "react-hot-toast";
 //Роутер:
 import { Outlet } from "react-router";
 //Хранилища:
-import { useProfile } from "@/features/auth/model/use-profile"; //Серверный стор
-import { useAuthStore } from "@/features/auth/model/auth-store"; //Клиентский стор
+import { useProfile } from "@/features/auth/model/useProfile"; //Серверный стор
+import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентский стор
 //Виджеты:
 import { Header } from "@/widgets/Header/ui/Header";
 

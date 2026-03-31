@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router";
-import { useAuthStore } from "@/features/auth/model/auth-store";
-import { useProfile } from "@/features/auth/model/use-profile";
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useProfile } from "@/features/auth/model/useProfile";
 import { TOP_BRANDS } from "../model/items";
 import debounce from "lodash/debounce";
 import { type MotorcycleShort } from "@/entities/catalog/model/types";

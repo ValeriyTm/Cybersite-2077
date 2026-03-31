@@ -1,8 +1,8 @@
 //Роутер:
 import { Link } from "react-router";
 //Хранилища:
-import { useAuthStore } from "@/features/auth/model/auth-store"; //Клиентское
-import { useProfile } from "@/features/auth/model/use-profile"; //Серверное
+import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентское
+import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
 
 export const HomePage = () => {
   //Из Zustand берем статус авторизации пользователя:
