@@ -12,9 +12,40 @@
 * Визуальное тестирование:
   Выполнить "npx chromatic --project-token=TOKEN", где TOKEN - это токен Chromatic, указанный в .env в apps/web/.env.
 
-## Модуль Identity
+## Автоматизированные сценарии тестирования
 
-### План ручного тестирования модуля Identity
+| Функционал                                                                             | Инструмент тестирования |                                                                                            Файл автотеста |
+| :------------------------------------------------------------------------------------- | :---------------------: | --------------------------------------------------------------------------------------------------------: |
+| Отображение форм                                                                       |  Storybook + Chromatic  |                                                                                      AuthCard.stories.tsx |
+| Отображение компонентов                                                                |  Storybook + Chromatic  | Avatar.stories.tsx, <br>Button.stories.tsx, <br>PasswordField.stories.tsx, <br>MotorcycleCard.stories.tsx |
+| Регистрация                                                                            |         Cypress         |                                                                                        registration.cy.ts |
+| Активация аккаунта                                                                     |         Cypress         |                                                                                          activation.cy.ts |
+| Логин                                                                                  |         Cypress         |                                                                                                auth.cy.ts |
+| Редактирование профиля                                                                 |         Cypress         |                                                                                                auth.cy.ts |
+| Загрузка аватара                                                                       |         Cypress         |                                                                                                auth.cy.ts |
+| Смена пароля                                                                           |         Cypress         |                                                                                                auth.cy.ts |
+| Выход из сессии                                                                        |         Cypress         |                                                                                                auth.cy.ts |
+| Выход из всех сессий                                                                   |         Cypress         |                                                                                                auth.cy.ts |
+| Удаление аккаунта                                                                      |         Cypress         |                                                                                                auth.cy.ts |
+| Восстановление пароля                                                                  |         Cypress         |                                                                                                auth.cy.ts |
+| Навигация по каталогу                                                                  |         Cypress         |                                                                                             catalog.cy.ts |
+| Логин с 2FA                                                                            |         Cypress         |                                                                                                auth.cy.ts |
+| Защита роутов                                                                          |         Vitest          |                                                                                   ProtectedRoute.test.tsx |
+| Проверка цепочки «Ввод данных -> Капча -> Запрос к серверу -> Уведомление -> Редирект» |         Vitest          |                                                                                     useAuthSubmit.test.ts |
+| Проверка функционала профиля                                                           |         Vitest          |                                                                                 useProfileActions.test.ts |
+| OAuth фунционал                                                                        |         Vitest          |                                                                                         AuthCard.test.tsx |
+| Функционал кнопки                                                                      |         Vitest          |                                                                                           Button.test.tsx |
+| Password visibility toggle на инпутах ввода пароля                                     |         Vitest          |                                                                                    PasswordField.test.tsx |
+| Серверный функционал 2FA                                                               |         Vitest          |                                                                                       2fa.service.test.ts |
+| Серверный функционал удаления юзера                                                    |         Vitest          |                                                                                      auth.service.test.ts |
+| Сервис очистки неподтвержденных аккаунтов                                              |         Vitest          |                                                                                   cleanup.service.test.ts |
+| Серверный функционал выхода из сессии(ий)                                              |         Vitest          |                                                                                   session.service.test.ts |
+| Валидация в формах                                                                     |         Vitest          |                                                                                              auth.test.ts |
+| Работа фильтров на странице бренда                                                     |         Vitest          |                                                                             useMotorcycleFilters.test.tsx |
+
+## Планы ручного тестирования
+
+### Модуль Identity
 
 #### 1. Регистрация без использования Google
 
@@ -115,33 +146,4 @@
 
 - 14.1. Проверить автоудаление аккаунта, который не подтвержден в течение недели. Для этого в cleanup.service.ts установить в расписании удалений не "0 0 "star" "star" "star"", а ""star" "star" "star" "star" "star"" (проверка сервисом аккаунтов будет каждую минуту), а для конкретного неподтвержденного пользователя вручную в БД поменять поле createdAt на 8 дней назад. В течение минуты должен быть удален аккаунт из БД.
 
-### Автоматизированные сценарии тестирования
-
-| Функционал                                                                             | Инструмент тестирования |                                                            Файл автотеста |
-| :------------------------------------------------------------------------------------- | :---------------------: | ------------------------------------------------------------------------: |
-| Отображение форм                                                                       |  Storybook + Chromatic  |                                                      AuthCard.stories.tsx |
-| Отображение компонентов                                                                |  Storybook + Chromatic  | Avatar.stories.tsx, <br>Button.stories.tsx, <br>PasswordField.stories.tsx |
-| Регистрация                                                                            |         Cypress         |                                                        registration.cy.ts |
-| Активация аккаунта                                                                     |         Cypress         |                                                          activation.cy.ts |
-| Логин                                                                                  |         Cypress         |                                                                auth.cy.ts |
-| Редактирование профиля                                                                 |         Cypress         |                                                                auth.cy.ts |
-| Загрузка аватара                                                                       |         Cypress         |                                                                auth.cy.ts |
-| Смена пароля                                                                           |         Cypress         |                                                                auth.cy.ts |
-| Выход из сессии                                                                        |         Cypress         |                                                                auth.cy.ts |
-| Выход из всех сессий                                                                   |         Cypress         |                                                                auth.cy.ts |
-| Удаление аккаунта                                                                      |         Cypress         |                                                                auth.cy.ts |
-| Восстановление пароля                                                                  |         Cypress         |                                                                auth.cy.ts |
-| Логин с 2FA                                                                            |         Cypress         |                                                                auth.cy.ts |
-| Защита роутов                                                                          |         Vitest          |                                                   ProtectedRoute.test.tsx |
-| Проверка цепочки «Ввод данных -> Капча -> Запрос к серверу -> Уведомление -> Редирект» |         Vitest          |                                                     useAuthSubmit.test.ts |
-| Проверка функционала профиля                                                           |         Vitest          |                                                 useProfileActions.test.ts |
-| OAuth фунционал                                                                        |         Vitest          |                                                         AuthCard.test.tsx |
-| Функционал кнопки                                                                      |         Vitest          |                                                           Button.test.tsx |
-| Password visibility toggle на инпутах ввода пароля                                     |         Vitest          |                                                    PasswordField.test.tsx |
-| Серверный функционал 2FA                                                               |         Vitest          |                                                       2fa.service.test.ts |
-| Серверный функционал удаления юзера                                                    |         Vitest          |                                                      auth.service.test.ts |
-| Сервис очистки неподтвержденных аккаунтов                                              |         Vitest          |                                                   cleanup.service.test.ts |
-| Серверный функционал выхода из сессии(ий)                                              |         Vitest          |                                                   session.service.test.ts |
-| Валидация в формах                                                                     |         Vitest          |                                                              auth.test.ts |
-
-## Модуль №2
+### Модуль №2

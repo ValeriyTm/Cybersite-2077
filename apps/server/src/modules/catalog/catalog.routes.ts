@@ -14,6 +14,7 @@ router.get("/categories", catalogController.getCategories);
 router.get("/brands", catalogController.getBrands);
 //Получение всех мотоциклов одного бренда (/api/catalog/motorcycles):
 router.get("/motorcycles", catalogController.getMotorcycles);
+
 //Временный роут для ручного запуска синхронизации
 //(http://localhost:3001/api/catalog/sync-search):
 router.get("/sync-search", async (req, res, next) => {
@@ -28,10 +29,9 @@ router.get("/sync-search", async (req, res, next) => {
 
 //Поиск с выводом предположений:
 router.get("/search/suggest", catalogController.getSuggestions);
-
 //Получение аналогичных мотоциклов (рекомендации) (/api/catalog/motorcycles/:slug/related):
 router.get("/motorcycles/:slug/related", catalogController.getRelated);
 //Получение информации о конкретном мотоцикле (/api/catalog/:brandSlug/:slug):
-router.get("/:brandSlug/:slug", catalogController.getMotorcycle);
+router.get("/motorcycles/:brandSlug/:slug", catalogController.getMotorcycle);
 
 export default router;

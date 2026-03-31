@@ -41,7 +41,7 @@ export const fetchMotorcycleBySlug = async (
   slug: string,
 ): Promise<MotorcycleFull> => {
   const { data } = await axios.get(
-    `${API_URL}/api/catalog/${brandSlug}/${slug}`,
+    `${API_URL}/api/catalog/motorcycles/${brandSlug}/${slug}`,
   );
   return data;
 };

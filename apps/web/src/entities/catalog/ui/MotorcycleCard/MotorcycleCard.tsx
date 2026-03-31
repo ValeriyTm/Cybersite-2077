@@ -6,7 +6,7 @@ import styles from "./MotorcycleCard.module.scss";
 const STATIC_URL = "http://localhost:3001/static";
 const DEFAULT_IMG = `${STATIC_URL}/defaults/default-card-icon.jpg`;
 
-interface MotorcycleCardProps {
+export interface MotorcycleCardProps {
   data: MotorcycleShort;
   viewMode?: "grid" | "list";
 }

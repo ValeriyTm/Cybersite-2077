@@ -58,7 +58,7 @@ h2 {
   margin-bottom: 30px;
 }
 
-// 🎯 Сетка характеристик "Бортовой компьютер"
+//Сетка характеристик:
 .specsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); // В две колонки
@@ -234,8 +234,8 @@ h2 {
 }
 
 .tabContent {
-  display: inline-flex;
-  align-items: start;
+  // display: inline-flex;
+  align-items: center;
   padding-top: 40px;
   min-height: 400px; // Чтобы страница не "прыгала" при переключении
 
@@ -247,7 +247,7 @@ h2 {
 .staticText {
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
-  max-width: 800px;
+  // max-width: 1000px;
 
   h3 {
     color: #fff;

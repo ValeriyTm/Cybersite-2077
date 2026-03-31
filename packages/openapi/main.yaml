@@ -42,15 +42,23 @@ paths:
     $ref: "./modules/identity.yaml#/paths/~1profile~1update"
   /api/identity/profile/avatar:
     $ref: "./modules/identity.yaml#/paths/~1profile~1avatar"
-    # apu/catalog:
+    # api/catalog:
   /api/catalog/categories:
     $ref: "./modules/catalog.yaml#/paths/~1categories"
   /api/catalog/brands:
     $ref: "./modules/catalog.yaml#/paths/~1brands"
   /api/catalog/motorcycles:
     $ref: "./modules/catalog.yaml#/paths/~1motorcycles"
-  /api/catalog/motorcycles/{brandSlug}/{modelSlug}:
-    $ref: "./modules/catalog.yaml#/paths/~1motorcycles~1{brandSlug}~1{modelSlug}"
+  /api/catalog/motorcycles/{brandSlug}/{slug}:
+    $ref: "./modules/catalog.yaml#/paths/~1motorcycles~1{brandSlug}~1{slug}"
+  /api/catalog/search/suggest:
+    $ref: "./modules/catalog.yaml#/paths/~1search~1suggest"
+  /api/catalog/motorcycles/{slug}/related:
+    $ref: "./modules/catalog.yaml#/paths/~1motorcycles~1{slug}~1related"
+  /api/catalog/sync-search:
+    $ref: "./modules/catalog.yaml#/paths/~1sync-search"
+  /api/catalog/sitemap.xml:
+    $ref: "./modules/catalog.yaml#/paths/~1sitemap.xml"
 
 components:
   securitySchemes:

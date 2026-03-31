@@ -1,3 +1,4 @@
+# Авторизация:
 User:
   type: object
   description: Базовая модель пользователя (Identity)
@@ -76,6 +77,8 @@ AccessToken:
   type: string
   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZjFmZjA2LTI2NjgtNGNhNi1hMTk5LTVhNGY3NDJjYTAyYSIsImVtYWlsIjoiZG9zZW4zMEB0dXRhbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3NDU4NTgyOSwiZXhwIjoxNzc0NTg2NDI5fQ.rX1lLR2vD0JTX2C_ruo3zqkkN6_odEw9cI8460Oav90"
 
+# Каталог:
+
 MotorcycleShort:
   type: object
   required: [id, model, slug, price, year, displacement, mainImage]
@@ -86,10 +89,10 @@ MotorcycleShort:
       example: ebe237bc-2944-418e-99f3-9d4f7802ee21
     model:
       type: string
-      example: "Peugeot Metropolis Allure"
+      example: "Access AMS 4.30 SuperMoto EFI"
     slug:
       type: string
-      example: "peugeot-metropolis-allure2019"
+      example: "access-ams-430-supermoto-efi2016"
     price:
       type: integer
       description: "Цена в рублях"
@@ -107,12 +110,25 @@ MotorcycleShort:
       example: 4.8
     mainImage:
       type: string
-      description: "URL главного изображения"
-      example: "/uploads/defaults/default-card-icon.jpg"
-    brandName:
+      description: "имя главного изображения в папке static/motorcycles/"
+      example: "access-ams-430-supermoto-efi2016.jpg"
+    brand:
       type: string
       description: "Название бренда (чтобы не делать лишний запрос)"
-      example: "Honda"
+      example: "Access"
+    brandSlug:
+      type: string
+      example: "access"
+    category:
+      $ref: "#/MotoCategory"
+    createdAt:
+      type: string
+      example: "2026-03-31T06:32:32.130Z"
+    power:
+      type: number
+      example: 29.5
+    transmission:
+      $ref: "#/TransmissionType"
 
 MotorcycleFull:
   type: object
@@ -136,19 +152,27 @@ MotorcycleFull:
       example: ebe237bc-2944-418e-99f3-9d4f7802ee21
     model:
       type: string
-      example: "Peugeot Metropolis Allure"
+      example: "Cleveland Iron One"
     slug:
       type: string
-      example: "peugeot-metropolis-allure2019"
+      example: "cleveland-iron-one2018"
 
     # Связи (объекты для удобства фронтенда):
     brand:
       $ref: "#/Brand"
+    brandId:
+      type: string
+      format: uuid
+      example: 70b8249b-6b08-4b59-972c-30e49855fcb1
     siteCategory:
       type: object
       properties:
         name: { type: string, example: "Мотоциклы" }
         slug: { type: string, example: "motorcycles" }
+    siteCategoryId:
+      type: string
+      format: uuid
+      example: 081b4c44-59b1-4b2a-884b-f4bcfdc7c21e
 
     # Основные характеристики:
     category:
@@ -157,11 +181,13 @@ MotorcycleFull:
       type: integer
       example: 2023
     displacement:
-      type: integer
+      type: number
+      format: integer
       description: "Объем двигателя (см3)"
       example: 750
     power:
       type: number
+      format: float
       nullable: true
       description: "Мощность (л.с.)"
       example: 217.6
@@ -206,7 +232,7 @@ MotorcycleFull:
       type: array
       items:
         type: string
-      example: ["Grand Prix Red", "Matte Pearl Morion Black"]
+      example: ["gray", "lightgray", "white", "blue"]
     comments:
       type: string
       nullable: true
@@ -225,10 +251,10 @@ MotorcycleFull:
         $ref: "#/ProductImage"
     createdAt:
       type: string
-      format: date-time
+      example: "2026-03-31T06:32:03.893Z"
     updatedAt:
       type: string
-      format: date-time
+      example: "2026-03-31T06:32:03.893Z"
 
 ProductImage:
   type: object
@@ -240,63 +266,63 @@ ProductImage:
 MotoCategory:
   type: string
   enum:
-    - "Allround"
+    - "ALLROUND"
     - "ATV"
-    - "Classic"
-    - "Cross / motocross"
-    - "Custom / cruiser"
-    - "Enduro / offroad"
-    - "Minibike, cross"
-    - "Minibike, sport"
-    - "Naked bike"
-    - "Prototype / concept model"
-    - "Scooter"
-    - "Speedway"
-    - "Sport"
-    - "Sport touring"
-    - "Super motard"
-    - "Touring"
-    - "Trial"
-    - "Unspecified category"
+    - "CLASSIC"
+    - "CROSS_MOTOCROSS"
+    - "CUSTOM_CRUISER"
+    - "ENDURO_OFFROAD"
+    - "MINIBIKE_CROSS"
+    - "MINIBIKE_SPORT"
+    - "NAKED_BIKE"
+    - "PROTOTYPE_CONCEPT"
+    - "SCOOTER"
+    - "SPEEDWAY"
+    - "SPORT"
+    - "SPORT_TOURING"
+    - "SUPER_MOTARD"
+    - "TOURING"
+    - "TRIAL"
+    - "UNSPECIFIED"
 
 CoolingType:
   type: string
   enum:
-    - "Air"
-    - "Liquid"
-    - "Oil & air"
+    - "AIR"
+    - "LIQUID"
+    - "OIL_AIR"
 
 GearboxType:
   type: string
   enum:
-    - "1-speed"
-    - "2-speed"
-    - "2-speed automatic"
-    - "3-speed"
-    - "3-speed automatic"
-    - "4-speed"
-    - "4-speed with reverse"
-    - "5-speed"
-    - "5-speed with reverse"
-    - "6-speed"
-    - "6-speed with reverse"
-    - "7-speed"
-    - "8-speed"
-    - "Automatic"
+    - SPEED1
+    - SPEED2
+    - SPEED2AUTOMATIC
+    - SPEED3
+    - SPEED3AUTOMATIC
+    - SPEED4
+    - SPEED4WITHREVERSE
+    - SPEED5
+    - SPEED5WITHREVERSE
+    - SPEED6
+    - SPEED6WITHREVERSE
+    - SPEED7
+    - SPEED8
+    - AUTOMATIC
 
 TransmissionType:
   type: string
   enum:
-    - "Belt"
-    - "Chain"
-    - "Cardan"
+    - "BELT"
+    - "CHAIN"
+    - "CARDAN"
 
 StarterType:
   type: string
   enum:
-    - "Electric"
-    - "Electric & kick"
-    - "Kick"
+    - "ELECTRIC"
+    - "ELECTRIC_KICK"
+    - "KICK"
 
 Brand:
   type: object
@@ -313,17 +339,50 @@ Brand:
     country:
       type: string
       description: "Страна происхождения бренда"
-      example: "Japan"
+      example: "Япония"
     slug:
       type: string
       description: "URL-имя для роутинга /catalog/motorcycles/{slug}"
       example: "honda"
-    # Добавим это поле, так как в Prisma есть обратная связь motorcycles[]
-    # На бэкенде мы сможем легко посчитать количество через _count
+    image:
+      type: string
+      description: Название изображения по адресу домен/static/brands/
+      example: honda.png
+    createdAt:
+      type: string
+      example: "2026-03-30T12:03:59.651Z"
+    updatedAt:
+      type: string
+      example: "2026-03-30T12:03:59.651Z"
+
+BrandInPage:
+  type: object
+  required: [id, name, country, slug]
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "0c8f92a1-5954-4ae1-96c6-75527c941219"
+    name:
+      type: string
+      description: "Название бренда"
+      example: "Honda"
+    country:
+      type: string
+      description: "Страна происхождения бренда"
+      example: "Япония"
+    slug:
+      type: string
+      description: "URL-имя для роутинга /catalog/motorcycles/{slug}"
+      example: "honda"
+    image:
+      type: string
+      description: Название изображения по адресу домен/static/brands/
+      example: honda.png
     motorcyclesCount:
-      type: integer
-      description: "Количество моделей этого бренда в базе"
-      example: 1200
+      type: number
+      format: integer
+      description: количество мотоциклов этого бренда
 
 SiteCategory:
   type: object
@@ -345,13 +404,80 @@ SiteCategory:
       type: string
       nullable: true
       description: "Ссылка на изображение для карточки категории"
-      example: "/uploads/defaults/category-moto.jpg"
     description:
       type: string
-      nullable: true
-      description: "Краткое описание раздела"
-      example: "Самый полный каталог мировой мототехники"
+      description: описание категории
     motorcyclesCount:
+      type: number
+      format: integer
+      description: количество товаров в категории
+
+MotorcycleSuggest:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "a1ab8363-58c6-4ebb-abc2-57b0fa2ba611"
+    model:
+      type: string
+      example: "Yamaha Vixion Yamaha Movistar"
+    slug:
+      type: string
+      example: "yamaha-vixion-yamaha-movistar2018"
+    brandSlug:
+      type: string
+      example: "yamaha"
+    year:
       type: integer
-      description: "Общее количество товаров в этой категории"
-      example: 34520
+      example: 2021
+    mainImage:
+      type: string
+      description: "Имя файла изображения или пустая строка, если фото нет"
+      example: "yamaha-vixion-yamaha-movistar2018.jpg"
+
+MotorcycleRelated:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "a1ab8363-58c6-4ebb-abc2-57b0fa2ba611"
+    model:
+      type: string
+      example: "Aprilia RSV4"
+    brand:
+      type: string
+      example: "Aprilia"
+    category:
+      type:
+        $ref: "#/MotoCategory"
+    slug:
+      type: string
+      example: "aprilia-rsv42021"
+    brandSlug:
+      type: string
+      example: "aprilia"
+    year:
+      type: integer
+      example: 2021
+    mainImage:
+      type: string
+      description: "Имя файла изображения или пустая строка, если фото нет"
+      example: "aprilia-rsv42021.jpg"
+    power:
+      type: number
+      description: мощность в л.с.
+      example: 217
+    displacement:
+      type: number
+      description: объем двигателя в см3
+      example: 1099
+    price:
+      type: number
+      description: Цена в рублях
+      example: 966146
+    createdAt:
+      type: string
+      description: дата и время создания записи
+      example: "2026-03-31T06:30:56.077Z"

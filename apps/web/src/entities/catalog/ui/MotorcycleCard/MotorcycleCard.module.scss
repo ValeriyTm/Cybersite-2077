@@ -7,6 +7,7 @@
   overflow: hidden;
   text-decoration: none;
   transition: all 0.3s ease;
+  // max-width: 400px;
 
   &:hover {
     transform: translateY(-5px);
@@ -60,6 +61,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .specs {

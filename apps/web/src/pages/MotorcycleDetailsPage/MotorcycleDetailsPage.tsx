@@ -96,6 +96,147 @@ export const MotorcycleDetailsPage = () => {
     },
   };
 
+  //Задаю понятные названия:
+  let STARTER;
+  switch (data.starter) {
+    case "KICK":
+      STARTER = "Кикстартер";
+      break;
+    case "ELECTRIC":
+      STARTER = "Электростартер";
+      break;
+    case "ELECTRIC_KICK":
+      STARTER = "Электро- и кикстартер";
+  }
+
+  let TRANSMISSION;
+  switch (data.transmission) {
+    case "BELT":
+      TRANSMISSION = "Ременная передача";
+      break;
+    case "CHAIN":
+      TRANSMISSION = "Цепная передача";
+      break;
+    case "CARDAN":
+      TRANSMISSION = "Карданная передача";
+  }
+
+  let COOLING;
+  switch (data.coolingSystem) {
+    case "OIL":
+      COOLING = "Жидкостное охлаждение";
+      break;
+    case "AIR":
+      COOLING = "Воздушное охлаждение";
+      break;
+    case "OIL_AIR":
+      COOLING = "Воздушное и жидкостное охлаждение";
+  }
+
+  let GEARBOX;
+  switch (data.gearbox) {
+    case "SPEED1":
+      GEARBOX = "Одноступенчатая";
+      break;
+    case "SPEED2":
+      GEARBOX = "Двухступенчатая";
+      break;
+    case "SPEED2AUTOMATIC":
+      GEARBOX = "Двухступенчатая автоматическая";
+      break;
+    case "SPEED3":
+      GEARBOX = "Трехступенчатая";
+      break;
+    case "SPEED3AUTOMATIC":
+      GEARBOX = "Трехступенчатая автоматическая";
+      break;
+    case "SPEED4":
+      GEARBOX = "Четырехступенчатая";
+      break;
+    case "SPEED4WITHREVERSE":
+      GEARBOX = "Четырехступенчатая с задней передачей";
+      break;
+    case "SPEED5":
+      GEARBOX = "Пятиступенчатая";
+      break;
+    case "SPEED5WITHREVERSE":
+      GEARBOX = "Пятиступенчатая с задней передачей";
+      break;
+    case "SPEED6":
+      GEARBOX = "Шестиступенчатая";
+      break;
+    case "SPEED6WITHREVERSE":
+      GEARBOX = "Шестиступенчатая с задней передачей";
+      break;
+    case "SPEED7":
+      GEARBOX = "Семиступенчатая";
+      break;
+    case "SPEED8":
+      GEARBOX = "Восьмиступенчатая";
+      break;
+    case "AUTOMATIC":
+      GEARBOX = "Автоматическая";
+      break;
+  }
+
+  let CATEGORY;
+  switch (data.category) {
+    case "ALLROUND":
+      CATEGORY = "Универсальный";
+      break;
+    case "ATV":
+      CATEGORY = "Квадроцикл";
+      break;
+    case "CLASSIC":
+      CATEGORY = "Классический";
+      break;
+    case "CROSS_MOTOCROSS":
+      CATEGORY = "Кросс/мотокросс";
+      break;
+    case "CUSTOM_CRUISER":
+      CATEGORY = "Кастом/круизер";
+      break;
+    case "ENDURO_OFFROAD":
+      CATEGORY = "Эндуро";
+      break;
+    case "MINIBIKE_CROSS":
+      CATEGORY = "Минибайк, кросс";
+      break;
+    case "MINIBIKE_SPORT":
+      CATEGORY = "Минибайк, спорт";
+      break;
+    case "NAKED_BIKE":
+      CATEGORY = "Нейкед (стрит)";
+      break;
+    case "PROTOTYPE_CONCEPT":
+      CATEGORY = "Прототип/концепт";
+      break;
+    case "SCOOTER":
+      CATEGORY = "Скутер";
+      break;
+    case "SPEEDWAY":
+      CATEGORY = "Трековый";
+      break;
+    case "SPORT":
+      CATEGORY = "Спортбайк";
+      break;
+    case "SPORT_TOURING":
+      CATEGORY = "Спорт-туринг";
+      break;
+    case "SUPER_MOTARD":
+      CATEGORY = "Супермото";
+      break;
+    case "TOURING":
+      CATEGORY = "Туристический";
+      break;
+    case "TRIAL":
+      CATEGORY = "Trial";
+      break;
+    case "UNSPECIFIED":
+      CATEGORY = "Не классифицировано";
+      break;
+  }
+
   return (
     <main className={styles.Page}>
       {/*SEO:*/}
@@ -194,18 +335,18 @@ export const MotorcycleDetailsPage = () => {
           {/*Контент характеристик:*/}
           {activeTab === "specs" && (
             <div className={styles.specsGrid}>
-              <SpecRow label="Категория" value={data.category} />
+              <SpecRow label="Категория" value={CATEGORY} />
               <SpecRow label="Тип двигателя" value={data.engineType} />
               <SpecRow label="Мощность" value={data.power} />
               <SpecRow
                 label="Максимальная скорость, км/ч"
                 value={data.topSpeed}
               />
-              <SpecRow label="Коробка передач" value={data.gearbox} />
-              <SpecRow label="Стартер" value={data.starter} />
+              <SpecRow label="Коробка передач" value={GEARBOX} />
+              <SpecRow label="Стартер" value={STARTER} />
               <SpecRow label="Топливная система" value={data.fuelSystem} />
-              <SpecRow label="Система охлаждения" value={data.coolingSystem} />
-              <SpecRow label="Трансмиссия" value={data.transmission} />
+              <SpecRow label="Система охлаждения" value={COOLING} />
+              <SpecRow label="Трансмиссия" value={TRANSMISSION} />
               <SpecRow label="Заднее колесо" value={data.rearTyre} />
               <SpecRow label="Переднее колесо" value={data.frontTyre} />
               <SpecRow label="Задние тормоза" value={data.rearBrakes} />
@@ -337,7 +478,7 @@ export const MotorcycleDetailsPage = () => {
           {activeTab === "docs" && (
             <div className={styles.docsSection}>
               <h3>Документация</h3>
-              <p>
+              <p style={{ textAlign: "center" }}>
                 Вы можете скачать полное руководство пользователя и сервисную
                 книжку:
               </p>
