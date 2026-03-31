@@ -1,5 +1,5 @@
 // import React, { useEffect, useState, useCallback } from "react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { fetchBrands, type Brand, BrandCard } from "@/entities/catalog";

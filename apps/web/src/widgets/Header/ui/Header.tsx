@@ -178,7 +178,7 @@ export const Header = () => {
 
                         {/* Кнопка "Прочие бренды" */}
                         <Link
-                          to="/catalog/brands"
+                          to="/catalog/motorcycles"
                           className={styles.brandItem}
                           onClick={() => setIsCatalogOpen(false)}
                         >
