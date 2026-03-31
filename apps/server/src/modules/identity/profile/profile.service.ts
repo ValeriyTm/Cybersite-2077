@@ -104,7 +104,7 @@ export class ProfileService {
 
     //3) Создаём новый аватар:
     //Создаём путь для сохранения аватара:
-    const avatarUrl = `/uploads/avatars/${filename}`; //Путь на сервере
+    const avatarUrl = `/static/avatars/${filename}`; //Путь на сервере
     //Сохраняем путь аватарки в профиль пользователя в БД:
     return prisma.user.update({
       where: { id: userId },

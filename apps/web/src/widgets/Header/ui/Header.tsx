@@ -1,16 +1,18 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuthStore } from "@/features/auth/model/auth-store";
+import { useProfile } from "@/features/auth/model/use-profile";
 import { TOP_BRANDS } from "../model/items";
 import debounce from "lodash/debounce";
 import { type MotorcycleShort } from "@/entities/catalog/model/types";
 import axios from "axios";
+import { Avatar } from "@/shared/ui/Avatar";
 import styles from "./Header.module.scss";
 
 type MainCategory = "moto" | "gear" | "parts";
 
 export const Header = () => {
-  const { isAuth, user } = useAuthStore();
+  // const { isAuth, user } = useAuthStore();
   //Состояние открытости каталога:
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   //Состояние выбранной категории:
@@ -22,6 +24,16 @@ export const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<MotorcycleShort[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  //--------Для работы с данными юзера:
+  //Технический статус из Zustand 🔐
+  const isAuth = useAuthStore((state) => state.isAuth);
+  //Реальные данные и статус загрузки из React Query 👤
+  const { user, isLoading } = useProfile();
+  //Формируем путь к аватару по твоему интерфейсу IUser
+  const avatarSrc = user?.avatarUrl
+    ? `http://localhost:3001${user.avatarUrl}`
+    : null; // Передаем null, чтобы сработал дефолт внутри Avatar.tsx
 
   // Дебаунс запроса к API
   const fetchSuggestions = useMemo(
@@ -245,10 +257,19 @@ export const Header = () => {
               to={isAuth ? "/profile" : "/auth"}
               className={styles.profileLink}
             >
-              <div className={styles.avatar}>
-                <img src={user?.avatar || "/defaults/avatar.jpg"} alt="User" />
+              <Avatar
+                src={isAuth ? avatarSrc : null}
+                alt={user?.name || "Гость"}
+                size="sm" // Делаем его маленьким для хедера
+                isAvatarLoading={isLoading} // Показываем спиннер, пока идет /refresh
+              />
+
+              <div className={styles.userInfo}>
+                <span className={styles.userName}>
+                  {/* Если авторизован и не грузится — имя, иначе "Войти" */}
+                  {isAuth && user && !isLoading ? user.name : "Войти"}
+                </span>
               </div>
-              <span>{isAuth ? user?.name : "Войти"}</span>
             </Link>
 
             <button className={styles.iconBtn} title="Избранное">
