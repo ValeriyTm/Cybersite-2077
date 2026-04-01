@@ -12,6 +12,8 @@ import { type MotorcycleShort } from "@/entities/catalog/model/types";
 import { Helmet } from "react-helmet-async";
 //Компонент Breadcrumbs:
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+//Состояние:
+import { useCart } from "@/entities/trading/api/useCart";
 //Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
 
@@ -54,6 +56,8 @@ export const MotorcycleDetailsPage = () => {
         .catch((err) => console.error("Ошибка загрузки рекомендаций:", err));
     }
   }, [slug]);
+
+  const { addToCart } = useCart();
 
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
 
@@ -292,6 +296,12 @@ export const MotorcycleDetailsPage = () => {
             <h1 className={styles.title}>{data.model}</h1>
             <div className={styles.brandBadge}>{data.brand.name}</div>
             <div className={styles.price}>{data.price.toLocaleString()} ₽</div>
+            <button
+              className={styles.addToCartBtn}
+              onClick={() => addToCart({ id: data.id, quantity: 1 })}
+            >
+              🛒 В корзину
+            </button>
             <p className={styles.description}>
               {data.year} года выпуска. Объем двигателя {data.displacement} см³.
             </p>

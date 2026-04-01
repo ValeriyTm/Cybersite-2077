@@ -6,6 +6,7 @@ import { Outlet } from "react-router";
 import { useProfile } from "@/features/auth/model/useProfile"; //Серверный стор
 import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентский стор
 import { useFavorites } from "@/entities/trading/api/useFavorites";
+import { useCart } from "@/entities/trading/api/useCart";
 //Виджеты:
 import { Header } from "@/widgets/Header/ui/Header";
 
@@ -17,6 +18,8 @@ export const MainLayout = () => {
 
   //Чтобы список избранных товаров подгружался сразу при старте приложения:
   useFavorites();
+  //Чтобы список товаров в корзине подгружался сразу при старте приложения:
+  useCart();
 
   //Если авторизован и идёт загрузка, то покажем универсальный лоадер для всех страниц:
   if (isAuth && isLoading) {

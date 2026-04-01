@@ -80,8 +80,13 @@ export const Header = () => {
     }
   };
 
-  // 1. Достаем количество избранных товаров
+  //Количество избранных товаров:
   const favoritesCount = useTradingStore((state) => state.favoriteIds.length);
+
+  //Количество товаров в корзине:
+  const cartCount = useTradingStore((state) =>
+    state.cartItems.reduce((acc, item) => acc + item.quantity, 0),
+  );
 
   return (
     <header className={styles.Header}>
@@ -288,7 +293,7 @@ export const Header = () => {
             </Link>
 
             <button className={styles.iconBtn} title="Корзина">
-              🛒 <span className={styles.counter}>0</span>
+              🛒 <span className={styles.counter}>{cartCount}</span>
             </button>
           </div>
         </div>

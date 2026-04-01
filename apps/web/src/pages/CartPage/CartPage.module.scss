@@ -1,0 +1,77 @@
+.CartPage {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+
+  .title {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 30px;
+  }
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 30px;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Список товаров
+.cartList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+// Блок итоговой суммы
+.summary {
+  background: #1a1a1a;
+  padding: 25px;
+  border-radius: 12px;
+  height: fit-content;
+  position: sticky;
+  top: 100px; //Залипает при скролле
+  border: 1px solid #333;
+
+  h3 {
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+  }
+
+  .summaryRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.6);
+
+    &.total {
+      border-top: 1px solid #333;
+      padding-top: 15px;
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+  }
+
+  .checkoutBtn {
+    width: 100%;
+    background: #f39c12;
+    color: #000;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-top: 10px;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}

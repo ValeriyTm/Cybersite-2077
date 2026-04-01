@@ -269,3 +269,28 @@ h2 {
     color: #000;
   }
 }
+
+//--Корзина
+.addToCartBtn {
+  background: #f39c12;
+  color: #000;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #e68a00;
+    box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
