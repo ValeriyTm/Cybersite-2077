@@ -7,6 +7,7 @@ import debounce from "lodash/debounce";
 import { type MotorcycleShort } from "@/entities/catalog/model/types";
 import axios from "axios";
 import { Avatar } from "@/shared/ui/Avatar";
+import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import styles from "./Header.module.scss";
 
 type MainCategory = "moto" | "gear" | "parts";
@@ -78,6 +79,9 @@ export const Header = () => {
       setSuggestions([]); //Закрываем подсказки
     }
   };
+
+  // 1. Достаем количество избранных товаров
+  const favoritesCount = useTradingStore((state) => state.favoriteIds.length);
 
   return (
     <header className={styles.Header}>
@@ -271,9 +275,17 @@ export const Header = () => {
               </div>
             </Link>
 
-            <button className={styles.iconBtn} title="Избранное">
-              ❤️ <span className={styles.counter}>0</span>
-            </button>
+            {/* Кнопка избранного со счетчиком */}
+            <Link
+              to="/profile/favorites"
+              className={styles.iconBtn}
+              title="Избранное"
+            >
+              ❤️
+              {favoritesCount > 0 && (
+                <span className={styles.counter}>{favoritesCount}</span>
+              )}
+            </Link>
 
             <button className={styles.iconBtn} title="Корзина">
               🛒 <span className={styles.counter}>0</span>

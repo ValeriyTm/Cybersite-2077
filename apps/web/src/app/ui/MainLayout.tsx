@@ -5,6 +5,7 @@ import { Outlet } from "react-router";
 //Хранилища:
 import { useProfile } from "@/features/auth/model/useProfile"; //Серверный стор
 import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентский стор
+import { useFavorites } from "@/entities/trading/api/useFavorites";
 //Виджеты:
 import { Header } from "@/widgets/Header/ui/Header";
 
@@ -13,6 +14,9 @@ export const MainLayout = () => {
   const { isLoading, isError } = useProfile();
   //Получим статус авторизации:
   const isAuth = useAuthStore((state) => state.isAuth);
+
+  //Чтобы список избранных товаров подгружался сразу при старте приложения:
+  useFavorites();
 
   //Если авторизован и идёт загрузка, то покажем универсальный лоадер для всех страниц:
   if (isAuth && isLoading) {

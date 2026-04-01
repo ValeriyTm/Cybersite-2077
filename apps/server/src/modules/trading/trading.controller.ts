@@ -5,6 +5,7 @@ import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 
+//Контроллер добавления нового мотоцикла в избранное:
 export const toggleFavorite = catchAsync(
   async (req: ToggleFavoriteRequest, res: Response, next: NextFunction) => {
     const userId = req.user.id; //Берем из middleware авторизации
@@ -15,6 +16,7 @@ export const toggleFavorite = catchAsync(
   },
 );
 
+//Контроллер получения id мотоциклов, находящихся в избранном:
 export const getFavoriteIds = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     const ids = await FavoritesService.getFavoriteIds(req.user.id);

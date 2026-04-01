@@ -37,7 +37,7 @@
 .badge {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   background: #f39c12;
   color: #000;
   padding: 4px 8px;
@@ -141,5 +141,35 @@
 
   .price {
     font-size: 1.1rem;
+  }
+}
+
+////--------Избранное---
+.favoriteBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5); // Полупрозрачный черный
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  font-size: 14px;
+
+  &:hover {
+    transform: scale(1.1);
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  &.active {
+    background: #fff; // Белый фон для красного сердца
+    border-color: #fff;
   }
 }

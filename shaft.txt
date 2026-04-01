@@ -1,7 +1,0 @@
-2e7f1192-581a-47db-a57c-b2bd46dbf788
-
-POST (нужен токен)
-http://localhost:3001/api/trading/favorites/toggle/2e7f1192-581a-47db-a57c-b2bd46dbf788
-
-GET (нужен токен)
-http://localhost:3001/api/trading/favorites/ids

@@ -165,7 +165,7 @@
 .iconBtn {
   background: none;
   border: none;
-  color: #fff;
+  color: rgba(10, 10, 10, 0.8);
   font-size: 1.4rem;
   cursor: pointer;
   position: relative;
@@ -177,14 +177,14 @@
 
   .counter {
     position: absolute;
-    top: -5px;
-    right: -10px;
+    top: -15px;
+    right: -15px;
     background: #f39c12;
     color: #000;
     font-size: 0.7rem;
     font-weight: 800;
     padding: 2px 6px;
-    border-radius: 10px;
+    border-radius: 20px;
     min-width: 18px;
   }
 }
