@@ -19,6 +19,7 @@ import styles from "./MotorcycleDetailsPage.module.scss";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
 
 const STATIC_URL = "http://localhost:3001/static/motorcycles";
 const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg`;
@@ -331,7 +332,7 @@ export const MotorcycleDetailsPage = () => {
 
               <div className={styles.buttons}>
                 {/*Кнопка добавления в корзину:*/}
-                <button
+                {/* <button
                   className={styles.cartBtn}
                   onClick={() =>
                     addToCart({
@@ -346,7 +347,17 @@ export const MotorcycleDetailsPage = () => {
                   }
                 >
                   🛒 В корзину
-                </button>
+                </button> */}
+                <AddToCartButton
+                  data={{
+                    id: data.id,
+                    model: data.model,
+                    price: data.price,
+                    image: mainImageUrl, // Сюда кладем строку
+                    brandSlug: data.brand.slug, // Вытаскиваем из объекта бренда
+                    slug: data.slug,
+                  }}
+                />
 
                 {/*Кнопка добавления в избранное*/}
                 <button

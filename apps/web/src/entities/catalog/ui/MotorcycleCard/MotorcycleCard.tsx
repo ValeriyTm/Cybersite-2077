@@ -3,6 +3,7 @@ import { type MotorcycleShort } from "../../model/types";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
 
 import styles from "./MotorcycleCard.module.scss";
 
@@ -119,6 +120,18 @@ export const MotorcycleCard = ({
                 {isFavorite ? "❤️" : "🤍"}
               </button>
             )}
+
+            <AddToCartButton
+              variant="card"
+              data={{
+                id: data.id,
+                model: data.model,
+                price: data.price,
+                image: getImageUrl(data.mainImage),
+                brandSlug: data.brandSlug,
+                slug: data.slug,
+              }}
+            />
           </div>
         </div>
       </div>
