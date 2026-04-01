@@ -31,6 +31,7 @@ interface TradingState {
   toggleSelectItem: (id: string) => void;
   toggleSelectAll: (isSelected: boolean) => void;
   updateItemQuantity: (id: string, quantity: number) => void;
+  removeSelectedLocally: () => void;
 
   clearTrading: () => void; //Очистка при выходе из аккаунта
 }

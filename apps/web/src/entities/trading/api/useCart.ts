@@ -88,7 +88,6 @@ export const useCart = () => {
     },
   });
 
-  //  НЕ ЗАБУДЬ ДОБАВИТЬ ВСЁ В RETURN
   return {
     addToCart,
     updateQuantity,

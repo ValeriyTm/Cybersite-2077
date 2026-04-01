@@ -79,10 +79,13 @@ export const addToCart = catchAsync(
 export const updateCartQuantity = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { motorcycleId, quantity } = req.body;
+
+    console.log("Body in Controller:", req.body);
+
     const cart = await cartService.updateQuantity(
       req.user.id,
       motorcycleId,
-      quantity,
+      Number(quantity),
     );
     res.json(cart);
   },

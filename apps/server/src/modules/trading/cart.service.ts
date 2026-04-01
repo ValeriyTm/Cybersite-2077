@@ -47,8 +47,12 @@ export class CartService {
 
   //Изменить количество для конкретной позиции:
   async updateQuantity(userId: string, itemId: string, quantity: number) {
+    console.log("Update Request:", { userId, itemId, quantity });
+
     const cart = await this.getCart(userId);
     const item = cart.find((i: any) => i.id === itemId);
+
+    console.log("Found Item:", item);
 
     if (item) {
       // Не даем опуститься ниже 1

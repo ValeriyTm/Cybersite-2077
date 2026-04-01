@@ -84,13 +84,23 @@ export const CartPage = () => {
 
                   <div className={styles.quantityControl}>
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      onClick={() =>
+                        updateQuantity({
+                          id: item.id,
+                          quantity: item.quantity - 1,
+                        })
+                      }
                     >
                       -
                     </button>
                     <span>{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      onClick={() =>
+                        updateQuantity({
+                          id: item.id,
+                          quantity: item.quantity + 1,
+                        })
+                      }
                     >
                       +
                     </button>
