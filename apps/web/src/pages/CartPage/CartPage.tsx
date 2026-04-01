@@ -4,12 +4,18 @@ import { useCart } from "@/entities/trading/api/useCart";
 import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { MotorcycleCard } from "@/entities/catalog/ui/MotorcycleCard/MotorcycleCard";
 import styles from "./CartPage.module.scss";
+import { ConfirmModal } from "@/shared/ui/ConfirmModal/ConfirmModal";
+import { useState } from "react";
 
 export const CartPage = () => {
   const { cartItems, toggleSelectItem, toggleSelectAll, updateItemQuantity } =
     useTradingStore();
   const { updateQuantity, removeItem, removeSelected } = useCart();
   const { toggleFavorite } = useFavorites();
+
+  // Стейты для модалок
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
 
   //Расчеты для боковой панели
   const selectedItems = cartItems.filter((item) => item.selected);
@@ -20,12 +26,43 @@ export const CartPage = () => {
   const isAllSelected =
     cartItems.length > 0 && selectedItems.length === cartItems.length;
 
+  // Обработчик удаления одного товара
+  const handleConfirmSingle = () => {
+    if (deletingId) {
+      removeItem(deletingId);
+      setDeletingId(null);
+    }
+  };
+
+  // Обработчик массового удаления
+  const handleConfirmBulk = () => {
+    const ids = selectedItems.map((i) => i.id);
+    removeSelected(ids);
+    setIsBulkDeleteOpen(false);
+  };
+
   if (cartItems.length === 0) {
     return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
   }
 
   return (
     <main className={styles.CartPage}>
+      {/* 🎯 МОДАЛКА ДЛЯ ОДНОГО ТОВАРА */}
+      <ConfirmModal
+        isOpen={!!deletingId}
+        title="Вы действительно хотите удалить этот товар из корзины?"
+        onConfirm={handleConfirmSingle}
+        onCancel={() => setDeletingId(null)}
+      />
+
+      {/* 🎯 МОДАЛКА ДЛЯ МАССОВОГО УДАЛЕНИЯ */}
+      <ConfirmModal
+        isOpen={isBulkDeleteOpen}
+        title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
+        onConfirm={handleConfirmBulk}
+        onCancel={() => setIsBulkDeleteOpen(false)}
+      />
+
       <h1 className={styles.title}>Корзина</h1>
 
       <div className={styles.content}>
@@ -42,7 +79,7 @@ export const CartPage = () => {
             </label>
             <button
               className={styles.deleteSelected}
-              onClick={() => removeSelected(selectedItems.map((i) => i.id))}
+              onClick={() => setIsBulkDeleteOpen(true)}
               disabled={selectedItems.length === 0}
             >
               Удалить выбранные
@@ -76,7 +113,7 @@ export const CartPage = () => {
                       <button onClick={() => toggleFavorite(item.id)}>
                         В избранное
                       </button>
-                      <button onClick={() => removeItem(item.id)}>
+                      <button onClick={() => setDeletingId(item.id)}>
                         Удалить
                       </button>
                     </div>
