@@ -21,13 +21,21 @@ export const MotorcycleCard = ({
 }: MotorcycleCardProps) => {
   const isAuth = useAuthStore((state) => state.isAuth);
 
-  //Определяем какое изображение ставить:
+  //Определяем какое изображение ставить для отображения изображения:
   const getImageUrl = (path: string | null | undefined) => {
     if (!path) return DEFAULT_IMG;
     //Если в базе путь "/defaults/...", просто добавляем домен
     if (path.startsWith("/")) {
       return `${STATIC_URL}${path}`;
     }
+    //Если это просто имя файла ("yamaha-r1.jpg"), ищем в папке motorcycles:
+    return `${STATIC_URL}/motorcycles/${path}`;
+  };
+
+  //Определяем какое изображение ставить для передачи в корзину:
+  const getImageUrlCart = (path: string | null | undefined) => {
+    if (!path) return "";
+
     //Если это просто имя файла ("yamaha-r1.jpg"), ищем в папке motorcycles:
     return `${STATIC_URL}/motorcycles/${path}`;
   };
@@ -127,7 +135,7 @@ export const MotorcycleCard = ({
                 id: data.id,
                 model: data.model,
                 price: data.price,
-                image: getImageUrl(data.mainImage),
+                image: getImageUrlCart(data.mainImage),
                 brandSlug: data.brandSlug,
                 slug: data.slug,
               }}

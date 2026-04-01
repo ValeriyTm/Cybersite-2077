@@ -11,6 +11,8 @@ export const CartPage = () => {
   const { cartItems, toggleSelectItem, toggleSelectAll, updateItemQuantity } =
     useTradingStore();
   const { updateQuantity, removeItem, removeSelected } = useCart();
+
+  const favoriteIds = useTradingStore((state) => state.favoriteIds);
   const { toggleFavorite } = useFavorites();
 
   // Стейты для модалок
@@ -47,7 +49,7 @@ export const CartPage = () => {
 
   return (
     <main className={styles.CartPage}>
-      {/* 🎯 МОДАЛКА ДЛЯ ОДНОГО ТОВАРА */}
+      {/* МОДАЛКА ДЛЯ ОДНОГО ТОВАРА */}
       <ConfirmModal
         isOpen={!!deletingId}
         title="Вы действительно хотите удалить этот товар из корзины?"
@@ -55,7 +57,7 @@ export const CartPage = () => {
         onCancel={() => setDeletingId(null)}
       />
 
-      {/* 🎯 МОДАЛКА ДЛЯ МАССОВОГО УДАЛЕНИЯ */}
+      {/* МОДАЛКА ДЛЯ МАССОВОГО УДАЛЕНИЯ */}
       <ConfirmModal
         isOpen={isBulkDeleteOpen}
         title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
@@ -110,8 +112,16 @@ export const CartPage = () => {
                   <div className={styles.itemInfo}>
                     <h3 className={styles.itemName}>{item.model}</h3>
                     <div className={styles.actions}>
-                      <button onClick={() => toggleFavorite(item.id)}>
-                        В избранное
+                      <button
+                        className={`${styles.favIconBtn} ${favoriteIds.includes(item.id) ? styles.active : ""}`}
+                        onClick={() => toggleFavorite(item.id)}
+                        title={
+                          favoriteIds.includes(item.id)
+                            ? "Удалить из избранного"
+                            : "В избранное"
+                        }
+                      >
+                        {favoriteIds.includes(item.id) ? "❤️" : "🤍"}
                       </button>
                       <button onClick={() => setDeletingId(item.id)}>
                         Удалить
