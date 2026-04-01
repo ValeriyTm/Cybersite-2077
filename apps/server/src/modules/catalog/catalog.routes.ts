@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { catalogController } from "./catalog.controller.js";
+import * as catalogController from "./catalog.controller.js";
 
 import { searchService } from "./search.service.js";
 

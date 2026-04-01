@@ -2,153 +2,138 @@ import { Request, Response, NextFunction } from "express";
 import { catalogService } from "./catalog.service.js";
 import { searchService } from "./search.service.js";
 import { sitemapService } from "./sitemap.service.js";
+//Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
+import { catchAsync } from "../../shared/utils/catch-async.js";
 
-export class CatalogController {
-  //Получение главных категорий:
-  async getCategories(req: Request, res: Response, next: NextFunction) {
-    try {
-      //Получаем данные с БД:
-      const categories = await catalogService.getSiteCategories();
+//Получение главных категорий:
+export const getCategories = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    //Получаем данные с БД:
+    const categories = await catalogService.getSiteCategories();
 
-      //Форматируем ответ согласно OpenAPI (переименовываем _count в motorcyclesCount):
-      const result = categories.map((cat) => ({
-        ...cat,
-        motorcyclesCount: cat._count.motorcycles,
-        _count: undefined, //Убираем техническое поле Prisma
-      }));
+    //Форматируем ответ согласно OpenAPI (переименовываем _count в motorcyclesCount):
+    const result = categories.map((cat) => ({
+      ...cat,
+      motorcyclesCount: cat._count.motorcycles,
+      _count: undefined, //Убираем техническое поле Prisma
+    }));
 
-      res.status(200).json(result);
-    } catch (error) {
-      next(error);
+    res.status(200).json(result);
+  },
+);
+
+//Получение списка всех брендов мотоциклов:
+export const getBrands = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    //Вытаскиваем параметры из адресной строки и приводим к числам с дефолтными значениями:
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const search = req.query.search as string; //Забираем строку поиска
+
+    const { items, total, pages } = await catalogService.getBrands(
+      page,
+      limit,
+      search,
+    );
+
+    //Мапим результат:
+    const formattedItems = items.map((brand) => ({
+      ...brand,
+      motorcyclesCount: brand._count.motorcycles,
+      _count: undefined,
+    }));
+
+    res.status(200).json({
+      items: formattedItems,
+      total,
+      page,
+      pages,
+    });
+  },
+);
+
+//Получение всех мотоциклов конкретного бренда:
+export const getMotorcycles = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Собираем все значеняи из фильтров из строки запроса:
+    const filters = {
+      brandSlug: req.query.brandSlug as string,
+      search: req.query.search as string,
+      minPrice: req.query.minPrice
+        ? parseInt(req.query.minPrice as string)
+        : undefined,
+      maxPrice: req.query.maxPrice
+        ? parseInt(req.query.maxPrice as string)
+        : undefined,
+      minYear: req.query.minYear
+        ? parseInt(req.query.minYear as string)
+        : undefined,
+      maxYear: req.query.maxYear
+        ? parseInt(req.query.maxYear as string)
+        : undefined,
+      category: req.query.category as string,
+      transmission: req.query.transmission as string,
+      minDisplacement: req.query.minDisplacement
+        ? parseInt(req.query.minDisplacement as string)
+        : undefined,
+      maxDisplacement: req.query.maxDisplacement
+        ? parseInt(req.query.maxDisplacement as string)
+        : undefined,
+      minPower: req.query.minPower
+        ? parseInt(req.query.minPower as string)
+        : undefined,
+      maxPower: req.query.maxPower
+        ? parseInt(req.query.maxPower as string)
+        : undefined,
+      page: parseInt(req.query.page as string) || 1,
+      limit: parseInt(req.query.limit as string) || 20,
+      sortBy: req.query.sortBy as string,
+    };
+
+    const result = await searchService.searchMotorcycles(filters);
+    res.status(200).json(result);
+  },
+);
+
+//Получение информации о конкретном мотоцикле:
+export const getMotorcycle = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { brandSlug, slug } = req.params;
+    const motorcycle = await catalogService.getMotorcycleBySlug(slug);
+
+    if (!motorcycle) {
+      return res.status(404).json({ message: "Мотоцикл не найден" });
     }
-  }
 
-  //Получение списка всех брендов мотоциклов:
-  async getBrands(req: Request, res: Response, next: NextFunction) {
-    try {
-      //Вытаскиваем параметры из адресной строки и приводим к числам с дефолтными значениями:
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-      const search = req.query.search as string; //Забираем строку поиска
+    res.status(200).json(motorcycle);
+  },
+);
 
-      const { items, total, pages } = await catalogService.getBrands(
-        page,
-        limit,
-        search,
-      );
+//Поиск аналогичных мотоциклов (рекомендации):
+export const getRelated = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { slug } = req.params;
+    const motorcycle = await catalogService.getMotorcycleBySlug(slug);
+    if (!motorcycle) return res.status(404).send();
 
-      //Мапим результат:
-      const formattedItems = items.map((brand) => ({
-        ...brand,
-        motorcyclesCount: brand._count.motorcycles,
-        _count: undefined,
-      }));
+    const related = await searchService.getRelatedMotorcycles(motorcycle);
+    res.json(related);
+  },
+);
 
-      res.status(200).json({
-        items: formattedItems,
-        total,
-        page,
-        pages,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
+//Поиск с выводом предположений:
+export const getSuggestions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const query = req.query.q as string;
+    if (!query || query.length < 2) return res.json([]); //Ищем от 2-х символов
 
-  //Получение всех мотоциклов конкретного бренда:
-  async getMotorcycles(req: Request, res: Response, next: NextFunction) {
-    try {
-      // Собираем все значеняи из фильтров из строки запроса:
-      const filters = {
-        brandSlug: req.query.brandSlug as string,
-        search: req.query.search as string,
-        minPrice: req.query.minPrice
-          ? parseInt(req.query.minPrice as string)
-          : undefined,
-        maxPrice: req.query.maxPrice
-          ? parseInt(req.query.maxPrice as string)
-          : undefined,
-        minYear: req.query.minYear
-          ? parseInt(req.query.minYear as string)
-          : undefined,
-        maxYear: req.query.maxYear
-          ? parseInt(req.query.maxYear as string)
-          : undefined,
-        category: req.query.category as string,
-        transmission: req.query.transmission as string,
-        minDisplacement: req.query.minDisplacement
-          ? parseInt(req.query.minDisplacement as string)
-          : undefined,
-        maxDisplacement: req.query.maxDisplacement
-          ? parseInt(req.query.maxDisplacement as string)
-          : undefined,
-        minPower: req.query.minPower
-          ? parseInt(req.query.minPower as string)
-          : undefined,
-        maxPower: req.query.maxPower
-          ? parseInt(req.query.maxPower as string)
-          : undefined,
-        page: parseInt(req.query.page as string) || 1,
-        limit: parseInt(req.query.limit as string) || 20,
-        sortBy: req.query.sortBy as string,
-      };
+    const suggestions = await searchService.suggestMotorcycles(query);
+    res.json(suggestions);
+  },
+);
 
-      const result = await searchService.searchMotorcycles(filters);
-      res.status(200).json(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  //Получение информации о конкретном мотоцикле:
-  async getMotorcycle(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { brandSlug, slug } = req.params;
-      const motorcycle = await catalogService.getMotorcycleBySlug(slug);
-
-      if (!motorcycle) {
-        return res.status(404).json({ message: "Мотоцикл не найден" });
-      }
-
-      res.status(200).json(motorcycle);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  //Поиск аналогичных мотоциклов (рекомендации):
-  async getRelated(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { slug } = req.params;
-      const motorcycle = await catalogService.getMotorcycleBySlug(slug);
-      if (!motorcycle) return res.status(404).send();
-
-      const related = await searchService.getRelatedMotorcycles(motorcycle);
-      res.json(related);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  //Поиск с выводом предположений:
-  async getSuggestions(req: Request, res: Response, next: NextFunction) {
-    try {
-      const query = req.query.q as string;
-      if (!query || query.length < 2) return res.json([]); //Ищем от 2-х символов
-
-      const suggestions = await searchService.suggestMotorcycles(query);
-      res.json(suggestions);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  //Для отдачи sitemap:
-  async getSitemap(req: Request, res: Response) {
-    const xml = await sitemapService.generateSitemapXml();
-    res.header("Content-Type", "application/xml"); //Поисковик поймет, что это XML
-    res.send(xml);
-  }
-}
-
-export const catalogController = new CatalogController();
+export const getSitemap = async (req: Request, res: Response) => {
+  const xml = await sitemapService.generateSitemapXml();
+  res.header("Content-Type", "application/xml"); //Поисковик поймет, что это XML
+  res.send(xml);
+};

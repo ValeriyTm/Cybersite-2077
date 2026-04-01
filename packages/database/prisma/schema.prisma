@@ -77,7 +77,9 @@ model User {
   // Мы сможем работать с ней через сырые запросы Prisma $queryRaw
   location      Unsupported("geometry(Point, 4326)")?
 
-  orders    Order[] // У одного юзера может быть много заказов
+  orders           Order[] // У одного юзера может быть много заказов
+
+  favorites        Favorite[] //Связь с избранным
 
   @@index([location], type: Gist) // Индекс для быстрого поиска по координатам
   @@map("users") // Название таблицы в БД в нижнем регистре
@@ -185,12 +187,15 @@ model Motorcycle {
   rating           Float            @default(0) //Рейтинг 0-5
   price            Int              //Цена в рублях
 
-// Ссылка на глобальную категорию (Мотоциклы)
+  // Ссылка на глобальную категорию (Мотоциклы)
   siteCategoryId   String
   siteCategory     SiteCategory       @relation(fields: [siteCategoryId], references: [id])
 
   // Список всех картинок этого мотоцикла
-  images       ProductImage[]
+  images           ProductImage[]
+
+
+  favoritedBy      Favorite[] //Связь с "избранным"
 
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
@@ -279,4 +284,26 @@ enum StarterType {
   ELECTRIC            @map("Electric")
   ELECTRIC_KICK       @map("Electric & kick")
   KICK                @map("Kick")
+}
+
+//------------Схемы для модуля Trading:----------
+//Модель для "избранного":
+model Favorite {
+  id           String     @id @default(uuid())
+  
+  //Связь с юзером:
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  
+  //Связь с мотоциклом:
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  motorcycleId String
+  
+  createdAt    DateTime   @default(now())
+
+  @@unique([userId, motorcycleId]) //Гарантируем, что юзер не добавит в избранное один и тот же товар дважды
+  
+  //Индексы для быстрой выборки:
+  @@index([userId])
+  @@index([motorcycleId])
 }

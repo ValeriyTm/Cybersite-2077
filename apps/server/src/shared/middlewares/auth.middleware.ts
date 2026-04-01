@@ -5,7 +5,7 @@ import { TokenService } from "../../modules/identity/auth/token.service.js";
 
 // Расширяем стандартный тип Request в Express, чтобы TS не ругался на req.user:
 export interface AuthRequest extends Request {
-  user?: {
+  user: {
     id: string;
     email: string;
     role: string;
