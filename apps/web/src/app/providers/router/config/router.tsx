@@ -17,6 +17,7 @@ import { BrandPage } from "@/pages/BrandPage/BrandPage";
 import { MotorcyclesPage } from "@/pages/MotorcyclesPage/MotorcyclesPage";
 import { MotorcycleDetailsPage } from "@/pages/MotorcycleDetailsPage/MotorcycleDetailsPage";
 import { FavoritesPage } from "@/pages/FavoritesPage/FavotiresPage";
+import { CartPage } from "@/pages/CartPage/CartPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -84,6 +85,10 @@ export const router = createBrowserRouter([
       {
         path: "/catalog",
         element: <CatalogPage />,
+      },
+      {
+        path: "/cart",
+        element: <CartPage />,
       },
       { path: "*", element: <div>404</div> },
     ],

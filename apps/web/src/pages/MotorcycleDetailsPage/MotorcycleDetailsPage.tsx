@@ -240,6 +240,9 @@ export const MotorcycleDetailsPage = () => {
       break;
   }
 
+  const mainImageUrl =
+    data.images?.find((img) => img.isMain)?.url || data.images?.[0]?.url || ""; // Заглушка, если картинок нет вообще
+
   return (
     <main className={styles.Page}>
       {/*SEO:*/}
@@ -298,7 +301,17 @@ export const MotorcycleDetailsPage = () => {
             <div className={styles.price}>{data.price.toLocaleString()} ₽</div>
             <button
               className={styles.addToCartBtn}
-              onClick={() => addToCart({ id: data.id, quantity: 1 })}
+              onClick={() =>
+                addToCart({
+                  id: data.id,
+                  quantity: 1,
+                  model: data.model,
+                  price: data.price,
+                  image: mainImageUrl,
+                  brandSlug: data.brand.slug,
+                  slug: data.slug,
+                })
+              }
             >
               🛒 В корзину
             </button>

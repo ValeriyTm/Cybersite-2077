@@ -1,45 +1,209 @@
+// apps/client/src/pages/CartPage/ui/CartPage.module.scss
+
 .CartPage {
   max-width: 1200px;
   margin: 40px auto;
   padding: 0 20px;
+  min-height: 80vh;
 
   .title {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: #fff;
     margin-bottom: 30px;
+    font-weight: 800;
   }
 }
 
 .content {
   display: grid;
-  grid-template-columns: 1fr 350px;
+  grid-template-columns: 1fr 380px; // Основная часть и чек-аут 🎯
   gap: 30px;
+  align-items: flex-start;
 
-  @media (max-width: 992px) {
+  @media (max-width: 1024px) {
     grid-template-columns: 1fr;
   }
 }
 
-// Список товаров
-.cartList {
+// ВЕРХНЯЯ ПАНЕЛЬ УПРАВЛЕНИЯ
+.controls {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  .checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: 500;
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #f39c12; // Твой оранжевый цвет 🎯
+    }
+  }
+
+  .deleteSelected {
+    background: none;
+    border: none;
+    color: #ff4757; // Красный для удаления
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
 }
 
-// Блок итоговой суммы
+// ЭЛЕМЕНТ КОРЗИНЫ (СТРОКА)
+.cartItem {
+  display: grid;
+  grid-template-columns: 40px 120px 1fr 150px 180px; // Чекбокс - Фото - Инфо - Кол-во - Цена 🎯
+  align-items: center;
+  gap: 20px;
+  background: #151515;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #f39c12;
+  }
+
+  .itemImg {
+    width: 120px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .itemInfo {
+    .itemName {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 15px;
+
+      button {
+        background: none;
+        border: none;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        padding: 0;
+
+        &:hover {
+          color: #f39c12;
+        }
+        &:last-child:hover {
+          color: #ff4757;
+        }
+      }
+    }
+  }
+
+  // УПРАВЛЕНИЕ КОЛИЧЕСТВОМ
+  .quantityControl {
+    display: flex;
+    align-items: center;
+    background: #222;
+    border-radius: 8px;
+    padding: 5px;
+    justify-content: space-between;
+    width: 110px;
+
+    button {
+      width: 30px;
+      height: 30px;
+      background: #333;
+      border: none;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+
+      &:hover {
+        background: #444;
+      }
+    }
+
+    span {
+      color: #fff;
+      font-weight: 600;
+      width: 30px;
+      text-align: center;
+    }
+  }
+
+  // БЛОК ЦЕНЫ
+  .priceBlock {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+
+    .currentPrice {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 4px;
+    }
+
+    .totalItemPrice {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #f39c12; // Акцентная цена
+    }
+  }
+}
+
+// ПРАВАЯ ПАНЕЛЬ (ИТОГО)
 .summary {
   background: #1a1a1a;
-  padding: 25px;
-  border-radius: 12px;
-  height: fit-content;
-  position: sticky;
-  top: 100px; //Залипает при скролле
+  padding: 30px;
+  border-radius: 16px;
   border: 1px solid #333;
+  position: sticky;
+  top: 120px; // Чтобы не "улетала" при скролле ⚓
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 
   h3 {
-    margin-bottom: 20px;
-    font-size: 1.4rem;
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
   }
 
   .summaryRow {
@@ -47,13 +211,15 @@
     justify-content: space-between;
     margin-bottom: 15px;
     color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
 
     &.total {
+      margin-top: 25px;
+      padding-top: 20px;
       border-top: 1px solid #333;
-      padding-top: 15px;
       color: #fff;
-      font-size: 1.3rem;
-      font-weight: 700;
+      font-size: 1.4rem;
+      font-weight: 800;
     }
   }
 
@@ -62,16 +228,29 @@
     background: #f39c12;
     color: #000;
     border: none;
-    padding: 15px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 1rem;
+    padding: 18px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: transform 0.2s;
-    margin-top: 10px;
+    margin-top: 20px;
+    transition: all 0.2s;
 
-    &:hover {
-      transform: scale(1.02);
+    &:hover:not(:disabled) {
+      background: #ffae1a;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
   }
+}
+
+.empty {
+  text-align: center;
+  padding: 150px 20px;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.4);
 }

@@ -3,8 +3,13 @@ import { devtools } from "zustand/middleware";
 
 interface CartItem {
   id: string;
+  model: string;
+  price: number;
+  image: string;
+  brandSlug: string;
+  slug: string;
   quantity: number;
-  selected?: boolean; // Для чекбокса выбора в корзине
+  selected: boolean;
 }
 
 interface TradingState {
@@ -25,7 +30,7 @@ interface TradingState {
   //Логика работы с чекбоксами в корзине:
   toggleSelectItem: (id: string) => void;
   toggleSelectAll: (isSelected: boolean) => void;
-  removeSelected: () => void;
+  updateItemQuantity: (id: string, quantity: number) => void;
 
   clearTrading: () => void; //Очистка при выходе из аккаунта
 }
@@ -36,7 +41,7 @@ export const useTradingStore = create<TradingState>()(
     cartItems: [],
 
     setFavorites: (ids) => set({ favoriteIds: ids }),
-    setCart: (items) => set({ cartItems: items }),
+    // setCart: (items) => set({ cartItems: items }),
 
     //--Избранное:--
     toggleFavoriteLocally: (id) => {
@@ -76,14 +81,16 @@ export const useTradingStore = create<TradingState>()(
       }),
 
     //Чебоксы для корзины:
-    toggleSelectItem: (id) =>
+    // 1. Переключить выбор конкретного товара (чекбокс на карточке) ✅
+    toggleSelectItem: (id: string) =>
       set((state) => ({
         cartItems: state.cartItems.map((item) =>
           item.id === id ? { ...item, selected: !item.selected } : item,
         ),
       })),
 
-    toggleSelectAll: (isSelected) =>
+    // 2. Выбрать все или снять выбор со всех (главный чекбокс вверху) 🏁
+    toggleSelectAll: (isSelected: boolean) =>
       set((state) => ({
         cartItems: state.cartItems.map((item) => ({
           ...item,
@@ -91,10 +98,29 @@ export const useTradingStore = create<TradingState>()(
         })),
       })),
 
-    removeSelected: () =>
+    // 3. Обновить количество товара локально (для мгновенного пересчета суммы) 🔢
+    updateItemQuantity: (id: string, quantity: number) =>
+      set((state) => ({
+        cartItems: state.cartItems.map((item) =>
+          item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item,
+        ),
+      })),
+
+    // 4. Удалить выбранные товары из стора (после успешного запроса к Redis) 🧹
+    removeSelectedLocally: () =>
       set((state) => ({
         cartItems: state.cartItems.filter((item) => !item.selected),
       })),
+
+    // 5. Установить корзину целиком (синхронизация с ответом сервера) 🔄
+    setCart: (items: CartItem[]) =>
+      set({
+        // При получении данных с сервера добавляем поле selected, если его нет
+        cartItems: items.map((item) => ({
+          ...item,
+          selected: item.selected ?? true, // По умолчанию товары в корзине выбраны
+        })),
+      }),
 
     //Очистка:
     clearTrading: () => set({ favoriteIds: [] }),

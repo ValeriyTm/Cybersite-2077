@@ -292,9 +292,11 @@ export const Header = () => {
               )}
             </Link>
 
-            <button className={styles.iconBtn} title="Корзина">
-              🛒 <span className={styles.counter}>{cartCount}</span>
-            </button>
+            <Link to="/cart" title="Корзина">
+              <button className={styles.iconBtn} title="Корзина">
+                🛒 <span className={styles.counter}>{cartCount}</span>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
