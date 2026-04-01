@@ -34,8 +34,7 @@ export const MotorcycleDetailsPage = () => {
     if (brandSlug && slug) {
       fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
         setData(res);
-        // Умная установка главного фото:
-        // Если в базе есть помеченное как isMain — берем его, иначе первое из списка, иначе дефолт
+        //Если в БД есть изображение с флагом isMain — берем его, иначе первое из списка (если вообще ничего нет - ставим дефолт)
         const mainImg =
           res.images?.find((img) => img.isMain)?.url || res.images?.[0]?.url;
 
@@ -46,10 +45,10 @@ export const MotorcycleDetailsPage = () => {
 
   useEffect(() => {
     if (slug) {
-      // 1. Очищаем старые рекомендации перед загрузкой новых 🧹
+      //Очищаем старые рекомендации перед загрузкой новых:
       setRelated([]);
 
-      // 2. Загружаем новые
+      //Загружаем новые:
       fetchRelatedMotorcycles(slug)
         .then(setRelated)
         .catch((err) => console.error("Ошибка загрузки рекомендаций:", err));
@@ -87,12 +86,12 @@ export const MotorcycleDetailsPage = () => {
       priceCurrency: "RUB",
       price: data.price,
       itemCondition: "https://schema.orgNewCondition",
-      availability: "https://schema.orgInStock", // 🎯 Указываем, что в наличии
+      availability: "https://schema.orgInStock", //Указываем, что в наличии
     },
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: data.rating,
-      reviewCount: "85", // 🎯 Пока захардкодим число отзывов, позже прикрутим реальное
+      reviewCount: "85", //Пока хардкодим число отзывов
     },
   };
 
@@ -258,7 +257,7 @@ export const MotorcycleDetailsPage = () => {
         {/*Breadcrumbs:*/}
         <Breadcrumbs items={breadcrumbs} />
 
-        {/* 1. Секция Hero: Фото и главные параметры */}
+        {/* Фото и главные параметры */}
         <section className={styles.hero}>
           <div className={styles.gallerySection}>
             <div className={styles.mainImageWrapper}>
@@ -300,7 +299,7 @@ export const MotorcycleDetailsPage = () => {
           </div>
         </section>
 
-        {/* 2. Таблица характеристик:*/}
+        {/* Таблица характеристик:*/}
 
         {/* Navbar для табов: */}
         <nav className={styles.tabsNav}>

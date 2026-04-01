@@ -18,17 +18,17 @@ export const RangeFilter = ({
   step = 1,
 }: RangeFilterProps) => {
   /////------------------Внедряем дебаунс:----------------
-  // 1. Локальный стейт для мгновенного отклика инпутов
+  //1) Локальный стейт для мгновенного отклика инпутов:
   const [localMin, setLocalMin] = useState<number | undefined>(min);
   const [localMax, setLocalMax] = useState<number | undefined>(max);
 
-  // 2. Синхронизируем локальный стейт, если пропсы изменились извне (например, при сбросе фильтров)
+  //2) Синхронизируем локальный стейт, если пропсы изменились извне (например, при сбросе фильтров):
   useEffect(() => {
     setLocalMin(min);
     setLocalMax(max);
   }, [min, max]);
 
-  // 3. Создаем дебаунс-версию функции уведомления родителя ⏳
+  //3) Создаем дебаунс-версию функции уведомления родителя:
   const debouncedOnChange = useMemo(
     () =>
       debounce((newMin: number | undefined, newMax: number | undefined) => {
@@ -37,7 +37,7 @@ export const RangeFilter = ({
     [onChange],
   );
 
-  // 4. Очистка при размонтировании
+  //4) Очистка при размонтировании:
   useEffect(() => {
     return () => debouncedOnChange.cancel();
   }, [debouncedOnChange]);

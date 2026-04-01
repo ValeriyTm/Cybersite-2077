@@ -11,7 +11,7 @@ export class SearchService {
   async syncAllMotorcycles() {
     console.log("Начинаем синхронизацию с Elasticsearch...");
 
-    //Выкачиваем все необходимые строки из БД через Prisma:
+    //Выкачиваем все необходимые строки из PostgreSQL:
     const motorcycles = await prisma.motorcycle.findMany({
       include: {
         brand: true,
@@ -20,7 +20,7 @@ export class SearchService {
       },
     });
 
-    //Формируем массив для bulk-загрузки:
+    //Формируем массив для bulk-загрузки большого кол-ва данных:
     const operations = motorcycles.flatMap((doc) => [
       { index: { _index: this.indexName, _id: doc.id } },
       {
@@ -44,9 +44,9 @@ export class SearchService {
     const bulkResponse = await esClient.bulk({ refresh: true, operations });
 
     if (bulkResponse.errors) {
-      console.error("❌ Ошибки при индексации:", bulkResponse.items);
+      console.error("Ошибки при индексации:", bulkResponse.items);
     } else {
-      console.log(`✅ Успешно проиндексировано ${motorcycles.length} моделей!`);
+      console.log(`Успешно проиндексировано ${motorcycles.length} моделей`);
     }
   }
 
@@ -72,30 +72,30 @@ export class SearchService {
 
     const query: any = {
       bool: {
-        must: [], // Обязательные условия
-        filter: [], // Условия фильтрации (не влияют на релевантность, работают быстро)
+        must: [], //Обязательные условия
+        filter: [], //Условия фильтрации
       },
     };
 
-    // 🎯 2. Добавляем логику поиска по названию модели
+    //Добавляем логику поиска по названию модели:
     if (search) {
       query.bool.must.push({
         match: {
           model: {
             query: search,
-            fuzziness: "AUTO", // Прощает опечатки (напр. "Yamha" вместо "Yamaha")
-            operator: "and", // Ищет все слова из запроса
+            fuzziness: "AUTO", //Прощает опечатки ("Yamha" вместо "Yamaha")
+            operator: "and", //Ищет все слова из запроса
           },
         },
       });
     }
 
-    // 1. Фильтр по бренду (обязательно для страницы бренда)
+    //Фильтр по бренду:
     if (brandSlug && brandSlug !== "all") {
       query.bool.filter.push({ match: { brandSlug: brandSlug } });
     }
 
-    // 2. Диапазон цен
+    //Диапазон цен:
     if (minPrice || maxPrice) {
       query.bool.filter.push({
         range: {
@@ -107,7 +107,7 @@ export class SearchService {
       });
     }
 
-    // 3. Год выпуска
+    //Год выпуска:
     if (minYear || maxYear) {
       query.bool.filter.push({
         range: {
@@ -119,13 +119,12 @@ export class SearchService {
       });
     }
 
-    // 4. Категория (Allround, Sport и т.д.)
+    //Категория:
     if (category) {
-      // Убираем term и .keyword, используем match 🎯
       query.bool.filter.push({ match: { category: category } });
     }
 
-    // 5. Объем двигателя (от...)
+    //Объем двигателя:
     if (minDisplacement || maxDisplacement) {
       query.bool.filter.push({
         range: {
@@ -137,6 +136,7 @@ export class SearchService {
       });
     }
 
+    //Мощность двигателя:
     if (minPower || maxPower) {
       query.bool.filter.push({
         range: {
@@ -149,21 +149,20 @@ export class SearchService {
       });
     }
 
+    //Трансмиссия:
     if (transmission) {
-      // Убираем term и .keyword, используем match 🎯
       query.bool.filter.push({ match: { transmission: transmission } });
     }
 
-    // Сортировка
-    let sort: any = [{ _score: "desc" }]; // По умолчанию по релевантности
+    //Сортировка:
+    let sort: any = [{ _score: "desc" }]; //По умолчанию - по релевантности
     //Алфавитный порядок (А-Я):
     if (sortBy === "name_asc") {
-      sort = [{ "model.keyword": "asc" }]; // Используем .keyword для строк
+      sort = [{ "model.keyword": "asc" }];
     }
-
     //Алфавитный порядок (Я-А):
     if (sortBy === "name_desc") {
-      sort = [{ "model.keyword": "desc" }]; // Теперь Z-A заработает
+      sort = [{ "model.keyword": "desc" }];
     }
 
     //Цена:
@@ -175,27 +174,27 @@ export class SearchService {
 
     //Рейтинг (от высокого к низкому):
     if (sortBy === "rating_desc") {
-      sort = [{ rating: "desc" }]; // Убедись, что поле в Elastic называется rating
+      sort = [{ rating: "desc" }];
     }
 
     const result = await esClient.search({
       index: this.indexName,
-      from: (page - 1) * limit, //Расчёт зависит от переданного лимита
-      size: limit, //Мой лимит (обычно 20)
+      from: (page - 1) * limit, //Расчёт зависит от переданного лимита (20 или 40 передаём)
+      size: limit,
       query,
       sort,
     });
 
-    // Считаем общее количество документов
+    //Считаем общее количество:
     const totalItems =
       typeof result.hits.total === "number"
         ? result.hits.total
         : (result.hits.total as any)?.value || 0;
 
     return {
-      // Превращаем формат Elastic обратно в массив объектов
+      //Превращаем формат Elastic обратно в массив объектов:
       items: result.hits.hits.map((hit: any) => ({
-        ...(hit._source as any), // Распаковываем данные документа
+        ...(hit._source as any), //Распаковываем данные документа
         id: hit._id, //Явно добавляем id из метаданных Elastic
       })),
       total:
@@ -209,8 +208,8 @@ export class SearchService {
 
   //Поиск аналогичных мотоциклов (рекомендации):
   async getRelatedMotorcycles(motorcycle: any, limit = 4) {
-    //[Отбор происходит по принципу «похожий класс + похожий объём».Мы ищем мотоциклы только из той же категории. Elastic старается в первую очередь подсунуть модели того же производителя. Мы ищем модели с объёмом +/- 30% от текущего.]
-    // 1. Собираем только те фильтры, которые реально существуют в объекте 🛡️
+    //[Отбор происходит по принципу «похожий класс + похожий объём».Мы ищем мотоциклы только из той же категории. Elastic старается в первую очередь выдать модели того же производителя. Мы ищем модели с объёмом +/- 30% от текущего.]
+    //Собираем только те фильтры, которые реально существуют в объекте:
     const must: any[] = [];
     const should: any[] = [];
 
@@ -236,18 +235,13 @@ export class SearchService {
     const query = {
       bool: {
         must,
-        // ВАЖНО: Добавляем should только если в нем есть элементы 🎯
+        //Добавляем should только если в нем есть элементы:
         ...(should.length > 0 && { should }),
         must_not: [
-          { term: { _id: motorcycle.id } }, // Исключаем текущую модель из рекомендаций
+          { term: { _id: motorcycle.id } }, //Исключаем текущую модель из рекомендаций
         ],
-        // Минимум одно совпадение из should не обязательно (т.к. есть must),
-        // но если хотим, чтобы should влиял на порядок - оставляем так.
       },
     };
-
-    // 🎯 ЛОГ ДЛЯ ОТЛАДКИ (Посмотри его в консоли сервера при ошибке!)
-    // console.log('DEBUG RELATED QUERY:', JSON.stringify(query, null, 2));
 
     const result = await esClient.search({
       index: this.indexName,
@@ -268,13 +262,13 @@ export class SearchService {
       size: 7, //Показываем только 7 лучших совпадений
       query: {
         match_phrase_prefix: {
-          //Ищет по первым буквам слов
+          //Ищет по первым буквам слов:
           model: {
             query: query,
           },
         },
       },
-      // Возвращаем только нужные поля для подсказки
+      //Возвращаем только нужные поля для вывода предположений:
       _source: ["id", "model", "slug", "brandSlug", "mainImage", "year"],
     });
 

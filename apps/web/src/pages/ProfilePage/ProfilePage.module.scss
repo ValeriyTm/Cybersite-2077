@@ -43,7 +43,7 @@
     }
 
     &.loading {
-      cursor: wait; // Меняем курсор на "ожидание"
+      cursor: wait; //Меняем курсор на "ожидание"
     }
   }
 }
@@ -53,26 +53,26 @@
   border-radius: 20px;
   padding: 10px 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px; // Отступ снизу для красоты
+  margin-bottom: 20px;
 }
 
 .row {
   display: grid;
-  grid-template-columns: 180px 1fr; // Чуть сузим колонку с лейблом
-  padding: 22px 0; // Сделаем вертикальные отступы чуть больше
+  grid-template-columns: 180px 1fr;
+  padding: 22px 0;
   border-bottom: 1px solid #f0f0f0;
-  align-items: center; // Центрируем контент по вертикали
+  align-items: center;
 
   &:last-child {
-    border: none; // У последнего ряда не должно быть линии
+    border: none;
   }
 }
 
 .label {
   display: flex;
   align-items: center;
-  gap: 12px; // Увеличим расстояние между иконкой и текстом
-  color: #8e8e93; // Сделаем цвет чуть более приглушенным
+  gap: 12px;
+  color: #8e8e93;
   font-size: 14px;
 }
 
@@ -150,8 +150,8 @@
 
 //Ошибки:
 .inputError {
-  border-color: #ff4d4f !important; // Ярко-красная рамка
-  background-color: #fff2f0 !important; // Нежно-розовый фон
+  border-color: #ff4d4f !important;
+  background-color: #fff2f0 !important;
 }
 
 .errorText {
@@ -162,7 +162,7 @@
   display: block;
 }
 
-// Сделаем звездочку для обязательных полей
+//Сделаем звездочку для обязательных полей:
 .requiredStar {
   color: #ff4d4f;
   margin-left: 4px;
@@ -227,18 +227,6 @@
     padding-right: 40px !important;
   }
 }
-
-// .eyeBtn {
-//   position: absolute;
-//   right: 10px;
-//   background: none;
-//   border: none;
-//   color: #888;
-//   cursor: pointer;
-//   display: flex;
-//   align-items: center;
-//   font-size: 18px;
-// }
 
 //Удаление аккаунта:
 .deleteBtn {

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router";
 import { type MotorcycleShort } from "../../model/types";
 import styles from "./MotorcycleCard.module.scss";
@@ -22,11 +21,11 @@ export const MotorcycleCard = ({
     if (path.startsWith("/")) {
       return `${STATIC_URL}${path}`;
     }
-    // Если это просто имя файла (напр. "yamaha-r1.jpg"), ищем в папке motorcycles
+    //Если это просто имя файла ("yamaha-r1.jpg"), ищем в папке motorcycles:
     return `${STATIC_URL}/motorcycles/${path}`;
   };
 
-  // Формируем динамический класс для всей карточки:
+  //Формируем динамический класс для всей карточки:
   const cardClassName = `${styles.Card} ${viewMode === "list" ? styles.listView : ""}`;
 
   return (
@@ -41,7 +40,7 @@ export const MotorcycleCard = ({
             alt={data.model}
             className={styles.img}
             onError={(e) => {
-              // Защитный механизм: если даже по очищенному пути 404
+              //Реализуем защитный механизм: если даже по очищенному пути получаем ошибку 404
               const target = e.target as HTMLImageElement;
               target.onerror = null;
               target.src = DEFAULT_IMG;

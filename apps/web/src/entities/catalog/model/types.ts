@@ -45,7 +45,7 @@ export interface MotorcycleShort {
   model: string;
   slug: string;
   brand: { name: string; country: string; slug: string };
-  brandSlug: string; // Для роутинга
+  brandSlug: string; //Для роутинга
   year: number;
   price: number;
   displacement: number;

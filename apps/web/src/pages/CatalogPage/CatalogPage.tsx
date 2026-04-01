@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   fetchSiteCategories,
   type SiteCategory,
@@ -6,7 +6,7 @@ import {
 } from "@/entities/catalog";
 import styles from "./CatalogPage.module.scss";
 
-export const CatalogPage: React.FC = () => {
+export const CatalogPage = () => {
   const [categories, setCategories] = useState<SiteCategory[]>([]);
 
   useEffect(() => {

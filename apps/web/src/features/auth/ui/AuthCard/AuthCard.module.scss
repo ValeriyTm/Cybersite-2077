@@ -109,7 +109,7 @@
   padding: 14px;
   border: none;
   border-radius: 30px;
-  background: #ccc; // Будет серым как на скрине, пока не заполнено
+  background: #ccc;
   color: #fff;
   font-weight: bold;
   cursor: pointer;
@@ -126,7 +126,7 @@
   align-items: center;
 
   input {
-    padding-right: 45px; // Место для кнопки
+    padding-right: 45px; //Место для кнопки
   }
 }
 
@@ -187,15 +187,15 @@
 // }
 .labelWithLink {
   display: flex;
-  justify-content: space-between; // Расталкивает текст и ссылку по краям
-  align-items: center; // Выравнивает их по вертикали
-  width: 100%; // Важно: чтобы контейнер занял всю ширину метки
-  gap: 10px; // Небольшой отступ, если экран будет очень узким
+  justify-content: space-between; //Расталкивает текст и ссылку по краям
+  align-items: center; //Выравнивает их по вертикали
+  width: 100%; //Чтобы контейнер занял всю ширину метки
+  gap: 10px; //Небольшой отступ, если экран будет очень узким
 }
 
 .forgotLink {
   font-size: 0.85rem;
-  color: var(--primary-color); // Или твой цвет ссылки
+  color: var(--primary-color);
   text-decoration: none;
 
   &:hover {
@@ -249,7 +249,7 @@
 
 .actions {
   display: flex;
-  gap: 12px; // Расстояние между кнопками
+  gap: 12px; //Расстояние между кнопками
   margin-top: 20px;
 }
 

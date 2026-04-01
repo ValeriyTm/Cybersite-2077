@@ -12,7 +12,6 @@ import styles from "./Header.module.scss";
 type MainCategory = "moto" | "gear" | "parts";
 
 export const Header = () => {
-  // const { isAuth, user } = useAuthStore();
   //Состояние открытости каталога:
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   //Состояние выбранной категории:
@@ -26,16 +25,16 @@ export const Header = () => {
   const searchRef = useRef<HTMLDivElement>(null);
 
   //--------Для работы с данными юзера:
-  //Технический статус из Zustand 🔐
+  //Технический статус из Zustand:
   const isAuth = useAuthStore((state) => state.isAuth);
-  //Реальные данные и статус загрузки из React Query 👤
+  //Реальные данные и статус загрузки из React Query:
   const { user, isLoading } = useProfile();
-  //Формируем путь к аватару по твоему интерфейсу IUser
+  //Формируем путь к аватару:
   const avatarSrc = user?.avatarUrl
     ? `http://localhost:3001${user.avatarUrl}`
     : null; // Передаем null, чтобы сработал дефолт внутри Avatar.tsx
 
-  // Дебаунс запроса к API
+  //Дебаунс запроса:
   const fetchSuggestions = useMemo(
     () =>
       debounce(async (q: string) => {
@@ -51,7 +50,7 @@ export const Header = () => {
     [],
   );
 
-  // Закрытие при клике мимо:
+  //Закрытие при клике мимо:
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
@@ -72,17 +71,17 @@ export const Header = () => {
   const handleSearchSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (searchQuery.trim().length >= 2) {
-      // 🎯 Переходим в общий каталог с активным поиском
+      //Переходим в общий каталог с активным поиском:
       navigate(
         `/catalog/motorcycles/all?search=${encodeURIComponent(searchQuery)}`,
       );
-      setSuggestions([]); // Закрываем подсказки
+      setSuggestions([]); //Закрываем подсказки
     }
   };
 
   return (
     <header className={styles.Header}>
-      {/* 1. Верхняя часть: Ссылки */}
+      {/*1)Верхняя часть: Ссылки */}
       <div className={styles.topLine}>
         <div className={styles.container}>
           <nav className={styles.topNav}>
@@ -94,15 +93,15 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* 2. Нижняя часть: Основные инструменты */}
+      {/*2)Нижняя часть: Основные инструменты */}
       <div className={styles.mainLine}>
         <div className={styles.container}>
-          {/* Логотип */}
+          {/*Логотип*/}
           <Link to="/" className={styles.logolink}>
             <img src="/MainLogo.png" alt="Main Logo" className={styles.logo} />
           </Link>
 
-          {/* Кнопка каталога с Hover-меню */}
+          {/*Кнопка каталога с Hover-меню*/}
           <div
             className={styles.catalogWrapper}
             onMouseEnter={() => setIsCatalogOpen(true)}
@@ -112,11 +111,11 @@ export const Header = () => {
               <span className={styles.burger}>☰</span> Каталог
             </Link>
 
-            {/* Статическое выпадающее меню */}
+            {/*Статическое выпадающее меню */}
             {isCatalogOpen && (
               <div className={styles.dropdown}>
                 <div className={styles.dropdownContent}>
-                  {/* ЛЕВАЯ ПАНЕЛЬ: Группы товаров 📂 */}
+                  {/*Левая часть выпадающего меню: Группы товаров*/}
                   <aside className={styles.sideNav}>
                     <div
                       className={`${styles.sideItem} ${activeMainCat === "moto" ? styles.activeSide : ""}`}
@@ -149,7 +148,7 @@ export const Header = () => {
                     </div>
                   </aside>
 
-                  {/* ПРАВАЯ ПАНЕЛЬ: Бренды (показываем только для 'moto') 🏍️ */}
+                  {/*Правая часть ыпаадающего меню: бренды*/}
                   <section className={styles.mainPanel}>
                     {activeMainCat === "moto" ? (
                       <div className={styles.brandsGrid}>
@@ -176,7 +175,7 @@ export const Header = () => {
                           );
                         })}
 
-                        {/* Кнопка "Прочие бренды" */}
+                        {/*Кнопка "Прочие бренды" */}
                         <Link
                           to="/catalog/motorcycles"
                           className={styles.brandItem}
@@ -251,7 +250,7 @@ export const Header = () => {
             )}
           </form>
 
-          {/* Блок пользователя и Заглушки */}
+          {/* Блок пользователя и заглушки */}
           <div className={styles.userActions}>
             <Link
               to={isAuth ? "/profile" : "/auth"}
@@ -260,7 +259,7 @@ export const Header = () => {
               <Avatar
                 src={isAuth ? avatarSrc : null}
                 alt={user?.name || "Гость"}
-                size="sm" // Делаем его маленьким для хедера
+                size="sm"
                 isAvatarLoading={isLoading} // Показываем спиннер, пока идет /refresh
               />
 

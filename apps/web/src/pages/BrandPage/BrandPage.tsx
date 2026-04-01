@@ -1,4 +1,3 @@
-// import React, { useEffect, useState, useCallback } from "react";
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -12,11 +11,11 @@ import styles from "./BrandPage.module.scss";
 export const BrandPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // 1. Извлекаем данные из URL (Источник истины):
+  //Извлекаем данные (страница и поисковый запрос) из URL:
   const currentPage = Number(searchParams.get("page")) || 1;
   const search = searchParams.get("search") || "";
 
-  // 2. React Query: заменяем ручной fetch:
+  //Получаем данные о брендах:
   const { data, isLoading } = useQuery({
     queryKey: ["brands", currentPage, search],
     queryFn: () => fetchBrands(currentPage, 24, search),
@@ -26,7 +25,7 @@ export const BrandPage = () => {
 
   const totalPages = data?.pages || 1;
 
-  // 3. Универсальная функция обновления URL
+  //Функция для обновления URL:
   const updateParams = (
     newParams: Record<string, string | number | undefined>,
   ) => {
@@ -35,11 +34,11 @@ export const BrandPage = () => {
       if (value) params.set(key, String(value));
       else params.delete(key);
     });
-    if (!newParams.page) params.set("page", "1"); // Сброс на 1 при поиске
+    if (!newParams.page) params.set("page", "1"); //Сброс на первую страницу при поиске
     setSearchParams(params);
   };
 
-  // 4. Дебаунс для поиска
+  //Дебаунс для поиска:
   const debouncedSearch = useMemo(
     () => debounce((val: string) => updateParams({ search: val }), 500),
     [searchParams],
@@ -65,7 +64,7 @@ export const BrandPage = () => {
             type="text"
             placeholder="Найти бренд (напр. Honda)..."
             className={styles.searchInput}
-            defaultValue={search} // Берем из URL при загрузке
+            defaultValue={search} //Берем из URL при загрузке
             onChange={(e) => debouncedSearch(e.target.value)}
           />
         </div>

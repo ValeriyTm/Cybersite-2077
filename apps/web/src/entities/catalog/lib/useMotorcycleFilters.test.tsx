@@ -10,7 +10,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe("useMotorcycleFilters", () => {
-  it("должен корректно обновлять страницу в URL", () => {
+  it("Должна корректно обновляться страница в URL", () => {
     const { result } = renderHook(() => useMotorcycleFilters(), { wrapper });
 
     act(() => {
@@ -20,15 +20,15 @@ describe("useMotorcycleFilters", () => {
     expect(result.current.filters.page).toBe(2);
   });
 
-  it("должен сбрасывать страницу на 1 при изменении поиска", () => {
+  it("Должна сбрасываться страницу на первую при изменении поиска", () => {
     const { result } = renderHook(() => useMotorcycleFilters(), { wrapper });
 
-    // Сначала ставим 5 страницу
+    //Сначала ставим 5 страницу:
     act(() => {
       result.current.updateFilters({ page: 5 });
     });
 
-    // Вводим поиск
+    //Вводим запрос в поиск:
     act(() => {
       result.current.updateFilters({ search: "ninja" });
     });

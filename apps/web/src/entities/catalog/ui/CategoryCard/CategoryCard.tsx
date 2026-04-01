@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 import { type SiteCategory } from "../../model/types";
-import styles from "./CategoryCard.module.scss"; // Используем Sass Modules
+import styles from "./CategoryCard.module.scss";
 
 interface CategoryCardProps {
   category: SiteCategory;

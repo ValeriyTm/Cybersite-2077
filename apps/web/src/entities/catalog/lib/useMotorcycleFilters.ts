@@ -1,4 +1,4 @@
-//Кастомный хук для работы с параметрами адресной строки в контексте фильтров:
+//------------Кастомный хук для работы с параметрами адресной строки в контексте фильтров:
 import { useSearchParams } from "react-router";
 
 export const useMotorcycleFilters = () => {
@@ -23,7 +23,7 @@ export const useMotorcycleFilters = () => {
     minRating: searchParams.get("minRating") || undefined,
   };
 
-  // Функция обновления URL
+  //Функция обновления URL:
   const updateFilters = (newValues: Record<string, any>) => {
     const params = new URLSearchParams(searchParams);
 
@@ -35,7 +35,7 @@ export const useMotorcycleFilters = () => {
       }
     });
 
-    // Если обновляем не страницу — сбрасываем на 1-ю
+    //Если обновляем не страницу, то сбрасываем на 1-ю страницу:
     if (!newValues.page) params.set("page", "1");
 
     setSearchParams(params);

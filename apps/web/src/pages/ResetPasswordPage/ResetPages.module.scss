@@ -11,8 +11,6 @@
   padding: 40px;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-
-  // 1. Компактная ширина
   width: 100%;
   max-width: 400px;
   box-sizing: border-box;
@@ -30,14 +28,13 @@
     width: 100%;
   }
 
-  // 2. Общий стиль для всех инпутов внутри карточки
   input {
     width: 100%;
     padding: 12px 16px;
     border: 1px solid #ddd;
     border-radius: 10px;
     font-size: 14px;
-    box-sizing: border-box; // Чтобы padding не раздувал ширину
+    box-sizing: border-box;
     transition: border-color 0.2s;
     outline: none;
 
@@ -67,15 +64,14 @@
   }
 }
 
-// 3. Магия для "глаза"
 .passwordWrapper {
-  position: relative; // База для иконки
+  position: relative;
   width: 100%;
-  margin-bottom: 15px; // Отступ между полями
+  margin-bottom: 15px;
 
   input {
     padding-right: 45px !important; // Оставляем место под глаз
-    margin-bottom: 0 !important; // Убираем отступ здесь, он теперь у wrapper
+    margin-bottom: 0 !important;
   }
 
   .eyeBtn {

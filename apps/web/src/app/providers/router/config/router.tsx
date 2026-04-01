@@ -26,7 +26,7 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 
 export const router = createBrowserRouter([
   {
-    element: <MainLayout />, //Задаем единый визуальны каркас для всех страниц
+    element: <MainLayout />, //Задаем единый визуальный каркас для всех страниц
     errorElement: <ErrorFallback />, //Внутренняя обработка ошибок.  Если ошибка произойдет внутри любого компонента (например, в ProfilePage), React Router перехватит её первым. Он заменит содержимое страницы на ErrorFallback, но сохранит MainLayout (шапку, меню и футер).
     children: [
       { path: "/", element: <HomePage /> },

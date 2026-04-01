@@ -31,7 +31,7 @@ router.get("/sync-search", async (req, res, next) => {
 router.get("/search/suggest", catalogController.getSuggestions);
 //Получение аналогичных мотоциклов (рекомендации) (/api/catalog/motorcycles/:slug/related):
 router.get("/motorcycles/:slug/related", catalogController.getRelated);
-//Получение информации о конкретном мотоцикле (/api/catalog/:brandSlug/:slug):
+//Получение информации о конкретном мотоцикле (/api/catalog/motorcycles/:brandSlug/:slug):
 router.get("/motorcycles/:brandSlug/:slug", catalogController.getMotorcycle);
 
 export default router;

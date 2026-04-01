@@ -5,15 +5,15 @@ import { devtools, persist } from "zustand/middleware";
 export type ViewMode = "grid" | "list";
 
 interface CatalogState {
-  // 1. Состояние отображения (сетка или список)
+  //Состояние отображения (сетка или список):
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
 
-  // 2. Общее количество найденных моделей (для заголовков и статистики)
+  //Общее количество найденных моделей (для заголовков и статистики):
   totalItems: number;
   setTotalItems: (total: number) => void;
 
-  // 3. Состояние боковой панели фильтров (скрыта/показана)
+  //Состояние боковой панели фильтров (скрыта/показана):
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
 }
@@ -22,12 +22,12 @@ export const useCatalogStore = create<CatalogState>()(
   devtools(
     persist(
       (set) => ({
-        // Начальные значения
+        //Начальные значения:
         viewMode: "grid",
         totalItems: 0,
         isSidebarOpen: true,
 
-        // Экшены (действия)
+        //Экшены:
         setViewMode: (mode) => set({ viewMode: mode }),
 
         setTotalItems: (total) => set({ totalItems: total }),
@@ -38,10 +38,9 @@ export const useCatalogStore = create<CatalogState>()(
           })),
       }),
       {
-        // Браузер запомнит, что пользователь выбрал "Список",
-        // и при следующем заходе на сайт сразу включит этот режим.
+        // Браузер запомнит, что пользователь выбрал "Список", и при следующем заходе на сайт сразу включит этот режим:
         name: "catalog-storage",
-        partialize: (state) => ({ viewMode: state.viewMode }), // Сохраняем только режим вида
+        partialize: (state) => ({ viewMode: state.viewMode }), //Сохраняем только режим вида
       },
     ),
   ),

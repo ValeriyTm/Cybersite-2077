@@ -1,6 +1,6 @@
 .CatalogPage {
   min-height: 100vh;
-  background-color: #080808; // Ультра-черный фон для киберпанк стиля
+  background-color: #080808;
   padding: 80px 20px;
   display: flex;
   flex-direction: column;
@@ -21,11 +21,6 @@
   text-transform: uppercase;
   letter-spacing: 4px;
   margin: 0 0 16px 0;
-
-  // Небольшой текстовый градиент для премиальности
-  // background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.6) 100%);
-  // -webkit-background-clip: text;
-  // -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
@@ -40,15 +35,12 @@
   display: grid;
   width: 100%;
   max-width: 1200px;
-  // 3 карточки в ряд на десктопе, в колонку на мобилках
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 40px;
-
-  // Если карточек всего 3, центрируем их
   justify-content: center;
 }
 
-// Плавное появление всей страницы при загрузке
+//Плавное появление всей страницы при загрузке:
 @keyframes fadeIn {
   from {
     opacity: 0;

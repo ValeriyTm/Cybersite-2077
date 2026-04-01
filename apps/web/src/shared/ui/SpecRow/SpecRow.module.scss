@@ -11,15 +11,9 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
-  //   strong {
-  //     color: #ffffff;
-  //     font-weight: 500;
-  //     text-align: right;
-  //   }
 }
 
 .noData {
   color: rgb(128, 128, 128);
-  font-weight: normal; /* по желанию, чтобы "Нет данных" не бросалось в глаза */
+  font-weight: normal;
 }

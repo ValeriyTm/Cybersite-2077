@@ -2,11 +2,8 @@
   display: flex;
   min-height: 100vh;
   background: #080808;
-
-  width: 100%; // Обязательно на всю ширину
-  // max-width: 1440px; // Или 1600px, если хочешь пошире
-  margin: 0 auto; // Центрирует этот широкий контейнер
-
+  width: 100%;
+  margin: 0 auto;
   padding: 40px 20px;
   gap: 40px;
   box-sizing: border-box; // Чтобы паддинги не раздували ширину
@@ -15,7 +12,6 @@
 .Sidebar {
   width: 300px;
   flex-shrink: 0; // Сайдбар не должен сжиматься
-  // ... твои стили сайдбара
 }
 
 .sidebarTitle {
@@ -49,10 +45,10 @@
 .topBar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; // Разносит заголовок влево, сортировку вправо 🎯
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  width: 100%; // Обязательно на всю ширину контента
+  width: 100%;
 }
 
 .sorting {
@@ -78,9 +74,9 @@
   outline: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  appearance: none; // Убираем стандартную стрелку 🎯
+  appearance: none; //Убираем стандартную стрелку
 
-  // Кастомная стрелочка через background-image
+  //Кастомная стрелочка:
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23f39c12' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
@@ -101,12 +97,12 @@
   }
 }
 
-// Стили для индикатора загрузки поверх сетки ⏳
+//Стили для индикатора загрузки поверх сетки:
 .Content {
   flex-grow: 1;
-  display: flex; // Важно для расположения пагинации под сеткой
+  display: flex;
   flex-direction: column;
-  position: relative; // Нужно для overlay
+  position: relative;
 }
 
 .loadingOverlay {
@@ -124,7 +120,7 @@
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  pointer-events: none; // Чтобы клики проходили сквозь него
+  pointer-events: none; //Чтобы клики проходили сквозь него
 }
 
 //Пагинация:
@@ -194,7 +190,7 @@
 
 .searchInput {
   width: 100%;
-  padding: 12px 16px 12px 45px; // Отступ слева под иконку
+  padding: 12px 16px 12px 45px; //Отступ слева под иконку
   background: #111;
   border: 1px solid #333;
   border-radius: 10px;
@@ -229,15 +225,16 @@
   gap: 10px;
   width: 100%;
 
-  // Внутри карточки в режиме list
+  //Внутри карточки в режиме list
   :global(.Card) {
-    flex-direction: row; // Выстраиваем в линию
+    flex-direction: row;
     height: 60px;
     padding: 10px 20px;
 
     .imageBox {
       display: none;
-    } // 🎯 Прячем картинку
+    } // Прячем картинку
+
     .info {
       display: flex;
       flex-direction: row;
@@ -263,6 +260,6 @@
 
     &.active {
       color: #fff;
-    } // Активный лимит - белый
+    }
   }
 }

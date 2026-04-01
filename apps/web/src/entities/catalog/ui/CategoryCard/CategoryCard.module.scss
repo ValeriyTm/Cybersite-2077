@@ -5,25 +5,25 @@
   height: 420px;
   border-radius: 20px;
   overflow: hidden;
-  background-color: #121212; // Глубокий черный
+  background-color: #121212;
   border: 1px solid rgba(255, 255, 255, 0.08);
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: pointer;
 
-  // Эффект при наведении на всю карточку
+  //Эффект при наведении на всю карточку:
   &:hover {
     transform: translateY(-8px);
-    border-color: rgba(243, 156, 18, 0.5); // Оранжевое свечение (акцент)
+    border-color: rgba(243, 156, 18, 0.5); //Оранжевое свечение (акцент)
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 
     .image {
-      filter: grayscale(0%) brightness(0.7); // Картинка «оживает» цветом
+      filter: grayscale(0%) brightness(0.7); //Картинка «оживает» цветом
       transform: scale(1.1);
     }
 
     .title {
-      color: #f39c12; // Текст меняет цвет на оранжевый
+      color: #f39c12;
     }
   }
 }
@@ -33,7 +33,7 @@
   inset: 0;
   z-index: 1;
 
-  // Градиентная подложка, чтобы текст всегда читался 🎯
+  //Градиентная подложка, чтобы текст всегда читался:
   &::after {
     content: "";
     position: absolute;
@@ -51,7 +51,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(100%) brightness(0.5); // Изначально мрачный вид
+  filter: grayscale(100%) brightness(0.5);
   transition: all 0.6s ease;
 }
 
@@ -83,7 +83,7 @@
   font-weight: 500;
   margin: 0;
 
-  // Если раздел не готов, можно сделать текст чуть бледнее
+  // Если раздел не готов, делаем текст чуть бледнее:
   &.notReady {
     font-style: italic;
     color: rgba(255, 255, 255, 0.3);

@@ -68,19 +68,19 @@ export const MotorcyclesPage = () => {
     {
       label: brandSlug?.toUpperCase(),
       href: `/catalog/motorcycles/${brandSlug}`,
-    }, // Текущая страница
+    }, //Текущая страница
   ];
 
   //--------Debounce для поиска (дебаунс для фильтров зашит в комоненте фильтра):--------
   const debouncedSearch = React.useMemo(
     () =>
       debounce((value: string) => {
-        updateFilters({ search: value, page: 1 }); // Обновляем URL спустя 500мс
+        updateFilters({ search: value, page: 1 }); //Обновляем URL спустя 500мс
       }, 500),
-    [updateFilters], // Зависимость от функции обновления
+    [updateFilters],
   );
 
-  // Очистка при размонтировании (хорошая практика)
+  //Очистка при размонтировании:
   React.useEffect(() => {
     return () => debouncedSearch.cancel();
   }, [debouncedSearch]);
@@ -159,7 +159,6 @@ export const MotorcyclesPage = () => {
         </Helmet>
 
         <Breadcrumbs items={breadcrumbs} />
-        {/* <h1 className={styles.title}>Мотоциклы {brandSlug?.toUpperCase()}</h1> */}
         <h1 className={styles.title}>
           {slug === "all"
             ? `Результаты поиска: ${filters.search}`
@@ -220,14 +219,14 @@ export const MotorcyclesPage = () => {
                 onClick={() => setViewMode("grid")}
                 title="Плиткой"
               >
-                <LuLayoutGrid /> {/* Твоя иконка сетки */}
+                <LuLayoutGrid />
               </button>
               <button
                 className={viewMode === "list" ? styles.active : ""}
                 onClick={() => setViewMode("list")}
                 title="Списком"
               >
-                <LuLayoutList /> {/* Твоя иконка списка */}
+                <LuLayoutList />
               </button>
             </div>
           </div>
@@ -243,7 +242,7 @@ export const MotorcyclesPage = () => {
             <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />
           ))}
 
-          {/* Если ничего не нашли */}
+          {/* Если ничего не нашли: */}
           {!isLoading && data?.items?.length === 0 && (
             <div className={styles.empty}>
               Ничего не найдено по вашему запросу

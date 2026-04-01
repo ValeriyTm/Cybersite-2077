@@ -1,3 +1,4 @@
+//-------------Тут описано взаимодействие с API бэкенда----------------//
 import axios from "axios";
 import {
   type SiteCategory,
@@ -27,6 +28,7 @@ export const fetchBrands = async (
   return data;
 };
 
+//Получить все модели мотоциклов конкретного бренда:
 export const fetchMotorcycles = async (
   filters: MotorcycleFilters,
 ): Promise<MotorcycleResponse> => {
@@ -36,6 +38,7 @@ export const fetchMotorcycles = async (
   return data;
 };
 
+//Получить конкретный мотоцикл:
 export const fetchMotorcycleBySlug = async (
   brandSlug: string,
   slug: string,
@@ -46,6 +49,7 @@ export const fetchMotorcycleBySlug = async (
   return data;
 };
 
+//Получить похожие мотоциклы (функционал рекомендаций):
 export const fetchRelatedMotorcycles = async (
   slug: string,
 ): Promise<MotorcycleShort[]> => {
@@ -53,6 +57,6 @@ export const fetchRelatedMotorcycles = async (
     `${API_URL}/api/catalog/motorcycles/${slug}/related`,
   );
 
-  // Возвращаем массив айтемов (обычно Elastic отдает их напрямую в теле ответа)
+  //Возвращаем массив айтемов (обычно Elastic отдает их напрямую в теле ответа):
   return data;
 };

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: fadeIn 0.3s ease-out; // Плавное появление формы
+  animation: fadeIn 0.3s ease-out;
 }
 
 .header {
@@ -22,18 +22,18 @@
   }
 }
 
-// Специфический класс для OTP-инпута
+//Класс для OTP-инпута:
 .otpInput {
   input {
-    text-align: center; // Код всегда по центру
-    font-size: 1.8rem; // Крупный шрифт для читаемости
-    letter-spacing: 0.5rem; // Разнос цифр (как в банковских приложениях)
+    text-align: center;
+    font-size: 1.8rem; //Крупный шрифт для читаемости
+    letter-spacing: 0.5rem; //Разнос цифр (как в банковских приложениях)
     font-weight: 700;
     padding: 12px;
     height: 60px;
 
     &::placeholder {
-      letter-spacing: normal; // Плейсхолдер обычный
+      letter-spacing: normal; //Плейсхолдер обычный
       font-size: 1rem;
       font-weight: 400;
       opacity: 0.5;
@@ -52,7 +52,6 @@
   }
 }
 
-// Если нужно добавить кнопку "Назад к логину"
 .backBtn {
   margin-top: 10px;
   background: none;

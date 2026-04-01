@@ -17,7 +17,7 @@
 
 .select {
   width: 100%;
-  appearance: none; // Убираем стандартную стрелочку 🎯
+  appearance: none; //Убираем стандартную стрелочку
   background: #1a1a1a;
   border: 1px solid #333;
   color: #fff;
@@ -45,5 +45,5 @@
   transform: translateY(-50%);
   color: #f39c12;
   font-size: 0.7rem;
-  pointer-events: none; // Чтобы клик проходил сквозь стрелку в селект
+  pointer-events: none; //Чтобы клик проходил сквозь стрелку в селект
 }

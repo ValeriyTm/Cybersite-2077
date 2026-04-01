@@ -5,7 +5,7 @@ import { MotorcycleCard } from "./MotorcycleCard";
 const meta = {
   title: "Entities/Catalog/MotorcycleCard",
   component: MotorcycleCard,
-  // Оборачиваем в Router, так как внутри карточки есть <Link>
+  //Оборачиваем в Router, так как внутри карточки есть <Link>:
   decorators: [
     (Story) => (
       <BrowserRouter>
@@ -19,7 +19,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// 1. Дефолтное состояние (Плитка)
+//1.Дефолтное состояние (grid):
 export const DefaultGrid: Story = {
   args: {
     viewMode: "grid",
@@ -39,7 +39,7 @@ export const DefaultGrid: Story = {
   },
 };
 
-//2.Режим списка:
+//2.Режим list:
 export const ListView: Story = {
   args: {
     ...DefaultGrid.args,

@@ -30,7 +30,6 @@
   display: grid;
   width: 100%;
   max-width: 1200px;
-  // Сетка: 4 колонки на десктопе, 2 на планшете, 1 на мобилке
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
   margin-bottom: 60px;
@@ -70,7 +69,7 @@
   }
 
   &.active {
-    background: #f39c12; // Оранжевый для активной страницы 🎯
+    background: #f39c12;
     border-color: #f39c12;
     color: #000;
     font-weight: 700;

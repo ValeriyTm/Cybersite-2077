@@ -10,9 +10,9 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 50%; // По умолчанию на всю ширину для форм
+  width: 50%;
   gap: 8px;
-  overflow: hidden; /* Чтобы лоадер не вылезал за края */
+  overflow: hidden; //Чтобы лоадер не вылезал за края
 
   &:disabled {
     opacity: 0.6;

@@ -14,7 +14,7 @@ export class CatalogController {
       const result = categories.map((cat) => ({
         ...cat,
         motorcyclesCount: cat._count.motorcycles,
-        _count: undefined, // Убираем техническое поле Prisma
+        _count: undefined, //Убираем техническое поле Prisma
       }));
 
       res.status(200).json(result);
@@ -37,7 +37,7 @@ export class CatalogController {
         search,
       );
 
-      //Мапим результат, чтобы соответствовать схеме Brand из OpenAPI:
+      //Мапим результат:
       const formattedItems = items.map((brand) => ({
         ...brand,
         motorcyclesCount: brand._count.motorcycles,
@@ -58,7 +58,7 @@ export class CatalogController {
   //Получение всех мотоциклов конкретного бренда:
   async getMotorcycles(req: Request, res: Response, next: NextFunction) {
     try {
-      // Собираем все фильтры из строки запроса (?brandSlug=honda&year=2021)
+      // Собираем все значеняи из фильтров из строки запроса:
       const filters = {
         brandSlug: req.query.brandSlug as string,
         search: req.query.search as string,
@@ -110,13 +110,6 @@ export class CatalogController {
         return res.status(404).json({ message: "Мотоцикл не найден" });
       }
 
-      // Проверяем на соответствие бренду (для SEO и безопасности)
-      // if (motorcycle.brand.slug !== brandSlug) {
-      //   return res.status(400).json({
-      //     message: 'Несоответствие бренда и модели'
-      //   });
-      // }
-
       res.status(200).json(motorcycle);
     } catch (error) {
       next(error);
@@ -141,7 +134,7 @@ export class CatalogController {
   async getSuggestions(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.query.q as string;
-      if (!query || query.length < 2) return res.json([]); // Ищем от 2-х символов
+      if (!query || query.length < 2) return res.json([]); //Ищем от 2-х символов
 
       const suggestions = await searchService.suggestMotorcycles(query);
       res.json(suggestions);

@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px); // Размытие заднего фона
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,6 +77,6 @@
 
 .modalActions {
   display: flex;
-  flex-direction: column; // Кнопки друг под другом для мобилок
+  flex-direction: column; //Кнопки друг под другом для мобилок
   gap: 10px;
 }

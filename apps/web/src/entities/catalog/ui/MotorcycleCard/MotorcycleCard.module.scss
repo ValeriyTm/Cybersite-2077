@@ -93,16 +93,16 @@
 
 //Режим списка:
 .listView {
-  flex-direction: row; // В линию
+  flex-direction: row;
   align-items: center;
   padding: 12px 24px;
   gap: 20px;
   min-height: 60px;
-  transform: none !important; // В списке анимация поднятия не нужна
+  transform: none !important; //В списке анимация поднятия не нужна
 
   .info {
     display: flex;
-    flex-direction: row; // Все данные в одну строку
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     width: 100%;
@@ -110,7 +110,7 @@
   }
 
   .mainTitleGroup {
-    flex: 2; // Модель занимает больше места
+    flex: 2; //Модель занимает больше места
     display: flex;
     gap: 15px;
     align-items: center;

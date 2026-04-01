@@ -12,7 +12,7 @@ export class CatalogService {
         imageUrl: true,
         description: true,
         _count: {
-          select: { motorcycles: true }, // Считаем общее кол-во моделей в категории
+          select: { motorcycles: true }, //Считаем общее кол-во товаров в категории
         },
       },
       orderBy: { name: "asc" },
@@ -30,7 +30,7 @@ export class CatalogService {
 
     const [items, total] = await Promise.all([
       prisma.brand.findMany({
-        where, // Применяем поиск по имени
+        where, //Применяем поиск по имени
         skip,
         take: limit,
         select: {
@@ -40,12 +40,12 @@ export class CatalogService {
           slug: true,
           image: true,
           _count: {
-            select: { motorcycles: true }, //motorcyclesCount из OpenAPI
+            select: { motorcycles: true }, //motorcyclesCount (общее кол-во мотоциклов конкретного бренда)
           },
         },
         orderBy: { name: "asc" }, //Сортируем по алфавиту по умолчанию
       }),
-      prisma.brand.count({ where }), // Считаем количество только найденных брендов
+      prisma.brand.count({ where }), //Считаем количество только найденных брендов
     ]);
 
     return {
@@ -58,13 +58,13 @@ export class CatalogService {
 
   //Получение данных о конкретном мотоцикле:
   async getMotorcycleBySlug(slug: string) {
-    // Достаем из БД всё: бренд, категорию и все изображения
+    // Достаем из БД все данные о мотоцикле:
     return await prisma.motorcycle.findUnique({
       where: { slug },
       include: {
         brand: true,
         siteCategory: true,
-        images: true, // Галерея фото
+        images: true, //Галерея изображений
       },
     });
   }
