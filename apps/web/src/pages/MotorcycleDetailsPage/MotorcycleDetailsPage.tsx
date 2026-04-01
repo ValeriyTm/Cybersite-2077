@@ -16,6 +16,9 @@ import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
 import { useCart } from "@/entities/trading/api/useCart";
 //Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
+import { useTradingStore } from "@/entities/trading/model/tradingStore";
+import { useFavorites } from "@/entities/trading/api/useFavorites";
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
 
 const STATIC_URL = "http://localhost:3001/static/motorcycles";
 const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg`;
@@ -31,6 +34,13 @@ export const MotorcycleDetailsPage = () => {
   const [related, setRelated] = useState<MotorcycleShort[]>([]);
   //Стейт для табов:
   const [activeTab, setActiveTab] = useState<TabType>("specs");
+
+  const isAuth = useAuthStore((state) => state.isAuth);
+
+  //Подключаем избранное и корзину
+  const { toggleFavorite } = useFavorites();
+  const { addToCart } = useCart();
+  const favoriteIds = useTradingStore((state) => state.favoriteIds);
 
   useEffect(() => {
     if (brandSlug && slug) {
@@ -57,7 +67,22 @@ export const MotorcycleDetailsPage = () => {
     }
   }, [slug]);
 
-  const { addToCart } = useCart();
+  //-----
+  // 1. Подключаем логику избранного
+
+  // Проверяем, в избранном ли текущий байк
+  // data?.id сработает корректно, когда данные подгрузятся
+  const isFavorite = data ? favoriteIds.includes(data.id) : false;
+
+  const handleFavoriteClick = () => {
+    if (!isAuth) {
+      alert("Войдите для добавления в избранное");
+      return;
+    }
+    if (data) toggleFavorite(data.id);
+  };
+
+  ///--------------
 
   if (!data) return <div className={styles.loader}>Загрузка данных...</div>;
 
@@ -298,23 +323,46 @@ export const MotorcycleDetailsPage = () => {
           <div className={styles.mainInfo}>
             <h1 className={styles.title}>{data.model}</h1>
             <div className={styles.brandBadge}>{data.brand.name}</div>
-            <div className={styles.price}>{data.price.toLocaleString()} ₽</div>
-            <button
-              className={styles.addToCartBtn}
-              onClick={() =>
-                addToCart({
-                  id: data.id,
-                  quantity: 1,
-                  model: data.model,
-                  price: data.price,
-                  image: mainImageUrl,
-                  brandSlug: data.brand.slug,
-                  slug: data.slug,
-                })
-              }
-            >
-              🛒 В корзину
-            </button>
+
+            <div className={styles.actionRow}>
+              <div className={styles.price}>
+                {data.price.toLocaleString()} ₽
+              </div>
+
+              <div className={styles.buttons}>
+                {/*Кнопка добавления в корзину:*/}
+                <button
+                  className={styles.cartBtn}
+                  onClick={() =>
+                    addToCart({
+                      id: data.id,
+                      quantity: 1,
+                      model: data.model,
+                      price: data.price,
+                      image: mainImageUrl,
+                      brandSlug: data.brand.slug,
+                      slug: data.slug,
+                    })
+                  }
+                >
+                  🛒 В корзину
+                </button>
+
+                {/*Кнопка добавления в избранное*/}
+                <button
+                  className={`${styles.favBtn} ${isFavorite ? styles.active : ""}`}
+                  onClick={handleFavoriteClick}
+                  title={
+                    isFavorite
+                      ? "Удалить из избранного"
+                      : "Добавить в избранное"
+                  }
+                >
+                  {isFavorite ? "❤️ В избранном" : "🤍 В избранное"}
+                </button>
+              </div>
+            </div>
+
             <p className={styles.description}>
               {data.year} года выпуска. Объем двигателя {data.displacement} см³.
             </p>

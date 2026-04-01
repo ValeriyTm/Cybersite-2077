@@ -30,7 +30,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(151 146 146 / 30%);
   padding: 15px 20px;
   border-radius: 12px;
   margin-bottom: 20px;
@@ -41,20 +41,20 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    color: #fff;
+    color: #f39c12;
     font-weight: 500;
 
     input[type="checkbox"] {
       width: 18px;
       height: 18px;
-      accent-color: #f39c12; // Твой оранжевый цвет 🎯
+      accent-color: #f39c12;
     }
   }
 
   .deleteSelected {
     background: none;
     border: none;
-    color: #ff4757; // Красный для удаления
+    color: #c31120;
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s;

@@ -34,7 +34,7 @@ export const MotorcycleCard = ({
   //Формируем динамический класс для всей карточки:
   const cardClassName = `${styles.Card} ${viewMode === "list" ? styles.listView : ""}`;
 
-  //---
+  //-----
   // 1. Подключаем логику избранного
   const { toggleFavorite } = useFavorites();
   const isFavorite = useTradingStore((state) =>
@@ -49,6 +49,7 @@ export const MotorcycleCard = ({
     }
     toggleFavorite(data.id);
   };
+  //-----
 
   //Хелпер для извлечения бренда при разном формате входных данных:
   const brandName =
