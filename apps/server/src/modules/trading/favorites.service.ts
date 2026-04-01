@@ -46,6 +46,25 @@ export class FavoritesService {
       orderBy: { createdAt: "desc" },
     });
   }
+
+  //4.Получаем массив ID мотоциклов из стора клиента и возвращаем полные данные моделей:
+  static async getFavoritesByIds(
+    ids: string[],
+    limit: number = 20,
+    skip: number = 0,
+  ) {
+    const items = await prisma.motorcycle.findMany({
+      where: { id: { in: ids } }, //Ищем только те, что в массиве избранного
+      include: { brand: true },
+      take: limit,
+      skip: skip,
+    });
+
+    return {
+      items,
+      hasMore: skip + limit < ids.length, //Есть ли что подгружать дальше
+    };
+  }
 }
 
 export const favoritesService = new FavoritesService();

@@ -16,6 +16,7 @@ import { CatalogPage } from "@/pages/CatalogPage/CatalogPage";
 import { BrandPage } from "@/pages/BrandPage/BrandPage";
 import { MotorcyclesPage } from "@/pages/MotorcyclesPage/MotorcyclesPage";
 import { MotorcycleDetailsPage } from "@/pages/MotorcycleDetailsPage/MotorcycleDetailsPage";
+import { FavoritesPage } from "@/pages/FavoritesPage/FavotiresPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -63,6 +64,10 @@ export const router = createBrowserRouter([
             <ProfilePage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/profile/favorites",
+        element: <FavoritesPage />,
       },
       {
         path: "/catalog/motorcycles/:brandSlug/:slug",

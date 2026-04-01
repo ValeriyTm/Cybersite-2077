@@ -254,7 +254,7 @@ export const Header = () => {
             )}
           </form>
 
-          {/* Блок пользователя и заглушки */}
+          {/* Блок пользователя:*/}
           <div className={styles.userActions}>
             <Link
               to={isAuth ? "/profile" : "/auth"}

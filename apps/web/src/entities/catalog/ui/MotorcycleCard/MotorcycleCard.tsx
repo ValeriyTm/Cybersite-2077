@@ -23,7 +23,7 @@ export const MotorcycleCard = ({
   //Определяем какое изображение ставить:
   const getImageUrl = (path: string | null | undefined) => {
     if (!path) return DEFAULT_IMG;
-    // Если в базе путь "/defaults/...", просто добавляем домен
+    //Если в базе путь "/defaults/...", просто добавляем домен
     if (path.startsWith("/")) {
       return `${STATIC_URL}${path}`;
     }
@@ -49,6 +49,12 @@ export const MotorcycleCard = ({
     }
     toggleFavorite(data.id);
   };
+
+  //Хелпер для извлечения бренда при разном формате входных данных:
+  const brandName =
+    typeof data.brand === "object"
+      ? data.brand.name // Если прилетел объект (из избранного)
+      : data.brand; // Если прилетела строка (из общего каталога)
 
   return (
     <Link
@@ -87,7 +93,7 @@ export const MotorcycleCard = ({
         <div className={styles.mainTitleGroup}>
           <h3 className={styles.model}>{data.model}</h3>
           {viewMode === "list" && (
-            <span className={styles.listBrand}>{data.brand}</span>
+            <span className={styles.listBrand}>{brandName}</span>
           )}
         </div>
 
@@ -99,7 +105,20 @@ export const MotorcycleCard = ({
 
         <div className={styles.footer}>
           <span className={styles.price}>{data.price.toLocaleString()} ₽</span>
-          <span className={styles.rating}>★ {data.rating}</span>
+
+          <div className={styles.ratingAndAction}>
+            <span className={styles.rating}>★ {data.rating}</span>
+
+            {viewMode === "list" && (
+              <button
+                className={`${styles.listFavoriteBtn} ${isFavorite ? styles.active : ""}`}
+                onClick={handleFavoriteClick}
+                title={isFavorite ? "Удалить из избранного" : "В избранное"}
+              >
+                {isFavorite ? "❤️" : "🤍"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </Link>

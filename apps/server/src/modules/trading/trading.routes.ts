@@ -12,5 +12,11 @@ router.post(
   authMiddleware,
   tradingController.toggleFavorite,
 );
+//Получения данных о мотоциклах по списку избранного юзера:
+router.post(
+  "/favorites/details",
+  authMiddleware,
+  tradingController.getFavoritesByIds,
+);
 
 export default router;

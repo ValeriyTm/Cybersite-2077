@@ -2,20 +2,11 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 interface TradingState {
-  // 1. Храним только массив ID избранных моделей
-  favoriteIds: string[];
-
-  // 2. Методы управления
+  favoriteIds: string[]; //Массив ID избранных моделей
   setFavorites: (ids: string[]) => void;
-
-  // Локальный тумблер (мгновенное обновление UI)
-  toggleFavoriteLocally: (motorcycleId: string) => void;
-
-  // Проверка: лайкнут ли конкретный байк
-  isFavorite: (motorcycleId: string) => boolean;
-
-  // Очистка при выходе из аккаунта
-  clearTrading: () => void;
+  toggleFavoriteLocally: (motorcycleId: string) => void; // Локальный тумблер (мгновенное обновление UI)
+  isFavorite: (motorcycleId: string) => boolean; // Проверка: добавлен ли в избранное конкретный байк
+  clearTrading: () => void; //Очистка при выходе из аккаунта
 }
 
 export const useTradingStore = create<TradingState>()(
