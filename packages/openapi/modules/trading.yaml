@@ -1,0 +1,176 @@
+tags:
+  - name: Trading
+    description: Избранное и корзина
+
+paths:
+  /favorites/ids:
+    get:
+      summary: Получить список ID всех избранных товаров
+      tags: [Trading]
+      # security: [{ bearerAuth: [] }]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Массив строк (UUID)
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: string, format: uuid }
+
+  /favorites/toggle/{motorcycleId}:
+    post:
+      summary: Добавить/удалить из избранного (переключатель)
+      tags: [Trading]
+      parameters:
+        - in: path
+          name: motorcycleId
+          required: true
+          schema: { type: string, format: uuid }
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Новый статус для конкретного мотоцикла (true/false)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isFavorite: { type: boolean }
+
+  /favorites/details:
+    post:
+      summary: Получить полные данные товаров по списку их ID (для страницы избранного)
+      tags: [Trading]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids: { type: array, items: { type: string } }
+                limit: { type: integer, default: 10 }
+                skip: { type: integer, default: 0 }
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Список объектов моделей с пагинацией
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "../components/schemas.yaml#/MotorcycleFull"
+                  hasMore:
+                    type: boolean
+
+  /cart:
+    get:
+      summary: Получить содержимое корзины из Redis
+      tags: [Trading]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Массив объектов товаров в корзине
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/CartResponse"
+
+  /cart/add:
+    post:
+      summary: Добавить товар в корзину
+      tags: [Trading]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "../components/schemas.yaml#/CartResponse"
+    security:
+      - bearerAuth: []
+    responses:
+      200:
+        description: Обновленный состав корзины
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/schemas.yaml#/CartResponse"
+
+  /cart/quantity:
+    patch:
+      summary: Изменить количество товара в корзине
+      tags: [Trading]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                motorcycleId: { type: string }
+                quantity: { type: integer }
+      responses:
+        200:
+          description: Корзина с обновленным количеством
+          content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/schemas.yaml#/CartResponse"
+
+  /cart/item/{motorcycleId}:
+    delete:
+      summary: Удалить одну позицию из корзины
+      tags: [Trading]
+      parameters:
+        - in: path
+          name: motorcycleId
+          required: true
+          schema: { type: string }
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Корзина без удаленного товара
+          content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/schemas.yaml#/CartResponse"
+
+  /cart/remove-selected:
+    post:
+      summary: Массовое удаление выбранных товаров
+      tags: [Trading]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids: { type: array, items: { type: string } }
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Очищенная корзина
+          content:
+          application/json:
+            schema:
+              type: array
+              description: массив товаров в корзине (пустой массив)
+              example: []

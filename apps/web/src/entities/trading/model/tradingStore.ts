@@ -42,7 +42,6 @@ export const useTradingStore = create<TradingState>()(
     cartItems: [],
 
     setFavorites: (ids) => set({ favoriteIds: ids }),
-    // setCart: (items) => set({ cartItems: items }),
 
     //--Избранное:--
     toggleFavoriteLocally: (id) => {
@@ -81,8 +80,8 @@ export const useTradingStore = create<TradingState>()(
         cartItems: get().cartItems.filter((item) => item.id !== id),
       }),
 
-    //Чебоксы для корзины:
-    // 1. Переключить выбор конкретного товара (чекбокс на карточке) ✅
+    ////Чебоксы для корзины:
+    //1.Переключить выбор конкретного товара (чекбокс на карточке):
     toggleSelectItem: (id: string) =>
       set((state) => ({
         cartItems: state.cartItems.map((item) =>
@@ -90,7 +89,7 @@ export const useTradingStore = create<TradingState>()(
         ),
       })),
 
-    // 2. Выбрать все или снять выбор со всех (главный чекбокс вверху) 🏁
+    //2.Выбрать все или снять выбор со всех (главный чекбокс вверху компонента корзины):
     toggleSelectAll: (isSelected: boolean) =>
       set((state) => ({
         cartItems: state.cartItems.map((item) => ({
@@ -99,7 +98,7 @@ export const useTradingStore = create<TradingState>()(
         })),
       })),
 
-    // 3. Обновить количество товара локально (для мгновенного пересчета суммы) 🔢
+    //3. Обновить количество товара локально (для мгновенного пересчета суммы):
     updateItemQuantity: (id: string, quantity: number) =>
       set((state) => ({
         cartItems: state.cartItems.map((item) =>
@@ -107,13 +106,13 @@ export const useTradingStore = create<TradingState>()(
         ),
       })),
 
-    // 4. Удалить выбранные товары из стора (после успешного запроса к Redis) 🧹
+    //4. Удалить выбранные товары из стора (после успешного запроса к Redis):
     removeSelectedLocally: () =>
       set((state) => ({
         cartItems: state.cartItems.filter((item) => !item.selected),
       })),
 
-    // 5. Установить корзину целиком (синхронизация с ответом сервера) 🔄
+    //5. Установить корзину целиком (синхронизация с ответом сервера):
     setCart: (items: CartItem[]) =>
       set({
         // При получении данных с сервера добавляем поле selected, если его нет

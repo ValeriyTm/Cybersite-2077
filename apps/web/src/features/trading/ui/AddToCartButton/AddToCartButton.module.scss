@@ -1,123 +1,12 @@
-// .wrapper {
-//   display: flex;
-//   align-items: center;
-//   gap: 12px;
-//   min-height: 44px; // Чтобы высота не прыгала при смене кнопок
-//   transition: all 0.3s ease;
-// }
-
-// // СОСТОЯНИЕ 1: Кнопка "В корзину" (До нажатия)
-// .addBtn {
-//   background: #0066ff; // Синий как на твоем скрине
-//   color: #fff;
-//   border: none;
-//   padding: 10px 24px;
-//   border-radius: 12px;
-//   font-weight: 600;
-//   cursor: pointer;
-//   width: 100%;
-//   transition: background 0.2s;
-
-//   &:hover {
-//     background: #0052cc;
-//   }
-// }
-
-// // СОСТОЯНИЕ 2: Кнопка "В корзине" (Зеленая)
-// .addedBtn {
-//   background: #2ecc71; // Зеленый как на скрине
-//   color: #fff;
-//   border: none;
-//   padding: 10px 16px;
-//   border-radius: 12px;
-//   font-weight: 600;
-//   cursor: default;
-//   display: flex;
-//   align-items: center;
-//   gap: 8px;
-//   animation: fadeIn 0.3s ease;
-
-//   &::before {
-//     content: "✓";
-//     font-weight: bold;
-//   }
-// }
-
-// // БЛОК УПРАВЛЕНИЯ КОЛИЧЕСТВОМ (- 1 +)
-// .counter {
-//   display: flex;
-//   align-items: center;
-//   background: #f0f4f8; // Светлый фон как на скрине
-//   border-radius: 12px;
-//   padding: 4px;
-//   gap: 10px;
-//   animation: slideIn 0.3s ease;
-
-//   button {
-//     width: 32px;
-//     height: 32px;
-//     border: none;
-//     background: transparent;
-//     color: #0066ff;
-//     font-size: 1.2rem;
-//     font-weight: bold;
-//     cursor: pointer;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     border-radius: 8px;
-//     transition: background 0.2s;
-
-//     &:hover {
-//       background: rgba(0, 102, 255, 0.1);
-//     }
-
-//     &:disabled {
-//       color: #ccc;
-//       cursor: not-allowed;
-//     }
-//   }
-
-//   .count {
-//     font-weight: 600;
-//     color: #333;
-//     min-width: 20px;
-//     text-align: center;
-//   }
-// }
-
-// // АНИМАЦИИ
-// @keyframes fadeIn {
-//   from {
-//     opacity: 0;
-//     transform: scale(0.95);
-//   }
-//   to {
-//     opacity: 1;
-//     transform: scale(1);
-//   }
-// }
-
-// @keyframes slideIn {
-//   from {
-//     opacity: 0;
-//     transform: translateX(10px);
-//   }
-//   to {
-//     opacity: 1;
-//     transform: translateX(0);
-//   }
-// }
-
 .wrapper {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 46px; // Фиксируем высоту, чтобы UI не "прыгал" при смене кнопок
+  min-height: 46px; //Фиксируем высоту, чтобы UI не прыгал при смене кнопок
   width: 100%;
 }
 
-// Бейдж "В корзине" (для варианта "card")
+//Бейдж "В корзине" (для варианта card)
 .addedBadge {
   font-size: 0.8rem;
   color: #2ecc71;
@@ -133,7 +22,7 @@
 }
 
 .addBtn {
-  background: #f39c12; // Твой акцентный оранжевый
+  background: #f39c12;
   color: #000;
   border: none;
   padding: 12px 25px;
@@ -211,11 +100,9 @@
 }
 
 .stepper {
-  /* Добавь это свойство в уже существующий класс .numBox */
   animation: showUp 0.3s ease-out;
 }
 
-/* Эффект для бейджа "В корзине" */
 .addedBadge {
   animation: showUp 0.4s ease-out backwards;
   animation-delay: 0.1s;

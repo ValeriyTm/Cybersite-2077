@@ -481,3 +481,31 @@ MotorcycleRelated:
       type: string
       description: дата и время создания записи
       example: "2026-03-31T06:30:56.077Z"
+
+CartResponse:
+  type: object
+  propertites:
+    id:
+      type: string
+      format: uuid
+      example: "a1ab8363-58c6-4ebb-abc2-57b0fa2ba611"
+    model:
+      type: string
+      example: "Arctic Cat 150"
+    price:
+      type: integer
+      description: Цена в рублях
+      example: 966146
+    image:
+      type: string
+      description: ссылка на изображение
+    slug:
+      type: string
+      example: "arctic-cat-1502016"
+    brandSlug:
+      type: string
+      example: "arctic-cat"
+    quantity:
+      type: integer
+    selected:
+      type: boolean

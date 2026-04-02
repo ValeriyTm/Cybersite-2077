@@ -16,10 +16,7 @@ export const Initial: Story = {
   },
 };
 
-// Здесь мы можем замокать стор, чтобы показать состояние "В корзине"
 export const InCart: Story = {
   args: { ...Initial.args },
-  parameters: {
-    // Если используешь storybook-addon-zustand или просто мокаешь стейт
-  },
+  parameters: {},
 };

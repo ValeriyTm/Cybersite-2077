@@ -111,14 +111,13 @@ export const MotorcycleCard = ({
           <span>{data.year} г.</span>
           <span>{data.displacement} см³</span>
           <span>{data.power !== 0 ? `${data.power} л.с.` : ""}</span>
+          <span className={styles.rating}>★ {data.rating}</span>
         </div>
 
         <div className={styles.footer}>
           <span className={styles.price}>{data.price.toLocaleString()} ₽</span>
 
           <div className={styles.ratingAndAction}>
-            <span className={styles.rating}>★ {data.rating}</span>
-
             {viewMode === "list" && (
               <button
                 className={`${styles.listFavoriteBtn} ${isFavorite ? styles.active : ""}`}

@@ -29,7 +29,7 @@ $api.interceptors.request.use((config) => {
 const refreshAuthLogic = (failedRequest: any) => {
   const url = failedRequest.response.config.url;
 
-  //1)Защита от бесконечного цикла:
+  //1) Защита от бесконечного цикла:
   //Если сам запрос на обновление токена упал с 401, мы не пытаемся обновиться еще раз, а прекращаем:
   if (failedRequest.response.config.url.includes("/identity/auth/refresh")) {
     return Promise.reject(failedRequest);
@@ -45,7 +45,7 @@ const refreshAuthLogic = (failedRequest: any) => {
     return Promise.reject(failedRequest);
   }
 
-  //3.Логика обновления:
+  //3) Логика обновления:
   return (
     axios
       //Обращаемся к refresh-эндпоинту:

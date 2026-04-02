@@ -32,31 +32,21 @@ export class CartService {
       });
     }
 
+    //Метод setex устанавливает время хранения данных на 7 дней:
     await redis.setex(`cart:${userId}`, 60 * 60 * 24 * 7, JSON.stringify(cart));
-    return cart;
-  }
-
-  //Удалить товар из корзины:
-  async removeFromCart(userId: string, itemId: string) {
-    let cart = await this.getCart(userId);
-    cart = cart.filter((i: any) => i.id !== itemId);
-
-    await redis.set(this.getCartKey(userId), JSON.stringify(cart));
     return cart;
   }
 
   //Изменить количество для конкретной позиции:
   async updateQuantity(userId: string, itemId: string, quantity: number) {
-    console.log("Update Request:", { userId, itemId, quantity });
-
     const cart = await this.getCart(userId);
     const item = cart.find((i: any) => i.id === itemId);
 
-    console.log("Found Item:", item);
-
     if (item) {
-      // Не даем опуститься ниже 1
+      //Не даем опуститься ниже 1:
       item.quantity = Math.max(1, quantity);
+
+      //Метод setex устанавливает время хранения данных на 7 дней:
       await redis.setex(
         `cart:${userId}`,
         60 * 60 * 24 * 7,
@@ -69,9 +59,13 @@ export class CartService {
   //Удалить позицию из корзины:
   async removeItem(userId: string, itemId: string) {
     let cart = await this.getCart(userId);
+    //Создаём новый отфильтрованный список товаров,  из которого исключен элемент с указанным itemId:
     cart = cart.filter((i: any) => i.id !== itemId);
 
+    //Обновленный список (уже без удаленного товара) переводится в строку JSON и записывается обратно в Redis:
     await redis.setex(`cart:${userId}`, 60 * 60 * 24 * 7, JSON.stringify(cart));
+    //Метод setex устанавливает время хранения данных на 7 дней
+
     return cart;
   }
 

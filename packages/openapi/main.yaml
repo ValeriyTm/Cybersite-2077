@@ -59,6 +59,23 @@ paths:
     $ref: "./modules/catalog.yaml#/paths/~1sync-search"
   /api/catalog/sitemap.xml:
     $ref: "./modules/catalog.yaml#/paths/~1sitemap.xml"
+    # api/trading:
+  /api/trading/favorites/ids:
+    $ref: "./modules/trading.yaml#/paths/~1favorites~1ids"
+  /api/trading/favorites/toggle/{motorcycleId}:
+    $ref: "./modules/trading.yaml#/paths/~1favorites~1toggle~1{motorcycleId}"
+  /api/trading/favorites/details:
+    $ref: "./modules/trading.yaml#/paths/~1favorites~1details"
+  /api/trading/cart:
+    $ref: "./modules/trading.yaml#/paths/~1cart"
+  /api/trading/cart/add:
+    $ref: "./modules/trading.yaml#/paths/~1cart~1add"
+  /api/trading/cart/quantity:
+    $ref: "./modules/trading.yaml#/paths/~1cart~1quantity"
+  /api/trading/cart/item/{motorcycleId}:
+    $ref: "./modules/trading.yaml#/paths/~1cart~1item~1{motorcycleId}"
+  /api/trading/cart/remove-selected:
+    $ref: "./modules/trading.yaml#/paths/~1cart~1remove-selected"
 
 components:
   securitySchemes:

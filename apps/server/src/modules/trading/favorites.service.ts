@@ -3,7 +3,7 @@ import { prisma } from "@repo/database";
 export class FavoritesService {
   // 1. Переключить статус (Лайк/Анлайк) 🔄
   static async toggleFavorite(userId: string, motorcycleId: string) {
-    // Ищем, есть ли уже такая запись
+    //Ищем, есть ли уже такая запись:
     const existing = await prisma.favorite.findUnique({
       where: {
         userId_motorcycleId: { userId, motorcycleId },
@@ -11,14 +11,14 @@ export class FavoritesService {
     });
 
     if (existing) {
-      // Если есть — удаляем (дизлайк)
+      //Если есть — удаляем:
       await prisma.favorite.delete({
         where: { id: existing.id },
       });
       return { isFavorite: false };
     }
 
-    // Если нет — создаем (лайк)
+    //Если нет — создаем:
     await prisma.favorite.create({
       data: { userId, motorcycleId },
     });
@@ -47,7 +47,7 @@ export class FavoritesService {
     });
   }
 
-  //4.Получаем массив ID мотоциклов из стора клиента и возвращаем полные данные моделей:
+  //Пернуть полные данные о моделях по массиву id от юзера:
   static async getFavoritesByIds(
     ids: string[],
     limit: number = 20,
@@ -62,7 +62,7 @@ export class FavoritesService {
 
     return {
       items,
-      hasMore: skip + limit < ids.length, //Есть ли что подгружать дальше
+      hasMore: skip + limit < ids.length, //Есть ли, что подгружать дальше
     };
   }
 }

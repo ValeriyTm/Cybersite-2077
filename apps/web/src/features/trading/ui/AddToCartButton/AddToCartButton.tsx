@@ -3,8 +3,8 @@ import { useCart } from "@/entities/trading/api/useCart";
 import styles from "./AddToCartButton.module.scss";
 
 export interface AddToCartButtonProps {
-  motorcycle: any; // Тот самый объект с model, price, image и т.д.
-  variant?: "card" | "favorite"; // Разные стили для двух твоих макетов
+  motorcycle: any;
+  variant?: "card" | "favorite";
 }
 
 export const AddToCartButton = ({
@@ -13,19 +13,19 @@ export const AddToCartButton = ({
 }: AddToCartButtonProps) => {
   const { addToCart, updateQuantity, removeItem } = useCart();
 
-  // Ищем, есть ли этот конкретный мотоцикл в корзине (Zustand)
+  //Ищем, есть ли этот конкретный мотоцикл в корзине:
   const cartItem = useTradingStore((state) =>
     state.cartItems.find((i) => i.id === data.id),
   );
 
   //Обертка для остановки всплытия
   const handleAction = (e: React.MouseEvent, action: () => void) => {
-    e.preventDefault(); // Останавливает переход по ссылке
-    e.stopPropagation(); // Останавливает передачу клика родителю (<Link>)
+    e.preventDefault(); //Останавливает переход по ссылке
+    e.stopPropagation(); //Останавливает передачу клика родителю (тег <Link>)
     action();
   };
 
-  // 1. Если товара НЕТ в корзине — показываем синюю кнопку "В корзину"
+  //1) Если товара нет в корзине, то показываем синюю кнопку "В корзину"
   if (!cartItem) {
     return (
       <button
@@ -39,7 +39,7 @@ export const AddToCartButton = ({
     );
   }
 
-  // 2. Если товар ЕСТЬ в корзине — показываем счетчик и бейдж (если это карточка)
+  //2) Если товар есть в корзине, то показываем счетчик и бейдж (если это карточка):
   return (
     <div className={styles.wrapper} onClick={(e) => e.preventDefault()}>
       {variant === "card" && <div className={styles.addedBadge}>В корзине</div>}

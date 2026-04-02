@@ -12,7 +12,7 @@ export const useCart = () => {
     removeSelectedLocally,
   } = useTradingStore();
 
-  // 1. Загрузка корзины
+  //1) Загрузка корзины:
   const { isLoading } = useQuery({
     queryKey: ["cart"],
     queryFn: async () => {
@@ -23,7 +23,7 @@ export const useCart = () => {
     staleTime: Infinity,
   });
 
-  // 2. Добавление в корзину (уже было)
+  //2) Добавление в корзину:
   const { mutate: addToCart } = useMutation({
     // ВАЖНО: Убедись, что аргумент здесь принимает все поля, а не только id!
     mutationFn: async (item: {
@@ -52,7 +52,7 @@ export const useCart = () => {
     onSuccess: (data) => setCart(data),
   });
 
-  // 3. Обновление количества (PATCH)
+  //3) Обновление количества (PATCH):
   const { mutate: updateQuantity } = useMutation({
     mutationFn: async ({ id, quantity }: { id: string; quantity: number }) => {
       updateItemQuantity(id, quantity); // Optimistic UI
@@ -65,7 +65,7 @@ export const useCart = () => {
     onSuccess: (data) => setCart(data),
   });
 
-  // 4. Удаление одного товара (DELETE)
+  //4) Удаление одного товара (DELETE):
   const { mutate: removeItem } = useMutation({
     mutationFn: async (id: string) => {
       const { data } = await $api.delete(`/trading/cart/item/${id}`);
@@ -74,7 +74,7 @@ export const useCart = () => {
     onSuccess: (data) => setCart(data),
   });
 
-  // 5. Массовое удаление (POST)
+  //5) Массовое удаление (POST):
   const { mutate: removeSelected } = useMutation({
     mutationFn: async (ids: string[]) => {
       const { data } = await $api.post("/trading/cart/remove-selected", {
