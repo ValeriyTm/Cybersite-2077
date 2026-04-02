@@ -1,5 +1,6 @@
 import { Client } from "@elastic/elasticsearch";
 import { prisma } from "@repo/database";
+import { warehouseService } from "../warehouse/warehouse.service.js";
 
 //Подключаемся к контейнеру:
 const esClient = new Client({ node: "http://localhost:9200" });
@@ -17,28 +18,40 @@ export class SearchService {
         brand: true,
         siteCategory: true,
         images: true,
+        stocks: {
+          select: { quantity: true, reserved: true },
+        },
       },
     });
 
     //Формируем массив для bulk-загрузки большого кол-ва данных:
-    const operations = motorcycles.flatMap((doc) => [
-      { index: { _index: this.indexName, _id: doc.id } },
-      {
-        model: doc.model,
-        slug: doc.slug,
-        brand: doc.brand.name,
-        brandSlug: doc.brand.slug,
-        category: doc.category,
-        year: Number(doc.year) || 0,
-        price: Number(doc.price) || 0,
-        displacement: Number(doc.displacement) || 0,
-        createdAt: doc.createdAt,
-        power: Number(doc.power) || 0,
-        transmission: doc.transmission,
-        rating: Number(doc.rating) || 0,
-        mainImage: doc.images?.[0]?.url || "",
-      },
-    ]);
+    const operations = motorcycles.flatMap((doc) => {
+      //Считаем доступный остаток (общее кол-во - зарезервированное):
+      const totalInStock = doc.stocks.reduce(
+        (acc, s) => acc + (s.quantity - s.reserved),
+        0,
+      );
+
+      return [
+        { index: { _index: this.indexName, _id: doc.id } },
+        {
+          model: doc.model,
+          slug: doc.slug,
+          brand: doc.brand.name,
+          brandSlug: doc.brand.slug,
+          category: doc.category,
+          year: Number(doc.year) || 0,
+          price: Number(doc.price) || 0,
+          displacement: Number(doc.displacement) || 0,
+          createdAt: doc.createdAt,
+          power: Number(doc.power) || 0,
+          transmission: doc.transmission,
+          rating: Number(doc.rating) || 0,
+          mainImage: doc.images?.[0]?.url || "",
+          totalInStock: Math.max(0, totalInStock),
+        },
+      ];
+    });
 
     //Отправляем всё в Elasticsearch:
     const bulkResponse = await esClient.bulk({ refresh: true, operations });

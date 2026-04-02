@@ -238,9 +238,11 @@ export const MotorcyclesPage = () => {
         )}
         <div className={viewMode === "grid" ? styles.grid : styles.list}>
           {/* Мапим data.items вместо старого стейта items */}
-          {data?.items?.map((moto) => (
-            <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />
-          ))}
+          {data?.items?.map((moto) => {
+            return (
+              <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />
+            );
+          })}
 
           {/* Если ничего не нашли: */}
           {!isLoading && data?.items?.length === 0 && (

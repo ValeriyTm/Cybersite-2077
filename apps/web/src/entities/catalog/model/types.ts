@@ -52,6 +52,7 @@ export interface MotorcycleShort {
   power: number;
   rating: number;
   mainImage: string;
+  totalInStock: number;
 }
 
 export interface MotorcycleFull extends MotorcycleShort {
@@ -71,6 +72,7 @@ export interface MotorcycleFull extends MotorcycleShort {
   starter: string;
   comments: string;
   images: { id: string; url: string; isMain: boolean }[];
+  totalInStock: number;
 }
 
 export interface MotorcycleResponse {

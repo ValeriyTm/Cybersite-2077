@@ -53,11 +53,29 @@ export class FavoritesService {
     limit: number = 20,
     skip: number = 0,
   ) {
-    const items = await prisma.motorcycle.findMany({
+    const motorcycles = await prisma.motorcycle.findMany({
       where: { id: { in: ids } }, //Ищем только те, что в массиве избранного
-      include: { brand: true },
+      include: {
+        brand: true,
+        stocks: {
+          select: { quantity: true, reserved: true },
+        },
+      },
       take: limit,
       skip: skip,
+    });
+
+    //Рассчитываем остатки (totalInStock) для каждого мотоцикла:
+    const items = motorcycles.map((moto) => {
+      const totalInStock = moto.stocks.reduce(
+        (acc, s) => acc + (s.quantity - s.reserved),
+        0,
+      );
+
+      return {
+        ...moto,
+        totalInStock: Math.max(0, totalInStock), // Чтобы не было отрицательных чисел
+      };
     });
 
     return {

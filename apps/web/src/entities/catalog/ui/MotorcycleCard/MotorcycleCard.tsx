@@ -137,6 +137,7 @@ export const MotorcycleCard = ({
                 image: getImageUrlCart(data.mainImage),
                 brandSlug: data.brandSlug,
                 slug: data.slug,
+                totalInStock: data.totalInStock,
               }}
             />
           </div>

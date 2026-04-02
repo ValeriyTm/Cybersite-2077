@@ -9,7 +9,7 @@ export class WarehouseService {
       select: { quantity: true, reserved: true },
     });
 
-    //Для получения значения от физических остатков отнимаем зарезервированные остатки:
+    //Для получения доступного к заказу значения от физических остатков отнимаем зарезервированные остатки:
     const total = stocks.reduce((acc, s) => acc + (s.quantity - s.reserved), 0);
     return Math.max(0, total);
   }

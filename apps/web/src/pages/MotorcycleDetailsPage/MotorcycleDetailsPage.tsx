@@ -329,25 +329,13 @@ export const MotorcycleDetailsPage = () => {
               <div className={styles.price}>
                 {data.price.toLocaleString()} ₽
               </div>
+              {data.totalInStock ? (
+                <p>Количество единиц в наличии: {data.totalInStock}</p>
+              ) : (
+                <p>Нет в наличии</p>
+              )}
 
               <div className={styles.buttons}>
-                {/*Кнопка добавления в корзину:*/}
-                {/* <button
-                  className={styles.cartBtn}
-                  onClick={() =>
-                    addToCart({
-                      id: data.id,
-                      quantity: 1,
-                      model: data.model,
-                      price: data.price,
-                      image: mainImageUrl,
-                      brandSlug: data.brand.slug,
-                      slug: data.slug,
-                    })
-                  }
-                >
-                  🛒 В корзину
-                </button> */}
                 <AddToCartButton
                   data={{
                     id: data.id,
@@ -356,6 +344,7 @@ export const MotorcycleDetailsPage = () => {
                     image: mainImageUrl, // Сюда кладем строку
                     brandSlug: data.brand.slug, // Вытаскиваем из объекта бренда
                     slug: data.slug,
+                    totalInStock: data.totalInStock,
                   }}
                 />
 
