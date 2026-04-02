@@ -96,48 +96,6 @@ model Token {
   @@index([userId])    // Индекс для быстрого поиска всех сессий юзера
   @@map("tokens")
 }
-//------------Схемы для модуля Warehouse:----------
-// Модель для склада:
-model Warehouse {
-  id        String   @id @default(uuid())
-  name      String
-  address   String
-  // Координаты склада (PostGIS)
-  location  Unsupported("geometry(Point, 4326)")
-  
-  orders    Order[]  // Связь: один склад может обслуживать много заказов
-
-  @@index([location], type: Gist)
-  @@map("warehouses")
-}
-
-//------------Схемы для модуля Ordering:----------
-// Модуль для таблицы заказа:
-model Order {
-  id              String    @id @default(uuid())
-  
-  // Кто заказал
-  userId          String
-  user            User      @relation(fields: [userId], references: [id])
-  
-  // Откуда везем (выбранный склад):
-  warehouseId     String
-  warehouse       Warehouse @relation(fields: [warehouseId], references: [id])
-  
-  // Куда везем (точка на карте Leaflet):
-  deliveryPoint   Unsupported("geometry(Point, 4326)")
-  
-  //Результаты моих расчетов на сервере:
-  distance        Float?    // Расстояние в км
-  deliveryPrice   Decimal   // Цена (Decimal для точности денег)
-  deliveryDate    DateTime  // Дата прибытия
-  
-  status          String    @default("PENDING")
-  createdAt       DateTime  @default(now())
-
-  @@index([deliveryPoint], type: Gist)
-  @@map("orders")
-}
 
 //------------Схемы для модуля Catalog:----------
 //Таблица брендов:
@@ -194,8 +152,12 @@ model Motorcycle {
   // Список всех картинок этого мотоцикла
   images           ProductImage[]
 
-
-  favoritedBy      Favorite[] //Связь с "избранным"
+  //Связь с остатками на разных складах:
+  stocks           Stock[]     
+  //Связь с зазаками:
+  orderItems       OrderItem[]
+  //Связь с "избранным":
+  favoritedBy      Favorite[] 
 
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
@@ -307,3 +269,85 @@ model Favorite {
   @@index([userId])
   @@index([motorcycleId])
 }
+
+//------------Схемы для модуля Warehouse:----------
+//Модель для склада:
+model Warehouse {
+  id        String   @id @default(uuid())
+  name      String   @unique 
+  city      String
+  
+  //Координаты для Leaflet и PostGIS:
+  lat       Float
+  lng       Float
+
+  stocks    Stock[] // Остатки товара на складах
+  orders    Order[] // Заказы, которые едут именно с этого склада
+}
+
+//Остатки товаров и резерв:
+model Stock {
+  id           String     @id @default(uuid())
+  
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  motorcycleId String
+
+  warehouse    Warehouse  @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId  String
+
+  quantity     Int        @default(0) // Физическое наличие на полке
+  reserved     Int        @default(0) // Забронировано (в ожидании оплаты)
+
+  @@unique([motorcycleId, warehouseId])
+  @@index([warehouseId])
+}
+//------------Схемы для модуля Ordering:----------
+//Статус заказа:
+enum OrderStatus {
+  PENDING   //Создан, товар зарезервирован (на 1 час)
+  PAID      //Оплачен, резерв списан в физический расход
+  CANCELED  //Отменен (время вышло или отказ юзера), резерв возвращен
+  DELIVERY  //Передан в службу доставки
+  COMPLETED //Доставлен и получен
+}
+
+//Заказы:
+model Order {
+  id              String      @id @default(uuid())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          String
+  
+  status          OrderStatus @default(PENDING)
+  
+  // Данные доставки (snapshot из геокодера)
+  address         String      
+  deliveryLat     Float
+  deliveryLng     Float
+  distance        Float       // Расстояние от склада до юзера (км)
+  deliveryCost    Float       // Стоимость (10р * км)
+  estimatedDate   DateTime    // Рассчитанная дата прибытия
+  
+  totalPrice      Float       // Сумма товаров + доставка
+  
+  // Связь со складом отгрузки (который определил сервер)
+  warehouse       Warehouse   @relation(fields: [warehouseId], references: [id])
+  warehouseId     String
+
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+//Товары в конкретном заказе:
+model OrderItem {
+  id           String     @id @default(uuid())
+  order        Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId      String
+  
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id])
+  motorcycleId String
+  
+  quantity     Int
+  priceAtOrder Float      //Фиксируем цену на момент создания заказа
+}
+

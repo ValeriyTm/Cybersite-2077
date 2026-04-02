@@ -170,17 +170,17 @@ async function main() {
   let count = 0;
   for await (const row of motoStream) {
     console.log("Текущая строка:", row); // отображение того, как компьютер считывает построчно CSV-файл.
-    const brandId = brandsMap.get(row.Brand.trim());
+    const brandId = brandsMap.get(row.brand.trim());
     if (!brandId) continue;
 
     try {
       //Генерируем уникальный slug на основе модели и её даты производства:
-      const fullModelName = `${row.Model}${row.Year}`;
-      const modelSlug = slugify(fullModelName);
+      // const fullModelName = `${row.Model}${row.Year}`;
+      // const modelSlug = slugify(fullModelName);
 
       /////Цвета:
       //Извлекаем значение из колонки Colors:
-      const rawColors = row.ColorsSets || "";
+      const rawColors = row.colors || "";
       //Превращаем строку в массив, используя ";" как разделитель:
       const processedColors = rawColors
         ? rawColors
@@ -189,40 +189,42 @@ async function main() {
             .filter((item) => item.length > 0) // Удаляем пустые элементы, если они есть
         : [];
 
+      console.log(processedColors);
+
       await prisma.motorcycle.upsert({
-        where: { slug: modelSlug }, // Ищем по уникальному слагу
+        where: { slug: row.slug }, // Ищем по уникальному слагу
         update: {
-          price: parseInt(row.Price) || 0, // Можно обновить только цены, например
+          price: parseInt(row.price) || 0, // Можно обновить только цены
         },
         create: {
           //Слева - название в модели Prisma, справа - название столбца в CSV файле.
-          model: row.Model,
-          slug: modelSlug,
+          model: row.model,
+          slug: row.slug,
           brandId: brandId,
           siteCategoryId: motoCategory.id,
-          year: parseInt(row.Year) || 0,
-          displacement: parseInt(row.Displacement) || 0,
-          power: parseFloat(row.Power) || null,
-          topSpeed: parseInt(row.TopSpeed) || null,
-          fuelConsumption: parseFloat(row.FuelConsumption) || null,
-          price: parseInt(row.Price) || 0,
-          rating: parseFloat(row.Rating) || 0,
+          year: parseInt(row.year) || 0,
+          displacement: parseInt(row.displacement) || 0,
+          power: parseFloat(row.power) || null,
+          topSpeed: parseInt(row.topSpeed) || null,
+          fuelConsumption: parseFloat(row.fuelConsumption) || null,
+          price: parseInt(row.price) || 0,
+          rating: parseFloat(row.rating) || 0,
           //Маппинг ENUMS:
-          category: categoryMap[row.Category] || undefined,
-          coolingSystem: coolingMap[row.CoolingSystem] || undefined,
-          starter: starterMap[row.Starter] || undefined,
-          transmission: row.Transmission
-            ? row.Transmission.toUpperCase()
+          category: categoryMap[row.category] || undefined,
+          coolingSystem: coolingMap[row.coolingSystem] || undefined,
+          starter: starterMap[row.starter] || undefined,
+          transmission: row.transmission
+            ? row.transmission.toUpperCase()
             : undefined,
-          gearbox: gearboxMap[row.Gearbox] || undefined,
+          gearbox: gearboxMap[row.gearbox] || undefined,
           //Текстовые поля:
-          engineType: row.EngineType || null,
-          fuelSystem: row.FuelSystem || null,
-          frontTyre: row.FrontTyre || null,
-          rearTyre: row.RearTyre || null,
-          frontBrakes: row.FrontBrakes || null,
-          rearBrakes: row.RearBrakes || null,
-          comments: row.Comments || null,
+          engineType: row.engineType || null,
+          fuelSystem: row.fuelSystem || null,
+          frontTyre: row.frontTyre || null,
+          rearTyre: row.rearTyre || null,
+          frontBrakes: row.frontBrakes || null,
+          rearBrakes: row.rearBrakes || null,
+          comments: row.comments || null,
           //Обработка цветов:
           colors: processedColors,
         },
