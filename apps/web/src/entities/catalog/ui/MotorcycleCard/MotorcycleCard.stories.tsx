@@ -5,14 +5,6 @@ import { MotorcycleCard } from "./MotorcycleCard";
 const meta = {
   title: "Entities/Catalog/MotorcycleCard",
   component: MotorcycleCard,
-  //Оборачиваем в Router, так как внутри карточки есть <Link>:
-  decorators: [
-    (Story) => (
-      <BrowserRouter>
-        <Story />
-      </BrowserRouter>
-    ),
-  ],
   tags: ["autodocs"],
 } satisfies Meta<typeof MotorcycleCard>;
 

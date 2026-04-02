@@ -2,7 +2,7 @@ import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useCart } from "@/entities/trading/api/useCart";
 import styles from "./AddToCartButton.module.scss";
 
-interface AddToCartButtonProps {
+export interface AddToCartButtonProps {
   motorcycle: any; // Тот самый объект с model, price, image и т.д.
   variant?: "card" | "favorite"; // Разные стили для двух твоих макетов
 }
@@ -42,9 +42,7 @@ export const AddToCartButton = ({
   // 2. Если товар ЕСТЬ в корзине — показываем счетчик и бейдж (если это карточка)
   return (
     <div className={styles.wrapper} onClick={(e) => e.preventDefault()}>
-      {variant === "card" && (
-        <div className={styles.addedBadge}>✓ В корзине</div>
-      )}
+      {variant === "card" && <div className={styles.addedBadge}>В корзине</div>}
 
       <div className={styles.stepper}>
         <button
