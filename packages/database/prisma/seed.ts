@@ -111,7 +111,7 @@ async function main() {
   }
 
   //4)-------Заполняем таблицу мотоциклов из csv-файла:-------------
-  //Сопоставляем типы (слева типы в CSV, а справа в Prisma):
+  // Сопоставляем типы (слева типы в CSV, а справа в Prisma):
   const categoryMap: Record<string, any> = {
     Allround: "ALLROUND",
     ATV: "ATV",
@@ -238,6 +238,81 @@ async function main() {
   console.log(
     `✅ Успешно! Создано ${brandsMap.size} брендов и ${count} моделей.`,
   );
+
+  //5)-------Заполняем таблицу складов из csv-файла:-------------
+  const warehousesData: any[] = [];
+  await new Promise((resolve) => {
+    fs.createReadStream(path.resolve(__dirname, "./data/warehouses.csv"))
+      .pipe(csv())
+      .on("data", (data) => warehousesData.push(data))
+      .on("end", resolve);
+  });
+
+  for (const wh of warehousesData) {
+    await prisma.warehouse.upsert({
+      where: { name: wh.name.trim() },
+      update: {},
+      create: {
+        name: wh.name.trim(),
+        city: wh.city.trim(),
+        lat: parseFloat(wh.lat),
+        lng: parseFloat(wh.lng),
+      },
+    });
+  }
+  console.log("✅ Склады созданы");
+
+  //6)-------Кэшируем ID складов и мотоциклов для сопоставления:-------------
+  const allWarehouses = await prisma.warehouse.findMany();
+  const whMap = Object.fromEntries(allWarehouses.map((w) => [w.name, w.id]));
+
+  //Кэшируем только ID и SLUG мотоциклов (чтобы не перегрузить RAM)
+  const allMotorcycles = await prisma.motorcycle.findMany({
+    select: { id: true, slug: true },
+  });
+  const motoMap = Object.fromEntries(allMotorcycles.map((m) => [m.slug, m.id]));
+  //7)-------Заполняем таблицу складов из csv-файла:-------------
+  const stocksToCreate: any[] = [];
+  let counter = 0;
+
+  const stream = fs
+    .createReadStream(path.resolve(__dirname, "./data/stocks.csv"))
+    .pipe(csv());
+
+  for await (const row of stream) {
+    const motorcycleId = motoMap[row.slug];
+    const warehouseId = whMap[row.warehouse];
+
+    if (motorcycleId && warehouseId) {
+      stocksToCreate.push({
+        motorcycleId,
+        warehouseId,
+        quantity: parseInt(row.quantity, 10),
+        reserved: 0,
+      });
+      counter++;
+    }
+
+    // Записываем пачкой, чтобы база не "захлебнулась"
+    if (stocksToCreate.length === 5000) {
+      await prisma.stock.createMany({
+        data: stocksToCreate,
+        skipDuplicates: true,
+      });
+      stocksToCreate.length = 0;
+      console.log(`⏳ Загружено ${counter} остатков...`);
+    }
+  }
+
+  // Дозаписываем остатки
+  if (stocksToCreate.length > 0) {
+    await prisma.stock.createMany({
+      data: stocksToCreate,
+      skipDuplicates: true,
+    });
+  }
+
+  console.log(`✨ Сидирование завершено! Всего записей: ${counter}`);
 }
 
 //-------------------Запуск сидирования:-----------
