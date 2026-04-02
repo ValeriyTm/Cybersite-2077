@@ -59,14 +59,28 @@ export class CatalogService {
   //Получение данных о конкретном мотоцикле:
   async getMotorcycleBySlug(slug: string) {
     // Достаем из БД все данные о мотоцикле:
-    return await prisma.motorcycle.findUnique({
+    const moto = await prisma.motorcycle.findUnique({
       where: { slug },
       include: {
         brand: true,
         siteCategory: true,
         images: true, //Галерея изображений
+        //Подтягиваем остатки со всех складов:
+        stocks: {
+          select: { quantity: true, reserved: true },
+        },
       },
     });
+
+    if (!moto) return null;
+
+    // Считаем общее доступное количество для фронтенда
+    const totalInStock = moto.stocks.reduce(
+      (acc, s) => acc + (s.quantity - s.reserved),
+      0,
+    );
+
+    return { ...moto, totalInStock };
   }
 }
 

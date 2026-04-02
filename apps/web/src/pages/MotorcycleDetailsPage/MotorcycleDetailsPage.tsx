@@ -378,6 +378,7 @@ export const MotorcycleDetailsPage = () => {
               {data.year} года выпуска. Объем двигателя {data.displacement} см³.
             </p>
             <p className={styles.description}>Текущий рейтинг: {data.rating}</p>
+            <p className={styles.description}>Артикул товара: {data.slug}</p>
           </div>
         </section>
 
