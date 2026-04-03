@@ -17,8 +17,12 @@ export const MyOrdersPage = () => {
         {orders?.map((order: any) => (
           <div key={order.id} className={styles.orderCard}>
             <div className={styles.header}>
-              <span>
-                Заказ от {new Date(order.createdAt).toLocaleDateString()}
+              <span className={styles.orderId}>
+                Заказ №{String(order.orderNumber).padStart(6, "0")}
+                {/* Результат: Заказ №001024 */}
+              </span>
+              <span className={styles.date}>
+                {new Date(order.createdAt).toLocaleDateString()}
               </span>
               <span
                 className={`${styles.status} ${styles[order.status.toLowerCase()]}`}

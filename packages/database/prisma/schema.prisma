@@ -320,6 +320,7 @@ enum OrderStatus {
 //Заказы:
 model Order {
   id              String      @id @default(uuid())
+  orderNumber     Int         @unique @default(autoincrement())
   user            User        @relation(fields: [userId], references: [id])
   userId          String
   

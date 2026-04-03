@@ -8,7 +8,7 @@ export class OrderService {
   async createOrder(userId: string, data: any) {
     const { items, address, coords, deliveryInfo, totalPrice } = data;
 
-    // 🎯 Используем транзакцию для атомарности
+    // Используем транзакцию для атомарности
     return await prisma.$transaction(async (tx) => {
       // 1. Создаем запись заказа и товаров в нем
       const order = await tx.order.create({
