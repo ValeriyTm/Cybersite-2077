@@ -61,6 +61,7 @@ export class CartService {
         slug: item.slug,
         brandSlug: item.brandSlug,
         quantity: item.quantity,
+        year: item.year,
         selected: true, //Поле для чекбокса выбора
       });
     }

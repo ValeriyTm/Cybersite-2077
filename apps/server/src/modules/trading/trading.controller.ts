@@ -57,8 +57,16 @@ export const getCart = catchAsync(
 //Контроллер добавления в корзину:
 export const addToCart = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const { motorcycleId, quantity, model, price, image, brandSlug, slug } =
-      req.body;
+    const {
+      motorcycleId,
+      quantity,
+      model,
+      price,
+      image,
+      brandSlug,
+      slug,
+      year,
+    } = req.body;
 
     const cart = await cartService.addToCart(req.user.id, {
       id: motorcycleId,
@@ -68,6 +76,7 @@ export const addToCart = catchAsync(
       image,
       brandSlug,
       slug,
+      year,
     });
 
     res.json(cart);

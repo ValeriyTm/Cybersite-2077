@@ -25,7 +25,6 @@ export const useCart = () => {
 
   //2) Добавление в корзину:
   const { mutate: addToCart } = useMutation({
-    // ВАЖНО: Убедись, что аргумент здесь принимает все поля, а не только id!
     mutationFn: async (item: {
       id: string;
       quantity: number;
@@ -34,10 +33,11 @@ export const useCart = () => {
       image: string;
       brandSlug: string;
       slug: string;
+      year: number;
     }) => {
       addToCartLocally(item.id, item.quantity);
 
-      // ВАЖНО: Мы должны отправить ВЕСЬ объект item в Body
+      //Мы должны отправить весь объект item в Body:
       const { data } = await $api.post("/trading/cart/add", {
         motorcycleId: item.id,
         quantity: item.quantity,
@@ -46,6 +46,7 @@ export const useCart = () => {
         image: item.image,
         brandSlug: item.brandSlug,
         slug: item.slug,
+        year: item.year,
       });
       return data;
     },

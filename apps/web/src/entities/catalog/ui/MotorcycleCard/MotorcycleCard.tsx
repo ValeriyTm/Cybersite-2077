@@ -142,6 +142,7 @@ export const MotorcycleCard = ({
                 brandSlug: data.brandSlug,
                 slug: data.slug,
                 totalInStock: data.totalInStock,
+                year: data.year,
               }}
             />
           </div>
