@@ -23,6 +23,9 @@ export class ProfileService {
         isActivated: true,
         createdAt: true,
         is2FAEnabled: true,
+        defaultLat: true,
+        defaultLng: true,
+        defaultAddress: true,
       },
     });
     if (!user) throw new AppError(404, "Пользователь не найден");

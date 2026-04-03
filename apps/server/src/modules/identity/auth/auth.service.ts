@@ -155,6 +155,9 @@ export class AuthService {
         birthday: true,
         gender: true,
         is2FAEnabled: true,
+        defaultLat: true,
+        defaultLng: true,
+        defaultAddress: true,
       },
     });
   }

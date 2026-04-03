@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import styles from "./CheckoutPage.module.scss";
 import { DeliveryMapModal } from "@/features/ordering/DeliveryMapModal/DeliveryMapModal";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { $api } from "@/shared/api/api";
 import { useNavigate } from "react-router";
+import { useProfile } from "@/features/auth/model/useProfile";
 
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();
@@ -15,6 +16,8 @@ export const CheckoutPage = () => {
 
   const navigate = useNavigate();
 
+  const { user } = useProfile();
+
   // 1. Создаем стейт для хранения ответа от /api/warehouse/calculate
   const [deliveryInfo, setDeliveryInfo] = useState<{
     warehouse: any;
@@ -23,6 +26,24 @@ export const CheckoutPage = () => {
     estimatedDate: string;
     distanceKm: number;
   } | null>(null);
+
+  useEffect(() => {
+    if (user?.defaultAddress && user?.defaultLat && user?.defaultLng) {
+      const savedCoords = { lat: user.defaultLat, lng: user.defaultLng };
+
+      setAddress(user.defaultAddress);
+      setCoords(savedCoords);
+
+      //Сразу запускаем расчет доставки, чтобы юзер видел цену
+      calculateMutation.mutate({
+        lat: savedCoords.lat,
+        lng: savedCoords.lng,
+        items: cartItems
+          .filter((i) => i.selected)
+          .map((i) => ({ id: i.id, quantity: i.quantity })),
+      });
+    }
+  }, [user]); // Сработает, как только данные юзера загрузятся
 
   //Карта:
   const [isMapOpen, setIsMapOpen] = useState(false);

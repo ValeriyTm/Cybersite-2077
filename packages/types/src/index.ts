@@ -22,6 +22,9 @@ export interface IUser {
   gender: UserGender;
   is2FAEnabled: boolean;
   createdAt: string;
+  defaultAddress: string | null;
+  defaultLat: number | null;
+  defaultLng: number | null;
 }
 
 //Типизируем ответ при авторизации:
