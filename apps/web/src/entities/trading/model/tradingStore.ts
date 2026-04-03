@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { $api } from "@/shared/api/api";
 
 interface CartItem {
   id: string;
@@ -121,6 +122,17 @@ export const useTradingStore = create<TradingState>()(
           selected: item.selected ?? true, // По умолчанию товары в корзине выбраны
         })),
       }),
+
+    //Метод для простого получения данных корзины:
+    fetchCart: async () => {
+      try {
+        const response = await $api.get("/trading/cart"); // Твой эндпоинт корзины
+        // Используем твой готовый метод для записи и расстановки selected
+        get().setCart(response.data);
+      } catch (error) {
+        console.error("Ошибка при обновлении корзины:", error);
+      }
+    },
 
     //Очистка:
     clearTrading: () => set({ favoriteIds: [] }),

@@ -7,7 +7,7 @@ import { $api } from "@/shared/api/api";
 import { useNavigate } from "react-router";
 
 export const CheckoutPage = () => {
-  const { cartItems } = useTradingStore();
+  const { cartItems, fetchCart } = useTradingStore();
   const [address, setAddress] = useState("");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null,
@@ -41,11 +41,45 @@ export const CheckoutPage = () => {
     },
   });
 
+  const createOrderMutation = useMutation({
+    mutationFn: (orderData: any) =>
+      $api.post("/orders", orderData).then((res) => res.data),
+
+    onSuccess: () => {
+      // 1. Обновляем корзину в Zustand (она уже очищена на бэкенде в Redis)
+      fetchCart();
+
+      // 2. Редиректим юзера на страницу его заказов
+      // Мы её создадим следующим шагом
+      navigate("/orders/my", { state: { success: true } });
+    },
+    onError: (error: any) => {
+      alert(error.response?.data?.message || "Ошибка при создании заказа");
+    },
+  });
+
   //Отбираем только выбранные юзером в корзине товары:
   const selectedItems = useMemo(
     () => cartItems.filter((item) => item.selected),
     [cartItems],
   );
+
+  const handleCreateOrder = () => {
+    const payload = {
+      items: selectedItems.map((item) => ({
+        id: item.id,
+        model: item.model,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      address,
+      coords,
+      deliveryInfo,
+      totalPrice: subtotal + (deliveryInfo?.cost || 0),
+    };
+
+    createOrderMutation.mutate(payload);
+  };
 
   const handleAddressSelect = (
     coords: { lat: number; lng: number },
@@ -163,11 +197,12 @@ export const CheckoutPage = () => {
 
           <button
             className={styles.payBtn}
-            disabled={!deliveryInfo} // Кнопка активна только когда доставка посчитана 🚀
-            // onClick={handleCreateOrder}
-            onClick={() => navigate("/payment")}
+            disabled={!deliveryInfo || createOrderMutation.isPending} // Кнопка активна только когда доставка посчитана 🚀
+            onClick={handleCreateOrder}
           >
-            Создать заказ и оплатить
+            {createOrderMutation.isPending
+              ? "Оформление..."
+              : "Создать заказ и оплатить"}
           </button>
         </aside>
       </div>
