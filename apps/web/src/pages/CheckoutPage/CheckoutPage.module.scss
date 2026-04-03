@@ -14,6 +14,16 @@
   }
 }
 
+.deliveryInfoStyle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-top: 1px solid white;
+  span {
+    color: #fff;
+  }
+}
+
 .content {
   display: grid;
   grid-template-columns: 1fr 400px; // Основная часть и боковая панель 🎯
@@ -26,6 +36,9 @@
 }
 
 .section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   background: #151515;
   border-radius: 16px;
   padding: 25px;

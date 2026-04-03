@@ -24,10 +24,12 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 // Иконка для складов (оранжевая)
 const warehouseIcon = new L.Icon({
-  iconUrl: "https://githubusercontent.com",
-  shadowUrl: iconShadow,
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
+  shadowUrl: "https://cloudflare.com",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
 });
 
 interface DeliveryMapModalProps {
@@ -54,10 +56,22 @@ export const DeliveryMapModal = ({
         try {
           // Обратное геокодирование через Nominatim
           const res = await fetch(
-            `https://openstreetmap.org{e.latlng.lat}&lon=${e.latlng.lng}&accept-language=ru`,
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=ru`,
+            {
+              headers: {
+                //Nominatim просит указывать User-Agent (название твоего проекта)
+                "User-Agent": "CyberSite-Motorcycles-App",
+              },
+            },
           );
+          if (!res.ok) throw new Error("Ошибка сервера геокодинга");
+
           const data = await res.json();
-          setAddress(data.display_name);
+
+          // Бывает, что Nominatim возвращает 200 OK, но с пустой ошибкой внутри
+          if (data.error) throw new Error(data.error);
+
+          setAddress(data.display_name || "Адрес не найден");
         } catch (err) {
           setAddress("Ошибка определения адреса");
         } finally {
@@ -84,6 +98,7 @@ export const DeliveryMapModal = ({
           <MapContainer
             center={[55.75, 37.61]}
             zoom={4}
+            attributionControl={false} //Убираем надпись в нижнем углу
             style={{ height: "100%" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
