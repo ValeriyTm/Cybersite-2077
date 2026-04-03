@@ -1,4 +1,5 @@
 import { redis } from "../../lib/redis.js";
+import { prisma } from "@repo/database";
 import { warehouseService } from "../warehouse/warehouse.service.js";
 
 export class CartService {
@@ -8,8 +9,39 @@ export class CartService {
 
   //Получить товары в корзине:
   async getCart(userId: string) {
+    //Получаем данные из корзины в Redis:
     const data = await redis.get(this.getCartKey(userId));
-    return data ? JSON.parse(data) : [];
+    const cartItems = data ? JSON.parse(data) : [];
+    if (cartItems.length === 0) return [];
+
+    //Собираем все ID товаров из корзины:
+    const ids = cartItems.map((item: any) => item.id);
+
+    //Получаем актуальные остатки из БД
+    const stocks = await prisma.stock.groupBy({
+      by: ["motorcycleId"],
+      _sum: {
+        quantity: true,
+        reserved: true,
+      },
+      where: {
+        motorcycleId: { in: ids },
+      },
+    });
+
+    //Создаем карту для быстрого поиска: { "moto-uuid": 5 }:
+    const stockMap = Object.fromEntries(
+      stocks.map((s) => [
+        s.motorcycleId,
+        (s._sum.quantity || 0) - (s._sum.reserved || 0),
+      ]),
+    );
+
+    //Добавляем актуальный totalInStock к каждому предмету корзины:
+    return cartItems.map((item: any) => ({
+      ...item,
+      totalInStock: stockMap[item.id] || 0, // Если товара нет в таблице Stock — пишем 0
+    }));
   }
 
   //Добавить товар в корзину / обновить количество:

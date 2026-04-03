@@ -47,6 +47,18 @@
   text-transform: uppercase;
 }
 
+.presence {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: #f39c12;
+  color: #ffffff;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 4px;
+}
+
 .info {
   padding: 16px;
   display: flex;

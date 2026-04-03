@@ -96,6 +96,10 @@ export const MotorcycleCard = ({
 
           {/*Плашка высокого рейтинга:*/}
           {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
+
+          {data.totalInStock && (
+            <span className={styles.presence}>В наличии</span>
+          )}
         </div>
       )}
 

@@ -89,8 +89,14 @@ export const CartPage = () => {
 
           <div className={styles.list}>
             {cartItems.map((item) => {
+              //Ошибка, если товара на складе осталось меньше, чем у нас в корзине:
+              const isError = item.quantity > item.totalInStock;
+
               return (
-                <div key={item.id} className={styles.cartItem}>
+                <div
+                  key={item.id}
+                  className={`${styles.cartItem} ${isError && styles.Error}`}
+                >
                   <input
                     type="checkbox"
                     checked={item.selected}
@@ -166,6 +172,12 @@ export const CartPage = () => {
                       {(item.price * item.quantity).toLocaleString()} ₽
                     </span>
                   </div>
+
+                  {isError && (
+                    <span className={styles.errorHint}>
+                      Ошибка: на складе осталось всего {item.totalInStock} шт.
+                    </span>
+                  )}
                 </div>
               );
             })}

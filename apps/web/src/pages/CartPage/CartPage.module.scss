@@ -71,7 +71,12 @@
 .cartItem {
   display: grid;
   // grid-template-columns: 40px 120px 1fr 150px 180px; // Чекбокс - Фото - Инфо - Кол-во - Цена 🎯
+  // grid-template-columns: 1fr 3fr 10fr 3fr 4fr;
   grid-template-columns: 1fr 3fr 10fr 3fr 4fr;
+  /* Описываем сетку: в первой строке 5 разных зон, во второй одна общая */
+  grid-template-areas:
+    "cell1 cell2 cell3 cell4 cell5"
+    "footer footer footer footer footer";
   align-items: center;
   gap: 20px;
   background: #151515;
@@ -195,6 +200,14 @@
   }
 }
 
+.Error {
+  border: 3px solid #ff4757;
+
+  &:hover {
+    border: 2px solid #ff4757;
+  }
+}
+
 //Боковая панель с результатами:
 .summary {
   background: #1a1a1a;
@@ -298,4 +311,9 @@
       color: #ff4757;
     }
   }
+}
+
+.errorHint {
+  grid-area: footer;
+  color: #c31120;
 }
