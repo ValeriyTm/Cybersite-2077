@@ -73,10 +73,16 @@ model User {
   twoFactorSecret  String?  // Секретный ключ (зашифрованный)
   is2FAEnabled     Boolean  @default(false)
 
+  //-------География:
   // Предпочтительная гео-точка для доставки (используется тип Unsupported для PostGIS)
   // Мы сможем работать с ней через сырые запросы Prisma $queryRaw
-  location      Unsupported("geometry(Point, 4326)")?
+  location         Unsupported("geometry(Point, 4326)")? 
+  defaultAddress   String? //Текстовый адрес для отображения на фронтенде
+  // Координаты в Float (чтобы Leaflet не занимался парсингом геометрии):
+  defaultLat        Float?
+  defaultLng        Float?
 
+  //--------Связи:
   orders           Order[] // У одного юзера может быть много заказов
 
   favorites        Favorite[] //Связь с избранным

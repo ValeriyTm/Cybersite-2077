@@ -5,6 +5,7 @@ import {
   Marker,
   useMapEvents,
   Popup,
+  Tooltip,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -59,8 +60,8 @@ export const DeliveryMapModal = ({
             `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=ru`,
             {
               headers: {
-                //Nominatim просит указывать User-Agent (название твоего проекта)
-                "User-Agent": "CyberSite-Motorcycles-App",
+                //Nominatim просит указывать User-Agent (указываю название проекта)
+                "User-Agent": "CyberSite-2077",
               },
             },
           );
@@ -71,7 +72,15 @@ export const DeliveryMapModal = ({
           // Бывает, что Nominatim возвращает 200 OK, но с пустой ошибкой внутри
           if (data.error) throw new Error(data.error);
 
+          //Ограничиваем зону выбора лишь границами РФ:
+          if (data.address && data.address.country_code !== "ru") {
+            setAddress("Доставка осуществляется только по территории РФ");
+            setTempCoords(null); // Убираем метку, если она вне РФ
+            return;
+          }
+
           setAddress(data.display_name || "Адрес не найден");
+          setTempCoords(e.latlng);
         } catch (err) {
           setAddress("Ошибка определения адреса");
         } finally {
@@ -110,6 +119,14 @@ export const DeliveryMapModal = ({
                 position={[wh.lat, wh.lng]}
                 icon={warehouseIcon}
               >
+                {/*Тултип при наведении:*/}
+                <Tooltip direction="top" offset={[0, -32]} opacity={1}>
+                  <span style={{ fontWeight: "bold", color: "#333" }}>
+                    Склад: {wh.name}
+                  </span>
+                </Tooltip>
+
+                {/*Попап при клике:*/}
                 <Popup>Склад: {wh.name}</Popup>
               </Marker>
             ))}
