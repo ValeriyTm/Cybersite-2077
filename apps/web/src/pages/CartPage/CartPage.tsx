@@ -5,14 +5,20 @@ import styles from "./CartPage.module.scss";
 import { ConfirmModal } from "@/shared/ui/ConfirmModal/ConfirmModal";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useProfile } from "@/features/auth/model/useProfile";
+import { useNavigate } from "react-router";
 
 export const CartPage = () => {
   const { cartItems, toggleSelectItem, toggleSelectAll, updateItemQuantity } =
     useTradingStore();
   const { updateQuantity, removeItem, removeSelected } = useCart();
 
+  const { user } = useProfile(); // Достаем данные профиля
+
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
   const { toggleFavorite } = useFavorites();
+
+  const navigate = useNavigate();
 
   //Стейты для модалок
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -42,9 +48,24 @@ export const CartPage = () => {
     setIsBulkDeleteOpen(false);
   };
 
+  ///--------------------------
   if (cartItems.length === 0) {
     return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
   }
+
+  //--------------Проверяем допустимо ли юзеру нажать кнопку оформления заказа:-----
+  //Проверяем заполненность профиля
+  const isProfileIncomplete = !user?.phone || !user?.birthday;
+
+  //Проверяем остатки среди выбранных товаров:
+  const hasStockErrorInSelected = selectedItems.some(
+    (item) => item.quantity > item.totalInStock,
+  );
+
+  const isCheckoutDisabled =
+    selectedItems.length === 0 || //Ничего не выбрано
+    hasStockErrorInSelected || //Выбран товар, которого нет на складе (или кол-во не соответствует)
+    isProfileIncomplete; //Профиль не заполнен
 
   return (
     <main className={styles.CartPage}>
@@ -195,9 +216,24 @@ export const CartPage = () => {
             <span>Итого:</span>
             <span>{totalPrice.toLocaleString()} ₽</span>
           </div>
+
+          {isProfileIncomplete && (
+            <p className={styles.warning}>
+              ⚠️ Заполните телефон и дату рождения в профиле для оформления
+              заказа
+            </p>
+          )}
+
+          {hasStockErrorInSelected && (
+            <p className={styles.warning}>
+              ❌ Исправьте количество товаров (превышен остаток на складах)
+            </p>
+          )}
+
           <button
             className={styles.checkoutBtn}
-            disabled={selectedItems.length === 0}
+            disabled={isCheckoutDisabled}
+            onClick={() => navigate("/checkout")}
           >
             Перейти к оформлению
           </button>

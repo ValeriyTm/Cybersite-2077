@@ -274,14 +274,20 @@
   color: #fff;
   transition: color 0.2s;
 
-  &:hover {
-    color: #f39c12;
-  }
-
   input[type="checkbox"] {
     width: 18px;
     height: 18px;
     accent-color: #f39c12;
-    cursor: pointer;
+  }
+}
+
+.checkboxLabel {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  &:hover {
+    color: #f39c12;
   }
 }
