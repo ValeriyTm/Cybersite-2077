@@ -89,6 +89,22 @@
       border-color: #f39c12;
     }
   }
+
+  .changeBtn {
+    background: #615d5d;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #333;
+      border-color: #f39c12;
+    }
+  }
 }
 
 // МИНИ-СПИСОК ТОВАРОВ

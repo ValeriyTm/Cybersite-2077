@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { $api } from "@/shared/api/api";
 import { useNavigate } from "react-router";
 import { useProfile } from "@/features/auth/model/useProfile";
+import { useOrderStore } from "@/entities/ordering/model/orderStore";
 
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();
@@ -18,6 +19,20 @@ export const CheckoutPage = () => {
 
   const { user } = useProfile();
 
+  const { fetchActiveCount } = useOrderStore();
+
+  //Отбираем только выбранные юзером в корзине товары:
+  const legalSelectedItems = useMemo(
+    () =>
+      cartItems.filter(
+        (item) =>
+          item.selected &&
+          item.quantity <= item.totalInStock &&
+          item.totalInStock > 0,
+      ),
+    [cartItems],
+  );
+
   // 1. Создаем стейт для хранения ответа от /api/warehouse/calculate
   const [deliveryInfo, setDeliveryInfo] = useState<{
     warehouse: any;
@@ -27,23 +42,30 @@ export const CheckoutPage = () => {
     distanceKm: number;
   } | null>(null);
 
+  //Подставляем дефолтный адрес доставки из БД для юзера:
   useEffect(() => {
-    if (user?.defaultAddress && user?.defaultLat && user?.defaultLng) {
+    // Проверяем: есть ли юзер, есть ли легальные товары И подгружены ли остатки
+    const hasStockData = legalSelectedItems.every(
+      (item) => item.totalInStock !== undefined,
+    );
+
+    if (user?.defaultLat && legalSelectedItems.length > 0 && hasStockData) {
       const savedCoords = { lat: user.defaultLat, lng: user.defaultLng };
 
-      setAddress(user.defaultAddress);
+      setAddress(user.defaultAddress || "");
       setCoords(savedCoords);
 
-      //Сразу запускаем расчет доставки, чтобы юзер видел цену
+      // 🚀 Запускаем расчет только когда данные "прогреты"
       calculateMutation.mutate({
         lat: savedCoords.lat,
         lng: savedCoords.lng,
-        items: cartItems
-          .filter((i) => i.selected)
-          .map((i) => ({ id: i.id, quantity: i.quantity })),
+        items: legalSelectedItems.map((i) => ({
+          id: i.id,
+          quantity: i.quantity,
+        })),
       });
     }
-  }, [user]); // Сработает, как только данные юзера загрузятся
+  }, [user, legalSelectedItems]); // Сработает, как только данные юзера загрузятся
 
   //Карта:
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -70,7 +92,10 @@ export const CheckoutPage = () => {
       // 1. Обновляем корзину в Zustand (она уже очищена на бэкенде в Redis)
       fetchCart();
 
-      // 2. Редиректим юзера на страницу его заказов
+      //2.Обновляем счётчик в Header:
+      fetchActiveCount();
+
+      // 3. Редиректим юзера на страницу его заказов
       // Мы её создадим следующим шагом
       navigate("/orders/my", { state: { success: true } });
     },
@@ -79,15 +104,16 @@ export const CheckoutPage = () => {
     },
   });
 
-  //Отбираем только выбранные юзером в корзине товары:
-  const selectedItems = useMemo(
-    () => cartItems.filter((item) => item.selected),
-    [cartItems],
-  );
+  //Если пользователь вручную ввел адрес /checkout, но у него в корзине только «нелегальные» товары или вообще ничего не выбрано, его нужно выкинуть обратно в корзину:
+  useEffect(() => {
+    if (legalSelectedItems.length === 0) {
+      navigate("/cart");
+    }
+  }, [legalSelectedItems, navigate]);
 
   const handleCreateOrder = () => {
     const payload = {
-      items: selectedItems.map((item) => ({
+      items: legalSelectedItems.map((item) => ({
         id: item.id,
         model: item.model,
         price: item.price,
@@ -114,12 +140,15 @@ export const CheckoutPage = () => {
     calculateMutation.mutate({
       lat: coords.lat,
       lng: coords.lng,
-      items: selectedItems.map((i) => ({ id: i.id, quantity: i.quantity })),
+      items: legalSelectedItems.map((i) => ({
+        id: i.id,
+        quantity: i.quantity,
+      })),
     });
   };
 
   //-----Считаем сумму выбранных товаров:
-  const subtotal = selectedItems.reduce(
+  const subtotal = legalSelectedItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
@@ -135,18 +164,23 @@ export const CheckoutPage = () => {
             <h3>1. Адрес доставки</h3>
             <div className={styles.addressBox}>
               {address ? (
-                <p className={styles.currentAddress}>📍 {address}</p>
+                <>
+                  <p className={styles.currentAddress}>📍 {address}</p>
+                  <button
+                    className={styles.changeBtn}
+                    onClick={() => setIsMapOpen(true)}
+                  >
+                    Изменить адрес доставки
+                  </button>
+                </>
               ) : (
-                <p className={styles.noAddress}>Адрес не выбран</p>
+                <button
+                  className={styles.mapBtn}
+                  onClick={() => setIsMapOpen(true)}
+                >
+                  Выбрать адрес на карте
+                </button>
               )}
-
-              {/*Кнопка открытия модалки с картой:*/}
-              <button
-                className={styles.mapBtn}
-                onClick={() => setIsMapOpen(true)}
-              >
-                {address ? "Изменить на карте" : "Выбрать на карте"}
-              </button>
             </div>
 
             <div className={styles.deliveryInfoStyle}>
@@ -170,6 +204,7 @@ export const CheckoutPage = () => {
           {isMapOpen && (
             <DeliveryMapModal
               warehouses={warehouses || []}
+              initialCoords={coords} //Передаем дефолтные координаты адреса доставки для юзера (из БД юзера)
               onSelect={handleAddressSelect}
               onClose={() => setIsMapOpen(false)}
             />
@@ -179,7 +214,7 @@ export const CheckoutPage = () => {
           <section className={styles.section}>
             <h3>2. Состав заказа</h3>
             <div className={styles.previewList}>
-              {selectedItems.map((item) => (
+              {legalSelectedItems.map((item) => (
                 <div key={item.id} className={styles.miniItem}>
                   <span>
                     {item.model} x {item.quantity} шт, {item.year} г

@@ -37,14 +37,18 @@ interface DeliveryMapModalProps {
   warehouses: any[];
   onSelect: (coords: { lat: number; lng: number }, address: string) => void;
   onClose: () => void;
+  initialCoords: any;
 }
 
 export const DeliveryMapModal = ({
   warehouses,
   onSelect,
   onClose,
+  initialCoords,
 }: DeliveryMapModalProps) => {
-  const [tempCoords, setTempCoords] = useState<L.LatLng | null>(null);
+  const [tempCoords, setTempCoords] = useState<L.LatLng | null>(
+    initialCoords ? L.latLng(initialCoords.lat, initialCoords.lng) : null,
+  );
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
 

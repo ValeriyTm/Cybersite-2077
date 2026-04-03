@@ -8,5 +8,11 @@ const router = Router();
 router.post("/", authMiddleware, orderController.createOrder);
 //Получение списка всех заказов юзера:
 router.get("/my", authMiddleware, orderController.getMyOrders);
+//Получение списка активных заказов юзера:
+router.get(
+  "/active-count",
+  authMiddleware,
+  orderController.getActiveOrdersCount,
+);
 
 export default router;

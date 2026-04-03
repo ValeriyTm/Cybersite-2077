@@ -9,6 +9,7 @@ import axios from "axios";
 import { Avatar } from "@/shared/ui/Avatar";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import styles from "./Header.module.scss";
+import { useOrderStore } from "@/entities/ordering/model/orderStore";
 
 type MainCategory = "moto" | "gear" | "parts";
 
@@ -24,6 +25,8 @@ export const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<MotorcycleShort[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  const { activeOrdersCount, fetchActiveCount } = useOrderStore();
 
   //--------Для работы с данными юзера:
   //Технический статус из Zustand:
@@ -50,6 +53,11 @@ export const Header = () => {
       }, 300),
     [],
   );
+
+  //При загркузке получаем кол-во активных заказов:
+  useEffect(() => {
+    if (isAuth) fetchActiveCount();
+  }, [isAuth]);
 
   //Закрытие при клике мимо:
   useEffect(() => {
@@ -280,7 +288,7 @@ export const Header = () => {
               </div>
             </Link>
 
-            {/* Кнопка избранного со счетчиком */}
+            {/* Кнопка избранного со счетчиком: */}
             <Link
               to="/profile/favorites"
               className={styles.iconBtn}
@@ -292,10 +300,21 @@ export const Header = () => {
               )}
             </Link>
 
+            {/*Кнопка корзины со счетчиком:*/}
             <Link to="/cart" title="Корзина">
               <button className={styles.iconBtn} title="Корзина">
                 🛒 <span className={styles.counter}>{cartCount}</span>
               </button>
+            </Link>
+
+            {/*Кнопка заказов со счетчиком:*/}
+            <Link to="/orders/my" className={styles.iconBtn} title="Мои заказы">
+              📦
+              {activeOrdersCount > 0 && (
+                <span className={`${styles.counter} ${styles.orderCounter}`}>
+                  {activeOrdersCount}
+                </span>
+              )}
             </Link>
           </div>
         </div>

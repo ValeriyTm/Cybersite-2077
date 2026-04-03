@@ -11,6 +11,7 @@ interface CartItem {
   slug: string;
   quantity: number;
   selected: boolean;
+  totalInStock: number;
 }
 
 interface TradingState {

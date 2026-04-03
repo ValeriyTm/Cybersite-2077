@@ -3,6 +3,7 @@ import { orderService } from "./order.service.js";
 import { cartService } from "../trading/cart.service.js";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
 import { addOrderExpirationTask } from "./order.queue";
+import { prisma } from "@repo/database";
 
 export const createOrder = async (
   req: AuthRequest,
@@ -35,6 +36,25 @@ export const getMyOrders = async (
   try {
     const orders = await orderService.getUserOrders(req.user.id);
     res.json(orders);
+  } catch (e) {
+    next(e);
+  }
+};
+
+//Получить список активных заказов юзера (для отображения счетчика на иконке "Мои заказы"):
+export const getActiveOrdersCount = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const count = await prisma.order.count({
+      where: {
+        userId: req.user.id,
+        status: { in: ["PENDING", "PAID", "DELIVERY"] },
+      },
+    });
+    res.json({ count });
   } catch (e) {
     next(e);
   }
