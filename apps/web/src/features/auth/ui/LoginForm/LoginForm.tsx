@@ -21,6 +21,8 @@ import { TwoFactorVerifyForm } from "../TwoFactorVerifyForm";
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
+import { useTradingStore } from "@/entities/trading/model/tradingStore";
+import { useOrderStore } from "@/entities/ordering/model/orderStore";
 
 interface Props {
   onSuccess: () => void;
@@ -38,6 +40,9 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   //Локальные:
   const [localUserId, setLocalUserId] = useState<string | null>(null);
   const [show2FA, setShow2FA] = useState(false);
+
+  const { fetchCart, fetchFavoritesCount } = useTradingStore();
+  const { fetchActiveCount } = useOrderStore();
 
   const {
     register,
@@ -82,6 +87,11 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
             toast.success("С возвращением!");
             navigate("/profile");
           }
+
+          //Сразу подтягиваем данные о корзине, избранном и заказах:
+          fetchCart();
+          fetchFavoritesCount();
+          fetchActiveCount();
         },
       },
       data,

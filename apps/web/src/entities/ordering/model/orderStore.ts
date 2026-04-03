@@ -7,4 +7,5 @@ export const useOrderStore = create((set) => ({
     const res = await $api.get("/orders/active-count");
     set({ activeOrdersCount: res.data.count });
   },
+  resetOrders: () => set({ activeOrdersCount: 0 }),
 }));

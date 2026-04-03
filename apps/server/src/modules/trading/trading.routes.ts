@@ -18,6 +18,12 @@ router.post(
   authMiddleware,
   tradingController.getFavoritesByIds,
 );
+//Роут получения кол-ва товаров в избранном:
+router.get(
+  "/favorites/count",
+  authMiddleware,
+  tradingController.getFavoritesCount,
+);
 //Роут получения товаров в корзине:
 router.get("/cart", authMiddleware, tradingController.getCart);
 //Роут добавления товара в корзину:

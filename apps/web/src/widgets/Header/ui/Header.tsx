@@ -28,6 +28,9 @@ export const Header = () => {
 
   const { activeOrdersCount, fetchActiveCount } = useOrderStore();
 
+  const { resetOrders } = useOrderStore();
+  const { clearTrading, fetchCart, fetchFavoritesCount } = useTradingStore();
+
   //--------Для работы с данными юзера:
   //Технический статус из Zustand:
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -70,6 +73,18 @@ export const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (isAuth) {
+      fetchCart();
+      fetchFavoritesCount();
+      fetchActiveCount();
+    } else {
+      clearTrading();
+      resetOrders();
+    }
+  }, [isAuth, fetchFavoritesCount]);
+  //Если пользователь логинится, то грузим инфу о заказах и т.п. Если логаут - обнуляем.
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
@@ -89,7 +104,8 @@ export const Header = () => {
   };
 
   //Количество избранных товаров:
-  const favoritesCount = useTradingStore((state) => state.favoriteIds.length);
+  // const favoritesCount = useTradingStore((state) => state.favoriteIds.length);
+  const { favoritesCount } = useTradingStore();
 
   //Количество товаров в корзине:
   const cartCount = useTradingStore((state) =>
@@ -303,7 +319,10 @@ export const Header = () => {
             {/*Кнопка корзины со счетчиком:*/}
             <Link to="/cart" title="Корзина">
               <button className={styles.iconBtn} title="Корзина">
-                🛒 <span className={styles.counter}>{cartCount}</span>
+                🛒{" "}
+                {cartCount > 0 && (
+                  <span className={styles.counter}>{cartCount}</span>
+                )}
               </button>
             </Link>
 

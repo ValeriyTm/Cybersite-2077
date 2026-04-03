@@ -5,6 +5,7 @@ import { type ToggleFavoriteRequest } from "./trading.types.js";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+import { prisma } from "@repo/database";
 
 //Контроллер добавления нового мотоцикла в избранное:
 export const toggleFavorite = catchAsync(
@@ -114,3 +115,12 @@ export const removeSelectedFromCart = catchAsync(
     res.json(cart);
   },
 );
+
+//Получить кол-во товаров в избранном:
+export const getFavoritesCount = async (req: AuthRequest, res: Response) => {
+  const count = await prisma.favorite.count({
+    where: { userId: req.user.id },
+  });
+  console.log("count:", count);
+  return res.json({ count });
+};

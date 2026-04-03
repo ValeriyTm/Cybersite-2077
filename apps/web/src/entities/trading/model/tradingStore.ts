@@ -41,6 +41,7 @@ interface TradingState {
 
 export const useTradingStore = create<TradingState>()(
   devtools((set, get) => ({
+    favoritesCount: 0,
     favoriteIds: [],
     cartItems: [],
 
@@ -136,7 +137,16 @@ export const useTradingStore = create<TradingState>()(
       }
     },
 
+    fetchFavoritesCount: async () => {
+      try {
+        const res = await $api.get("/trading/favorites/count");
+        set({ favoritesCount: res.data.count });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
     //Очистка:
-    clearTrading: () => set({ favoriteIds: [] }),
+    clearTrading: () => set({ cartItems: [], favoritesCount: 0 }),
   })),
 );

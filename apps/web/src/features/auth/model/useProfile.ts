@@ -7,12 +7,17 @@ import { $api } from "@/shared/api/api";
 import { useAuthStore } from "./useAuthStore";
 //Тип данных (информация о пользователи), приходящих от сервера:
 import { type IUser } from "@repo/types";
+import { useTradingStore } from "@/entities/trading/model/tradingStore";
+import { useOrderStore } from "@/entities/ordering/model/orderStore";
 
 export const useProfile = () => {
   //Извлекаем состояние авторизации и функции управления из Zustand:
   const { isAuth, setAuth, clearAuth } = useAuthStore();
   //Получаем доступ к управлению всем кэшем React Query:
   const queryClient = useQueryClient();
+
+  const { resetOrders } = useOrderStore();
+  const { clearTrading } = useTradingStore();
 
   const query = useQuery<IUser>({
     queryKey: ["profile"], //Имя, под которым сохраним данные в кэше.
@@ -45,6 +50,9 @@ export const useProfile = () => {
       clearAuth();
       //Чистим кэш, чтобы следующий вошедший пользователь не увидел данные предыдущего на долю секунды:
       queryClient.removeQueries({ queryKey: ["profile"] });
+      //Очищаем корзину и заказы::
+      clearTrading();
+      resetOrders();
     }
   };
 
@@ -57,6 +65,9 @@ export const useProfile = () => {
       clearAuth();
       //Удаляем данные профиля из кэша, чтобы следующий вошедший пользователь не увидел данные предыдущего на долю секунды:
       queryClient.removeQueries({ queryKey: ["profile"] });
+      //Очищаем корзину и заказы::
+      clearTrading();
+      resetOrders();
     }
   };
 
