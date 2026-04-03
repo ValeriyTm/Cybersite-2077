@@ -263,3 +263,25 @@
     }
   }
 }
+
+//Чекбокс наличия:
+.checkboxFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 8px 0;
+  color: #fff;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #f39c12;
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #f39c12;
+    cursor: pointer;
+  }
+}

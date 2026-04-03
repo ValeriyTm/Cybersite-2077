@@ -106,6 +106,16 @@ export const MotorcyclesPage = () => {
           }
         />
 
+        {/*Фильтр наличия:*/}
+        <label className={styles.checkboxFilter}>
+          <input
+            type="checkbox"
+            checked={filters.onlyInStock}
+            onChange={(e) => updateFilters({ onlyInStock: e.target.checked })}
+          />
+          <span>Только в наличии</span>
+        </label>
+
         {/*Фильтр по объему двигателя:*/}
         <RangeFilter
           label="Объем (см³)"

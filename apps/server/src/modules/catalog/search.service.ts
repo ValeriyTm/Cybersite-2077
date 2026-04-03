@@ -81,7 +81,10 @@ export class SearchService {
       page = 1,
       limit = 20,
       sortBy,
+      onlyInStock,
     } = filters;
+
+    console.log(onlyInStock);
 
     const query: any = {
       bool: {
@@ -128,6 +131,16 @@ export class SearchService {
             gte: minYear || 1900,
             lte: maxYear || 2100, // 🎯 Теперь "До" работает
           },
+        },
+      });
+    }
+
+    //Только в наличии:
+    const isOnlyInStock = String(onlyInStock) === "true";
+    if (isOnlyInStock) {
+      query.bool.filter.push({
+        range: {
+          totalInStock: { gt: 0 },
         },
       });
     }
@@ -189,6 +202,8 @@ export class SearchService {
     if (sortBy === "rating_desc") {
       sort = [{ rating: "desc" }];
     }
+
+    console.log("Debag elastic query:", JSON.stringify(query, null, 2));
 
     const result = await esClient.search({
       index: this.indexName,

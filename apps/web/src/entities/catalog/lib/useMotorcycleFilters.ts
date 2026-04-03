@@ -21,6 +21,7 @@ export const useMotorcycleFilters = () => {
     category: searchParams.get("category") || undefined,
     transmission: searchParams.get("transmission") || undefined,
     minRating: searchParams.get("minRating") || undefined,
+    onlyInStock: searchParams.get("onlyInStock") === "true",
   };
 
   //Функция обновления URL:

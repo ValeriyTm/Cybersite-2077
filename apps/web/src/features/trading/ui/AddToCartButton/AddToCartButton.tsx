@@ -25,7 +25,6 @@ export const AddToCartButton = ({
     action();
   };
 
-  console.log("Данные, которые пришли в кнопку: ", data);
   //1) Если товара нет в корзине, то показываем кнопку "В корзину"
   if (!cartItem) {
     return (
