@@ -17,6 +17,7 @@ import catalogRouter from "./modules/catalog/catalog.routes.js";
 import tradingRouter from "./modules/trading/trading.routes.js";
 import warehouseRouter from "./modules/warehouse/warehouse.routes.js";
 import orderRouter from "./modules/ordering/order.routes.js";
+import "./modules/ordering/order.worker.js"; //Импортируем воркер, чтобы он начал слушать задачи.
 
 //Создаём экземпляр приложения Express:
 const app = express();

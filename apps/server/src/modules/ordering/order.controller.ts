@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express";
 import { orderService } from "./order.service.js";
 import { cartService } from "../trading/cart.service.js";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { addOrderExpirationTask } from "./order.queue";
 
 export const createOrder = async (
   req: AuthRequest,
@@ -10,6 +11,9 @@ export const createOrder = async (
 ) => {
   try {
     const order = await orderService.createOrder(req.user.id, req.body);
+
+    //Добавляем задачу в очередь BullMQ (таймер на 1 час):
+    await addOrderExpirationTask(order.id);
 
     // Собираем ID только тех товаров, которые были в заказе:
     const orderedIds = req.body.items.map((item: any) => item.id);
