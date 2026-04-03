@@ -15,6 +15,7 @@ import { commonLimiter } from "./shared/middlewares/rate-limiter.js";
 import { identityRouter } from "./modules/identity/identity.routes.js";
 import catalogRouter from "./modules/catalog/catalog.routes.js";
 import tradingRouter from "./modules/trading/trading.routes.js";
+import warehouseRouter from "./modules/warehouse/warehouse.routes.js";
 
 //Создаём экземпляр приложения Express:
 const app = express();
@@ -107,6 +108,8 @@ app.use("/api/identity", identityRouter);
 app.use("/api/catalog", catalogRouter);
 //Роуты для модуля Trading:
 app.use("/api/trading", tradingRouter);
+//Роуты для модуля Warehouse:
+app.use("/api/warehouse", warehouseRouter);
 //Тестовый эндпоинт для проверки работоспособности сервера (Health Check):
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });

@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import styles from "./CheckoutPage.module.scss";
+import { DeliveryMapModal } from "@/features/ordering/DeliveryMapModal/DeliveryMapModal";
+import { useQuery } from "@tanstack/react-query";
+import { $api } from "@/shared/api/api";
 
 export const CheckoutPage = () => {
   const { cartItems } = useTradingStore();
@@ -9,7 +12,26 @@ export const CheckoutPage = () => {
     null,
   );
 
-  // Считаем сумму выбранных товаров
+  //Карта:
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const { data: warehouses } = useQuery({
+    queryKey: ["warehouses"],
+    queryFn: () => $api.get("/warehouse").then((res) => res.data),
+  });
+
+  const handleAddressSelect = (
+    coords: { lat: number; lng: number },
+    addr: string,
+  ) => {
+    setCoords(coords);
+    setAddress(addr);
+    setIsMapOpen(false);
+
+    //Здесь мы позже вызовем бэкенд для расчета расстояния и цены
+    // calculateDeliveryMutation.mutate(coords);
+  };
+
+  //-----Считаем сумму выбранных товаров:
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
@@ -30,16 +52,24 @@ export const CheckoutPage = () => {
               ) : (
                 <p className={styles.noAddress}>Адрес не выбран</p>
               )}
+
+              {/*Кнопка открытия модалки с картой:*/}
               <button
                 className={styles.mapBtn}
-                onClick={() => {
-                  /* Откроет карту */
-                }}
+                onClick={() => setIsMapOpen(true)}
               >
                 {address ? "Изменить на карте" : "Выбрать на карте"}
               </button>
             </div>
           </section>
+          {/*Сама модалка с картой:*/}
+          {isMapOpen && (
+            <DeliveryMapModal
+              warehouses={warehouses || []}
+              onSelect={handleAddressSelect}
+              onClose={() => setIsMapOpen(false)}
+            />
+          )}
 
           {/* БЛОК 2: СОСТАВ ЗАКАЗА (мини-список) */}
           <section className={styles.section}>

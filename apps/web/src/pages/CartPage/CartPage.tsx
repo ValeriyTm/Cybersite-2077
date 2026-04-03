@@ -140,7 +140,9 @@ export const CartPage = () => {
                       to={`/catalog/motorcycles/${item.brandSlug}/${item.slug}`}
                       className={styles.itemName}
                     >
-                      <p>{item.model}</p>
+                      <p>
+                        {item.model}, {item.year} г
+                      </p>
                     </Link>
 
                     <div className={styles.actions}>
