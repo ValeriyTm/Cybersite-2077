@@ -20,6 +20,8 @@ router.patch(
   authMiddleware,
   orderController.completeOrder,
 );
+//Отмена заказа:
+router.patch("/:orderId/cancel", authMiddleware, orderController.cancelOrder);
 
 //-----------------------Тестовые эндпоинты---------------
 //1) Тестовый эндпоинт для оплаты (для проверки работы BullMQ):

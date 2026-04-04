@@ -121,3 +121,61 @@ export const completeOrder = async (
     next(e);
   }
 };
+
+//Контроллер для перевода статуса заказа в CANCELED:
+export const cancelOrder = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { orderId } = req.params;
+
+    // 1. Ищем заказ со всеми позициями
+    const order = await prisma.order.findUnique({
+      where: { id: orderId, userId: req.user.id },
+      include: { items: true },
+    });
+
+    if (!order) return res.status(404).json({ message: "Заказ не найден" });
+
+    // 2. Проверяем допустимость отмены
+    const forbiddenStatuses = ["DELIVERED", "COMPLETED", "CANCELED"];
+    if (forbiddenStatuses.includes(order.status)) {
+      return res.status(400).json({
+        message:
+          "Этот заказ уже нельзя отменить (он доставлен или уже отменен)",
+      });
+    }
+
+    // 3. ТРАНЗАКЦИЯ: Отмена + Возврат резерва на склад ♻️
+    const canceledOrder = await prisma.$transaction(async (tx) => {
+      // Меняем статус заказа
+      const updated = await tx.order.update({
+        where: { id: orderId },
+        data: { status: "CANCELED" },
+      });
+
+      // Возвращаем товар в доступные остатки (уменьшаем резерв)
+      for (const item of order.items) {
+        await tx.stock.update({
+          where: {
+            motorcycleId_warehouseId: {
+              motorcycleId: item.motorcycleId,
+              warehouseId: order.warehouseId,
+            },
+          },
+          data: {
+            reserved: { decrement: item.quantity },
+          },
+        });
+      }
+
+      return updated;
+    });
+
+    res.json(canceledOrder);
+  } catch (e) {
+    next(e);
+  }
+};
