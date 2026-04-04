@@ -1,0 +1,76 @@
+tags:
+  - name: Warehouse
+    description: Данные о складах и параметрах доставки
+
+paths:
+  /:
+    get:
+      summary: Получить список всех складов
+      description: Возвращает массив всех доступных складов с их координатами для отображения на карте Leaflet.
+      tags:
+        - Warehouse
+      responses:
+        "200":
+          description: Список складов успешно получен
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/Warehouse"
+
+  /calculate:
+    post:
+      summary: Рассчитать стоимость и сроки доставки
+      description: Находит ближайший склад к пользователю и вычисляет логистические параметры.
+      tags:
+        - Warehouse
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lat
+                - lng
+                - items
+              properties:
+                lat:
+                  type: number
+                  format: float
+                  example: 55.7558
+                  description: Широта точки доставки
+                lng:
+                  type: number
+                  format: float
+                  example: 37.6173
+                  description: Долгота точки доставки
+                items:
+                  type: array
+                  description: Список товаров в корзине для проверки наличия на складах
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      quantity:
+                        type: integer
+                        example: 1
+      responses:
+        "200":
+          description: Расчет успешно выполнен
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/DeliveryCalculation"
+
+        "401":
+          description: Неавторизованный доступ
+        "422":
+          description: Не удалось собрать заказ на одном складе
+        "404":
+          description: Склады в базе данных не найдены

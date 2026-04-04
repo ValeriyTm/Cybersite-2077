@@ -10,9 +10,8 @@ export class OrderService {
   async createOrder(userId: string, data: any) {
     const { items, address, coords, deliveryInfo, totalPrice } = data;
 
-    // Используем транзакцию для атомарности
     return await prisma.$transaction(async (tx) => {
-      // 1. Создаем запись заказа и товаров в нем
+      //Создаем запись заказа и товаров в нем:
       const order = await tx.order.create({
         data: {
           userId,
@@ -25,19 +24,18 @@ export class OrderService {
           estimatedDate: new Date(deliveryInfo.estimatedDate),
           totalPrice,
           warehouseId: deliveryInfo.warehouse.id,
-          // Вложенное создание позиций заказа
           items: {
             create: items.map((item: any) => ({
               motorcycleId: item.id,
               quantity: item.quantity,
-              priceAtOrder: item.price, // Фиксируем цену на момент покупки!
+              priceAtOrder: item.price, //Фиксируем цену на момент покупки
             })),
           },
         },
         include: { items: true },
       });
 
-      // 2. Резервируем товар на складе (reserved += quantity)
+      //Резервируем товар на складе (reserved += quantity)
       for (const item of items) {
         await tx.stock.update({
           where: {
@@ -47,14 +45,14 @@ export class OrderService {
             },
           },
           data: {
-            // Увеличиваем только резерв, физическое количество (quantity) пока не трогаем
+            //Увеличиваем только резерв, а физическое количество (quantity) пока не трогаем
             reserved: { increment: item.quantity },
           },
         });
       }
 
-      // 3. Обновляем адрес по умолчанию у пользователя (PostGIS + поля) в таблице users:
-      // Используем $executeRaw для работы с типом geometry
+      //Обновляем адрес по умолчанию у пользователя (PostGIS + поля) в таблице users:
+      //(используем $executeRaw для работы с типом geometry)
       await tx.$executeRaw`
         UPDATE "users" 
         SET 
@@ -67,16 +65,16 @@ export class OrderService {
 
       //Обновляем остатки в Elasticsearch:
       try {
-        // Проходим по всем купленным товарам и обновляем их остатки в индексе
+        //Проходим по всем купленным товарам и обновляем их остатки в индексе:
         for (const item of items) {
           await searchService.updateStockInElastic(item.id);
         }
         console.log(
-          `✅ Остатки для заказа №${order.orderNumber} обновлены в Elastic`,
+          `Остатки для заказа №${order.orderNumber} обновлены в Elastic`,
         );
       } catch (error) {
-        // Если Elastic упал — просто логируем, заказ-то в БД уже создан успешно
-        console.error("⚠️ Ошибка обновления Elastic после заказа:", error);
+        //Если Elastic упал — просто логируем, заказ-то в БД уже создан успешно
+        console.error("Ошибка обновления Elastic после заказа:", error);
       }
 
       return order;
@@ -84,9 +82,13 @@ export class OrderService {
   }
 
   //Получить все заказы пользователя:
-  async getUserOrders(userId: string) {
+  async getUserOrders(userId: string, status?: string) {
     return prisma.order.findMany({
-      where: { userId },
+      where: {
+        userId,
+        //Если статус пришел, фильтруем по нему. Если нет — отдаем всё.
+        status: status ? (status as any) : undefined,
+      },
       include: {
         items: {
           include: {

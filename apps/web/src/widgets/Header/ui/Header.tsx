@@ -293,7 +293,7 @@ export const Header = () => {
                 src={isAuth ? avatarSrc : null}
                 alt={user?.name || "Гость"}
                 size="sm"
-                isAvatarLoading={isLoading} // Показываем спиннер, пока идет /refresh
+                isAvatarLoading={isLoading} //Показываем спиннер, пока идет /refresh
               />
 
               <div className={styles.userInfo}>
@@ -304,7 +304,7 @@ export const Header = () => {
               </div>
             </Link>
 
-            {/* Кнопка избранного со счетчиком: */}
+            {/*Кнопка избранного со счетчиком: */}
             <Link
               to="/profile/favorites"
               className={styles.iconBtn}

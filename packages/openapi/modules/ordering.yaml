@@ -1,0 +1,211 @@
+tags:
+  - name: Ordering
+    description: API для управления жизненным циклом заказов, резервирования остатков и отслеживания статусов
+
+paths:
+  /:
+    post:
+      summary: Создать новый заказ
+      description: Инициализирует заказ, резервирует товары в PostgreSQL, обновляет профиль пользователя и ставит задачу в BullMQ на отмену через 1 час.
+      tags: [Ordering]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas.yaml#/OrderCreateRequest"
+      responses:
+        "201":
+          description: Заказ успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/OrderResponse"
+
+        "400":
+          description: Ошибка валидации или недостаточно товара
+
+  /my:
+    get:
+      summary: Получить список заказов пользователя
+      description: Возвращает историю заказов текущего пользователя с вложенными товарами и брендами. Поддерживает фильтрацию по статусу.
+      tags: [Ordering]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, PAID, DELIVERY, DELIVERED, COMPLETED, CANCELED]
+          description: Фильтр по статусу заказа
+      responses:
+        "200":
+          description: Массив заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/Order"
+
+  /active-count:
+    get:
+      summary: Получить количество активных заказов
+      description: Возвращает число заказов в статусах PENDING, PAID, DELIVERY для отображения счетчика в Header.
+      tags: [Ordering]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Объект с количеством
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 2
+
+  /{orderId}/complete:
+    patch:
+      summary: Подтвердить получение заказа
+      description: Переводит заказ из статуса DELIVERED в COMPLETED. Доступно только владельцу заказа.
+      tags: [Ordering]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Статус успешно обновлен. Параметры заказа.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  id:
+                    type: string
+                    format: uuid
+                  orderNumber:
+                    type: number
+                    description: номер заказа
+                  userId:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                    example: "COMPLETED"
+                  address:
+                    type: string
+                    example: "208, Советская улица, Большой Самовец, Грязинский муниципальный округ, Липецкая область, Центральный федеральный округ, 399082, Россия"
+                  deliveryLat:
+                    type: number
+                    example: 52.54796591773237
+                  deliveryLng:
+                    type: number
+                    example: 39.94791666666669
+                  distance:
+                    type: number
+                  deliveryCost:
+                    type: number
+                  estimatedDate:
+                    type: string
+                    format: date-time
+                    description: Ожидаемая дата прибытия
+                    example: "2026-04-05"
+                  totalPrice:
+                    type: integer
+                  warehouseId:
+                    type: string
+                    format: uuid
+                  createdAt:
+                    type: string
+                    example: "2026-03-31T06:32:03.893Z"
+                  updatedAt:
+                    type: string
+                    example: "2026-03-31T06:32:03.893Z"
+
+  /{orderId}/cancel:
+    patch:
+      summary: Отменить заказ
+      description: Переводит заказ в статус CANCELED и возвращает зарезервированные товары в свободную продажу (Stock).
+      tags: [Ordering]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Заказ отменен, резерв снят
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  id:
+                    type: string
+                    format: uuid
+                  orderNumber:
+                    type: number
+                    description: номер заказа
+                  userId:
+                    type: string
+                    format: uuid
+                  status:
+                    type: string
+                    example: "CANCELED"
+                  address:
+                    type: string
+                    example: "208, Советская улица, Большой Самовец, Грязинский муниципальный округ, Липецкая область, Центральный федеральный округ, 399082, Россия"
+                  deliveryLat:
+                    type: number
+                    example: 52.54796591773237
+                  deliveryLng:
+                    type: number
+                    example: 39.94791666666669
+                  distance:
+                    type: number
+                  deliveryCost:
+                    type: number
+                  estimatedDate:
+                    type: string
+                    format: date-time
+                    description: Ожидаемая дата прибытия
+                    example: "2026-04-05"
+                  totalPrice:
+                    type: integer
+                  warehouseId:
+                    type: string
+                    format: uuid
+                  createdAt:
+                    type: string
+                    example: "2026-03-31T06:32:03.893Z"
+                  updatedAt:
+                    type: string
+                    example: "2026-03-31T06:32:03.893Z"
+
+  /{orderId}/pay-test:
+    patch:
+      summary: Тестовая оплата (имитация на момент, пока модуль Payment не готов)
+      description: Эндпоинт для разработки. Переводит заказ в PAID, списывает остатки (quantity) и запускает BullMQ цепочку доставки.
+      tags: [Ordering]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Оплата прошла успешно

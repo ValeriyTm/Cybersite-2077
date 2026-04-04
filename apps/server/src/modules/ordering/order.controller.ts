@@ -7,6 +7,7 @@ import { prisma } from "@repo/database";
 import { addDeliveryStartTask } from "./order.queue.js";
 import { searchService } from "../catalog/search.service.js";
 
+//Создание заказа:
 export const createOrder = async (
   req: AuthRequest,
   res: Response,
@@ -18,7 +19,7 @@ export const createOrder = async (
     //Добавляем задачу в очередь BullMQ (таймер на 1 час):
     await addOrderExpirationTask(order.id);
 
-    // Собираем ID только тех товаров, которые были в заказе:
+    //Собираем ID только тех товаров, которые были в заказе:
     const orderedIds = req.body.items.map((item: any) => item.id);
 
     //После создания заказа очищаем корзину (Redis) от заказанных позиций:
@@ -30,13 +31,21 @@ export const createOrder = async (
   }
 };
 
+//Получить заказы пользователя:
 export const getMyOrders = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const orders = await orderService.getUserOrders(req.user.id);
+    //Забираем статус из query-параметров (например, /api/orders/my?status=PAID):
+    const { status } = req.query;
+
+    const orders = await orderService.getUserOrders(
+      req.user.id,
+      status as string | undefined,
+    );
+
     res.json(orders);
   } catch (e) {
     next(e);
@@ -53,7 +62,7 @@ export const getActiveOrdersCount = async (
     const count = await prisma.order.count({
       where: {
         userId: req.user.id,
-        status: { in: ["PENDING", "PAID", "DELIVERY"] },
+        status: { in: ["PENDING", "PAID", "DELIVERY"] }, //Статусы, при которых заказы считаются активными
       },
     });
     res.json({ count });
@@ -72,7 +81,7 @@ export const payOrderTest = async (
   try {
     const { orderId } = req.params;
 
-    // 1. Сначала достаем состав заказа, чтобы знать, что списывать
+    //Достаем состав заказа, чтобы знать, что списывать:
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true },
@@ -84,15 +93,15 @@ export const payOrderTest = async (
         .json({ message: "Заказ не найден или уже оплачен/отменен" });
     }
 
-    // 2. ТРАНЗАКЦИЯ СПИСАНИЯ
+    //Транзакция списания:
     await prisma.$transaction(async (tx) => {
-      // Обновляем статус заказа
+      //Обновляем статус заказа:
       await tx.order.update({
         where: { id: orderId },
         data: { status: "PAID" },
       });
 
-      // Списываем со склада
+      //Списываем со склада:
       for (const item of order.items) {
         await tx.stock.update({
           where: {
@@ -115,13 +124,13 @@ export const payOrderTest = async (
         await searchService.updateStockInElastic(item.motorcycleId);
       }
       console.log(
-        `✅ Остатки после оплаты заказа №${order.orderNumber} синхронизированы с Elastic`,
+        `Остатки после оплаты заказа №${order.orderNumber} синхронизированы с Elastic`,
       );
     } catch (error) {
-      console.error("⚠️ Ошибка синхронизации с Elastic при оплате:", error);
+      console.error("Ошибка синхронизации с Elastic при оплате:", error);
     }
 
-    // 3. Запускаем BullMQ на доставку (как делали раньше)
+    //Запускаем BullMQ на доставку:
     await addDeliveryStartTask(order.id);
 
     res.json({
@@ -141,21 +150,21 @@ export const completeOrder = async (
   try {
     const { orderId } = req.params;
 
-    // 1. Ищем заказ и проверяем, принадлежит ли он текущему юзеру 🛡️
+    //Ищем заказ и проверяем, принадлежит ли он текущему юзеру:
     const order = await prisma.order.findUnique({
       where: { id: orderId, userId: req.user.id },
     });
 
     if (!order) return res.status(404).json({ message: "Заказ не найден" });
 
-    // 2. Разрешаем завершать только доставленные заказы
+    //Разрешаем завершать только доставленные заказы:
     if (order.status !== "DELIVERED") {
       return res
         .status(400)
         .json({ message: "Нельзя завершить заказ, который еще не доставлен" });
     }
 
-    // 3. Обновляем статус 🏁
+    //Обновляем статус:
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: { status: "COMPLETED" },
@@ -176,7 +185,7 @@ export const cancelOrder = async (
   try {
     const { orderId } = req.params;
 
-    // 1. Ищем заказ со всеми позициями
+    //Ищем заказ со всеми позициями:
     const order = await prisma.order.findUnique({
       where: { id: orderId, userId: req.user.id },
       include: { items: true },
@@ -184,8 +193,13 @@ export const cancelOrder = async (
 
     if (!order) return res.status(404).json({ message: "Заказ не найден" });
 
-    // 2. Проверяем допустимость отмены
-    const forbiddenStatuses = ["DELIVERED", "COMPLETED", "CANCELED"];
+    //Проверяем допустимость отмены (при следующих статусах уже не отменить заказ):
+    const forbiddenStatuses = [
+      "DELIVERY",
+      "DELIVERED",
+      "COMPLETED",
+      "CANCELED",
+    ];
     if (forbiddenStatuses.includes(order.status)) {
       return res.status(400).json({
         message:
@@ -193,7 +207,7 @@ export const cancelOrder = async (
       });
     }
 
-    // 3. ТРАНЗАКЦИЯ: Отмена + Возврат резерва на склад ♻️
+    //Транзакция (отмена + возврат резерва на склад):
     const canceledOrder = await prisma.$transaction(async (tx) => {
       // Меняем статус заказа
       const updated = await tx.order.update({
@@ -201,7 +215,7 @@ export const cancelOrder = async (
         data: { status: "CANCELED" },
       });
 
-      // Возвращаем товар в доступные остатки (уменьшаем резерв)
+      //Возвращаем товар в доступные остатки (уменьшаем резерв):
       for (const item of order.items) {
         await tx.stock.update({
           where: {

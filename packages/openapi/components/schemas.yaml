@@ -129,6 +129,9 @@ MotorcycleShort:
       example: 29.5
     transmission:
       $ref: "#/TransmissionType"
+    totalInStock:
+      type: integer
+      description: количество товара, доступное для заказа. Встречается не во всех эндпоинтах. Когда-нибудь поправлю.
 
 MotorcycleFull:
   type: object
@@ -255,6 +258,9 @@ MotorcycleFull:
     updatedAt:
       type: string
       example: "2026-03-31T06:32:03.893Z"
+    totalInStock:
+      type: integer
+      description: количество товара, доступное для заказа. Встречается не во всех эндпоинтах. Когда-нибудь поправлю.
 
 ProductImage:
   type: object
@@ -509,3 +515,240 @@ CartResponse:
       type: integer
     selected:
       type: boolean
+
+# Склады:
+Warehouse:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "9a7bacb2-ac48-470e-ac53-63f6012abc4f"
+    name:
+      type: string
+      example: "Главный (Москва)"
+    city:
+      type: string
+      example: "Москва"
+    lat:
+      type: number
+      example: 55.8123
+    lng:
+      type: number
+      example: 37.6456
+
+WarehouseExtended:
+  type: object
+  description: по эндпоинту warehouse/calculate также дополнительно отдаётся поле distanceKm (integer)
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "9a7bacb2-ac48-470e-ac53-63f6012abc4f"
+    name:
+      type: string
+      example: "Главный (Москва)"
+    city:
+      type: string
+      example: "Москва"
+    lat:
+      type: number
+      example: 55.8123
+    lng:
+      type: number
+      example: 37.6456
+    distanceKm:
+      type: integer
+      example: 403
+      description: Расстояние в километрах, вычисленное через PostGIS
+
+DeliveryCalculation:
+  type: object
+  properties:
+    warehouse:
+      $ref: "#/WarehouseExtended"
+    cost:
+      type: integer
+      example: 4036
+      description: Стоимость доставки в рублях
+    days:
+      type: integer
+      example: 2
+      description: Срок доставки в днях
+    estimatedDate:
+      type: string
+      format: date-time
+      description: Ожидаемая дата прибытия
+      example: "2026-04-05"
+    distanceKm:
+      type: integer
+      example: 403
+      description: Расстояние в километрах, вычисленное через PostGIS
+
+# Заказы:
+OrderCreateRequest:
+  type: object
+  required: [items, address, coords, deliveryInfo, totalPrice]
+  properties:
+    items:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string, format: uuid }
+          model: { type: string }
+          quantity: { type: integer }
+          price: { type: number }
+    address: { type: string, example: "Москва, ул. Тверская, 1" }
+    coords:
+      type: object
+      properties:
+        lat: { type: number }
+        lng: { type: number }
+    deliveryInfo:
+      type: object
+      properties:
+        cost: { type: number }
+        days: { type: number }
+        distanceKm: { type: number }
+        estimatedDate:
+          type: string
+          format: date-time
+          description: Ожидаемая дата прибытия
+          example: "2026-04-05"
+        warehouse:
+          $ref: "#/WarehouseExtended"
+    totalPrice: { type: number }
+
+OrderResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    orderNumber:
+      type: number
+      description: номер заказа
+    userId:
+      type: string
+      format: uuid
+    status:
+      type: string
+      enum: [PENDING, CANCELED, PAID, DELIVERY, DELIVERED, COMPLETED]
+    address:
+      type: string
+      example: "208, Советская улица, Большой Самовец, Грязинский муниципальный округ, Липецкая область, Центральный федеральный округ, 399082, Россия"
+    deliveryLat:
+      type: number
+      example: 52.54796591773237
+    deliveryLng:
+      type: number
+      example: 39.94791666666669
+    distance:
+      type: number
+    deliveryCost:
+      type: number
+    estimatedDate:
+      type: string
+      format: date-time
+      description: Ожидаемая дата прибытия
+      example: "2026-04-05"
+    totalPrice:
+      type: integer
+    warehouseId:
+      type: string
+      format: uuid
+    createdAt:
+      type: string
+      example: "2026-03-31T06:32:03.893Z"
+    updatedAt:
+      type: string
+      example: "2026-03-31T06:32:03.893Z"
+    items:
+      type: array
+      items:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        motorcycleId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+        priceAtOrder:
+          type: integer
+          description: цена на момент заказа
+
+Order:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    orderNumber:
+      type: number
+      description: номер заказа
+    userId:
+      type: string
+      format: uuid
+    status:
+      type: string
+      enum: [PENDING, CANCELED, PAID, DELIVERY, DELIVERED, COMPLETED]
+    address:
+      type: string
+      example: "208, Советская улица, Большой Самовец, Грязинский муниципальный округ, Липецкая область, Центральный федеральный округ, 399082, Россия"
+    deliveryLat:
+      type: number
+      example: 52.54796591773237
+    deliveryLng:
+      type: number
+      example: 39.94791666666669
+    distance:
+      type: number
+    deliveryCost:
+      type: number
+    estimatedDate:
+      type: string
+      format: date-time
+      description: Ожидаемая дата прибытия
+      example: "2026-04-05"
+    totalPrice:
+      type: integer
+    warehouseId:
+      type: string
+      format: uuid
+    warehouse:
+      $ref: "#/Warehouse"
+    createdAt:
+      type: string
+      example: "2026-03-31T06:32:03.893Z"
+    updatedAt:
+      type: string
+      example: "2026-03-31T06:32:03.893Z"
+    items:
+      type: array
+      items:
+        $ref: "#/OrderItem"
+
+OrderItem:
+  type: object
+  properties:
+    motorcycle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        motorcycleId:
+          type: string
+          format: uuid
+        quantity: { type: integer }
+        priceAtOrder: { type: number }
+        motorcycle:
+          $ref: "#/MotorcycleFull"

@@ -76,6 +76,24 @@ paths:
     $ref: "./modules/trading.yaml#/paths/~1cart~1item~1{motorcycleId}"
   /api/trading/cart/remove-selected:
     $ref: "./modules/trading.yaml#/paths/~1cart~1remove-selected"
+    # api/warehouse:
+  /api/warehouse:
+    $ref: "./modules/warehouse.yaml#/paths/~1"
+  /api/warehouse/calculate:
+    $ref: "./modules/warehouse.yaml#/paths/~1calculate"
+    # api/orders:
+  /api/orders/:
+    $ref: "./modules/ordering.yaml#/paths/~1"
+  /api/orders/my:
+    $ref: "./modules/ordering.yaml#/paths/~1my"
+  /api/orders/active-count:
+    $ref: "./modules/ordering.yaml#/paths/~1active-count"
+  /api/orders/{orderId}/complete:
+    $ref: "./modules/ordering.yaml#/paths/~1{orderId}~1complete"
+  /api/orders/{orderId}/cancel:
+    $ref: "./modules/ordering.yaml#/paths/~1{orderId}~1cancel"
+  /api/orders/{orderId}/pay-test:
+    $ref: "./modules/ordering.yaml#/paths/~1{orderId}~1pay-test"
 
 components:
   securitySchemes:

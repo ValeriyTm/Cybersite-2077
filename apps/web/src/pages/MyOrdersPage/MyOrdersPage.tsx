@@ -2,19 +2,30 @@ import { useQuery } from "@tanstack/react-query";
 import styles from "./MyOrdersPage.module.scss";
 import { $api } from "@/shared/api/api";
 import { OrderCard } from "@/entities/ordering/ui/OrderCard";
+import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
+import { useState } from "react";
 
 export const MyOrdersPage = () => {
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(
+    undefined,
+  );
+
   const {
     data: orders,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["my-orders"],
-    queryFn: () => $api.get("/orders/my").then((res) => res.data),
+    queryKey: ["my-orders", statusFilter],
+    queryFn: () =>
+      $api
+        .get("/orders/my", {
+          params: { status: statusFilter },
+        })
+        .then((res) => res.data),
 
     //Добавляем автоматический опрос сервера каждые 30 секунд (чтобы статус был актуальным):
     refetchInterval: 30 * 1000,
-    // Также обновлять, когда окно браузера снова становится активным:
+    //Также обновлять, когда окно браузера снова становится активным:
     refetchOnWindowFocus: true,
   });
 
@@ -30,9 +41,26 @@ export const MyOrdersPage = () => {
     );
   }
 
+  const statusOptions = [
+    { value: "PENDING", label: "Ожидают оплаты" },
+    { value: "PAID", label: "Оплачены" },
+    { value: "DELIVERY", label: "Доставляются" },
+    { value: "DELIVERED", label: "Доставлены" },
+    { value: "COMPLETED", label: "Завершены" },
+    { value: "CANCELED", label: "Отменены" },
+  ];
+
   return (
     <main className={styles.container}>
       <h1 className={styles.title}>Мои заказы</h1>
+
+      <SelectFilter
+        label="Фильтр по статусу"
+        value={statusFilter}
+        options={statusOptions}
+        onChange={setStatusFilter}
+        placeholder="Все заказы"
+      />
 
       <div className={styles.list}>
         {orders && orders.length > 0 ? (

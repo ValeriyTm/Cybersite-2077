@@ -5,11 +5,11 @@ import { addDeliveredTask } from "./order.queue.js";
 import { searchService } from "../catalog/search.service.js";
 
 export const orderWorker = new Worker(
-  "order-tasks", // Должно совпадать с именем в Queue
+  "order-tasks", //(Поле должно совпадать с именем в Queue)
   async (job) => {
     const { orderId } = job.data;
 
-    // 1. Если это задача ОТМЕНЫ НЕОПЛАЧЕННОГО заказа
+    //Если это задача отмены неоплаченного за час заказа:
     if (job.name === "expire-order") {
       const order = await prisma.order.findUnique({
         where: { id: orderId },
@@ -56,20 +56,20 @@ export const orderWorker = new Worker(
       }
     }
 
-    // 2. Если это задача НАЧАЛА ДОСТАВКИ (через 1-2 часа после оплаты)
+    //Если это задача начала доставки (перевод PAID- -> DELIVERY) (через 2-3 часа после оплаты)
     if (job.name === "start-delivery") {
       const order = await prisma.order.update({
         where: { id: orderId },
         data: { status: "DELIVERY" },
       });
 
-      //ЦЕПОЧКА: Как только поехала доставка, планируем её завершение
+      //Как только начадась доставка, сразу планируем её завершение:
       await addDeliveredTask(order.id, order.estimatedDate);
 
       console.log(`🚚 Заказ ${orderId} переведен в статус ДОСТАВКА`);
     }
 
-    //ПРИБЫТИЕ ТОВАРА
+    //Задача завершения доставки (перевод DELIVERY --> DELIVERED):
     if (job.name === "set-delivered") {
       await prisma.order.update({
         where: { id: orderId },
@@ -81,7 +81,7 @@ export const orderWorker = new Worker(
   { connection: redis },
 );
 
-// Обработка ошибок воркера
+//Обработка ошибок воркера:
 orderWorker.on("failed", (job, err) => {
   console.error(`❌ Ошибка в задаче ${job?.id}: ${err.message}`);
 });

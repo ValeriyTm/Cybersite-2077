@@ -17,9 +17,9 @@ export const OrderCard = ({ order }: { order: any }) => {
     mutationFn: (orderId: string) =>
       $api.patch(`/orders/${orderId}/complete`).then((res) => res.data),
     onSuccess: () => {
-      // 1. Обновляем список заказов на странице
+      //Обновляем список заказов на странице:
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-      // 2. Обновляем счетчик активных заказов в Хедере 📦
+      //Обновляем счетчик активных заказов в Хедере:
       fetchActiveCount();
     },
   });
@@ -73,14 +73,14 @@ export const OrderCard = ({ order }: { order: any }) => {
 
   return (
     <div className={styles.orderCard}>
-      {/* ШАПКА */}
+      {/*Хэдер*/}
       <div className={styles.topBar}>
         Заказ №{String(order.orderNumber).padStart(6, "0")} от{" "}
         {new Date(order.createdAt).toLocaleDateString()}
       </div>
 
       <div className={styles.mainContent}>
-        {/* ЛЕВАЯ ПАНЕЛЬ */}
+        {/*Левая панель:*/}
         <div className={styles.leftPanel}>
           <div className={styles.infoGroup}>
             <span className={styles.label}>Сумма заказа:</span>
@@ -98,7 +98,7 @@ export const OrderCard = ({ order }: { order: any }) => {
             </span>
           </div>
 
-          {/* Кнопка подтверждения */}
+          {/*Кнопка подтверждения получения заказа*/}
           {isDelivered && (
             <button
               className={styles.confirmBtn}
@@ -107,6 +107,7 @@ export const OrderCard = ({ order }: { order: any }) => {
               Подтвердить получение
             </button>
           )}
+          {/*Кнопка отмены заказа*/}
           {canCancel && (
             <button
               className={styles.cancelBtn}
@@ -117,7 +118,7 @@ export const OrderCard = ({ order }: { order: any }) => {
           )}
         </div>
 
-        {/* СПИСОК ТОВАРОВ (СПРАВА) */}
+        {/*Правая панель (товары):*/}
         <div className={styles.itemsList}>
           {order.items.map((item: any) => {
             const imageUrl = item.motorcycle.images?.[0]
@@ -147,7 +148,7 @@ export const OrderCard = ({ order }: { order: any }) => {
                   </p>
                 </div>
 
-                {/* Кнопка отзыва */}
+                {/*Кнопка отзыва:*/}
                 {isCompleted && (
                   <button className={styles.reviewBtn}>Оставить отзыв</button>
                 )}

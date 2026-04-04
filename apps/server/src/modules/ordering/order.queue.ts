@@ -17,8 +17,9 @@ export const addOrderExpirationTask = async (orderId: string) => {
 
 //Функция для перевода заказа из статуса PAID в DELIVERY:
 export const addDeliveryStartTask = async (orderId: string) => {
-  const randomDelay = 1000 * 30;
-  // Math.floor(Math.random() * (180 - 120 + 1) + 120) * 60 * 1000; //Перевод через 2-3 часа рандомно
+  // const randomDelay = 1000 * 30; //Для тестов
+  const randomDelay =
+    Math.floor(Math.random() * (180 - 120 + 1) + 120) * 60 * 1000; //Перевод через 2-3 часа рандомно
 
   await orderQueue.add("start-delivery", { orderId }, { delay: randomDelay });
 
@@ -35,14 +36,13 @@ export const addDeliveredTask = async (
   const now = new Date().getTime();
   const deliveryTime = new Date(estimatedDate).getTime();
 
-  //Вычисляем задержку (сколько миллисекунд осталось до даты доставки)
-  //(Для теста можно вычесть почти всё время, чтобы сработало через 2 минуты)
-  // const delay = Math.max(0, deliveryTime - now);
-  const delay = 1000 * 30;
+  //Вычисляем задержку (сколько миллисекунд осталось до даты доставки):
+  const delay = Math.max(0, deliveryTime - now);
+  // const delay = 1000 * 30; //Для тестов
 
   await orderQueue.add("set-delivered", { orderId }, { delay });
 
   console.log(
-    `🏁 Заказ ${orderId} будет помечен как ДОСТАВЛЕН через ${Math.round(delay / 1000 / 60)} мин.`,
+    `Заказ ${orderId} будет помечен как DELIVERED через ${Math.round(delay / 1000 / 60)} мин.`,
   );
 };

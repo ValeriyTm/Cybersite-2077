@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { warehouseService } from "./warehouse.service.js";
 
+//Получаем данные о всех складах:
 export const getAllWarehouses = async (
   req: Request,
   res: Response,
@@ -14,6 +15,7 @@ export const getAllWarehouses = async (
   }
 };
 
+//Расчёт стоимости и сроков доставки для заказа:
 export const calculateDelivery = async (
   req: Request,
   res: Response,
@@ -26,14 +28,14 @@ export const calculateDelivery = async (
       return res.status(400).json({ message: "Корзина пуста" });
     }
 
-    // 1. Ищем ближайший склад, способный отгрузить ВЕСЬ заказ
+    //Ищем ближайший склад, способный отгрузить весь заказ за раз:
     const nearest = await warehouseService.findNearestWarehouseWithFullStock(
       Number(lat),
       Number(lng),
       items,
     );
 
-    // 2. Если по всем 5 складам не нашли полный комплект
+    //Если по всем 5 складам не нашли полный комплект:
     if (!nearest) {
       return res.status(422).json({
         message:
@@ -41,7 +43,7 @@ export const calculateDelivery = async (
       });
     }
 
-    // 3. Считаем логистику
+    //Считаем логистику:
     const deliveryInfo = warehouseService.calculateDelivery(nearest.distanceKm);
 
     res.json({

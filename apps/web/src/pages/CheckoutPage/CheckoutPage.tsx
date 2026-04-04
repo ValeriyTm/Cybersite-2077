@@ -33,7 +33,7 @@ export const CheckoutPage = () => {
     [cartItems],
   );
 
-  // 1. Создаем стейт для хранения ответа от /api/warehouse/calculate
+  //Создаем стейт для хранения ответа от "/api/warehouse/calculate":
   const [deliveryInfo, setDeliveryInfo] = useState<{
     warehouse: any;
     cost: number;
@@ -44,7 +44,7 @@ export const CheckoutPage = () => {
 
   //Подставляем дефолтный адрес доставки из БД для юзера:
   useEffect(() => {
-    // Проверяем: есть ли юзер, есть ли легальные товары И подгружены ли остатки
+    //Проверяем, есть ли юзер, есть ли легальные товары и подгружены ли остатки:
     const hasStockData = legalSelectedItems.every(
       (item) => item.totalInStock !== undefined,
     );
@@ -55,7 +55,7 @@ export const CheckoutPage = () => {
       setAddress(user.defaultAddress || "");
       setCoords(savedCoords);
 
-      // 🚀 Запускаем расчет только когда данные "прогреты"
+      //Запускаем расчет только когда данные "прогреты":
       calculateMutation.mutate({
         lat: savedCoords.lat,
         lng: savedCoords.lng,
@@ -65,7 +65,7 @@ export const CheckoutPage = () => {
         })),
       });
     }
-  }, [user, legalSelectedItems]); // Сработает, как только данные юзера загрузятся
+  }, [user, legalSelectedItems]); //Сработает, как только данные юзера загрузятся
 
   //Карта:
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -74,12 +74,12 @@ export const CheckoutPage = () => {
     queryFn: () => $api.get("/warehouse").then((res) => res.data),
   });
 
-  //1. Создаем мутацию для расчета доставки:
+  //Создаем мутацию для расчета доставки:
   const calculateMutation = useMutation({
     mutationFn: (data: { lat: number; lng: number; items: any[] }) =>
       $api.post("/warehouse/calculate", data).then((res) => res.data),
     onSuccess: (data) => {
-      // Сохраняем данные от бэкенда в стейт страницы
+      //Сохраняем данные от бэкенда в стейт страницы:
       setDeliveryInfo(data);
     },
   });
@@ -89,14 +89,13 @@ export const CheckoutPage = () => {
       $api.post("/orders", orderData).then((res) => res.data),
 
     onSuccess: () => {
-      // 1. Обновляем корзину в Zustand (она уже очищена на бэкенде в Redis)
+      //Обновляем корзину в Zustand (она уже очищена на бэкенде в Redis):
       fetchCart();
 
-      //2.Обновляем счётчик в Header:
+      //Обновляем счётчик в Header:
       fetchActiveCount();
 
-      // 3. Редиректим юзера на страницу его заказов
-      // Мы её создадим следующим шагом
+      //Редиректим юзера на страницу его заказов:
       navigate("/orders/my", { state: { success: true } });
     },
     onError: (error: any) => {
@@ -136,7 +135,7 @@ export const CheckoutPage = () => {
     setAddress(addr);
     setIsMapOpen(false);
 
-    // Отправляем координаты + текущую корзину 🚀
+    //Отправляем координаты + текущую корзину:
     calculateMutation.mutate({
       lat: coords.lat,
       lng: coords.lng,
@@ -159,7 +158,7 @@ export const CheckoutPage = () => {
 
       <div className={styles.content}>
         <div className={styles.left}>
-          {/* БЛОК 1: АДРЕС */}
+          {/*Блок 1 - адрес:*/}
           <section className={styles.section}>
             <h3>1. Адрес доставки</h3>
             <div className={styles.addressBox}>
@@ -210,7 +209,7 @@ export const CheckoutPage = () => {
             />
           )}
 
-          {/* БЛОК 2: СОСТАВ ЗАКАЗА (мини-список) */}
+          {/*Блок 2 - состав заказа:*/}
           <section className={styles.section}>
             <h3>2. Состав заказа</h3>
             <div className={styles.previewList}>
@@ -226,7 +225,7 @@ export const CheckoutPage = () => {
           </section>
         </div>
 
-        {/* ПРАВАЯ ПАНЕЛЬ: ИТОГО */}
+        {/*Правая панель - итого:*/}
         <aside className={styles.summary}>
           <h3>Ваш заказ</h3>
           <div className={styles.row}>
@@ -245,7 +244,7 @@ export const CheckoutPage = () => {
 
           <div className={`${styles.row} ${styles.total}`}>
             <span>К оплате:</span>
-            {/* Считаем Итого: Товары + Доставка */}
+            {/*Считаем итого: товары + доставка:*/}
             <span>
               {(subtotal + (deliveryInfo?.cost || 0)).toLocaleString()} ₽
             </span>
@@ -253,7 +252,7 @@ export const CheckoutPage = () => {
 
           <button
             className={styles.payBtn}
-            disabled={!deliveryInfo || createOrderMutation.isPending} // Кнопка активна только когда доставка посчитана 🚀
+            disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
             onClick={handleCreateOrder}
           >
             {createOrderMutation.isPending

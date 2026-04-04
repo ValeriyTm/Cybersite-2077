@@ -90,15 +90,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "/cart",
-        element: <CartPage />,
+        element: <CartPage />, //Страница корзины
       },
       {
         path: "/checkout",
-        element: <CheckoutPage />,
+        element: <CheckoutPage />, //Страница создания заказа
       },
       {
         path: "/orders/my",
-        element: <MyOrdersPage />,
+        element: <MyOrdersPage />, //Страница заказов
       },
       { path: "*", element: <div>404</div> },
     ],

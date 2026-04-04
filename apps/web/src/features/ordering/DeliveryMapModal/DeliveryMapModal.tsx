@@ -1,4 +1,3 @@
-// src/features/ordering/ui/DeliveryMapModal/DeliveryMapModal.tsx
 import {
   MapContainer,
   TileLayer,
@@ -11,7 +10,6 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
 
-// Фикс иконок Leaflet (стандартный баг при сборке)
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
@@ -23,7 +21,7 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Иконка для складов (оранжевая)
+//Иконка для складов (оранжевая):
 const warehouseIcon = new L.Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
@@ -52,19 +50,19 @@ export const DeliveryMapModal = ({
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Обработчик клика по карте
+  //Обработчик клика по карте:
   const MapEvents = () => {
     useMapEvents({
       click: async (e) => {
         setTempCoords(e.latlng);
         setLoading(true);
         try {
-          // Обратное геокодирование через Nominatim
+          //Обратное геокодирование через Nominatim (получаем адрес по координатам):
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=ru`,
             {
               headers: {
-                //Nominatim просит указывать User-Agent (указываю название проекта)
+                //Nominatim просит указывать User-Agent (указываю название проекта):
                 "User-Agent": "CyberSite-2077",
               },
             },
@@ -73,13 +71,13 @@ export const DeliveryMapModal = ({
 
           const data = await res.json();
 
-          // Бывает, что Nominatim возвращает 200 OK, но с пустой ошибкой внутри
+          //Бывает, что Nominatim возвращает 200 OK, но с пустой ошибкой внутри:
           if (data.error) throw new Error(data.error);
 
           //Ограничиваем зону выбора лишь границами РФ:
           if (data.address && data.address.country_code !== "ru") {
             setAddress("Доставка осуществляется только по территории РФ");
-            setTempCoords(null); // Убираем метку, если она вне РФ
+            setTempCoords(null); //Убираем метку, если она вне РФ
             return;
           }
 
@@ -116,7 +114,7 @@ export const DeliveryMapModal = ({
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-            {/* Метки складов */}
+            {/*Метки складов:*/}
             {warehouses.map((wh) => (
               <Marker
                 key={wh.id}
@@ -135,7 +133,7 @@ export const DeliveryMapModal = ({
               </Marker>
             ))}
 
-            {/* Метка пользователя */}
+            {/*Метка пользователя: */}
             {tempCoords && <Marker position={tempCoords} />}
 
             <MapEvents />
@@ -168,7 +166,7 @@ export const DeliveryMapModal = ({
   );
 };
 
-// Инлайн-стили (лучше вынести в SCSS)
+//Инлайн-стили (когда-нибудь вынести в отдельный файл)
 const modalOverlayStyle: React.CSSProperties = {
   position: "fixed",
   top: 0,

@@ -30,6 +30,6 @@ router.patch(
   authMiddleware,
   orderController.payOrderTest,
 );
-// PATCH http://localhost:3001/api/orders/ВАШ_ID_ЗАКАЗА/pay-test - после этого заказ из pending переходит в paid, а затем в delivery
+// PATCH http://localhost:3001/api/orders/тут-id-заказа/pay-test - после этого заказ из pending переходит в paid, а затем в delivery
 
 export default router;
