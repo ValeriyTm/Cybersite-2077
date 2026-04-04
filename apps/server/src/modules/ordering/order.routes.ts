@@ -14,5 +14,20 @@ router.get(
   authMiddleware,
   orderController.getActiveOrdersCount,
 );
+//Подтверждение получения заказа (перевод из статуса DELIVERED в COMPLETED):
+router.patch(
+  "/:orderId/complete",
+  authMiddleware,
+  orderController.completeOrder,
+);
+
+//-----------------------Тестовые эндпоинты---------------
+//1) Тестовый эндпоинт для оплаты (для проверки работы BullMQ):
+router.patch(
+  "/:orderId/pay-test",
+  authMiddleware,
+  orderController.payOrderTest,
+);
+// PATCH http://localhost:3001/api/orders/ВАШ_ID_ЗАКАЗА/pay-test - после этого заказ из pending переходит в paid, а затем в delivery
 
 export default router;

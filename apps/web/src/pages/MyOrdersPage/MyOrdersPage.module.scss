@@ -57,19 +57,27 @@
     &.pending {
       background: rgba(243, 156, 18, 0.15);
       color: #f39c12;
-    } // Оранжевый
+    }
     &.paid {
       background: rgba(46, 204, 113, 0.15);
       color: #2ecc71;
-    } // Зеленый
+    }
     &.canceled {
       background: rgba(231, 76, 60, 0.15);
       color: #e74c3c;
-    } // Красный
+    }
+    &.delivered {
+      background: rgba(52, 152, 219, 0.15);
+      color: #b427a1;
+    }
     &.delivery {
       background: rgba(52, 152, 219, 0.15);
       color: #3498db;
-    } // Синий
+    }
+    &.completed {
+      background: rgba(19, 228, 36, 1);
+      color: #000000;
+    }
   }
 }
 

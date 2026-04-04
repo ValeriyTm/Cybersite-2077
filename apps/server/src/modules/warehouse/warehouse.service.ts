@@ -74,9 +74,14 @@ export class WarehouseService {
     //Считаем срок доставки по принципу 1000 км = 1 день (минимум 1 день):
     const days = Math.max(1, Math.ceil(distanceKm / 1000));
 
-    const estimatedFullDate = new Date();
-    estimatedFullDate.setDate(estimatedFullDate.getDate() + days);
-    const estimatedDate = estimatedFullDate.toISOString().split("T")[0]; //Обрезаю время, оставляя только дату
+    // const estimatedFullDate = new Date();
+    // estimatedFullDate.setDate(estimatedFullDate.getDate() + days);
+    // const estimatedDate = estimatedFullDate.toISOString().split("T")[0]; //Обрезаю время, оставляя только дату
+
+    // Временный фикс для теста:
+    const testDate = new Date();
+    testDate.setMinutes(testDate.getMinutes() + 2); // Доставка через 2 минуты
+    const estimatedDate = testDate;
 
     return {
       cost,

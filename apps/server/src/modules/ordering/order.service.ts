@@ -35,7 +35,7 @@ export class OrderService {
         include: { items: true },
       });
 
-      // 2. Резервируем товар на складе (reserved += quantity) 🛡️
+      // 2. Резервируем товар на складе (reserved += quantity)
       for (const item of items) {
         await tx.stock.update({
           where: {

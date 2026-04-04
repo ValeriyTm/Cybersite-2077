@@ -33,30 +33,6 @@ export const calculateDelivery = async (
       items,
     );
 
-    // //Находим ближайший склад через PostGIS
-    // const results = await warehouseService.findNearestWarehouse(
-    //   Number(lat),
-    //   Number(lng),
-    // );
-    // console.log("results: ", results);
-
-    //     // 🎯 Проверяем: если это массив — берем первый, если нет — берем сам объект
-    //     const nearest = Array.isArray(results) ? results[0] : results;
-
-    //     console.log("nearest: ", nearest);
-
-    //     if (!nearest) return res.status(404).json({ message: "Склады не найдены" });
-
-    //     //Передаем ЧИСЛО (distanceKm), которое лежит внутри объекта:
-    //     const deliveryInfo = warehouseService.calculateDelivery(nearest.distanceKm);
-
-    //     res.json({
-    //       warehouse: nearest,
-    //       ...deliveryInfo,
-    //     });
-    //   } catch (e) {
-    //     next(e);
-    //   }
     // 2. Если по всем 5 складам не нашли полный комплект
     if (!nearest) {
       return res.status(422).json({
