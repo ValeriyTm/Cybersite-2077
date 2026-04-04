@@ -73,7 +73,17 @@ export class OrderService {
       where: { userId },
       include: {
         items: {
-          include: { motorcycle: true },
+          include: {
+            motorcycle: {
+              include: {
+                images: {
+                  where: { isMain: true }, //Берем только главное фото
+                  take: 1,
+                },
+                brand: true,
+              },
+            },
+          },
         },
         warehouse: true,
       },
