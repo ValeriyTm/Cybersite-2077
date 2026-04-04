@@ -2,6 +2,7 @@ import { Worker } from "bullmq";
 import { redis } from "src/lib/redis.js";
 import { prisma } from "@repo/database";
 import { addDeliveredTask } from "./order.queue.js";
+import { searchService } from "../catalog/search.service.js";
 
 export const orderWorker = new Worker(
   "order-tasks", // Должно совпадать с именем в Queue
@@ -33,6 +34,22 @@ export const orderWorker = new Worker(
             });
           }
         });
+
+        //Обновляем остатки в Elastic:
+        try {
+          for (const item of order.items) {
+            await searchService.updateStockInElastic(item.motorcycleId);
+          }
+          console.log(
+            `✅ Остатки заказа №${order.orderNumber} возвращены в Elastic (отмена)`,
+          );
+        } catch (error) {
+          console.error(
+            "⚠️ Ошибка обновления Elastic при отмене заказа:",
+            error,
+          );
+        }
+
         console.log(
           `✅ Заказ №${order.orderNumber} автоматически отменен (истекло время)`,
         );

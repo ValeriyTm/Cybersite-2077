@@ -305,6 +305,29 @@ export class SearchService {
       id: hit._id,
     }));
   }
+
+  //Обновляем данные в Elasticsearch при изменении остатков:
+  async updateStockInElastic(motorcycleId: string) {
+    //Считаем актуальный остаток из БД:
+    const stocks = await prisma.stock.findMany({
+      where: { motorcycleId },
+      select: { quantity: true, reserved: true },
+    });
+
+    const totalInStock = stocks.reduce(
+      (acc, s) => acc + (s.quantity - s.reserved),
+      0,
+    );
+
+    //Частично обновляем документ в ElasticSearch:
+    await esClient.update({
+      index: this.indexName,
+      id: motorcycleId,
+      doc: {
+        totalInStock: Math.max(0, totalInStock),
+      },
+    });
+  }
 }
 
 export const searchService = new SearchService();

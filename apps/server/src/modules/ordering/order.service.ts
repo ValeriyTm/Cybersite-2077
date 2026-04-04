@@ -3,6 +3,8 @@ import { prisma } from "@repo/database";
 //Пространство имен из библиотеки:
 import { Prisma } from "@repo/database/generated/prisma";
 
+import { searchService } from "../catalog/search.service.js";
+
 export class OrderService {
   //Создание заказа с резервированием остатков и обновлением профиля
   async createOrder(userId: string, data: any) {
@@ -62,6 +64,20 @@ export class OrderService {
           "defaultLng" = ${coords.lng}
         WHERE id = ${userId}
       `;
+
+      //Обновляем остатки в Elasticsearch:
+      try {
+        // Проходим по всем купленным товарам и обновляем их остатки в индексе
+        for (const item of items) {
+          await searchService.updateStockInElastic(item.id);
+        }
+        console.log(
+          `✅ Остатки для заказа №${order.orderNumber} обновлены в Elastic`,
+        );
+      } catch (error) {
+        // Если Elastic упал — просто логируем, заказ-то в БД уже создан успешно
+        console.error("⚠️ Ошибка обновления Elastic после заказа:", error);
+      }
 
       return order;
     });

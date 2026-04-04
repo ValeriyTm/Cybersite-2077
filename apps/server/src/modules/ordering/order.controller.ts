@@ -2,9 +2,10 @@ import { Response, NextFunction } from "express";
 import { orderService } from "./order.service.js";
 import { cartService } from "../trading/cart.service.js";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
-import { addOrderExpirationTask } from "./order.queue";
+import { addOrderExpirationTask } from "./order.queue.js";
 import { prisma } from "@repo/database";
 import { addDeliveryStartTask } from "./order.queue.js";
+import { searchService } from "../catalog/search.service.js";
 
 export const createOrder = async (
   req: AuthRequest,
@@ -62,6 +63,7 @@ export const getActiveOrdersCount = async (
 };
 
 //!!!!!!!!!-Тестовый эндпоинт для оплаты (для проверки работы BullMQ):
+//(он меняет статус заказа на PAID и удаляет резерв и физический товар из БД)
 export const payOrderTest = async (
   req: AuthRequest,
   res: Response,
@@ -70,17 +72,60 @@ export const payOrderTest = async (
   try {
     const { orderId } = req.params;
 
-    // 1. Обновляем статус в БД
-    const order = await prisma.order.update({
+    // 1. Сначала достаем состав заказа, чтобы знать, что списывать
+    const order = await prisma.order.findUnique({
       where: { id: orderId },
-      data: { status: "PAID" },
+      include: { items: true },
     });
 
-    // 2.ПИШЕМ ЗАДАЧУ В ОЧЕРЕДЬ (на смену статуса через 1-2 часа)
+    if (!order || order.status !== "PENDING") {
+      return res
+        .status(400)
+        .json({ message: "Заказ не найден или уже оплачен/отменен" });
+    }
+
+    // 2. ТРАНЗАКЦИЯ СПИСАНИЯ
+    await prisma.$transaction(async (tx) => {
+      // Обновляем статус заказа
+      await tx.order.update({
+        where: { id: orderId },
+        data: { status: "PAID" },
+      });
+
+      // Списываем со склада
+      for (const item of order.items) {
+        await tx.stock.update({
+          where: {
+            motorcycleId_warehouseId: {
+              motorcycleId: item.motorcycleId,
+              warehouseId: order.warehouseId,
+            },
+          },
+          data: {
+            quantity: { decrement: item.quantity }, // Физическое списание со склада
+            reserved: { decrement: item.quantity }, // Снятие брони
+          },
+        });
+      }
+    });
+
+    //Обновляем данные по остаткам в Elastic:
+    try {
+      for (const item of order.items) {
+        await searchService.updateStockInElastic(item.motorcycleId);
+      }
+      console.log(
+        `✅ Остатки после оплаты заказа №${order.orderNumber} синхронизированы с Elastic`,
+      );
+    } catch (error) {
+      console.error("⚠️ Ошибка синхронизации с Elastic при оплате:", error);
+    }
+
+    // 3. Запускаем BullMQ на доставку (как делали раньше)
     await addDeliveryStartTask(order.id);
 
     res.json({
-      message: `Заказ №${order.orderNumber} оплачен. Доставка запланирована!`,
+      message: "Оплата прошла, остатки списаны, доставка запланирована!",
     });
   } catch (e) {
     next(e);
