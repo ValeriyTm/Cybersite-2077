@@ -11,7 +11,7 @@ export const OrderCard = ({ order }: { order: any }) => {
 
   const { fetchActiveCount } = useOrderStore();
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); //Необходимо для мутаций
 
   const completeMutation = useMutation({
     mutationFn: (orderId: string) =>
@@ -49,6 +49,28 @@ export const OrderCard = ({ order }: { order: any }) => {
     }
   };
 
+  let translatedStatus;
+  switch (order.status) {
+    case "PENDING":
+      translatedStatus = "Ожидает оплаты";
+      break;
+    case "CANCELED":
+      translatedStatus = "Отменен";
+      break;
+    case "PAID":
+      translatedStatus = "Передача в доставку";
+      break;
+    case "DELIVERY":
+      translatedStatus = "Осуществляется доставка";
+      break;
+    case "DELIVERED":
+      translatedStatus = "Можете забирать";
+      break;
+    case "COMPLETED":
+      translatedStatus = "Завершен";
+      break;
+  }
+
   return (
     <div className={styles.orderCard}>
       {/* ШАПКА */}
@@ -72,7 +94,7 @@ export const OrderCard = ({ order }: { order: any }) => {
             <span
               className={`${styles.status} ${styles[order.status.toLowerCase()]}`}
             >
-              {order.status}
+              {translatedStatus}
             </span>
           </div>
 

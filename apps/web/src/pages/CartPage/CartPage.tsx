@@ -233,9 +233,13 @@ export const CartPage = () => {
           )}
 
           <button
+            type="button"
             className={styles.checkoutBtn}
             disabled={isCheckoutDisabled}
-            onClick={() => navigate("/checkout")}
+            onClick={(e) => {
+              e.stopPropagation(); //Останавливаем "шум" для других компонентов
+              navigate("/checkout");
+            }}
           >
             Перейти к оформлению
           </button>

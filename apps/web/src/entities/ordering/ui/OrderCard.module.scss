@@ -187,15 +187,6 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-
-  .confirmBtn {
-    background: #2ecc71;
-    color: #fff;
-    border: none;
-    &:hover {
-      background: #27ae60;
-    }
-  }
 }
 
 .reviewBtn {
@@ -219,5 +210,17 @@
   font-weight: 600;
   &:hover {
     background: rgba(231, 76, 60, 0.1);
+  }
+}
+
+.confirmBtn {
+  background: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  min-height: 30px;
+  font-weight: 600;
+  &:hover {
+    background: #27ae60;
   }
 }
