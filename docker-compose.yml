@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  # Основная база: PostgreSQL с расширением PostGIS для твоей карты
+  # Основная база: PostgreSQL с расширением PostGIS для реализации карты
   postgres:
     image: postgis/postgis:15-3.3 # Специальный образ с уже установленным PostGIS
     container_name: cybersite_postgres
@@ -38,7 +38,7 @@ services:
     volumes:
       - mongodb_data:/data/db
 
-  # Веб-интерфейс для просмотра таблиц (замена pgAdmin/DBeaver в браузере)
+  # Веб-интерфейс для просмотра таблиц PostgreSQL
   adminer:
     image: adminer
     container_name: cybersite_adminer
@@ -81,15 +81,15 @@ services:
       - node.name=es-node-01
       - cluster.name=cybersite-search
       - discovery.type=single-node
-      # Полное отключение безопасности для локальной разработки 🛡️
+      # Полное отключение безопасности для локальной разработки:
       - xpack.security.enabled=false
       - xpack.security.http.ssl.enabled=false
       - xpack.security.transport.ssl.enabled=false
-      # Настройки CORS для браузера
+      # Настройки CORS для браузера:
       - http.cors.enabled=true
       - 'http.cors.allow-origin="*"'
       - http.cors.allow-headers=X-Requested-With,Content-Type,Content-Length,Authorization
-      # Лимиты памяти
+      # Лимиты памяти:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:

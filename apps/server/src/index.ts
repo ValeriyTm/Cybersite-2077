@@ -7,15 +7,18 @@ import app from "./app.js";
 import { prisma } from "@repo/database";
 //Импортируем мой сервис удаления неподтвержденных аккаунтов:
 import { CleanupService } from "./modules/identity/auth/cleanup.service.js";
+import { connectMongoDB } from "./lib/mongoose.js";
 
 const PORT = process.env.PORT || 3001;
 
 async function bootstrap() {
   try {
     // 1.Проверяем соединение с БД:
-    console.log("⏳ Проверка соединения с базой данных...");
+    console.log("⏳Проверка соединения с PostgreSQL...");
     await prisma.$connect();
-    console.log("✅ База данных подключена успешно");
+    console.log("✅PostgreSQL подключен успешно");
+
+    await connectMongoDB(); //Подключаем MongoDB
 
     // 2.Только после успеха запускаем сервер:
     const server = app.listen(PORT, () => {

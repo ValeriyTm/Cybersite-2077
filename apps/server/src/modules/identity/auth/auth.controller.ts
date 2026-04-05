@@ -112,6 +112,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     id: user.id,
     email: user.email,
     role: user.role,
+    name: user.name, //05.04.2026
   });
 
   //8) Записываем сессию в БД:
@@ -200,6 +201,7 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
     id: freshUser.id,
     email: freshUser.email,
     role: freshUser.role,
+    name: freshUser.name,
   });
 
   //6) Сохраняем новый токен в БД:

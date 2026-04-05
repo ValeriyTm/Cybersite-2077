@@ -17,6 +17,7 @@ import catalogRouter from "./modules/catalog/catalog.routes.js";
 import tradingRouter from "./modules/trading/trading.routes.js";
 import warehouseRouter from "./modules/warehouse/warehouse.routes.js";
 import orderRouter from "./modules/ordering/order.routes.js";
+import reviewRouter from "./modules/reviews/review.routes.js";
 import "./modules/ordering/order.worker.js"; //Импортируем воркер, чтобы он начал слушать задачи.
 
 //Создаём экземпляр приложения Express:
@@ -114,6 +115,8 @@ app.use("/api/trading", tradingRouter);
 app.use("/api/warehouse", warehouseRouter);
 //Роуты для модуля Ordering:
 app.use("/api/orders", orderRouter);
+//Роуты для модуля Reviews:
+app.use("/api/reviews", reviewRouter);
 //Тестовый эндпоинт для проверки работоспособности сервера (Health Check):
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });

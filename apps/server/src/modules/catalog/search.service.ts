@@ -328,6 +328,15 @@ export class SearchService {
       },
     });
   }
+
+  //Обновляем данные по рейтингу:
+  async updateRatingInElastic(id: string, rating: number) {
+    await esClient.update({
+      index: "motorcycles",
+      id,
+      doc: { rating },
+    });
+  }
 }
 
 export const searchService = new SearchService();
