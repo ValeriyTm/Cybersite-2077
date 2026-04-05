@@ -3,6 +3,8 @@ import styles from "./OrderCard.module.scss";
 import { $api } from "@/shared/api/api";
 import { useOrderStore } from "../model/orderStore";
 import { Link } from "react-router";
+import { useState } from "react";
+import { ReviewModal } from "@/features/reviews/ui/ReviewModal/ReviewModal";
 
 export const OrderCard = ({ order }: { order: any }) => {
   const isDelivered = order.status === "DELIVERED";
@@ -12,6 +14,10 @@ export const OrderCard = ({ order }: { order: any }) => {
   const { fetchActiveCount } = useOrderStore();
 
   const queryClient = useQueryClient(); //Необходимо для мутаций
+
+  //Для реализации открытия модалки отзыва:
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
 
   const completeMutation = useMutation({
     mutationFn: (orderId: string) =>
@@ -38,6 +44,12 @@ export const OrderCard = ({ order }: { order: any }) => {
       fetchActiveCount();
     },
   });
+
+  //Для реализации модалки отзыва:
+  const handleOpenReview = (item: any) => {
+    setSelectedItem(item);
+    setIsReviewModalOpen(true);
+  };
 
   const handleCancel = (id: string) => {
     if (
@@ -148,9 +160,23 @@ export const OrderCard = ({ order }: { order: any }) => {
                   </p>
                 </div>
 
-                {/*Кнопка отзыва:*/}
+                {/*Кнопка отзыва (вызова модалки отзыва):*/}
                 {isCompleted && (
-                  <button className={styles.reviewBtn}>Оставить отзыв</button>
+                  <button
+                    className={styles.reviewBtn}
+                    onClick={() => handleOpenReview(item)} //Вызываем модалку для конкретного байка
+                  >
+                    Оставить отзыв
+                  </button>
+                )}
+
+                {/*Модалка отзыва:*/}
+                {isReviewModalOpen && selectedItem && (
+                  <ReviewModal
+                    orderId={order.id}
+                    item={selectedItem}
+                    onClose={() => setIsReviewModalOpen(false)}
+                  />
                 )}
               </div>
             );
