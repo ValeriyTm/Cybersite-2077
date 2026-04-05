@@ -3,6 +3,7 @@ import { prisma } from "@repo/database";
 import { SearchService } from "../catalog/search.service.js";
 import path from "path";
 import * as fs from "node:fs";
+import sanitizeHtml from "sanitize-html";
 
 const searchService = new SearchService();
 
@@ -21,18 +22,28 @@ export class ReviewService {
     });
     if (!order) throw new Error("Вы не можете оставить отзыв на этот товар");
 
-    //2.Создаем отзыв в MongoDB:
+    //2.Производим очистку (санитайзинг) комментария юзера:
+    const cleanComment = sanitizeHtml(comment, {
+      allowedTags: [], // Запрещаем любые HTML-теги
+      allowedAttributes: {},
+    });
+
+    //3.Добавляем в модель Mongo поле userAvatar (из базы Postgres):
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    //4.Создаем отзыв в MongoDB:
     const review = await ReviewModel.create({
       userId,
-      userName,
+      userName: user?.name,
+      userAvatar: user?.avatarUrl,
       motorcycleId,
       orderId,
       rating: Number(rating),
-      comment,
+      comment: cleanComment, //Сохраняем в БД имено очищенный коммент
       images: files,
     });
 
-    //3.Обновляем рейтинг в PostgreSQ:
+    //5.Обновляем рейтинг в PostgreSQ:
     const moto = await prisma.motorcycle.findUnique({
       where: { id: motorcycleId },
     });
@@ -53,7 +64,7 @@ export class ReviewService {
         data: { rating: newRating },
       });
 
-      //4.Синхронизируем новый рейтинг с ElasticSearch:
+      //6.Синхронизируем новый рейтинг с ElasticSearch:
       await searchService.updateRatingInElastic(motorcycleId, newRating);
     }
 

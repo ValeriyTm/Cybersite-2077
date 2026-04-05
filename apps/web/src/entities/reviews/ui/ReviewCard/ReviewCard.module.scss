@@ -1,0 +1,92 @@
+.card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 30px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #333;
+  }
+  .name {
+    font-weight: 600;
+    color: #fff;
+  }
+}
+
+.meta {
+  text-align: right;
+  .date {
+    color: #555;
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .rating {
+    color: #f39c12;
+    font-size: 1.1rem;
+  }
+}
+
+.body {
+  .text {
+    color: #ccc;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+  .toggleText {
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 5px;
+  }
+}
+
+.images {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #333;
+    cursor: pointer;
+  }
+}
+
+.deleteBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: transparent;
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+  border-radius: 10px;
+  padding: 5px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    background: #e74c3c;
+    color: #fff;
+  }
+}

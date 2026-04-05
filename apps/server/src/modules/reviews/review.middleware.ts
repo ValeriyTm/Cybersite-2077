@@ -12,7 +12,7 @@ export const validateReviewAccess = async (
   try {
     const { orderId } = req.body;
 
-    // 🎯 Функция для удаления файлов, если проверка не пройдена
+    //Функция для удаления файлов, если проверка не пройдена:
     const cleanup = () => {
       if (req.files) {
         (req.files as Express.Multer.File[]).forEach((file) => {

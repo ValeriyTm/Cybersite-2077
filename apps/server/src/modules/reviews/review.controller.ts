@@ -12,7 +12,7 @@ export const createReview = async (
 
     //Собираем пути к файлам из Multer:
     const files = ((req.files as Express.Multer.File[]) || []).map(
-      (file) => `/uploads/reviews/${file.filename}`,
+      (file) => `/static/reviews/${file.filename}`,
     );
 
     const review = await reviewService.createReview(

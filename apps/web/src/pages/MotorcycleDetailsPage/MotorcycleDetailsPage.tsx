@@ -20,11 +20,15 @@ import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
+import { useProfile } from "@/features/auth/model/useProfile";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { $api } from "@/shared/api/api";
+import { ReviewCard } from "@/entities/reviews/ui/ReviewCard/ReviewCard";
 
 const STATIC_URL = "http://localhost:3001/static/motorcycles";
 const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg`;
 
-type TabType = "specs" | "description" | "warranty" | "docs";
+type TabType = "specs" | "description" | "warranty" | "docs" | "reviews";
 
 export const MotorcycleDetailsPage = () => {
   const { brandSlug, slug } = useParams<{ brandSlug: string; slug: string }>();
@@ -38,10 +42,45 @@ export const MotorcycleDetailsPage = () => {
 
   const isAuth = useAuthStore((state) => state.isAuth);
 
+  //Для отзывов:
+  const { user } = useProfile();
+  const queryClient = useQueryClient();
+
   //Подключаем избранное и корзину
   const { toggleFavorite } = useFavorites();
   const { addToCart } = useCart();
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
+
+  //Получаем данные мотоцикла по слагу (как и раньше)
+  const { data: motorcycle } = useQuery({
+    queryKey: ["motorcycle", slug],
+    queryFn: () =>
+      $api
+        .get(`catalog/motorcycles/${brandSlug.toLowerCase()}/${slug}`)
+        .then((res) => res.data),
+  });
+
+  //Загружаем отзывы из MongoDB:
+  const { data: reviews, isLoading: isReviewsLoading } = useQuery({
+    queryKey: ["reviews", motorcycle?.id], // Ключ обновится, когда придет id
+    queryFn: () =>
+      $api.get(`/reviews/${motorcycle.id}`).then((res) => res.data),
+    // 🛡️ ВАЖНО: Запрос не уйдет, пока motorcycle.id равен undefined
+    enabled: !!motorcycle?.id,
+  });
+
+  //Мутация удаления отзыва
+  const deleteMutation = useMutation({
+    mutationFn: (reviewId: string) => $api.delete(`/reviews/${reviewId}`),
+    onSuccess: () => {
+      // 🎯 1. Обновляем список отзывов
+      queryClient.invalidateQueries({ queryKey: ["reviews", motorcycle?.id] });
+
+      // 🎯 2. Обновляем данные самого мотоцикла (чтобы звезды в шапке изменились)
+      // Используем slug, так как это ключ первого запроса
+      queryClient.invalidateQueries({ queryKey: ["motorcycle", slug] });
+    },
+  });
 
   useEffect(() => {
     if (brandSlug && slug) {
@@ -67,7 +106,13 @@ export const MotorcycleDetailsPage = () => {
         .catch((err) => console.error("Ошибка загрузки рекомендаций:", err));
     }
   }, [slug]);
-
+  //-------
+  //Для удаления отзыва:
+  const handleDelete = (reviewId: string) => {
+    if (window.confirm("Удалить этот отзыв?")) {
+      deleteMutation.mutate(reviewId);
+    }
+  };
   //-----
   // 1. Подключаем логику избранного
 
@@ -269,6 +314,8 @@ export const MotorcycleDetailsPage = () => {
   const mainImageUrl =
     data.images?.find((img) => img.isMain)?.url || data.images?.[0]?.url || ""; // Заглушка, если картинок нет вообще
 
+  const realRating = Number(data.rating.toFixed(1));
+
   return (
     <main className={styles.Page}>
       {/*SEO:*/}
@@ -366,7 +413,7 @@ export const MotorcycleDetailsPage = () => {
             <p className={styles.description}>
               {data.year} года выпуска. Объем двигателя {data.displacement} см³.
             </p>
-            <p className={styles.description}>Текущий рейтинг: {data.rating}</p>
+            <p className={styles.description}>Текущий рейтинг: {realRating}</p>
             <p className={styles.description}>Артикул товара: {data.slug}</p>
           </div>
         </section>
@@ -386,6 +433,12 @@ export const MotorcycleDetailsPage = () => {
             onClick={() => setActiveTab("description")}
           >
             Описание
+          </button>
+          <button
+            className={activeTab === "reviews" ? styles.activeTab : ""}
+            onClick={() => setActiveTab("reviews")}
+          >
+            Отзывы
           </button>
           <button
             className={activeTab === "warranty" ? styles.activeTab : ""}
@@ -561,6 +614,27 @@ export const MotorcycleDetailsPage = () => {
               >
                 📄 Скачать Manual.pdf (2.4 MB)
               </a>
+            </div>
+          )}
+
+          {/*Контент с отзывами:*/}
+          {activeTab === "reviews" && (
+            <div className={styles.reviewsTab}>
+              {reviews?.length > 0 ? (
+                reviews.map((review: any) => (
+                  <ReviewCard
+                    key={review._id}
+                    review={review}
+                    onDelete={() => handleDelete(review._id)}
+                    currentUserId={user?.id}
+                    isAdmin={user?.role === "ADMIN"}
+                  />
+                ))
+              ) : (
+                <div className={styles.noReviews}>
+                  <p>На эту модель пока нет отзывов. Станьте первым!</p>
+                </div>
+              )}
             </div>
           )}
         </section>
