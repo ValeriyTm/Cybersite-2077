@@ -21,7 +21,7 @@ export const checkPromoCode = async (req: Request, res: Response) => {
   });
 };
 
-//Проверка промокода в корзине:
+//Применение промокода:
 export const applyPromoCode = async (
   req: AuthRequest,
   res: Response,
@@ -29,13 +29,25 @@ export const applyPromoCode = async (
 ) => {
   try {
     const { code } = req.body;
+    const userId = req.user.id;
 
     const promo = await prisma.promoCode.findUnique({
       where: { code: code.toUpperCase(), isActive: true },
+      include: { usedPromos: { where: { userId } } }, //Подтягиваем использование этим юзером
     });
 
     if (!promo || promo.expiresAt < new Date()) {
       return res.status(404).json({ message: "Промокод не найден или истек" });
+    }
+
+    //Если промокод уже использован юзером - отказ
+    const alreadyUsed = await prisma.usedPromo.findFirst({
+      where: { userId, promoCodeId: promo.id },
+    });
+    if (alreadyUsed) {
+      return res
+        .status(400)
+        .json({ message: "Вы уже использовали этот промокод" });
     }
 
     res.json({

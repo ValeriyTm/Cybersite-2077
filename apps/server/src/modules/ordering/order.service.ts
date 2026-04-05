@@ -10,12 +10,13 @@ export class OrderService {
   async createOrder(userId: string, data: any) {
     const { items, address, coords, deliveryInfo, totalPrice } = data;
 
-    return await prisma.$transaction(async (tx) => {
-      //Создаем запись заказа и товаров в нем:
+    //1.Транзакция в БД:
+    const order = await prisma.$transaction(async (tx) => {
+      //1.1.Создаем запись заказа и товаров в нем:
       const order = await tx.order.create({
         data: {
           userId,
-          status: "PENDING", // Резерв на 1 час
+          status: "PENDING", //Резерв на 1 час
           address,
           deliveryLat: coords.lat,
           deliveryLng: coords.lng,
@@ -35,7 +36,7 @@ export class OrderService {
         include: { items: true },
       });
 
-      //Резервируем товар на складе (reserved += quantity)
+      //1.2.Резервируем товар на складе (reserved += quantity)
       for (const item of items) {
         await tx.stock.update({
           where: {
@@ -51,7 +52,7 @@ export class OrderService {
         });
       }
 
-      //Обновляем адрес по умолчанию у пользователя (PostGIS + поля) в таблице users:
+      //1.3.Обновляем адрес по умолчанию у пользователя (PostGIS + поля) в таблице users:
       //(используем $executeRaw для работы с типом geometry)
       await tx.$executeRaw`
         UPDATE "users" 
@@ -63,22 +64,41 @@ export class OrderService {
         WHERE id = ${userId}
       `;
 
-      //Обновляем остатки в Elasticsearch:
-      try {
-        //Проходим по всем купленным товарам и обновляем их остатки в индексе:
-        for (const item of items) {
-          await searchService.updateStockInElastic(item.id);
+      //1.4.Фиксируем использование промокода
+      if (data.promoCode) {
+        const promo = await tx.promoCode.findUnique({
+          where: { code: data.promoCode.toUpperCase() },
+        });
+
+        if (promo) {
+          await tx.usedPromo.create({
+            data: {
+              userId,
+              promoCodeId: promo.id,
+            },
+          });
         }
-        console.log(
-          `Остатки для заказа №${order.orderNumber} обновлены в Elastic`,
-        );
-      } catch (error) {
-        //Если Elastic упал — просто логируем, заказ-то в БД уже создан успешно
-        console.error("Ошибка обновления Elastic после заказа:", error);
       }
 
+      //1.5.Возвращаем заказ
       return order;
     });
+
+    //2.Обновляем остатки в Elasticsearch:
+    try {
+      //Проходим по всем купленным товарам и обновляем их остатки в индексе:
+      for (const item of items) {
+        await searchService.updateStockInElastic(item.id);
+      }
+      console.log(
+        `Остатки для заказа №${order.orderNumber} обновлены в Elastic`,
+      );
+    } catch (error) {
+      //Если Elastic упал — просто логируем, заказ-то в БД уже создан успешно
+      console.error("Ошибка обновления Elastic после заказа:", error);
+    }
+
+    return order;
   }
 
   //Получить все заказы пользователя:

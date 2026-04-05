@@ -41,7 +41,7 @@ export const CartPage = () => {
       toast.success(`Промокод ${res.data.code} применен!`);
     } catch (e) {
       setAppliedPromo(null);
-      toast.error("Промокод не найден или истек");
+      toast.error("Промокод не найден, истек или уже использован");
     }
   };
 

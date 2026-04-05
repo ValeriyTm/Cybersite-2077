@@ -84,10 +84,9 @@ model User {
 
   //--------Связи:
   orders           Order[] // У одного юзера может быть много заказов
-
   favorites        Favorite[] //Связь с избранным
-
   personalDiscounts PersonalDiscount[] //Связь с персональными скидками
+  promos            UsedPromo[] //Связь с использованными промокодами
 
   @@index([location], type: Gist) // Индекс для быстрого поиска по координатам
   @@map("users") // Название таблицы в БД в нижнем регистре
@@ -391,6 +390,21 @@ model PromoCode {
   createdAt      DateTime @default(now())
   expiresAt      DateTime //Истекает через неделю
   
+  //Связи:
+  usedPromos     UsedPromo[] //Использованные юзерами промокоды
+
   //Поле для отслеживания использования:
   usedCount      Int      @default(0)
+}
+
+//Использованные промокоды (связывает юзера и использованные промокоды):
+model UsedPromo {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  promoCodeId String
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id])
+  usedAt      DateTime @default(now())
+
+  @@unique([userId, promoCodeId]) //юзер + код - это уникальная пара
 }
