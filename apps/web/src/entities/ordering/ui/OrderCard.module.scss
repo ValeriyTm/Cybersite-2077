@@ -201,6 +201,20 @@
   }
 }
 
+.reviewedBtn {
+  background: #222 !important;
+  color: #555 !important;
+  border: 1px solid #333 !important;
+  border-radius: 10px;
+  min-height: 25px;
+  cursor: default !important;
+  font-weight: 500;
+
+  &:hover {
+    background: #222 !important;
+  }
+}
+
 .cancelBtn {
   background: transparent;
   color: #e74c3c;

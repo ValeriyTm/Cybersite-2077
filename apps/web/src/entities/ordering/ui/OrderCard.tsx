@@ -163,10 +163,13 @@ export const OrderCard = ({ order }: { order: any }) => {
                 {/*Кнопка отзыва (вызова модалки отзыва):*/}
                 {isCompleted && (
                   <button
-                    className={styles.reviewBtn}
-                    onClick={() => handleOpenReview(item)} //Вызываем модалку для конкретного байка
+                    className={
+                      item.isReviewed ? styles.reviewedBtn : styles.reviewBtn
+                    }
+                    disabled={item.isReviewed}
+                    onClick={() => !item.isReviewed && handleOpenReview(item)}
                   >
-                    Оставить отзыв
+                    {item.isReviewed ? "Отзыв оставлен ✓" : "Оставить отзыв"}
                   </button>
                 )}
 

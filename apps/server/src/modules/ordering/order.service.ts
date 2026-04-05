@@ -2,7 +2,7 @@
 import { prisma } from "@repo/database";
 //Пространство имен из библиотеки:
 import { Prisma } from "@repo/database/generated/prisma";
-
+import { ReviewModel } from "../reviews/review.model.js";
 import { searchService } from "../catalog/search.service.js";
 
 export class OrderService {
@@ -83,7 +83,7 @@ export class OrderService {
 
   //Получить все заказы пользователя:
   async getUserOrders(userId: string, status?: string) {
-    return prisma.order.findMany({
+    const orders = await prisma.order.findMany({
       where: {
         userId,
         //Если статус пришел, фильтруем по нему. Если нет — отдаем всё.
@@ -107,6 +107,28 @@ export class OrderService {
       },
       orderBy: { createdAt: "desc" },
     });
+
+    //Проверяем наличие отзывов в MongoDB:
+    return await Promise.all(
+      orders.map(async (order) => {
+        const itemsWithReviewStatus = await Promise.all(
+          order.items.map(async (item) => {
+            //Ищем отзыв по связке заказ + мотоцикл:
+            const review = await ReviewModel.findOne({
+              orderId: order.id,
+              motorcycleId: item.motorcycleId,
+            });
+
+            return {
+              ...item,
+              isReviewed: !!review, //true, если отзыв найден
+            };
+          }),
+        );
+
+        return { ...order, items: itemsWithReviewStatus };
+      }),
+    );
   }
 }
 
