@@ -293,36 +293,40 @@ export const CartPage = () => {
           >
             Перейти к оформлению
           </button>
+
+          {/*Зона ввода промокода:*/}
+          <div className={styles.promoSection}>
+            <p className={styles.promoLabel}>Промокод на скидку:</p>
+
+            {!appliedPromo ? (
+              <div className={styles.inputGroup}>
+                <input
+                  type="text"
+                  placeholder="ВВЕДИТЕ СЛОВО"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                />
+                <button className={styles.applyBtn} onClick={handleApplyPromo}>
+                  Применить
+                </button>
+              </div>
+            ) : (
+              <div className={styles.successMsg}>
+                ✅ Промокод <strong>{appliedPromo.code}</strong> применен:
+                <br></br>
+                <span> -{appliedPromo.amount.toLocaleString()} ₽</span>
+                <br></br>
+                <span>Отменить промокод: </span>
+                <button
+                  className={styles.removeBtn}
+                  onClick={() => setAppliedPromo(null)}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
         </aside>
-
-        <div className={styles.promoSection}>
-          <p className={styles.promoLabel}>Промокод на скидку:</p>
-
-          {!appliedPromo ? (
-            <div className={styles.inputGroup}>
-              <input
-                type="text"
-                placeholder="ВВЕДИТЕ СЛОВО"
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-              />
-              <button className={styles.applyBtn} onClick={handleApplyPromo}>
-                Применить
-              </button>
-            </div>
-          ) : (
-            <div className={styles.successMsg}>
-              ✅ Промокод <strong>{appliedPromo.code}</strong> применен:
-              <span> -{appliedPromo.amount.toLocaleString()} ₽</span>
-              <button
-                className={styles.removeBtn}
-                onClick={() => setAppliedPromo(null)}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-        </div>
       </div>
     </main>
   );

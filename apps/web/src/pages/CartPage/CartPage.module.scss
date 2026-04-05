@@ -363,3 +363,12 @@
     font-weight: 600;
   }
 }
+
+.removeBtn {
+  background-color: #c0676f;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #b33e48;
+  }
+}
