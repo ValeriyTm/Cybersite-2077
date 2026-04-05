@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ImageModal } from "@/shared/ui/ImageModal/ImageModal";
 import styles from "./ReviewCard.module.scss";
 
 export const ReviewCard = ({
@@ -9,6 +10,9 @@ export const ReviewCard = ({
 }: any) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isLongText = review.comment.length > 200;
+
+  //Состояние для открытия прикрепленного фото в модалке:
+  const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
   // Текст для отображения
   const displayText =
@@ -61,12 +65,19 @@ export const ReviewCard = ({
           {review.images.map((img: string, i: number) => (
             <img
               key={i}
-              src={`http://localhost:3001/static/..${img}`}
+              src={`http://localhost:3001${img}`}
               alt="review-pic"
+              onClick={() => setSelectedImg(`http://localhost:3001${img}`)} //Открываем модалку при клике
+              className={styles.clickableImg}
             />
           ))}
         </div>
       </div>
+
+      {/*Рендерим модалку, если картинка выбрана:*/}
+      {selectedImg && (
+        <ImageModal src={selectedImg} onClose={() => setSelectedImg(null)} />
+      )}
 
       {canDelete && (
         <button
