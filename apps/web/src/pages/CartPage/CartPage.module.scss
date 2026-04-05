@@ -188,14 +188,25 @@
 
     .currentPrice {
       font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.4);
+      color: rgba(255, 255, 255, 1);
       margin-bottom: 4px;
+    }
+
+    .oldPrice {
+      text-decoration: line-through;
+      font-size: 0.7rem;
     }
 
     .totalItemPrice {
       font-size: 1.25rem;
       font-weight: 800;
       color: #f39c12;
+    }
+
+    .badgeDiscount {
+      color: #c31120;
+      font-weight: 800;
+      font-style: italic;
     }
   }
 }
@@ -372,3 +383,11 @@
     background-color: #b33e48;
   }
 }
+
+// .oldPrice {
+//   text-decoration: line-through;
+// }
+
+// .currentPrice {
+//   color: white !important;
+// }

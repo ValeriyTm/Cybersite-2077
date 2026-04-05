@@ -1,6 +1,7 @@
 import { redis } from "../../lib/redis.js";
 import { prisma } from "@repo/database";
 import { warehouseService } from "../warehouse/warehouse.service.js";
+import { DiscountLogic } from "../discount/discount.logic.js";
 
 export class CartService {
   private getCartKey(userId: string) {
@@ -16,6 +17,15 @@ export class CartService {
 
     //Собираем все ID товаров из корзины:
     const ids = cartItems.map((item: any) => item.id);
+
+    // Получаем полные данные мотоциклов (нужны для года выпуска и цены)
+    const motorcycles = await prisma.motorcycle.findMany({
+      where: { id: { in: ids } },
+      include: {
+        brand: true,
+        images: { where: { isMain: true }, take: 1 },
+      },
+    });
 
     //Получаем актуальные остатки из БД
     const stocks = await prisma.stock.groupBy({
@@ -37,11 +47,33 @@ export class CartService {
       ]),
     );
 
-    //Добавляем актуальный totalInStock к каждому предмету корзины:
-    return cartItems.map((item: any) => ({
-      ...item,
-      totalInStock: stockMap[item.id] || 0, // Если товара нет в таблице Stock — пишем 0
-    }));
+    //Финальная сборка и расчёт скидок:
+    const enrichedCart = await Promise.all(
+      cartItems.map(async (item: any) => {
+        const moto = motorcycles.find((m) => m.id === item.id);
+        if (!moto) return null;
+
+        // 🎯 Рассчитываем скидку для этого товара и этого юзера
+        const discountData = await DiscountLogic.calculateFinalPrice(
+          moto,
+          userId,
+        );
+
+        return {
+          ...moto, // Данные из БД (модель, бренд, базовая цена)
+          quantity: item.quantity,
+          totalInStock: stockMap[item.id] || 0, //Если товара нет в таблице Stock — пишем 0
+          discountData, // Скидки { finalPrice, discountPercent, isPersonal }
+        };
+      }),
+    );
+
+    return enrichedCart.filter(Boolean);
+    // //Добавляем актуальный totalInStock к каждому предмету корзины:
+    // return cartItems.map((item: any) => ({
+    //   ...item,
+    //   totalInStock: stockMap[item.id] || 0, // Если товара нет в таблице Stock — пишем 0
+    // }));
   }
 
   //Добавить товар в корзину / обновить количество:

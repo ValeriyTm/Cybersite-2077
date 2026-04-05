@@ -160,7 +160,12 @@ export const CartPage = () => {
             {cartItems.map((item) => {
               //Ошибка, если товара на складе осталось меньше, чем у нас в корзине:
               const isError = item.quantity > item.totalInStock;
-
+              //Скидки:
+              const hasDiscount =
+                item.discountData && item.discountData.discountPercent > 0;
+              const displayPrice = hasDiscount
+                ? item.discountData.finalPrice
+                : item.price;
               return (
                 <div
                   key={item.id}
@@ -235,13 +240,45 @@ export const CartPage = () => {
                     </button>
                   </div>
 
-                  <div className={styles.priceBlock}>
+                  {/* <div className={styles.priceBlock}>
                     <span className={styles.currentPrice}>
                       {item.price?.toLocaleString() ?? 0} ₽ / шт.
                     </span>
                     <span className={styles.totalItemPrice}>
                       {(item.price * item.quantity).toLocaleString()} ₽
                     </span>
+                  </div> */}
+
+                  <div className={styles.priceBlock}>
+                    {hasDiscount ? (
+                      <>
+                        {/*Старая цена:*/}
+                        <span className={styles.oldPrice}>
+                          {item.price?.toLocaleString() ?? 0} ₽ / шт.
+                        </span>
+                        {/*Новая цена:*/}
+                        <span className={styles.currentPrice}>
+                          {displayPrice.toLocaleString() ?? 0} ₽ / шт.
+                        </span>
+                        {/*Общая сумма:*/}
+                        <span className={styles.totalItemPrice}>
+                          {(displayPrice * item.quantity).toLocaleString()} ₽
+                        </span>
+                        {/*Скидка:*/}
+                        <span className={styles.badgeDiscount}>
+                          -{item.discountData.discountPercent}%
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className={styles.currentPrice}>
+                          {item.price?.toLocaleString() ?? 0} ₽ / шт.
+                        </span>
+                        <span className={styles.totalItemPrice}>
+                          {(item.price * item.quantity).toLocaleString()} ₽
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   {isError && (
