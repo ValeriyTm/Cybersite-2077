@@ -41,3 +41,26 @@ export const getMotorcycleReviews = async (
     next(e);
   }
 };
+
+export const deleteReview = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { reviewId } = req.params;
+    const isAdmin = req.user.role === "ADMIN";
+
+    const result = await reviewService.deleteReview(
+      reviewId,
+      req.user.id,
+      isAdmin,
+    );
+
+    res.json({ message: "Отзыв успешно удален", id: result?._id });
+  } catch (e: any) {
+    // Обработка ошибок (403, 404 и т.д.)
+    const status = e.message.includes("прав") ? 403 : 404;
+    res.status(status).json({ message: e.message });
+  }
+};

@@ -16,5 +16,7 @@ router.post(
 );
 //Получить все отзывы для конкретной модели мотоцикла:
 router.get("/:motorcycleId", reviewController.getMotorcycleReviews);
+//Удалить отзыв:
+router.delete("/:reviewId", authMiddleware, reviewController.deleteReview);
 
 export default router;
