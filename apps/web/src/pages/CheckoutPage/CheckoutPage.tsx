@@ -7,6 +7,7 @@ import { $api } from "@/shared/api/api";
 import { useNavigate } from "react-router";
 import { useProfile } from "@/features/auth/model/useProfile";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
+import { useLocation } from "react-router";
 
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();
@@ -15,11 +16,15 @@ export const CheckoutPage = () => {
     null,
   );
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   const { user } = useProfile();
 
   const { fetchActiveCount } = useOrderStore();
+
+  //Информация о промокоде:
+  const promoFromCart = location.state?.promo;
 
   //Отбираем только выбранные юзером в корзине товары:
   const legalSelectedItems = useMemo(
@@ -121,6 +126,7 @@ export const CheckoutPage = () => {
       address,
       coords,
       deliveryInfo,
+      promoCode: promoFromCart?.code || null,
       totalPrice: subtotal + (deliveryInfo?.cost || 0),
     };
 
@@ -147,10 +153,11 @@ export const CheckoutPage = () => {
   };
 
   //-----Считаем сумму выбранных товаров:
-  const subtotal = legalSelectedItems.reduce(
+  const subtotalPre = legalSelectedItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
+  const subtotal = subtotalPre - Number(promoFromCart?.amount || 0);
 
   return (
     <main className={styles.CheckoutPage}>
@@ -230,15 +237,24 @@ export const CheckoutPage = () => {
           <h3>Ваш заказ</h3>
           <div className={styles.row}>
             <span>Товары ({cartItems.length}):</span>
-            <span>{subtotal.toLocaleString()} ₽</span>
+            <span>+ {subtotal.toLocaleString()} ₽</span>
           </div>
 
           <div className={styles.row}>
             <span>Доставка:</span>
             <span>
               {deliveryInfo
-                ? `${deliveryInfo.cost.toLocaleString()} ₽`
+                ? `+ ${deliveryInfo.cost.toLocaleString()} ₽`
                 : "Выберите адрес"}
+            </span>
+          </div>
+
+          <div className={styles.row}>
+            <span>Промокод:</span>
+            <span>
+              {promoFromCart?.amount
+                ? `- ${promoFromCart?.amount.toLocaleString()} ₽`
+                : "Не применен"}
             </span>
           </div>
 

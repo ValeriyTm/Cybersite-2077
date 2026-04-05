@@ -232,3 +232,47 @@
     transform: scale(1.2);
   }
 }
+
+//Скидки:
+.badgeDiscount {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: #2da109; // Красный для глобальных
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 900;
+  font-size: 0.8rem;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+  &.personal {
+    background: #f39c12; //Для персональных скидок
+    color: #f80000;
+  }
+}
+
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .oldPrice {
+    text-decoration: line-through;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .newPrice {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 800;
+  }
+
+  .price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+  }
+}

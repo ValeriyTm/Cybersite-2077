@@ -43,8 +43,6 @@ export const AddToCartButton = ({
   //2) Если товар есть в корзине, то показываем счетчик и бейдж (если это карточка):
   return (
     <div className={styles.wrapper} onClick={(e) => e.preventDefault()}>
-      {variant === "card" && <div className={styles.addedBadge}>В корзине</div>}
-
       <div className={styles.stepper}>
         <button
           onClick={(e) =>
@@ -75,6 +73,8 @@ export const AddToCartButton = ({
           +
         </button>
       </div>
+
+      {variant === "card" && <div className={styles.addedBadge}>В корзине</div>}
     </div>
   );
 };

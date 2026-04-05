@@ -66,6 +66,11 @@ export const MotorcycleCard = ({
       ? data.brand.name // Если прилетел объект (из избранного)
       : data.brand; // Если прилетела строка (из общего каталога)
 
+  //Скидки:
+  const currentPrice = data.discountData?.finalPrice || data.price; //Если есть скидка, берем finalPrice, иначе обычную цену
+  const hasDiscount =
+    data.discountData && data.discountData.discountPercent > 0;
+
   return (
     <Link
       to={`/catalog/motorcycles/${data.brandSlug}/${data.slug}`}
@@ -85,6 +90,16 @@ export const MotorcycleCard = ({
               target.src = DEFAULT_IMG;
             }}
           />
+          {/*Бадж скидки */}
+          {hasDiscount && (
+            <div
+              className={`${styles.badgeDiscount} ${data.discountData.isPersonal ? styles.personal : ""}`}
+            >
+              {data.discountData.isPersonal ? "ДЛЯ ВАС " : ""}-
+              {data.discountData.discountPercent}%
+            </div>
+          )}
+
           {/*Кнопка добавления в избранное:*/}
           <button
             className={`${styles.favoriteBtn} ${isFavorite ? styles.active : ""}`}
@@ -119,7 +134,22 @@ export const MotorcycleCard = ({
         </div>
 
         <div className={styles.footer}>
-          <span className={styles.price}>{data.price.toLocaleString()} ₽</span>
+          <div className={styles.priceBlock}>
+            {hasDiscount ? (
+              <>
+                <span className={styles.oldPrice}>
+                  {data.price.toLocaleString()} ₽
+                </span>
+                <span className={styles.newPrice}>
+                  {currentPrice.toLocaleString()} ₽
+                </span>
+              </>
+            ) : (
+              <span className={styles.price}>
+                {data.price.toLocaleString()} ₽
+              </span>
+            )}
+          </div>
 
           <div className={styles.ratingAndAction}>
             {viewMode === "list" && (

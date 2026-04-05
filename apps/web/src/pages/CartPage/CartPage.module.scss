@@ -317,3 +317,49 @@
   grid-area: footer;
   color: #c31120;
 }
+
+////Для промокода:
+.promoSection {
+  margin: 20px 0;
+  padding: 15px;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 8px;
+
+  .inputGroup {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  input {
+    flex: 1;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 8px 12px;
+    color: #fff;
+    border-radius: 4px;
+    text-transform: uppercase;
+    &:focus {
+      border-color: #f39c12;
+      outline: none;
+    }
+  }
+
+  .applyBtn {
+    background: #f39c12;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .successMsg {
+    margin-top: 10px;
+    color: #2ecc71;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}

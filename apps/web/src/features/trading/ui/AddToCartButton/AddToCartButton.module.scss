@@ -1,5 +1,6 @@
 .wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 12px;
   min-height: 46px; //Фиксируем высоту, чтобы UI не прыгал при смене кнопок

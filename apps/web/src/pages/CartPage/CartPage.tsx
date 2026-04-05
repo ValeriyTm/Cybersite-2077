@@ -3,15 +3,24 @@ import { useCart } from "@/entities/trading/api/useCart";
 import { useFavorites } from "@/entities/trading/api/useFavorites";
 import styles from "./CartPage.module.scss";
 import { ConfirmModal } from "@/shared/ui/ConfirmModal/ConfirmModal";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { useProfile } from "@/features/auth/model/useProfile";
 import { useNavigate } from "react-router";
+import { $api } from "@/shared/api/api";
+import toast from "react-hot-toast";
 
 export const CartPage = () => {
   const { cartItems, toggleSelectItem, toggleSelectAll, updateItemQuantity } =
     useTradingStore();
   const { updateQuantity, removeItem, removeSelected } = useCart();
+
+  //Для промокода:
+  const [promoCode, setPromoCode] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    amount: number;
+  } | null>(null);
 
   const { user } = useProfile(); // Достаем данные профиля
 
@@ -24,12 +33,51 @@ export const CartPage = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
 
+  //Для применения промокода:
+  const handleApplyPromo = async () => {
+    try {
+      const res = await $api.post("/discount/apply-promo", { code: promoCode });
+      setAppliedPromo({ code: res.data.code, amount: res.data.discountAmount });
+      toast.success(`Промокод ${res.data.code} применен!`);
+    } catch (e) {
+      setAppliedPromo(null);
+      toast.error("Промокод не найден или истек");
+    }
+  };
+
   //Расчеты для боковой панели
+
+  // const totalPrice = selectedItems.reduce(
+  //   (acc, item) => acc + item.price * item.quantity,
+  //   0,
+  // );
+
+  //Применяем скидки к сумме заказа:
   const selectedItems = cartItems.filter((item) => item.selected);
-  const totalPrice = selectedItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+
+  const subtotal = selectedItems.reduce(
+    (acc, item) =>
+      acc + (item.discountData?.finalPrice || item.price) * item.quantity,
     0,
   );
+
+  const finalTotal = useMemo(() => {
+    const promoAmount = Number(appliedPromo?.amount || 0);
+    return Math.max(0, subtotal - promoAmount);
+  }, [subtotal, appliedPromo]);
+
+  console.log("ДЛЯ ПРОВЕРКИ:", {
+    sub: subtotal,
+    res: finalTotal,
+  });
+  //Уменьшение цены от промокода:
+  // let promoAmount = appliedPromo?.amount ? appliedPromo?.amount : 0;
+
+  // const currentPromoAmount = Number(appliedPromo?.amount || 0);
+  // const currentSubtotal = Number(subtotal || 0);
+  //Применяем промокод к сумме заказа (конечная сумма):
+  // const finalTotal = Math.max(0, currentSubtotal - currentPromoAmount);
+
   const isAllSelected =
     cartItems.length > 0 && selectedItems.length === cartItems.length;
 
@@ -48,11 +96,6 @@ export const CartPage = () => {
     setIsBulkDeleteOpen(false);
   };
 
-  ///--------------------------
-  if (cartItems.length === 0) {
-    return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
-  }
-
   //--------------Проверяем допустимо ли юзеру нажать кнопку оформления заказа:-----
   //Проверяем заполненность профиля
   const isProfileIncomplete = !user?.phone || !user?.birthday;
@@ -66,6 +109,11 @@ export const CartPage = () => {
     selectedItems.length === 0 || //Ничего не выбрано
     hasStockErrorInSelected || //Выбран товар, которого нет на складе (или кол-во не соответствует)
     isProfileIncomplete; //Профиль не заполнен
+
+  ///--------------------------
+  if (cartItems.length === 0) {
+    return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
+  }
 
   return (
     <main className={styles.CartPage}>
@@ -216,7 +264,7 @@ export const CartPage = () => {
           </div>
           <div className={`${styles.summaryRow} ${styles.total}`}>
             <span>Итого:</span>
-            <span>{totalPrice.toLocaleString()} ₽</span>
+            <span>{finalTotal.toLocaleString()} ₽</span>
           </div>
 
           {isProfileIncomplete && (
@@ -238,12 +286,43 @@ export const CartPage = () => {
             disabled={isCheckoutDisabled}
             onClick={(e) => {
               e.stopPropagation(); //Останавливаем "шум" для других компонентов
-              navigate("/checkout");
+              navigate("/checkout", {
+                state: { promo: appliedPromo }, //Передаём промокод в state
+              });
             }}
           >
             Перейти к оформлению
           </button>
         </aside>
+
+        <div className={styles.promoSection}>
+          <p className={styles.promoLabel}>Промокод на скидку:</p>
+
+          {!appliedPromo ? (
+            <div className={styles.inputGroup}>
+              <input
+                type="text"
+                placeholder="ВВЕДИТЕ СЛОВО"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              />
+              <button className={styles.applyBtn} onClick={handleApplyPromo}>
+                Применить
+              </button>
+            </div>
+          ) : (
+            <div className={styles.successMsg}>
+              ✅ Промокод <strong>{appliedPromo.code}</strong> применен:
+              <span> -{appliedPromo.amount.toLocaleString()} ₽</span>
+              <button
+                className={styles.removeBtn}
+                onClick={() => setAppliedPromo(null)}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );
