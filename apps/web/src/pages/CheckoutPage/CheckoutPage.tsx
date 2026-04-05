@@ -115,24 +115,6 @@ export const CheckoutPage = () => {
     }
   }, [legalSelectedItems, navigate]);
 
-  const handleCreateOrder = () => {
-    const payload = {
-      items: legalSelectedItems.map((item) => ({
-        id: item.id,
-        model: item.model,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-      address,
-      coords,
-      deliveryInfo,
-      promoCode: promoFromCart?.code || null,
-      totalPrice: subtotal + (deliveryInfo?.cost || 0),
-    };
-
-    createOrderMutation.mutate(payload);
-  };
-
   const handleAddressSelect = (
     coords: { lat: number; lng: number },
     addr: string,
@@ -152,12 +134,48 @@ export const CheckoutPage = () => {
     });
   };
 
-  //-----Считаем сумму выбранных товаров:
-  const subtotalPre = legalSelectedItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+  ////---------------------------Сумма заказа:-------------------////
+  //-----Считаем сумму выбранных товаров без скидок и промокодов:
+  // const subtotalPre = legalSelectedItems.reduce(
+  //   (acc, item) => acc + item.price * item.quantity,
+  //   0,
+  // );
+  // const subtotal = subtotalPre - Number(promoFromCart?.amount || 0);
+
+  //Сумма товаров с учетом их индивидуальных скидок:
+  const itemsTotal = legalSelectedItems.reduce((acc, item) => {
+    const price = item.discountData?.finalPrice ?? item.price; //Если указана цена с учетом скидки - берем её. Если не указана - берем просто цену
+    return acc + price * item.quantity;
+  }, 0);
+
+  //Уменьшение суммы от промокода:
+  const promoDiscount = Number(promoFromCart?.amount || 0);
+  //Стоимость доставки:
+  const deliveryCost = Number(deliveryInfo?.cost || 0);
+  //Финальная сумма заказа:
+  const finalOrderPrice = Math.max(
     0,
+    itemsTotal + deliveryCost - promoDiscount,
   );
-  const subtotal = subtotalPre - Number(promoFromCart?.amount || 0);
+
+  //Передаем итоговую цену в мутацию создания заказа:
+  const handleCreateOrder = () => {
+    const payload = {
+      items: legalSelectedItems.map((item) => ({
+        id: item.id,
+        model: item.model,
+        price: item.discountData?.finalPrice ?? item.price, //Фиксируем цену со скидкой на момент покупки
+        quantity: item.quantity,
+      })),
+      address,
+      coords,
+      deliveryInfo,
+      promoCode: promoFromCart?.code || null,
+      totalPrice: finalOrderPrice,
+    };
+
+    createOrderMutation.mutate(payload);
+  };
 
   return (
     <main className={styles.CheckoutPage}>
@@ -237,7 +255,7 @@ export const CheckoutPage = () => {
           <h3>Ваш заказ</h3>
           <div className={styles.row}>
             <span>Товары ({cartItems.length}):</span>
-            <span>+ {subtotal.toLocaleString()} ₽</span>
+            <span>+ {itemsTotal.toLocaleString()} ₽</span>
           </div>
 
           <div className={styles.row}>
@@ -261,9 +279,7 @@ export const CheckoutPage = () => {
           <div className={`${styles.row} ${styles.total}`}>
             <span>К оплате:</span>
             {/*Считаем итого: товары + доставка:*/}
-            <span>
-              {(subtotal + (deliveryInfo?.cost || 0)).toLocaleString()} ₽
-            </span>
+            <span>{finalOrderPrice.toLocaleString()} ₽</span>
           </div>
 
           <button
