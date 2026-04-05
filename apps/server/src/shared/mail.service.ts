@@ -5,9 +5,6 @@ import nodemailer from "nodemailer";
 // Настройки из .env (использую App Password от Google):
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  //В старом коде вместо service: "gmail" я бы написал так:
-  //   host: process.env.SMTP_HOST,
-  //   port: process.env.SMTP_PORT,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD,
@@ -61,6 +58,32 @@ export class MailService {
         <p style="color: #666; font-size: 12px;">Эта ссылка действительна в течение 1 часа. Если вы не запрашивали сброс пароля, просто проигнорируйте это письмо.</p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
         <p style="font-size: 11px; color: #999;">Если кнопка не работает, скопируйте эту ссылку в браузер: <br/> ${link}</p>
+      </div>
+    `,
+    });
+  }
+
+  //Метод отправки письма о персональной скидке:
+  static async sendLuckyBikeMail(
+    to: string,
+    bikeName: string,
+    oldPrice: number,
+    newPrice: number,
+  ) {
+    await transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to,
+      subject: `🎁 Персональная скидка 20% на ${bikeName}!`,
+      html: `
+      <div style="font-family: sans-serif; background: #f9f9f9; padding: 20px;">
+        <h2>Твой "Счастливый байк" недели!</h2>
+        <p>Мы выбрали для тебя специальное предложение:</p>
+        <div style="background: #fff; padding: 20px; border-radius: 10px; border: 1px solid #ddd;">
+          <h3 style="color: #000;">${bikeName}</h3>
+          <p style="text-decoration: line-through; color: #888;">Старая цена: ${oldPrice.toLocaleString()} ₽</p>
+          <p style="font-size: 20px; color: #e74c3c; font-weight: bold;">Новая цена: ${newPrice.toLocaleString()} ₽</p>
+        </div>
+        <p>Скидка действует 7 дней. Успей оформить заказ!</p>
       </div>
     `,
     });

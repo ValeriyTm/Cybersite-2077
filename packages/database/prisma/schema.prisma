@@ -87,6 +87,8 @@ model User {
 
   favorites        Favorite[] //Связь с избранным
 
+  personalDiscounts PersonalDiscount[] //Связь с персональными скидками
+
   @@index([location], type: Gist) // Индекс для быстрого поиска по координатам
   @@map("users") // Название таблицы в БД в нижнем регистре
 }
@@ -155,9 +157,10 @@ model Motorcycle {
   siteCategoryId   String
   siteCategory     SiteCategory       @relation(fields: [siteCategoryId], references: [id])
 
-  // Список всех картинок этого мотоцикла
-  images           ProductImage[]
-
+  //Связи:
+  images            ProductImage[] // Список всех картинок этого мотоцикла
+  personalDiscounts PersonalDiscount[] //Связь с персональными скидками
+  
   //Связь с остатками на разных складах:
   stocks           Stock[]     
   //Связь с зазаками:
@@ -359,3 +362,35 @@ model OrderItem {
   priceAtOrder Float      //Фиксируем цену на момент создания заказа
 }
 
+//------------Схемы для модуля Discount:----------
+//Персональные скидки:
+model PersonalDiscount {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  motorcycleId String
+  motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
+  
+  discountPercent Int     @default(20) // Фиксируем 20% 
+  
+  createdAt    DateTime   @default(now())
+  expiresAt    DateTime   // Дата истечения (через неделю после создания)
+
+  @@unique([userId, motorcycleId]) //Защита от дублей скидок на один и тот же байк
+}
+
+
+//Промокоды:
+model PromoCode {
+  id             String   @id @default(uuid())
+  code           String   @unique //Случайно сгенерированное слово 
+  discountAmount Int      //Сумма скидки в рублях 
+  
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  expiresAt      DateTime //Истекает через неделю
+  
+  //Поле для отслеживания использования:
+  usedCount      Int      @default(0)
+}

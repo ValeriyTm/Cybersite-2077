@@ -5,6 +5,8 @@ import { sitemapService } from "./sitemap.service.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 
+import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+
 //Получение главных категорий:
 export const getCategories = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +56,7 @@ export const getBrands = catchAsync(
 
 //Получение всех мотоциклов конкретного бренда:
 export const getMotorcycles = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     // Собираем все значеняи из фильтров из строки запроса:
     const filters = {
       brandSlug: req.query.brandSlug as string,
@@ -91,7 +93,10 @@ export const getMotorcycles = catchAsync(
       onlyInStock: req.query.onlyInStock as string,
     };
 
-    const result = await searchService.searchMotorcycles(filters);
+    // Достаем userId из токена (если он есть; если нет, то персональные скидки будет не доступны)
+    const userId = req.user?.id;
+
+    const result = await searchService.searchMotorcycles(filters, userId);
     res.status(200).json(result);
   },
 );

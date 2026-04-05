@@ -1,6 +1,7 @@
 import { Client } from "@elastic/elasticsearch";
 import { prisma } from "@repo/database";
 import { warehouseService } from "../warehouse/warehouse.service.js";
+import { DiscountLogic } from "../discount/discount.logic.js";
 
 //Подключаемся к контейнеру:
 const esClient = new Client({ node: "http://localhost:9200" });
@@ -64,7 +65,7 @@ export class SearchService {
   }
 
   //Основной поиск по моделям с фильтрами:
-  async searchMotorcycles(filters: any) {
+  async searchMotorcycles(filters: any, userId: string) {
     const {
       brandSlug,
       search,
@@ -213,6 +214,26 @@ export class SearchService {
       sort,
     });
 
+    //Превращаем хиты Elastic в обычные объекты:
+    const rawItems = result.hits.hits.map((hit: any) => ({
+      ...(hit._source as any), //Распаковываем данные документа
+      id: hit._id, //Явно добавляем id из метаданных Elastic
+    }));
+
+    //Прогоняем каждый товар через логику скидок; передаем userId, чтобы подтянулись персональные скидки:
+    const itemsWithDiscounts = await Promise.all(
+      rawItems.map(async (moto: any) => {
+        const discountData = await DiscountLogic.calculateFinalPrice(
+          moto,
+          userId,
+        );
+        return {
+          ...moto,
+          discountData, // Здесь будет { finalPrice, originalPrice, isPersonal, etc. }
+        };
+      }),
+    );
+
     //Считаем общее количество:
     const totalItems =
       typeof result.hits.total === "number"
@@ -220,15 +241,8 @@ export class SearchService {
         : (result.hits.total as any)?.value || 0;
 
     return {
-      //Превращаем формат Elastic обратно в массив объектов:
-      items: result.hits.hits.map((hit: any) => ({
-        ...(hit._source as any), //Распаковываем данные документа
-        id: hit._id, //Явно добавляем id из метаданных Elastic
-      })),
-      total:
-        typeof result.hits.total === "number"
-          ? result.hits.total
-          : (result.hits.total as any)?.value || 0,
+      items: itemsWithDiscounts, //Возвращаем обогащенные скидками данные
+      total: totalItems,
       page: Number(page),
       pages: Math.ceil(totalItems / limit) || 1,
     };

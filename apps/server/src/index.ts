@@ -1,6 +1,6 @@
 //----------Тут только запуск сервера
 //Подключаем .env корневого проекта:
-import "./shared/env"; // Загрузка .env должна быть первой
+import "./shared/env.js"; // Загрузка .env должна быть первой
 //Настройки сервера:
 import app from "./app.js";
 //Клиент призмы для взаимодействия с БД:
@@ -8,6 +8,10 @@ import { prisma } from "@repo/database";
 //Импортируем мой сервис удаления неподтвержденных аккаунтов:
 import { CleanupService } from "./modules/identity/auth/cleanup.service.js";
 import { connectMongoDB } from "./lib/mongoose.js";
+import { initDiscountCron } from "./modules/discount/discount.queue.js";
+//Воркеры:
+import "./modules/ordering/order.worker.js"; //Импортируем воркер заказов, чтобы он начал слушать задачи.
+import "./modules/discount/discount.worker.js"; //Импортируем воркер скидок, чтобы он начал слушать задачи.
 
 const PORT = process.env.PORT || 3001;
 
@@ -19,6 +23,7 @@ async function bootstrap() {
     console.log("✅PostgreSQL подключен успешно");
 
     await connectMongoDB(); //Подключаем MongoDB
+    await initDiscountCron(); //Запускаем планировщик задач для скидок и промокодов
 
     // 2.Только после успеха запускаем сервер:
     const server = app.listen(PORT, () => {
