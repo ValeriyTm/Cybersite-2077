@@ -84,7 +84,9 @@ export class DiscountService {
 
         await MailService.sendLuckyBikeMail(
           user.email,
-          `${randomBike.brand.name} ${randomBike.model}`,
+          randomBike.model,
+          randomBike.brand.name,
+          randomBike.slug,
           oldPrice,
           newPrice,
         );

@@ -67,13 +67,15 @@ export class MailService {
   static async sendLuckyBikeMail(
     to: string,
     bikeName: string,
+    bikeBrand: string,
+    bikeSlug: string,
     oldPrice: number,
     newPrice: number,
   ) {
     await transporter.sendMail({
       from: process.env.MAIL_USER,
       to,
-      subject: `🎁 Персональная скидка 20% на ${bikeName}!`,
+      subject: `🎁 Персональная скидка 20% на ${bikeName} только на Cybersite-2077!`,
       html: `
       <div style="font-family: sans-serif; background: #f9f9f9; padding: 20px;">
         <h2>Твой "Счастливый байк" недели!</h2>
@@ -82,6 +84,7 @@ export class MailService {
           <h3 style="color: #000;">${bikeName}</h3>
           <p style="text-decoration: line-through; color: #888;">Старая цена: ${oldPrice.toLocaleString()} ₽</p>
           <p style="font-size: 20px; color: #e74c3c; font-weight: bold;">Новая цена: ${newPrice.toLocaleString()} ₽</p>
+          <a href="http://localhost:5173/catalog/motorcycles/${bikeBrand.toLocaleLowerCase()}/${bikeSlug}">Перейти на сайт</a>
         </div>
         <p>Скидка действует 7 дней. Успей оформить заказ!</p>
       </div>
