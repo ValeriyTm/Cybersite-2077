@@ -8,6 +8,7 @@ import sanitizeHtml from "sanitize-html";
 const searchService = new SearchService();
 
 export class ReviewService {
+  //Для создания отзыва:
   async createReview(
     userId: string,
     userName: string,
@@ -22,16 +23,21 @@ export class ReviewService {
     });
     if (!order) throw new Error("Вы не можете оставить отзыв на этот товар");
 
-    //2.Производим очистку (санитайзинг) комментария юзера:
+    //2.Проверяем размер комментария:
+    if (comment.length < 5 || comment.length > 2000) {
+      throw new Error("Комментарий должен быть от 5 до 2000 символов");
+    }
+
+    //3.Производим очистку (санитайзинг) комментария юзера:
     const cleanComment = sanitizeHtml(comment, {
       allowedTags: [], // Запрещаем любые HTML-теги
       allowedAttributes: {},
     });
 
-    //3.Добавляем в модель Mongo поле userAvatar (из базы Postgres):
+    //4.Добавляем в модель Mongo поле userAvatar (из базы Postgres):
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
-    //4.Создаем отзыв в MongoDB:
+    //5.Создаем отзыв в MongoDB:
     const review = await ReviewModel.create({
       userId,
       userName: user?.name,
@@ -43,7 +49,7 @@ export class ReviewService {
       images: files,
     });
 
-    //5.Обновляем рейтинг в PostgreSQ:
+    //6.Обновляем рейтинг в PostgreSQ:
     const moto = await prisma.motorcycle.findUnique({
       where: { id: motorcycleId },
     });
@@ -64,17 +70,19 @@ export class ReviewService {
         data: { rating: newRating },
       });
 
-      //6.Синхронизируем новый рейтинг с ElasticSearch:
+      //7.Синхронизируем новый рейтинг с ElasticSearch:
       await searchService.updateRatingInElastic(motorcycleId, newRating);
     }
 
     return review;
   }
 
+  //Получения отзывов по мотоциклу:
   async getByMotorcycle(motorcycleId: string) {
     return ReviewModel.find({ motorcycleId }).sort({ createdAt: -1 });
   }
 
+  //Удаление отзыва:
   async deleteReview(reviewId: string, userId: string, isAdmin: boolean) {
     //Ищем отзыв:
     const review = await ReviewModel.findById(reviewId);

@@ -17,9 +17,14 @@ const ReviewSchema = new Schema<IReview>({
   userName: { type: String, required: true },
   userAvatar: { type: String, default: "" },
   motorcycleId: { type: String, required: true, index: true },
-  orderId: { type: String, required: true, unique: true }, // Один заказ = один отзыв 🛡️
+  orderId: { type: String, required: true, unique: true }, //Один заказ = один отзыв
   rating: { type: Number, required: true, min: 1, max: 5 },
-  comment: { type: String, required: true },
+  comment: {
+    type: String,
+    required: true,
+    minlength: 5, //Минимум 5 символов
+    maxlength: 2000, //Максимум 2000 символов (хватит для подробного отзыва)
+  },
   images: [{ type: String }],
   createdAt: { type: Date, default: Date.now },
 });

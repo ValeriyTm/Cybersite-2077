@@ -12,9 +12,9 @@ export const ReviewCard = ({
   const isLongText = review.comment.length > 200;
 
   //Состояние для открытия прикрепленного фото в модалке:
-  const [selectedImg, setSelectedImg] = useState<string | null>(null);
+  const [photoIndex, setPhotoIndex] = useState<number | null>(null);
 
-  // Текст для отображения
+  //Текст для отображения:
   const displayText =
     isExpanded || !isLongText
       ? review.comment
@@ -67,16 +67,20 @@ export const ReviewCard = ({
               key={i}
               src={`http://localhost:3001${img}`}
               alt="review-pic"
-              onClick={() => setSelectedImg(`http://localhost:3001${img}`)} //Открываем модалку при клике
+              onClick={() => setPhotoIndex(i)} //Открываем галерею при клике
               className={styles.clickableImg}
             />
           ))}
         </div>
       </div>
 
-      {/*Рендерим модалку, если картинка выбрана:*/}
-      {selectedImg && (
-        <ImageModal src={selectedImg} onClose={() => setSelectedImg(null)} />
+      {/*Компонент галереи: */}
+      {photoIndex !== null && (
+        <ImageModal
+          images={review.images.map((img) => `http://localhost:3001${img}`)}
+          startIndex={photoIndex}
+          onClose={() => setPhotoIndex(null)}
+        />
       )}
 
       {canDelete && (

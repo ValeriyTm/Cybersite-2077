@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express";
 import { reviewService } from "./review.service.js";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
 
+//Контроллер создания отзыва (на странице заказов):
 export const createReview = async (
   req: AuthRequest,
   res: Response,
@@ -28,6 +29,7 @@ export const createReview = async (
   }
 };
 
+//Контроллер получения всех отзывов для конкретного мотоцикла:
 export const getMotorcycleReviews = async (
   req: Request,
   res: Response,
@@ -42,6 +44,7 @@ export const getMotorcycleReviews = async (
   }
 };
 
+//Контроллер удаления отзыва:
 export const deleteReview = async (
   req: AuthRequest,
   res: Response,

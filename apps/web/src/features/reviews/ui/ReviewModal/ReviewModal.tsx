@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { $api } from "@/shared/api/api";
 import { RatingInput } from "@/shared/ui/RatingInput/RatingInput";
+import toast from "react-hot-toast";
 import styles from "./ReviewModal.module.scss";
 
 export const ReviewModal = ({
@@ -20,7 +21,7 @@ export const ReviewModal = ({
 
   const queryClient = useQueryClient();
 
-  // Обработка выбора фото:
+  //Обработка выбора фото:
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (images.length + files.length > 5) {
@@ -31,7 +32,7 @@ export const ReviewModal = ({
     const newImages = [...images, ...files];
     setImages(newImages);
 
-    // Создаем URL для превью
+    //Создаем URL для превью:
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews([...previews, ...newPreviews]);
   };
@@ -40,17 +41,25 @@ export const ReviewModal = ({
     mutationFn: (formData: FormData) => $api.post("/reviews", formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-      alert("Отзыв успешно отправлен!");
+      // alert("Отзыв успешно отправлен!");
+      toast.success("Отзыв успешно опубликован!");
       onClose();
+    },
+    onError: (error: any) => {
+      //Берем сообщение, которое прислал бэкенд:
+      const message = error.response?.data?.message || "Ошибка при отправке";
+      toast.error(message);
     },
   });
 
   const handleSubmit = () => {
-    if (!comment) return alert("Введите комментарий");
+    if (comment.length < 5) {
+      return toast.error("Слишком короткий отзыв (минимум 5 символов)");
+    }
 
     const formData = new FormData();
 
-    //Используем пропсы напрямую
+    //Используем пропсы напрямую:
     formData.append("orderId", orderId);
     formData.append("motorcycleId", item.motorcycleId);
 
@@ -66,7 +75,7 @@ export const ReviewModal = ({
   const removePhoto = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
     setPreviews((prev) => {
-      // 🎯 Важно: освобождаем память от URL.createObjectURL
+      //Освобождаем память от URL.createObjectURL:
       URL.revokeObjectURL(prev[index]);
       return prev.filter((_, i) => i !== index);
     });
@@ -82,11 +91,15 @@ export const ReviewModal = ({
           <RatingInput value={rating} onChange={setRating} />
         </div>
 
-        <textarea
-          placeholder="Напишите ваш отзыв..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
+        <div className={styles.textareaWrapper}>
+          <textarea
+            maxLength={2000}
+            placeholder="Напишите ваш отзыв..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <span className={styles.charCount}>{comment.length} / 2000</span>
+        </div>
 
         <div className={styles.photoSection}>
           <label className={styles.uploadLabel}>

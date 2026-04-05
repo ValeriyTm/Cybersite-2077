@@ -1,0 +1,107 @@
+tags:
+  - name: Reviews
+    description: API для управления отзывами пользователей. Система использует MongoDB для хранения контента и синхронизирует рейтинг в PostgreSQL и Elasticsearch.
+
+paths:
+  /:
+    post:
+      summary: Оставить отзыв на мотоцикл
+      description: Создает отзыв в MongoDB, сохраняет до 5 изображений на сервере и обновляет рейтинг мотоцикла в PostgreSQL. Доступно только если заказ пользователя имеет статус `COMPLETED` и отзыв еще не был оставлен.
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [orderId, motorcycleId, rating, comment]
+              properties:
+                orderId:
+                  type: string
+                  format: uuid
+                  description: ID завершенного заказа из PostgreSQL
+                motorcycleId:
+                  type: string
+                  format: uuid
+                  description: ID мотоцикла
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                comment:
+                  type: string
+                  description: Текст отзыва (проходит санитайзинг на сервере)
+                images:
+                  type: array
+                  maxItems: 5
+                  items:
+                    type: string
+                    format: binary
+                    description: Массив из 1-5 изображений (JPG, PNG, WebP)
+      responses:
+        "201":
+          description: Отзыв успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/Review"
+        "400":
+          description: Отзыв на этот заказ уже существует
+        "403":
+          description: Заказ не завершен или не принадлежит пользователю
+
+  /{motorcycleId}:
+    get:
+      summary: Получить отзывы для модели
+      description: Возвращает список всех отзывов из MongoDB для конкретного мотоцикла, отсортированных по дате (сначала новые).
+      tags: [Reviews]
+      parameters:
+        - name: motorcycleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Массив отзывов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/Review"
+
+  /{reviewId}:
+    delete:
+      summary: Удалить отзыв
+      description: Удаляет документ из MongoDB, стирает связанные файлы с диска и откатывает рейтинг в PostgreSQL.
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "69d2273c1a05fedefb98e598"
+      responses:
+        "200":
+          description: Отзыв удален, файлы стерты, рейтинг обновлен
+          content:
+            application/json:
+              properties:
+                id:
+                  type: string
+                  example: "69d2273c1a05fedefb98e598"
+                message:
+                  type: string
+                  example: "Отзыв успешно удален"
+
+        "403":
+          description: Нет прав (не автор отзыва и не админ)
+        "404":
+          description: Отзыв не найден

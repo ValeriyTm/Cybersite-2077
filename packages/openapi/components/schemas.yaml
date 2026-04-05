@@ -752,3 +752,43 @@ OrderItem:
         priceAtOrder: { type: number }
         motorcycle:
           $ref: "#/MotorcycleFull"
+
+# Отзывы:
+Review:
+  type: object
+  properties:
+    userId:
+      type: string
+      format: uuid
+    userName:
+      type: string
+      example: "Ivan_Rider"
+    userAvatar:
+      type: string
+      description: url аватара юзера или пустая строка
+      example: "/static/avatars/user-1.jpg"
+    motorcycleId:
+      type: string
+      format: uuid
+    orderId:
+      type: string
+      format: uuid
+    rating:
+      type: integer
+      example: 5
+    comment:
+      type: string
+      example: "Отличный байк!"
+    images:
+      type: array
+      items:
+        type: string
+        example: "/static/reviews/review-123.jpg"
+    _id:
+      type: string
+      example: "69d2273c1a05fedefb98e598"
+    createdAt:
+      type: string
+      format: date-time
+    _v:
+      type: integer

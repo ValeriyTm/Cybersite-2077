@@ -65,7 +65,7 @@ export const MotorcycleDetailsPage = () => {
     queryKey: ["reviews", motorcycle?.id], // Ключ обновится, когда придет id
     queryFn: () =>
       $api.get(`/reviews/${motorcycle.id}`).then((res) => res.data),
-    // 🛡️ ВАЖНО: Запрос не уйдет, пока motorcycle.id равен undefined
+    //Запрос не уйдет, пока motorcycle.id равен undefined:
     enabled: !!motorcycle?.id,
   });
 
@@ -73,11 +73,11 @@ export const MotorcycleDetailsPage = () => {
   const deleteMutation = useMutation({
     mutationFn: (reviewId: string) => $api.delete(`/reviews/${reviewId}`),
     onSuccess: () => {
-      // 🎯 1. Обновляем список отзывов
+      //Обновляем список отзывов:
       queryClient.invalidateQueries({ queryKey: ["reviews", motorcycle?.id] });
 
-      // 🎯 2. Обновляем данные самого мотоцикла (чтобы звезды в шапке изменились)
-      // Используем slug, так как это ключ первого запроса
+      //Обновляем данные самого мотоцикла (чтобы звезды в шапке изменились):
+      //(используем slug, так как это ключ первого запроса)
       queryClient.invalidateQueries({ queryKey: ["motorcycle", slug] });
     },
   });
@@ -116,8 +116,7 @@ export const MotorcycleDetailsPage = () => {
   //-----
   // 1. Подключаем логику избранного
 
-  // Проверяем, в избранном ли текущий байк
-  // data?.id сработает корректно, когда данные подгрузятся
+  //Проверяем, в избранном ли текущий байк (data?.id сработает корректно, когда данные подгрузятся):
   const isFavorite = data ? favoriteIds.includes(data.id) : false;
 
   const handleFavoriteClick = () => {
@@ -388,8 +387,8 @@ export const MotorcycleDetailsPage = () => {
                     id: data.id,
                     model: data.model,
                     price: data.price,
-                    image: mainImageUrl, // Сюда кладем строку
-                    brandSlug: data.brand.slug, // Вытаскиваем из объекта бренда
+                    image: mainImageUrl,
+                    brandSlug: data.brand.slug,
                     slug: data.slug,
                     totalInStock: data.totalInStock,
                   }}

@@ -41,3 +41,72 @@
     color: #f39c12;
   }
 }
+
+//
+
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px); // 🎯 Эффект стекла
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2010;
+  user-select: none;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #f39c12; // Твой акцентный цвет
+    color: #f39c12;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+//Позиционирование кнопок (выносим их за пределы фото)
+.prevBtn {
+  left: -70px;
+}
+.nextBtn {
+  right: -70px;
+}
+
+//Счётчик 1/5 внизу
+.counter {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+//Адаптив: на маленьких экранах прячем кнопки внутрь фото
+@media (max-width: 1024px) {
+  .prevBtn {
+    left: 10px;
+  }
+  .nextBtn {
+    right: 10px;
+  }
+  .navBtn {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}

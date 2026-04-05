@@ -94,6 +94,13 @@ paths:
     $ref: "./modules/ordering.yaml#/paths/~1{orderId}~1cancel"
   /api/orders/{orderId}/pay-test:
     $ref: "./modules/ordering.yaml#/paths/~1{orderId}~1pay-test"
+    # api/reviews:
+  /api/reviews/:
+    $ref: "./modules/reviews.yaml#/paths/~1"
+  /api/reviews/{motorcycleId}:
+    $ref: "./modules/reviews.yaml#/paths/~1{motorcycleId}"
+  /api/reviews/{reviewId}:
+    $ref: "./modules/reviews.yaml#/paths/~1{reviewId}"
 
 components:
   securitySchemes:
