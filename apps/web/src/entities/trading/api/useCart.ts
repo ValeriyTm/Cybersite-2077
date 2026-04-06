@@ -5,6 +5,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export const useCart = () => {
   const queryClient = useQueryClient();
+
+  //Достаем методы из Zustand. Это позволяет нам мгновенно менять UI, не дожидаясь ответа от сервера (концепция Optimistic UI):
   const {
     setCart,
     addToCartLocally,
@@ -14,13 +16,14 @@ export const useCart = () => {
 
   //1) Загрузка корзины:
   const { isLoading } = useQuery({
-    queryKey: ["cart"],
+    queryKey: ["cart"], //Уникальный идентификатор данных корзины в кэше.
     queryFn: async () => {
       const { data } = await $api.get<any[]>("/trading/cart");
       setCart(data);
       return data;
+      //Запрос идет на бэкенд (/trading/cart), получает массив товаров и сразу прокидывает его в Zustand через setCart(data), чтобы цифры в хедере и список товаров обновились.
     },
-    staleTime: Infinity,
+    staleTime: Infinity, //Вечное время жизни кэша. Мы сами будем управлять обновлением корзины через мутации, поэтому лишние автоматические перезапросы нам не нужны.
   });
 
   //2) Добавление в корзину:
@@ -35,9 +38,9 @@ export const useCart = () => {
       slug: string;
       year: number;
     }) => {
-      addToCartLocally(item.id, item.quantity);
+      addToCartLocally(item.id, item.quantity); //Сначала добавляем данные в локальную корзину (Optimistic UI)
 
-      //Мы должны отправить весь объект item в Body:
+      //Отправляем на сервер объект item (со всеми данными о мотоцикле) в Body, чтобы бэкенд мог сохранить данные в Redis (там корзина):
       const { data } = await $api.post("/trading/cart/add", {
         motorcycleId: item.id,
         quantity: item.quantity,
@@ -48,47 +51,58 @@ export const useCart = () => {
         slug: item.slug,
         year: item.year,
       });
+      //Сервер возвращает актуальный состав корзины:
       return data;
     },
+    //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
     onSuccess: (data) => setCart(data),
   });
 
-  //3) Обновление количества (PATCH):
+  //3) Обновление количества в корзине (PATCH):
   const { mutate: updateQuantity } = useMutation({
     mutationFn: async ({ id, quantity }: { id: string; quantity: number }) => {
-      updateItemQuantity(id, quantity); // Optimistic UI
+      updateItemQuantity(id, quantity); //Локально обновляем кол-во в корзине (Optimistic UI)
+      //Отправляем изменения на сервер:
       const { data } = await $api.patch("/trading/cart/quantity", {
         motorcycleId: id,
         quantity,
       });
+      //Сервер возвращает актуальный состав корзины:
       return data;
     },
+    //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
     onSuccess: (data) => setCart(data),
   });
 
-  //4) Удаление одного товара (DELETE):
+  //4) Удаление одного товара из корзины:
   const { mutate: removeItem } = useMutation({
     mutationFn: async (id: string) => {
+      //Отправляем изменения на сервер:
       const { data } = await $api.delete(`/trading/cart/item/${id}`);
+      //Сервер возвращает актуальный состав корзины:
       return data;
     },
     onSuccess: (data) => setCart(data),
   });
 
-  //5) Массовое удаление (POST):
+  //5) Массовое удаление товаров из корзины:
   const { mutate: removeSelected } = useMutation({
     mutationFn: async (ids: string[]) => {
+      //Отправляем изменения на сервер:
       const { data } = await $api.post("/trading/cart/remove-selected", {
         ids,
       });
+      //Сервер возвращает актуальный состав корзины:
       return data;
     },
     onSuccess: (data) => {
+      //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
       setCart(data);
-      removeSelectedLocally(); // Чистим локальные чекбоксы
+      removeSelectedLocally(); //Сбрасываем локальные чекбоксы
     },
   });
 
+  //Возвращаем объект со всеми методами мутаций и состоянием загрузки:
   return {
     addToCart,
     updateQuantity,

@@ -48,57 +48,74 @@ export const useTradingStore = create<TradingState>()(
     favoriteIds: [],
     cartItems: [],
 
+    //Изменяем список id избранных товаров и счетчик их количества:
     setFavorites: (ids) =>
       set({
         favoriteIds: ids,
         favoritesCount: ids.length, //Синхронизируем при загрузке
       }),
 
-    //--Избранное:--
+    //Добавление или удаление (переключатель) конкретного товара из избранного:
     toggleFavoriteLocally: (id) => {
+      //С помощью метода get() мы достаем текущий массив favoriteIds из хранилища:
       const { favoriteIds } = get();
+      //Проверяем, есть ли уже этот id в нашем списке (true/false):
       const isFav = favoriteIds.includes(id);
 
+      //Создаем новый массив newIds:
       const newIds = isFav
-        ? favoriteIds.filter((favId) => favId !== id)
-        : [...favoriteIds, id];
+        ? favoriteIds.filter((favId) => favId !== id) //Если isFav равно true (товар уже в избранном), то «отфильтровываем» его, создавая массив без этого id (удаление)
+        : [...favoriteIds, id]; //Если isFav равно false (товар не в избранном), то создаем новый массив, копируя старые ID и добавляя новый в конец.
 
+      //Вызываем функцию set для обновления состояния хранилища:
       set({
+        //Записываем новый сформированный массив в поле favoriteIds:
         favoriteIds: newIds,
-        //ОБНОВЛЯЕМ СЧЕТЧИК МГНОВЕННО:
+        //Обновляем счетчик (кол-во товаров в избранном):
         favoritesCount: newIds.length,
       });
     },
 
+    //Функция-селектор, которую вызывают карточки мотоциклов, чтобы понять, в каком цвете рисовать иконку лайка (закрашенная или контур):
     isFavorite: (id) => get().favoriteIds.includes(id),
+    //С помощью метода get() мы достаем текущий массив favoriteIds из хранилища и проверяем, входит ли id текущего байка в массив избранных id
 
-    //--Корзина:--
+    //Добавление в корзину:
     addToCartLocally: (id, quantity = 1) => {
+      //Достаем из хранилища текущий массив объектов корзины cartItems:
       const { cartItems } = get();
+      //Ищем в массиве объект, у которого id совпадает с переданным. Если нашли — он сохранится в existing:
       const existing = cartItems.find((item) => item.id === id);
 
+      //Если товар уже есть в корзине, выполняем блок обновления:
       if (existing) {
         set({
           cartItems: cartItems.map((item) =>
+            //Если это тот самый товар, мы создаем его копию и прибавляем новое количество к текущему. Остальные товары оставляем без изменений:
             item.id === id
               ? { ...item, quantity: item.quantity + quantity }
               : item,
           ),
         });
       } else {
+        //Если товара в корзине ещё нет, то создаем новый массив, куда копируем старые элементы и добавляем новый объект с id и quantity:
         set({ cartItems: [...cartItems, { id, quantity }] });
       }
     },
 
+    //Удаляем товар из массива локальных товаров в корзине по его ID:
     removeFromCartLocally: (id) =>
       set({
         cartItems: get().cartItems.filter((item) => item.id !== id),
       }),
 
     ////Чебоксы для корзины:
+
     //1.Переключить выбор конкретного товара (чекбокс на карточке):
     toggleSelectItem: (id: string) =>
       set((state) => ({
+        //Перебираем все товары в корзине и создаем на основе этого новый массив.
+        //(Если переданный id совпадает с тем, что вв массиве,  — создаем копию этого объекта и инвертируем свойство selected. Если id не совпадает — возвращаем товар без изменений)
         cartItems: state.cartItems.map((item) =>
           item.id === id ? { ...item, selected: !item.selected } : item,
         ),
@@ -113,7 +130,7 @@ export const useTradingStore = create<TradingState>()(
         })),
       })),
 
-    //3. Обновить количество товара локально (для мгновенного пересчета суммы):
+    //3. Обновить количество товара в корзине локально (для мгновенного пересчета суммы):
     updateItemQuantity: (id: string, quantity: number) =>
       set((state) => ({
         cartItems: state.cartItems.map((item) =>
@@ -121,13 +138,14 @@ export const useTradingStore = create<TradingState>()(
         ),
       })),
 
-    //4. Удалить выбранные товары из стора (после успешного запроса к Redis):
+    //4. Удалить выбранные товары из локальной корзины (после успешного запроса к Redis):
     removeSelectedLocally: () =>
       set((state) => ({
         cartItems: state.cartItems.filter((item) => !item.selected),
       })),
+    //Оставляет в корзине только те товары, у которых selected: false. Это «подчищает» интерфейс, оставляя пользователю то, что он решил не удалять/не покупать.
 
-    //5. Установить корзину целиком (синхронизация с ответом сервера):
+    //5. Установить значения корзины целиком (синхронизация с ответом сервера):
     setCart: (items: CartItem[]) =>
       set({
         // При получении данных с сервера добавляем поле selected, если его нет
@@ -137,28 +155,22 @@ export const useTradingStore = create<TradingState>()(
         })),
       }),
 
-    //Метод для простого получения данных корзины:
+    //Метод для простого получения (обновления) данных корзины:
+    //(просто делаем запрос к серверу, а затем синхронизируем при помощи вызова setCart)
     fetchCart: async () => {
       try {
-        const response = await $api.get("/trading/cart"); // Твой эндпоинт корзины
-        // Используем твой готовый метод для записи и расстановки selected
+        const response = await $api.get("/trading/cart"); //Эндпоинт корзины
+        //Используем твой готовый метод для записи и расстановки selected
         get().setCart(response.data);
       } catch (error) {
         console.error("Ошибка при обновлении корзины:", error);
       }
     },
 
-    // fetchFavoritesCount: async () => {
-    //   try {
-    //     const res = await $api.get("/trading/favorites/count");
-    //     set({ favoritesCount: res.data.count });
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // },
-
+    //Метод получения списка id избранных товаров:
     fetchFavoritesIds: async () => {
       try {
+        //Получаем с сервера список id избранных товаров:
         const { data } = await $api.get<string[]>("/trading/favorites/ids");
         get().setFavorites(data); // Используем уже готовый setFavorites, который обновит и count
       } catch (e) {
@@ -166,7 +178,8 @@ export const useTradingStore = create<TradingState>()(
       }
     },
 
-    //Очистка:
-    clearTrading: () => set({ cartItems: [], favoritesCount: 0 }),
+    //Очистка корзины и счетчика избранных (при логауте вызываем):
+    clearTrading: () =>
+      set({ cartItems: [], favoriteIds: [], favoritesCount: 0 }),
   })),
 );
