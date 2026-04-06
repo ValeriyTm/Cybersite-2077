@@ -1,26 +1,52 @@
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { $api } from "@/shared/api/api";
+import { getTimeToMidnight } from "@/shared/lib/utils/timeToMidnight";
 import styles from "./GlobalDiscountBanner.module.scss";
 
 export const GlobalDiscountBanner = () => {
-  const { data: discount, isLoading } = useQuery({
+  const [timeLeft, setTimeLeft] = useState(getTimeToMidnight());
+
+  // Запускаем тиканье таймера
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const newTime = getTimeToMidnight();
+      setTimeLeft(newTime);
+
+      // Если время вышло, можно обновить данные (рефетч)
+      if (newTime.totalMs <= 0) {
+        window.location.reload(); // Или queryClient.invalidateQueries
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const { data: discount } = useQuery({
     queryKey: ["global-discount"],
     queryFn: () => $api.get("/discount/global").then((res) => res.data),
-    staleTime: 1000 * 60 * 60, // Данные меняются раз в день, кэшируем на час
   });
 
-  if (isLoading || !discount) return null;
+  if (!discount) return null;
 
   return (
     <div className={styles.banner}>
       <div className={styles.content}>
-        <span className={styles.icon}>🔥</span>
-        <div className={styles.text}>
-          <h3>День {discount.year} года выпуска!</h3>
+        <div className={styles.info}>
+          <h3>🔥 День {discount.year} года!</h3>
           <p>
-            Сегодня на все модели этого года действует скидка{" "}
-            <strong>-{discount.percent}%</strong>
+            Скидка <strong>-{discount.percent}%</strong> на все модели этого
+            года
           </p>
+        </div>
+
+        {/*Таймер обратного отсчёта: */}
+        <div className={styles.timer}>
+          <span className={styles.timerLabel}>До конца акции:</span>
+          <div className={styles.digits}>
+            <span>{timeLeft.hours}</span>:<span>{timeLeft.minutes}</span>:
+            <span>{timeLeft.seconds}</span>
+          </div>
         </div>
       </div>
     </div>
