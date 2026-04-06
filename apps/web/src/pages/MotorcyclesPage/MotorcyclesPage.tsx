@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //Для SEO:
 import { Helmet } from "react-helmet-async";
+import { $api } from "@/shared/api/api";
 
 export const MotorcyclesPage = () => {
   const { brandSlug } = useParams<{ brandSlug: string }>();
@@ -27,7 +28,12 @@ export const MotorcyclesPage = () => {
   //Кэширование и состояние загрузки из react query:
   const { data, isLoading } = useQuery({
     queryKey: ["motorcycles", brandSlug, filters],
-    queryFn: () => fetchMotorcycles({ brandSlug, ...filters }),
+    queryFn: () =>
+      $api
+        .get(`catalog/motorcycles/`, {
+          params: { ...filters, brandSlug },
+        })
+        .then((res) => res.data),
     // Магия: при переключении страниц старые данные не пропадают мгновенно (нет мерцания)
     placeholderData: (previousData) => previousData,
     // Кэшируем результат на 5 минут, чтобы при кнопке "Назад" всё было мгновенно

@@ -13,7 +13,7 @@ router.get("/categories", catalogController.getCategories);
 //Список брендов с пагинацией для страницы (/api/catalog/brands?page=1&limit=20):
 router.get("/brands", catalogController.getBrands);
 //Получение всех мотоциклов одного бренда (/api/catalog/motorcycles):
-router.get("/motorcycles", catalogController.getMotorcycles);
+router.get("/motorcycles", optionalAuth, catalogController.getMotorcycles);
 
 //Временный роут для ручного запуска синхронизации
 //(http://localhost:3001/api/catalog/sync-search):
