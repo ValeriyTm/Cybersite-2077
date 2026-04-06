@@ -37,6 +37,8 @@ interface TradingState {
   removeSelectedLocally: () => void; //Локальное удаление из корзины товаров (выбранных)
   fetchCart: () => void;
 
+  fetchFavoritesIds: () => void;
+
   clearTrading: () => void; //Очистка при выходе из аккаунта
 }
 
@@ -46,17 +48,25 @@ export const useTradingStore = create<TradingState>()(
     favoriteIds: [],
     cartItems: [],
 
-    setFavorites: (ids) => set({ favoriteIds: ids }),
+    setFavorites: (ids) =>
+      set({
+        favoriteIds: ids,
+        favoritesCount: ids.length, //Синхронизируем при загрузке
+      }),
 
     //--Избранное:--
     toggleFavoriteLocally: (id) => {
       const { favoriteIds } = get();
       const isFav = favoriteIds.includes(id);
 
+      const newIds = isFav
+        ? favoriteIds.filter((favId) => favId !== id)
+        : [...favoriteIds, id];
+
       set({
-        favoriteIds: isFav
-          ? favoriteIds.filter((favId) => favId !== id) // Убираем
-          : [...favoriteIds, id], // Добавляем
+        favoriteIds: newIds,
+        //ОБНОВЛЯЕМ СЧЕТЧИК МГНОВЕННО:
+        favoritesCount: newIds.length,
       });
     },
 
@@ -138,10 +148,19 @@ export const useTradingStore = create<TradingState>()(
       }
     },
 
-    fetchFavoritesCount: async () => {
+    // fetchFavoritesCount: async () => {
+    //   try {
+    //     const res = await $api.get("/trading/favorites/count");
+    //     set({ favoritesCount: res.data.count });
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // },
+
+    fetchFavoritesIds: async () => {
       try {
-        const res = await $api.get("/trading/favorites/count");
-        set({ favoritesCount: res.data.count });
+        const { data } = await $api.get<string[]>("/trading/favorites/ids");
+        get().setFavorites(data); // Используем уже готовый setFavorites, который обновит и count
       } catch (e) {
         console.error(e);
       }

@@ -29,7 +29,7 @@ export const Header = () => {
   const { activeOrdersCount, fetchActiveCount } = useOrderStore();
 
   const { resetOrders } = useOrderStore();
-  const { clearTrading, fetchCart, fetchFavoritesCount } = useTradingStore();
+  const { clearTrading, fetchCart, fetchFavoritesIds } = useTradingStore();
 
   //--------Для работы с данными юзера:
   //Технический статус из Zustand:
@@ -75,14 +75,14 @@ export const Header = () => {
 
   useEffect(() => {
     if (isAuth) {
-      fetchCart();
-      fetchFavoritesCount();
-      fetchActiveCount();
+      fetchCart(); //Данные о корзине
+      fetchFavoritesIds(); //Данные о избранном
+      fetchActiveCount(); //Данные о активных заказах
     } else {
       clearTrading();
       resetOrders();
     }
-  }, [isAuth, fetchFavoritesCount]);
+  }, [isAuth]);
   //Если пользователь логинится, то грузим инфу о заказах и т.п. Если логаут - обнуляем.
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,6 +112,7 @@ export const Header = () => {
     state.cartItems.reduce((acc, item) => acc + item.quantity, 0),
   );
 
+  //--------------------------------------------------------------------------
   return (
     <header className={styles.Header}>
       {/*1)Верхняя часть: Ссылки */}

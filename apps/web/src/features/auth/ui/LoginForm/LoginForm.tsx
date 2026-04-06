@@ -41,7 +41,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   const [localUserId, setLocalUserId] = useState<string | null>(null);
   const [show2FA, setShow2FA] = useState(false);
 
-  const { fetchCart, fetchFavoritesCount } = useTradingStore();
+  const { fetchCart, fetchFavoritesIds } = useTradingStore();
   const { fetchActiveCount } = useOrderStore();
 
   const {
@@ -89,9 +89,9 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
           }
 
           //Сразу подтягиваем данные о корзине, избранном и заказах:
-          fetchCart();
-          fetchFavoritesCount();
-          fetchActiveCount();
+          fetchCart(); //Данные о корзине
+          fetchActiveCount(); //Данные о активных заказах
+          fetchFavoritesIds();
         },
       },
       data,
