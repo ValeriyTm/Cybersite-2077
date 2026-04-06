@@ -58,7 +58,9 @@ export class CatalogService {
   }
 
   //Получение данных о конкретном мотоцикле:
-  async getMotorcycleBySlug(slug: string) {
+  async getMotorcycleBySlug(slug: string, userId: string) {
+    console.log("userId: ", userId);
+
     // Достаем из БД все данные о мотоцикле:
     const moto = await prisma.motorcycle.findUnique({
       where: { slug },
@@ -82,7 +84,7 @@ export class CatalogService {
     );
 
     //Считаем скидку:
-    const discountData = await DiscountLogic.calculateFinalPrice(moto);
+    const discountData = await DiscountLogic.calculateFinalPrice(moto, userId);
 
     return { ...moto, totalInStock, discountData };
   }

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as catalogController from "./catalog.controller.js";
-
+import { optionalAuth } from "src/shared/middlewares/optionalAuthMiddleware.js";
 import { searchService } from "./search.service.js";
 
 const router = Router();
@@ -32,6 +32,10 @@ router.get("/search/suggest", catalogController.getSuggestions);
 //Получение аналогичных мотоциклов (рекомендации) (/api/catalog/motorcycles/:slug/related):
 router.get("/motorcycles/:slug/related", catalogController.getRelated);
 //Получение информации о конкретном мотоцикле (/api/catalog/motorcycles/:brandSlug/:slug):
-router.get("/motorcycles/:brandSlug/:slug", catalogController.getMotorcycle);
+router.get(
+  "/motorcycles/:brandSlug/:slug",
+  optionalAuth,
+  catalogController.getMotorcycle,
+); //Добавили опциональную авторизацию, чтобы получать токен и на его основе выводить персонализированную скидку
 
 export default router;

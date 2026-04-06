@@ -315,6 +315,7 @@ export const MotorcycleDetailsPage = () => {
 
   const realRating = Number(data.rating.toFixed(1));
 
+  console.log("data.discountData: ", data.discountData);
   return (
     <main className={styles.Page}>
       {/*SEO:*/}
@@ -375,7 +376,7 @@ export const MotorcycleDetailsPage = () => {
               {data.discountData.discountPercent > 0 ? (
                 <>
                   <div className={styles.oldPrice}>
-                    {data.price.toLocaleString()} ₽
+                    {data.discountData.originalPrice.toLocaleString()} ₽
                   </div>
                   <div className={styles.price}>
                     {data.discountData.finalPrice.toLocaleString()} ₽

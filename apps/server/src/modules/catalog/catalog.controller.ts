@@ -103,9 +103,11 @@ export const getMotorcycles = catchAsync(
 
 //Получение информации о конкретном мотоцикле:
 export const getMotorcycle = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { brandSlug, slug } = req.params;
-    const motorcycle = await catalogService.getMotorcycleBySlug(slug);
+    const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
+
+    const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
 
     if (!motorcycle) {
       return res.status(404).json({ message: "Мотоцикл не найден" });

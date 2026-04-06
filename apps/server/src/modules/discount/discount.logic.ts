@@ -1,3 +1,4 @@
+//Логика расчёта цены с учетом скидок:
 import { redis } from "src/lib/redis.js";
 import { prisma } from "@repo/database";
 
