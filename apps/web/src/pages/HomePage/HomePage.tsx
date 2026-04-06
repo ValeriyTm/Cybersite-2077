@@ -3,6 +3,7 @@ import { Link } from "react-router";
 //Хранилища:
 import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентское
 import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
+import { GlobalDiscountBanner } from "@/widgets/GlobalDiscountBanner/ui/GlobalDiscountBanner";
 
 export const HomePage = () => {
   //Из Zustand берем статус авторизации пользователя:
@@ -41,6 +42,8 @@ export const HomePage = () => {
       <Link to="/catalog" style={{ marginRight: "10px" }}>
         В каталог
       </Link>
+
+      <GlobalDiscountBanner></GlobalDiscountBanner>
     </div>
   );
 };
