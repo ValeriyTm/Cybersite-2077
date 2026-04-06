@@ -51,12 +51,12 @@ export const MotorcycleDetailsPage = () => {
   const { addToCart } = useCart();
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
 
-  //Получаем данные мотоцикла по слагу (как и раньше)
+  //Получаем данные мотоцикла по слагу:
   const { data: motorcycle } = useQuery({
     queryKey: ["motorcycle", slug],
     queryFn: () =>
       $api
-        .get(`catalog/motorcycles/${brandSlug.toLowerCase()}/${slug}`)
+        .get(`catalog/motorcycles/${brandSlug?.toLowerCase()}/${slug}`)
         .then((res) => res.data),
   });
 
@@ -372,9 +372,21 @@ export const MotorcycleDetailsPage = () => {
             <div className={styles.brandBadge}>{data.brand.name}</div>
 
             <div className={styles.actionRow}>
-              <div className={styles.price}>
-                {data.price.toLocaleString()} ₽
-              </div>
+              {data.discountData.discountPercent > 0 ? (
+                <>
+                  <div className={styles.oldPrice}>
+                    {data.price.toLocaleString()} ₽
+                  </div>
+                  <div className={styles.price}>
+                    {data.discountData.finalPrice.toLocaleString()} ₽
+                  </div>
+                </>
+              ) : (
+                <div className={styles.price}>
+                  {data.price.toLocaleString()} ₽
+                </div>
+              )}
+
               {data.totalInStock ? (
                 <p>Количество единиц в наличии: {data.totalInStock}</p>
               ) : (
@@ -404,7 +416,7 @@ export const MotorcycleDetailsPage = () => {
                       : "Добавить в избранное"
                   }
                 >
-                  {isFavorite ? "❤️ В избранном" : "🤍 В избранное"}
+                  {isFavorite ? "❤️ Уже в избранном" : "🤍 В избранное"}
                 </button>
               </div>
             </div>

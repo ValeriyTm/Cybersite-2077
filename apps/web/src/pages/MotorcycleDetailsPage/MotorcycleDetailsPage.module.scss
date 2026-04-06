@@ -366,3 +366,10 @@ h2 {
   border: 1px dashed #333;
   border-radius: 8px;
 }
+
+.oldPrice {
+  text-decoration: line-through;
+  color: #666;
+  font-size: 1.8rem;
+  padding-bottom: 10px;
+}

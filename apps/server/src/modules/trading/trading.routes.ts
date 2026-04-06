@@ -4,7 +4,8 @@ import * as tradingController from "./trading.controller.js";
 
 const router = Router();
 
-//Роут получения списка избранных товаров:
+//--------------------------Избранное:------------------------//
+//Роут получения списка (массив id мотоциклов ['5gd..', 'cb55..', ...]) избранных товаров:
 router.get("/favorites/ids", authMiddleware, tradingController.getFavoriteIds);
 //Роут добавления товара в избранное:
 router.post(
@@ -24,6 +25,7 @@ router.get(
   authMiddleware,
   tradingController.getFavoritesCount,
 );
+//--------------------------Корзина:------------------------//
 //Роут получения товаров в корзине:
 router.get("/cart", authMiddleware, tradingController.getCart);
 //Роут добавления товара в корзину:

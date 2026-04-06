@@ -1,4 +1,5 @@
 import { prisma } from "@repo/database";
+import { DiscountLogic } from "../discount/discount.logic.js";
 
 export class FavoritesService {
   // 1. Переключить статус (Лайк/Анлайк) 🔄
@@ -34,29 +35,33 @@ export class FavoritesService {
     return favorites.map((f) => f.motorcycleId);
   }
 
-  // 3. Получить полные данные избранных моделей (для страницы "Моё избранное") 🏍️
-  static async getFavoritesFull(userId: string) {
-    return prisma.favorite.findMany({
-      where: { userId },
-      include: {
-        motorcycle: {
-          include: { brand: true, images: { take: 1 } },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  }
+  // // 3. Получить полные данные избранных моделей (для страницы "Моё избранное")
+  // static async getFavoritesFull(userId: string) {
+  //   return prisma.favorite.findMany({
+  //     where: { userId },
+  //     include: {
+  //       motorcycle: {
+  //         include: { brand: true, images: { take: 1 } },
+  //       },
+  //     },
+  //     orderBy: { createdAt: "desc" },
+  //   });
+  // }
 
   //Пернуть полные данные о моделях по массиву id от юзера:
   static async getFavoritesByIds(
     ids: string[],
     limit: number = 20,
     skip: number = 0,
+    userId?: string, //Для расчёта скидок
   ) {
+    // console.log("ids: ", ids); //ids:  ['5b60c308-4449-45d3-8ec1-bf6dac1959be', 'bea5ff0d-309f-4047-8f71-e0ec0642a945', ...]
+
     const motorcycles = await prisma.motorcycle.findMany({
       where: { id: { in: ids } }, //Ищем только те, что в массиве избранного
       include: {
         brand: true,
+        images: { where: { isMain: true }, take: 1 },
         stocks: {
           select: { quantity: true, reserved: true },
         },
@@ -65,18 +70,28 @@ export class FavoritesService {
       skip: skip,
     });
 
-    //Рассчитываем остатки (totalInStock) для каждого мотоцикла:
-    const items = motorcycles.map((moto) => {
-      const totalInStock = moto.stocks.reduce(
-        (acc, s) => acc + (s.quantity - s.reserved),
-        0,
-      );
+    //Рассчитываем остатки (totalInStock) и скидки для каждого мотоцикла:
+    const items = await Promise.all(
+      motorcycles.map(async (moto) => {
+        const totalInStock = moto.stocks.reduce(
+          (acc, s) => acc + (s.quantity - s.reserved),
+          0,
+        );
 
-      return {
-        ...moto,
-        totalInStock: Math.max(0, totalInStock), // Чтобы не было отрицательных чисел
-      };
-    });
+        const discountData = await DiscountLogic.calculateFinalPrice(
+          moto,
+          userId,
+        );
+
+        console.log("discountData: ", discountData);
+
+        return {
+          ...moto,
+          totalInStock,
+          discountData,
+        };
+      }),
+    );
 
     return {
       items,

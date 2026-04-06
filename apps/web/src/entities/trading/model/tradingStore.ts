@@ -1,3 +1,4 @@
+//Хранилище для работы с состоянием избранного и корзины
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { $api } from "@/shared/api/api";
@@ -22,18 +23,18 @@ interface TradingState {
   setCart: (items: CartItem[]) => void;
 
   //Логика избранного
-  toggleFavoriteLocally: (motorcycleId: string) => void; // Локальный тумблер (мгновенное обновление UI)
-  isFavorite: (motorcycleId: string) => boolean; // Проверка: добавлен ли в избранное конкретный байк
+  toggleFavoriteLocally: (motorcycleId: string) => void; //Локальное добавление в избранное (для Optimistic UI)
+  isFavorite: (motorcycleId: string) => boolean; //Проверка: добавлена ли в избранное конкретная модель
 
   //Логика корзины:
-  addToCartLocally: (id: string, quantity?: number) => void;
-  removeFromCartLocally: (id: string) => void;
+  addToCartLocally: (id: string, quantity?: number) => void; //Локальное добавление в корзину (для Optimistic UI)
+  removeFromCartLocally: (id: string) => void; //Локальное удаление из корзины товара
 
   //Логика работы с чекбоксами в корзине:
   toggleSelectItem: (id: string) => void;
   toggleSelectAll: (isSelected: boolean) => void;
   updateItemQuantity: (id: string, quantity: number) => void;
-  removeSelectedLocally: () => void;
+  removeSelectedLocally: () => void; //Локальное удаление из корзины товаров (выбранных)
   fetchCart: () => void;
 
   clearTrading: () => void; //Очистка при выходе из аккаунта

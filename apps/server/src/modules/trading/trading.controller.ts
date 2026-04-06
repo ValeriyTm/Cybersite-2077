@@ -31,6 +31,7 @@ export const getFavoritesByIds = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     //Извлекаем данные из тела запроса
     const { ids, limit = 10, skip = 0 } = req.body;
+    const userId = req.user.id;
 
     //Если массив пустой, сразу отдаем пустой ответ:
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -41,6 +42,7 @@ export const getFavoritesByIds = catchAsync(
       ids,
       Number(limit),
       Number(skip),
+      userId,
     );
 
     return res.json(result);

@@ -1,5 +1,6 @@
 //Клиент призмы для работы с БД:
 import { prisma } from "@repo/database";
+import { DiscountLogic } from "../discount/discount.logic.js";
 
 export class CatalogService {
   //Получение основных категорий приложения:
@@ -80,7 +81,10 @@ export class CatalogService {
       0,
     );
 
-    return { ...moto, totalInStock };
+    //Считаем скидку:
+    const discountData = await DiscountLogic.calculateFinalPrice(moto);
+
+    return { ...moto, totalInStock, discountData };
   }
 }
 
