@@ -48,5 +48,14 @@ router.post(
   authMiddleware,
   tradingController.removeSelectedFromCart,
 );
+//-------Роуты чекбокса корзины:-----------//
+// Переключить один чекбокс:
+router.patch("/cart/select", authMiddleware, tradingController.toggleSelect);
+// Массовое выделение:
+router.patch(
+  "/cart/select-all",
+  authMiddleware,
+  tradingController.toggleSelectAll,
+);
 
 export default router;

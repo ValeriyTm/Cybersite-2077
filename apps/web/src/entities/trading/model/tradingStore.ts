@@ -148,10 +148,12 @@ export const useTradingStore = create<TradingState>()(
     //5. Установить значения корзины целиком (синхронизация с ответом сервера):
     setCart: (items: CartItem[]) =>
       set({
-        // При получении данных с сервера добавляем поле selected, если его нет
         cartItems: items.map((item) => ({
           ...item,
-          selected: item.selected ?? true, // По умолчанию товары в корзине выбраны
+          // 🎯 Берем только то, что прислал сервер.
+          // Если сервер ПРИСЫЛАЕТ selected (как мы договорились через Redis),
+          // то ?? true больше не нужен.
+          selected: item.selected,
         })),
       }),
 

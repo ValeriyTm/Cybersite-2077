@@ -126,3 +126,43 @@ export const getFavoritesCount = async (req: AuthRequest, res: Response) => {
   console.log("count:", count);
   return res.json({ count });
 };
+
+//Переключение одного чекбокса в корзине:
+export const toggleSelect = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user.id;
+    const { motorcycleId, selected } = req.body;
+
+    const updatedCart = await cartService.toggleSelectItem(
+      userId,
+      motorcycleId,
+      selected,
+    );
+
+    res.status(200).json(updatedCart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+//Массовое переключение чекбоксов в корзине (Выбрать все / Снять все):
+export const toggleSelectAll = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user.id;
+    const { isSelected } = req.body;
+
+    const updatedCart = await cartService.toggleSelectAll(userId, isSelected);
+
+    res.status(200).json(updatedCart);
+  } catch (e) {
+    next(e);
+  }
+};

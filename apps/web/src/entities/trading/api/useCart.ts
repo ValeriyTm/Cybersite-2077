@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTradingStore } from "../model/tradingStore";
 import { $api } from "@/shared/api/api";
 import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 export const useCart = () => {
   const queryClient = useQueryClient();
@@ -12,6 +13,8 @@ export const useCart = () => {
     addToCartLocally,
     updateItemQuantity,
     removeSelectedLocally,
+    toggleSelectItem,
+    toggleSelectAll,
   } = useTradingStore();
 
   //1) Загрузка корзины:
@@ -86,20 +89,72 @@ export const useCart = () => {
   });
 
   //5) Массовое удаление товаров из корзины:
+  // const { mutate: removeSelected } = useMutation({
+  //   mutationFn: async (ids: string[]) => {
+  //     //Отправляем изменения на сервер:
+  //     const { data } = await $api.post("/trading/cart/remove-selected", {
+  //       ids,
+  //     });
+  //     //Сервер возвращает актуальный состав корзины:
+  //     return data;
+  //   },
+  //   onSuccess: (data) => {
+  //     //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
+  //     setCart(data);
+  //     removeSelectedLocally(); //Сбрасываем локальные чекбоксы
+  //   },
+  // });
+  const { cartItems } = useTradingStore();
+
   const { mutate: removeSelected } = useMutation({
     mutationFn: async (ids: string[]) => {
-      //Отправляем изменения на сервер:
+      // // 1. Собираем ID всех товаров, у которых selected: true
+      // const selectedIds = cartItems
+      //   .filter((item) => item.selected)
+      //   .map((item) => item.id);
+
+      // if (selectedIds.length === 0) return;
+
+      // 2. Отправляем запрос на массовое удаление
       const { data } = await $api.post("/trading/cart/remove-selected", {
         ids,
       });
-      //Сервер возвращает актуальный состав корзины:
       return data;
     },
     onSuccess: (data) => {
-      //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
+      // 3. Синхронизируем корзину с сервером
       setCart(data);
-      removeSelectedLocally(); //Сбрасываем локальные чекбоксы
+      // 4. Очищаем локальное состояние чекбоксов
+      removeSelectedLocally();
+      toast.success("Выбранные товары удалены");
     },
+  });
+
+  //Мутация переключения одного товара
+  const { mutate: toggleSelect } = useMutation({
+    mutationFn: async ({ id, selected }: { id: string; selected: boolean }) => {
+      // Optimistic UI: меняем галочку в Zustand мгновенно
+      toggleSelectItem(id);
+
+      const { data } = await $api.patch("/trading/cart/select", {
+        motorcycleId: id,
+        selected,
+      });
+      return data;
+    },
+    onSuccess: (data) => setCart(data), // Синхронизируем с Redis
+  });
+
+  //Мутация "Выбрать всё"
+  const { mutate: selectAll } = useMutation({
+    mutationFn: async (isSelected: boolean) => {
+      toggleSelectAll(isSelected); // Optimistic UI
+      const { data } = await $api.patch("/trading/cart/select-all", {
+        isSelected,
+      });
+      return data;
+    },
+    onSuccess: (data) => setCart(data),
   });
 
   //Возвращаем объект со всеми методами мутаций и состоянием загрузки:
@@ -109,5 +164,7 @@ export const useCart = () => {
     removeItem,
     removeSelected,
     isLoading,
+    toggleSelect,
+    selectAll,
   };
 };

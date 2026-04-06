@@ -61,6 +61,7 @@ export class CartService {
 
         return {
           ...moto, // Данные из БД (модель, бренд, базовая цена)
+          selected: item.selected, // Чекбокс выбора
           quantity: item.quantity,
           totalInStock: stockMap[item.id] || 0, //Если товара нет в таблице Stock — пишем 0
           discountData, // Скидки { finalPrice, discountPercent, isPersonal }
@@ -150,7 +151,38 @@ export class CartService {
     return cart;
   }
 
-  //Получение данных о остатках на складе, доступных к заказу:
+  //Метод переключения одного товара в корзине:
+  async toggleSelectItem(
+    userId: string,
+    motorcycleId: string,
+    isSelected: boolean,
+  ) {
+    const key = this.getCartKey(userId);
+    const data = await redis.get(key);
+    const cartItems = data ? JSON.parse(data) : [];
+
+    const updatedCart = cartItems.map((item: any) =>
+      item.id === motorcycleId ? { ...item, selected: isSelected } : item,
+    );
+
+    await redis.set(key, JSON.stringify(updatedCart));
+    return this.getCart(userId); // Возвращаем полную корзину с данными из БД и скидками
+  }
+
+  //Метод "Выбрать всё / Снять всё" для товаров корзины:
+  async toggleSelectAll(userId: string, isSelected: boolean) {
+    const key = this.getCartKey(userId);
+    const data = await redis.get(key);
+    const cartItems = data ? JSON.parse(data) : [];
+
+    const updatedCart = cartItems.map((item: any) => ({
+      ...item,
+      selected: isSelected,
+    }));
+
+    await redis.set(key, JSON.stringify(updatedCart));
+    return this.getCart(userId);
+  }
 }
 
 export const cartService = new CartService();

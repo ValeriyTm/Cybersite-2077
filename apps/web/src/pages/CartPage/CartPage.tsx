@@ -13,7 +13,17 @@ import toast from "react-hot-toast";
 export const CartPage = () => {
   const { cartItems, toggleSelectItem, toggleSelectAll, updateItemQuantity } =
     useTradingStore();
-  const { updateQuantity, removeItem, removeSelected } = useCart();
+  const {
+    updateQuantity,
+    removeItem,
+    removeSelected,
+    toggleSelect,
+    selectAll,
+  } = useCart();
+
+  // Проверяем, выбраны ли все товары сейчас
+  const isAllSelected =
+    cartItems.length > 0 && cartItems.every((item) => item.selected);
 
   //Для промокода:
   const [promoCode, setPromoCode] = useState("");
@@ -52,6 +62,10 @@ export const CartPage = () => {
   //   0,
   // );
 
+  const handleToggleAll = () => {
+    selectAll(!isAllSelected);
+  };
+
   //Применяем скидки к сумме заказа:
   const selectedItems = cartItems.filter((item) => item.selected);
 
@@ -66,10 +80,6 @@ export const CartPage = () => {
     return Math.max(0, subtotal - promoAmount);
   }, [subtotal, appliedPromo]);
 
-  console.log("ДЛЯ ПРОВЕРКИ:", {
-    sub: subtotal,
-    res: finalTotal,
-  });
   //Уменьшение цены от промокода:
   // let promoAmount = appliedPromo?.amount ? appliedPromo?.amount : 0;
 
@@ -78,8 +88,8 @@ export const CartPage = () => {
   //Применяем промокод к сумме заказа (конечная сумма):
   // const finalTotal = Math.max(0, currentSubtotal - currentPromoAmount);
 
-  const isAllSelected =
-    cartItems.length > 0 && selectedItems.length === cartItems.length;
+  // const isAllSelected =
+  //   cartItems.length > 0 && selectedItems.length === cartItems.length;
 
   //Обработчик удаления одного товара
   const handleConfirmSingle = () => {
@@ -92,7 +102,7 @@ export const CartPage = () => {
   //Обработчик массового удаления
   const handleConfirmBulk = () => {
     const ids = selectedItems.map((i) => i.id);
-    removeSelected(ids);
+    removeSelected(ids); // Передаем массив
     setIsBulkDeleteOpen(false);
   };
 
@@ -143,7 +153,7 @@ export const CartPage = () => {
               <input
                 type="checkbox"
                 checked={isAllSelected}
-                onChange={(e) => toggleSelectAll(e.target.checked)}
+                onChange={handleToggleAll}
               />
               Выбрать все
             </label>
@@ -166,6 +176,13 @@ export const CartPage = () => {
               const displayPrice = hasDiscount
                 ? item.discountData.finalPrice
                 : item.price;
+
+              //
+              const handleCheckboxChange = () => {
+                // Отправляем ID и инвертированное текущее состояние
+                toggleSelect({ id: item.id, selected: !item.selected });
+              };
+
               return (
                 <div
                   key={item.id}
@@ -174,7 +191,7 @@ export const CartPage = () => {
                   <input
                     type="checkbox"
                     checked={item.selected}
-                    onChange={() => toggleSelectItem(item.id)}
+                    onChange={handleCheckboxChange}
                   />
 
                   <div className={styles.itemImg}>
