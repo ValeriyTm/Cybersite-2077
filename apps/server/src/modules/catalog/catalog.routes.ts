@@ -30,7 +30,11 @@ router.get("/sync-search", async (req, res, next) => {
 //Поиск с выводом предположений:
 router.get("/search/suggest", catalogController.getSuggestions);
 //Получение аналогичных мотоциклов (рекомендации) (/api/catalog/motorcycles/:slug/related):
-router.get("/motorcycles/:slug/related", catalogController.getRelated);
+router.get(
+  "/motorcycles/:slug/related",
+  optionalAuth,
+  catalogController.getRelated,
+);
 //Получение информации о конкретном мотоцикле (/api/catalog/motorcycles/:brandSlug/:slug):
 router.get(
   "/motorcycles/:brandSlug/:slug",

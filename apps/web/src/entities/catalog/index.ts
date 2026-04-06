@@ -6,7 +6,7 @@ export {
   fetchBrands,
   fetchMotorcycles,
   fetchMotorcycleBySlug,
-  fetchRelatedMotorcycles,
+  // fetchRelatedMotorcycles,
 } from "./api/catalogApi";
 export {
   type SiteCategory,

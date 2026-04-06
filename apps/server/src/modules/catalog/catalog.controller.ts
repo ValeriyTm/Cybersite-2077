@@ -119,12 +119,16 @@ export const getMotorcycle = catchAsync(
 
 //Поиск аналогичных мотоциклов (рекомендации):
 export const getRelated = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { slug } = req.params;
-    const motorcycle = await catalogService.getMotorcycleBySlug(slug);
+    const userId = req.user?.id;
+    const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
     if (!motorcycle) return res.status(404).send();
 
-    const related = await searchService.getRelatedMotorcycles(motorcycle);
+    const related = await searchService.getRelatedMotorcycles(
+      motorcycle,
+      userId,
+    );
     res.json(related);
   },
 );

@@ -67,9 +67,13 @@ export const MotorcycleCard = ({
       : data.brand; // Если прилетела строка (из общего каталога)
 
   //Скидки:
-  const currentPrice = data.discountData?.finalPrice || data.price; //Если есть скидка, берем finalPrice, иначе обычную цену
-  const hasDiscount =
-    data.discountData && data.discountData.discountPercent > 0;
+  console.log(data.discountData);
+  // const currentPrice = data.discountData?.discountPercent?
+  //   ? data.discountData?.finalPrice? : data.price;
+  const currentPrice = data.discountData?.finalPrice ?? data.price;
+  // const currentPrice = data.discountData?.finalPrice || data.price; //Если есть скидка, берем finalPrice, иначе обычную цену
+  const hasDiscount = data.discountData.discountPercent > 0;
+  const isPersonalDiscount = data.discountData.isPersonal;
 
   return (
     <Link
@@ -93,9 +97,9 @@ export const MotorcycleCard = ({
           {/*Бадж скидки */}
           {hasDiscount && (
             <div
-              className={`${styles.badgeDiscount} ${data.discountData.isPersonal ? styles.personal : ""}`}
+              className={`${styles.badgeDiscount} ${isPersonalDiscount ? styles.personal : ""}`}
             >
-              {data.discountData.isPersonal ? "ДЛЯ ВАС " : ""}-
+              {isPersonalDiscount ? "ДЛЯ ВАС " : ""}-
               {data.discountData.discountPercent}%
             </div>
           )}

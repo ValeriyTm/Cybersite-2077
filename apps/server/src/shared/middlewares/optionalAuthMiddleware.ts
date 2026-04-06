@@ -10,7 +10,7 @@ export const optionalAuth = (
   try {
     // 1.Извлекаем заголовок Authorization из заголовка запроса:
     const authHeader = req.headers.authorization;
-    console.log("authHeader: ", authHeader);
+
     if (!authHeader) {
       //Если токена нет, просто переходим к следующему middleware:
       return next();

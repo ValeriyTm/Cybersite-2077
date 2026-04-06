@@ -85,8 +85,6 @@ export class SearchService {
       onlyInStock,
     } = filters;
 
-    console.log(onlyInStock);
-
     const query: any = {
       bool: {
         must: [], //Обязательные условия
@@ -249,7 +247,7 @@ export class SearchService {
   }
 
   //Поиск аналогичных мотоциклов (рекомендации):
-  async getRelatedMotorcycles(motorcycle: any, limit = 4) {
+  async getRelatedMotorcycles(motorcycle: any, userId?: string, limit = 4) {
     //[Отбор происходит по принципу «похожий класс + похожий объём».Мы ищем мотоциклы только из той же категории. Elastic старается в первую очередь выдать модели того же производителя. Мы ищем модели с объёмом +/- 30% от текущего.]
     //Собираем только те фильтры, которые реально существуют в объекте:
     const must: any[] = [];
@@ -291,10 +289,26 @@ export class SearchService {
       query,
     });
 
-    return result.hits.hits.map((hit: any) => ({
-      ...(hit._source as object),
+    //Превращаем хиты Elastic в объекты:
+    const rawItems = result.hits.hits.map((hit: any) => ({
+      ...(hit._source as any),
       id: hit._id,
     }));
+
+    return await Promise.all(
+      rawItems.map(async (moto: any) => {
+        const discountData = await DiscountLogic.calculateFinalPrice(
+          moto,
+          userId,
+        );
+        return { ...moto, discountData };
+      }),
+    );
+
+    // return result.hits.hits.map((hit: any) => ({
+    //   ...(hit._source as object),
+    //   id: hit._id,
+    // }));
   }
 
   //Поиск с выводом предположений:

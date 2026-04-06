@@ -238,7 +238,7 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
-  background: #2da109; // Красный для глобальных
+  background: #2da109;
   color: #fff;
   padding: 4px 10px;
   border-radius: 4px;
@@ -248,7 +248,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 
   &.personal {
-    background: #f39c12; //Для персональных скидок
+    background: #f39c12;
     color: #f80000;
   }
 }

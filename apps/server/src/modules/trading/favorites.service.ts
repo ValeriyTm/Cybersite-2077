@@ -35,19 +35,6 @@ export class FavoritesService {
     return favorites.map((f) => f.motorcycleId);
   }
 
-  // // 3. Получить полные данные избранных моделей (для страницы "Моё избранное")
-  // static async getFavoritesFull(userId: string) {
-  //   return prisma.favorite.findMany({
-  //     where: { userId },
-  //     include: {
-  //       motorcycle: {
-  //         include: { brand: true, images: { take: 1 } },
-  //       },
-  //     },
-  //     orderBy: { createdAt: "desc" },
-  //   });
-  // }
-
   //Пернуть полные данные о моделях по массиву id от юзера:
   static async getFavoritesByIds(
     ids: string[],
@@ -55,8 +42,6 @@ export class FavoritesService {
     skip: number = 0,
     userId?: string, //Для расчёта скидок
   ) {
-    // console.log("ids: ", ids); //ids:  ['5b60c308-4449-45d3-8ec1-bf6dac1959be', 'bea5ff0d-309f-4047-8f71-e0ec0642a945', ...]
-
     const motorcycles = await prisma.motorcycle.findMany({
       where: { id: { in: ids } }, //Ищем только те, что в массиве избранного
       include: {
@@ -82,8 +67,6 @@ export class FavoritesService {
           moto,
           userId,
         );
-
-        console.log("discountData: ", discountData);
 
         return {
           ...moto,

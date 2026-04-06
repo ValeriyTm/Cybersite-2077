@@ -9,6 +9,7 @@ import {
   type MotorcycleFull,
 } from "../model/types";
 import { API_URL } from "@/shared/api/api";
+import { $api } from "@/shared/api/api";
 
 //Получить категории каталога (мотоциклы, мотоэкип, запчасти):
 export const fetchSiteCategories = async (): Promise<SiteCategory[]> => {
@@ -50,13 +51,14 @@ export const fetchMotorcycleBySlug = async (
 };
 
 //Получить похожие мотоциклы (функционал рекомендаций):
-export const fetchRelatedMotorcycles = async (
-  slug: string,
-): Promise<MotorcycleShort[]> => {
-  const { data } = await axios.get(
-    `${API_URL}/api/catalog/motorcycles/${slug}/related`,
-  );
+// export const fetchRelatedMotorcycles = async (
+//   slug: string,
+// ): Promise<MotorcycleShort[]> => {
+//   const { data } = await axios.get(
+//     `${API_URL}/api/catalog/motorcycles/${slug}/related`,
+//   );
+//
 
-  //Возвращаем массив айтемов (обычно Elastic отдает их напрямую в теле ответа):
-  return data;
-};
+//Возвращаем массив айтемов (обычно Elastic отдает их напрямую в теле ответа):
+//   // return data;
+// };
