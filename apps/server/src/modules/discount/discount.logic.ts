@@ -1,4 +1,4 @@
-//Логика расчёта цены с учетом скидок:
+//-----------Логика расчёта цены с учетом скидок:-------------//
 import { redis } from "src/lib/redis.js";
 import { prisma } from "@repo/database";
 
@@ -8,7 +8,7 @@ export class DiscountLogic {
     let finalPrice = motorcycle.price;
     let appliedDiscount = 0; // В процентах (выбираем бОльшую)
 
-    // 1. Проверяем Глобальную скидку (Redis)
+    //1) Проверяем глобальную скидку (Redis):
     const globalSaleRaw = await redis.get("global_sale");
     if (globalSaleRaw) {
       const { year, percent } = JSON.parse(globalSaleRaw);
@@ -17,22 +17,22 @@ export class DiscountLogic {
       }
     }
 
-    // 2. Проверяем Персональную скидку (Postgres)
+    //2) Проверяем персональную скидку (Postgres):
     if (userId) {
       const personalSale = await prisma.personalDiscount.findFirst({
         where: {
           userId,
           motorcycleId: motorcycle.id,
-          expiresAt: { gt: new Date() }, // Еще не истекла
+          expiresAt: { gt: new Date() }, //Еще не истекла
         },
       });
 
       if (personalSale && personalSale.discountPercent > appliedDiscount) {
-        appliedDiscount = personalSale.discountPercent; // Персональная скидка (20%) приоритетнее
+        appliedDiscount = personalSale.discountPercent; //Персональная скидка (фикс 20%) приоритетнее
       }
     }
 
-    // Применяем процентную скидку
+    //Применяем процентную скидку:
     if (appliedDiscount > 0) {
       finalPrice = Math.round(finalPrice * (1 - appliedDiscount / 100));
     }
@@ -41,7 +41,7 @@ export class DiscountLogic {
       originalPrice: motorcycle.price,
       finalPrice,
       discountPercent: appliedDiscount > 0 ? appliedDiscount : null,
-      isPersonal: appliedDiscount === 20, // Для баджа на фронте
+      isPersonal: appliedDiscount === 20, //Для баджа на фронте
     };
   }
 }

@@ -2,7 +2,7 @@ export const getTimeToMidnight = () => {
   const now = new Date();
   const midnight = new Date();
 
-  // Устанавливаем завтрашний день 00:00:00
+  //Устанавливаем завтрашний день 00:00:00:
   midnight.setHours(24, 0, 0, 0);
 
   const diff = midnight.getTime() - now.getTime();

@@ -40,6 +40,11 @@ export class DiscountService {
 
   //Персональная скидка:
   async generatePersonalDiscounts() {
+    //Чистим просроченные скидки в БД перед началом:
+    await prisma.personalDiscount.deleteMany({
+      where: { expiresAt: { lt: new Date() } },
+    });
+
     //Находим всех пользователей, подтвердивших email:
     const users = await prisma.user.findMany({
       where: { isActivated: true },
@@ -59,7 +64,7 @@ export class DiscountService {
 
       if (randomBike) {
         const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 7); // Скидка на неделю
+        expiresAt.setDate(expiresAt.getDate() + 7); //Скидка на неделю
 
         //Записываем скидку в БД (обновляем старую или создаем новую):
         const discount = await prisma.personalDiscount.upsert({

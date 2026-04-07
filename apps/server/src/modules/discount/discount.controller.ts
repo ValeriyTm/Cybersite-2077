@@ -89,3 +89,23 @@ export const triggerDiscountGen = async (
     next(e);
   }
 };
+
+//Получить все действующие промокоды:
+export const getAllActivePromos = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const promos = await prisma.promoCode.findMany({
+      where: {
+        isActive: true,
+        expiresAt: { gt: new Date() }, //Только действующие
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(promos);
+  } catch (e) {
+    next(e);
+  }
+};

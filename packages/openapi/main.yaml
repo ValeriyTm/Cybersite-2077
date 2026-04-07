@@ -76,6 +76,10 @@ paths:
     $ref: "./modules/trading.yaml#/paths/~1cart~1item~1{motorcycleId}"
   /api/trading/cart/remove-selected:
     $ref: "./modules/trading.yaml#/paths/~1cart~1remove-selected"
+  /api/trading/cart/select:
+    $ref: "./modules/trading.yaml#/paths/~1cart~1select"
+  /api/trading/cart/select-all:
+    $ref: "./modules/trading.yaml#/paths/~1cart~1select-all"
     # api/warehouse:
   /api/warehouse:
     $ref: "./modules/warehouse.yaml#/paths/~1"
@@ -101,6 +105,15 @@ paths:
     $ref: "./modules/reviews.yaml#/paths/~1{motorcycleId}"
   /api/reviews/{reviewId}:
     $ref: "./modules/reviews.yaml#/paths/~1{reviewId}"
+    # api/discount:
+  /api/discount/global:
+    $ref: "./modules/discount.yaml#/paths/~1global"
+  /api/discount/all-promos:
+    $ref: "./modules/discount.yaml#/paths/~1all-promos"
+  /api/discount/apply-promo:
+    $ref: "./modules/discount.yaml#/paths/~1apply-promo"
+  /api/discount/force-generate:
+    $ref: "./modules/discount.yaml#/paths/~1force-generate"
 
 components:
   securitySchemes:

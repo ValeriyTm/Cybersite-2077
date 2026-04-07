@@ -304,11 +304,6 @@ export class SearchService {
         return { ...moto, discountData };
       }),
     );
-
-    // return result.hits.hits.map((hit: any) => ({
-    //   ...(hit._source as object),
-    //   id: hit._id,
-    // }));
   }
 
   //Поиск с выводом предположений:

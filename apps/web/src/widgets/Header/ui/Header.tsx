@@ -123,6 +123,7 @@ export const Header = () => {
             <Link to="/shipping">Доставка и оплата</Link>
             <Link to="/contacts">Контакты</Link>
             <Link to="/news">Новости</Link>
+            <Link to="/promos">Промокоды</Link>
           </nav>
         </div>
       </div>

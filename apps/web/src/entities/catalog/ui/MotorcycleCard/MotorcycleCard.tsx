@@ -67,11 +67,7 @@ export const MotorcycleCard = ({
       : data.brand; // Если прилетела строка (из общего каталога)
 
   //Скидки:
-  console.log(data.discountData);
-  // const currentPrice = data.discountData?.discountPercent?
-  //   ? data.discountData?.finalPrice? : data.price;
   const currentPrice = data.discountData?.finalPrice ?? data.price;
-  // const currentPrice = data.discountData?.finalPrice || data.price; //Если есть скидка, берем finalPrice, иначе обычную цену
   const hasDiscount = data.discountData.discountPercent > 0;
   const isPersonalDiscount = data.discountData.isPersonal;
 

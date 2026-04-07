@@ -59,7 +59,7 @@ export class CatalogService {
 
   //Получение данных о конкретном мотоцикле:
   async getMotorcycleBySlug(slug: string, userId: string) {
-    // Достаем из БД все данные о мотоцикле:
+    //Достаем из БД все данные о мотоцикле:
     const moto = await prisma.motorcycle.findUnique({
       where: { slug },
       include: {

@@ -101,30 +101,6 @@ export const MotorcycleDetailsPage = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (brandSlug && slug) {
-  //     fetchMotorcycleBySlug(brandSlug, slug).then((res) => {
-  //       setData(res);
-  //       //Если в БД есть изображение с флагом isMain — берем его, иначе первое из списка (если вообще ничего нет - ставим дефолт)
-  //       const mainImg =
-  //         res.images?.find((img) => img.isMain)?.url || res.images?.[0]?.url;
-
-  //       setActiveImage(mainImg ? `${STATIC_URL}/${mainImg}` : DEFAULT_IMG);
-  //     });
-  //   }
-  // }, [brandSlug, slug]);
-
-  // useEffect(() => {
-  //   if (slug) {
-  //     //Очищаем старые рекомендации перед загрузкой новых:
-  //     setRelated([]);
-
-  //     //Загружаем новые:
-  //     fetchRelatedMotorcycles(slug)
-  //       .then(setRelated)
-  //       .catch((err) => console.error("Ошибка загрузки рекомендаций:", err));
-  //   }
-  // }, [slug]);
   //-------
   //Для удаления отзыва:
   const handleDelete = (reviewId: string) => {
@@ -148,7 +124,6 @@ export const MotorcycleDetailsPage = () => {
 
   ///--------------
 
-  // if (!motorcycle) return <div className={styles.loader}>Загрузка данных...</div>;
   if (isMotoLoading || !motorcycle)
     return <div className={styles.loader}>Загрузка...</div>;
 

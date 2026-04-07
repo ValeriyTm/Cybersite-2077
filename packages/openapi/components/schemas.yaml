@@ -132,6 +132,21 @@ MotorcycleShort:
     totalInStock:
       type: integer
       description: количество товара, доступное для заказа. Встречается не во всех эндпоинтах. Когда-нибудь поправлю.
+    discountData:
+      type: object
+      properties:
+        discountPercent:
+          type: integer
+          description: процент скидки; может быть null, если скидки на данную модель нет
+        isPersonal:
+          type: boolean
+          description: является ли скидка персональной (false для отсутствия скидки и для глобальной скидки)
+        originalPrice:
+          type: integer
+          description: цена до применения скидки
+        finalPrice:
+          type: integer
+          description: цена после применения скидки (если скидки нет, то finalPrice == originalPrice)
 
 MotorcycleFull:
   type: object
@@ -261,6 +276,21 @@ MotorcycleFull:
     totalInStock:
       type: integer
       description: количество товара, доступное для заказа. Встречается не во всех эндпоинтах. Когда-нибудь поправлю.
+    discountData:
+      type: object
+      properties:
+        discountPercent:
+          type: integer
+          description: процент скидки; может быть null, если скидки на данную модель нет
+        isPersonal:
+          type: boolean
+          description: является ли скидка персональной (false для отсутствия скидки и для глобальной скидки)
+        originalPrice:
+          type: integer
+          description: цена до применения скидки
+        finalPrice:
+          type: integer
+          description: цена после применения скидки (если скидки нет, то finalPrice == originalPrice)
 
 ProductImage:
   type: object
@@ -515,6 +545,128 @@ CartResponse:
       type: integer
     selected:
       type: boolean
+
+CartItem:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: ebe237bc-2944-418e-99f3-9d4f7802ee21
+    model:
+      type: string
+      example: "Cleveland Iron One"
+    slug:
+      type: string
+      example: "cleveland-iron-one2018"
+    brand:
+      $ref: "#/Brand"
+    brandId:
+      type: string
+      format: uuid
+      example: 70b8249b-6b08-4b59-972c-30e49855fcb1
+    siteCategoryId:
+      type: string
+      format: uuid
+      example: 081b4c44-59b1-4b2a-884b-f4bcfdc7c21e
+    category:
+      $ref: "#/MotoCategory"
+    year:
+      type: integer
+      example: 2023
+    displacement:
+      type: number
+      format: integer
+      description: "Объем двигателя (см3)"
+      example: 750
+    power:
+      type: number
+      format: float
+      nullable: true
+      description: "Мощность (л.с.)"
+      example: 217.6
+    topSpeed:
+      type: integer
+      nullable: true
+      description: "Макс. скорость (км/ч)"
+      example: 299
+    fuelConsumption:
+      type: number
+      nullable: true
+      description: "Расход топлива (л/100км)"
+      example: 6.3
+    engineType:
+      type: string
+      nullable: true
+      example: "Single cylinder, four-stroke"
+    fuelSystem:
+      type: string
+      nullable: true
+    coolingSystem:
+      $ref: "#/CoolingType"
+    gearbox:
+      $ref: "#/GearboxType"
+    transmission:
+      $ref: "#/TransmissionType"
+    starter:
+      $ref: "#/StarterType"
+    frontTyre:
+      type: string
+      nullable: true
+    rearTyre:
+      type: string
+      nullable: true
+    frontBrakes:
+      type: string
+      nullable: true
+    rearBrakes:
+      type: string
+      nullable: true
+    colors:
+      type: array
+      items:
+        type: string
+      example: ["gray", "lightgray", "white", "blue"]
+    comments:
+      type: string
+      nullable: true
+      description: "Подробное описание или примечания"
+    rating:
+      type: number
+      format: float
+      example: 4.9
+    price:
+      type: integer
+      description: "Цена в рублях"
+      example: 800000
+    images:
+      type: array
+      items:
+        $ref: "#/ProductImage"
+    createdAt:
+      type: string
+      example: "2026-03-31T06:32:03.893Z"
+    updatedAt:
+      type: string
+      example: "2026-03-31T06:32:03.893Z"
+    totalInStock:
+      type: integer
+      description: количество товара, доступное для заказа.
+    discountData:
+      type: object
+      properties:
+        discountPercent:
+          type: integer
+          description: процент скидки; может быть null, если скидки на данную модель нет
+        isPersonal:
+          type: boolean
+          description: является ли скидка персональной (false для отсутствия скидки и для глобальной скидки)
+        originalPrice:
+          type: integer
+          description: цена до применения скидки
+        finalPrice:
+          type: integer
+          description: цена после применения скидки (если скидки нет, то finalPrice == originalPrice)
 
 # Склады:
 Warehouse:
@@ -791,4 +943,40 @@ Review:
       type: string
       format: date-time
     _v:
+      type: integer
+
+# Discounts:
+GlobalDiscount:
+  type: object
+  properties:
+    year:
+      type: integer
+      example: 1914
+    percent:
+      type: integer
+      example: 14
+
+PromoCode:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    code:
+      type: string
+      example: "CLEAR"
+    discountAmount:
+      type: integer
+      description: Целое число от 100000 до 200000
+      example: 200000
+    createdAt:
+      type: string
+      format: date-time
+    expiresAt:
+      type: string
+      format: date-time
+    isActive:
+      type: boolean
+      example: true
+    usedCount:
       type: integer

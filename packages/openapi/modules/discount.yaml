@@ -1,0 +1,94 @@
+tags:
+  - name: Discount
+    description: API для управления системой лояльности - скидками, персональными предложениями и промокодами.
+
+paths:
+  /global:
+    get:
+      summary: Получить информацию о глобальной скидке дня
+      description: Возвращает год выпуска мотоциклов и процент скидки, актуальные на текущие сутки (из Redis).
+      tags: [Discount]
+      responses:
+        "200":
+          description: Данные о текущей акции
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/GlobalDiscount"
+        "204":
+          description: На сегодня глобальных акций нет
+
+  /all-promos:
+    get:
+      summary: Список активных промокодов
+      description: Возвращает все действующие промокоды из БД, которые еще не истекли.
+      tags: [Discount]
+      responses:
+        "200":
+          description: Массив промокодов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/PromoCode"
+
+  /apply-promo:
+    post:
+      summary: Применить промокод
+      description: Проверяет существование кода, его срок действия и не использовал ли его текущий пользователь ранее.
+      tags: [Discount]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code:
+                  type: string
+                  example: "CLEAR"
+      responses:
+        "200":
+          description: Промокод валиден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: примененный промокод
+                    example: "CLEAR"
+                  discountAmount:
+                    type: integer
+                    description: скидка по промокоду
+                    example: 150000
+        "400":
+          description: Промокод уже использован этим пользователем
+        "404":
+          description: Промокод не найден или истек
+
+  /force-generate:
+    post:
+      summary: Принудительная генерация скидок (Admin only)
+      description: Запускает воркеры для немедленного обновления глобальной скидки, персональных предложений и промокодов.
+      tags: [Discount]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Успешно проведена генерация новых слов-промокодов, глобальной скидки и персональных скидок для всех подтвержденных аккаунтов
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Скидки и промокоды успешно обновлены!"
+        "403":
+          description: Недостаточно прав (требуется роль ADMIN или SUPERADMIN)

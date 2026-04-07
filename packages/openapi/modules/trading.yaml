@@ -174,3 +174,65 @@ paths:
               type: array
               description: массив товаров в корзине (пустой массив)
               example: []
+
+  /cart/select:
+    patch:
+      summary: Переключить выбор одного товара в корзине
+      description: Изменяет статус чекбокса (выбран/не выбран) для конкретного мотоцикла в Redis.
+      tags: [Trading]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [motorcycleId, selected]
+              properties:
+                motorcycleId:
+                  type: string
+                  format: uuid
+                  description: ID мотоцикла в корзине
+                selected:
+                  type: boolean
+                  description: Новый статус выбора (true - выбран, false - снят)
+      responses:
+        "200":
+          description: Статус успешно обновлен, возвращается актуальный состав корзины
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/CartItem"
+        "401":
+          description: Неавторизован
+
+  /cart/select-all:
+    patch:
+      summary: Массовое управление выбором в корзине
+      description: Устанавливает статус "выбран" или "снят" сразу для всех товаров в корзине текущего пользователя.
+      tags: [Trading]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [isSelected]
+              properties:
+                isSelected:
+                  type: boolean
+                  description: Установить true для "Выбрать все" или false для "Снять все"
+      responses:
+        "200":
+          description: Все товары обновлены
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/CartItem"

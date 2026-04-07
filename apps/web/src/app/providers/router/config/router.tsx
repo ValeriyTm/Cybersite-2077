@@ -20,6 +20,7 @@ import { FavoritesPage } from "@/pages/FavoritesPage/FavotiresPage";
 import { CartPage } from "@/pages/CartPage/CartPage";
 import { CheckoutPage } from "@/pages/CheckoutPage/CheckoutPage";
 import { MyOrdersPage } from "@/pages/MyOrdersPage/MyOrdersPage";
+import { PromosPage } from "@/pages/PromosPage/PromosPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -99,6 +100,10 @@ export const router = createBrowserRouter([
       {
         path: "/orders/my",
         element: <MyOrdersPage />, //Страница заказов
+      },
+      {
+        path: "/promos",
+        element: <PromosPage />, //Страница с промокодами
       },
       { path: "*", element: <div>404</div> },
     ],
