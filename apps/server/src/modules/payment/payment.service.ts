@@ -16,12 +16,13 @@ export class PaymentService {
 
     const createPayload: ICreatePayment = {
       amount: {
-        value: amount.toFixed(2),
+        value: (amount / 1000).toFixed(2), //Уменьшаем суммы, чтобы ЮKassa пропустила
+        // value: "100.00", //Рабочий способ
         currency: "RUB",
       },
-      payment_method_data: {
-        type: "bank_card",
-      },
+      // payment_method_data: {
+      //   type: "bank_card",
+      // },
       confirmation: {
         //Что делаем после платежа - редиректим на указанный URL:
         type: "redirect",
@@ -35,6 +36,10 @@ export class PaymentService {
     };
 
     try {
+      console.log(
+        "📦 Данные для ЮKassa:",
+        JSON.stringify(createPayload, null, 2),
+      );
       //Совершаем платеж с указанными параметрами:
       const payment = await checkout.createPayment(
         createPayload,
@@ -42,7 +47,11 @@ export class PaymentService {
       );
       return payment;
     } catch (error) {
-      console.error("YooKassa Error:", error);
+      // console.error("YooKassa Error:", error);
+      console.log("--- ЮKASSA DEBUG START ---");
+      console.log("Status:", error.response?.status);
+      console.log("Error Data:", JSON.stringify(error.response?.data, null, 2));
+      console.log("--- ЮKASSA DEBUG END ---");
       throw new Error("Ошибка при создании платежа");
     }
   }

@@ -87,8 +87,9 @@ export const CheckoutPage = () => {
 
   //Создаем мутацию для расчета доставки:
   const calculateMutation = useMutation({
-    mutationFn: (data: { lat: number; lng: number; items: any[] }) =>
-      $api.post("/warehouse/calculate", data).then((res) => res.data),
+    mutationFn: async (data: { lat: number; lng: number; items: any[] }) => {
+      return $api.post("/warehouse/calculate", data).then((res) => res.data);
+    },
     onSuccess: (data) => {
       //Сохраняем данные от бэкенда в стейт страницы:
       setDeliveryInfo(data);
@@ -107,7 +108,9 @@ export const CheckoutPage = () => {
 
       if (variables.shouldPay && res.data.paymentUrl) {
         //Вариант 1: Редирект в ЮKassa (если создание заказа с оплатой)
-        window.location.href = res.data.paymentUrl;
+        // window.location.href = res.data.paymentUrl;
+        window.open(res.data.paymentUrl, "_blank");
+        navigate("/profile/orders");
       } else {
         //Вариант 2: Редирект на страницу заказов (если просто создание заказа)
         navigate("/profile/orders");
@@ -190,7 +193,7 @@ export const CheckoutPage = () => {
   //Для модалки оплаты:
   const handleConfirmPayment = () => {
     setIsModalOpen(false);
-    handleCreateOrder(true); // Вызываем твою мутацию с флагом shouldPay
+    handleCreateOrder(true); // Вызываем мутацию с флагом shouldPay
   };
 
   return (

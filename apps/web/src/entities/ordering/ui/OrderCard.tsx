@@ -125,7 +125,12 @@ export const OrderCard = ({ order }: { order: any }) => {
             //   Оплатить заказ
             // </a>
 
-            <button onClick={() => setIsModalOpen(true)}>Оплатить заказ</button>
+            <button
+              className={styles.confirmBtn}
+              onClick={() => setIsModalOpen(true)}
+            >
+              Оплатить заказ
+            </button>
           )}
 
           {/*Кнопка подтверждения получения заказа*/}
@@ -208,7 +213,10 @@ export const OrderCard = ({ order }: { order: any }) => {
       <PaymentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={() => (window.location.href = order.paymentUrl)}
+        onConfirm={() => {
+          // window.location.href = order.paymentUrl;
+          window.open(order.paymentUrl, "_blank");
+        }}
         totalPrice={order.totalPrice}
         items={order.items}
         createdAt={order.createdAt}

@@ -25,7 +25,10 @@ export const ipFilterMiddleware = (
   }
 
   // 3. Проверка соответствия IP диапазонам ЮKassa
-  const isAllowed = ipRangeCheck(cleanIp, process.env.YOOKASSA_IPS);
+  const allowedIps = process.env.YOOKASSA_IPS
+    ? process.env.YOOKASSA_IPS.split(",")
+    : []; // Превращаем строку из .env в реальный массив
+  const isAllowed = ipRangeCheck(cleanIp, allowedIps);
 
   if (!isAllowed) {
     console.warn(
