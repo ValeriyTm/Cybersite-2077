@@ -12,12 +12,12 @@ export class PaymentService {
     amount: number,
     description: string,
   ) {
-    const idempotenceKey = uuidv4(); // Ключ идемпотентности, чтобы запрос с одним и тем же uuid поспринимался как тот же самый (чтобы операция не прошла дважды)
+    const idempotenceKey = uuidv4(); //Ключ идемпотентности, чтобы запрос с одним и тем же uuid поспринимался как тот же самый (чтобы операция не прошла дважды)
 
     const createPayload: ICreatePayment = {
       amount: {
         value: (amount / 1000).toFixed(2), //Уменьшаем суммы, чтобы ЮKassa пропустила
-        // value: "100.00", //Рабочий способ
+        // value: "100.00",
         currency: "RUB",
       },
       // payment_method_data: {
@@ -32,14 +32,10 @@ export class PaymentService {
       metadata: {
         orderId: orderId, //Передаем ID заказа, чтобы поймать его в вебхуке
       },
-      capture: true, //Автоматическое списание (без холдирования)
+      capture: true, //Автоматическое списание (одноэтапный платеж без холдирования)
     };
 
     try {
-      console.log(
-        "📦 Данные для ЮKassa:",
-        JSON.stringify(createPayload, null, 2),
-      );
       //Совершаем платеж с указанными параметрами:
       const payment = await checkout.createPayment(
         createPayload,
@@ -47,11 +43,7 @@ export class PaymentService {
       );
       return payment;
     } catch (error) {
-      // console.error("YooKassa Error:", error);
-      console.log("--- ЮKASSA DEBUG START ---");
-      console.log("Status:", error.response?.status);
-      console.log("Error Data:", JSON.stringify(error.response?.data, null, 2));
-      console.log("--- ЮKASSA DEBUG END ---");
+      console.error("YooKassa Error:", error);
       throw new Error("Ошибка при создании платежа");
     }
   }

@@ -6,16 +6,16 @@ export const ipFilterMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
-  // 1. Извлекаем IP. Если мы за ngrok или другим прокси, берем x-forwarded-for
+  //1) Извлекаем IP. Т.к. сервер за ngrok, то берем "x-forwarded-for":
   const xForwardedFor = req.headers["x-forwarded-for"];
   const requesterIp = Array.isArray(xForwardedFor)
     ? xForwardedFor[0]
     : xForwardedFor?.split(",")[0] || req.socket.remoteAddress || "";
 
-  // Очищаем IP от лишних префиксов (например, ::ffff: в IPv4)
+  //Очищаем IP от лишних префиксов (например, ::ffff: в IPv4)
   const cleanIp = requesterIp.replace(/^.*:/, "");
 
-  // 2. В режиме разработки разрешаем локальные запросы для тестов через Postman
+  //2) В режиме разработки разрешаем локальные запросы для тестов через Postman:
   if (
     process.env.NODE_ENV === "development" &&
     (cleanIp === "127.0.0.1" || cleanIp === "localhost")
@@ -24,7 +24,7 @@ export const ipFilterMiddleware = (
     return next();
   }
 
-  // 3. Проверка соответствия IP диапазонам ЮKassa
+  //3) Проверка соответствия IP диапазонам ответов от ЮKassa:
   const allowedIps = process.env.YOOKASSA_IPS
     ? process.env.YOOKASSA_IPS.split(",")
     : []; // Превращаем строку из .env в реальный массив

@@ -67,6 +67,14 @@ export const PaymentModal = ({
               <span className={styles.timer}>{timeLeft}</span>
             </p>
           )}
+          <p>
+            -Для успешной оплаты введите номер карты "4111 1111 1111 1111" с
+            любым сроком и кодом.
+          </p>
+          <p>
+            -Для неуспешной оплаты введите номер карты "5555 5555 5555 4634" с
+            любым сроком и кодом.
+          </p>
         </div>
 
         <div className={styles.orderSummary}>

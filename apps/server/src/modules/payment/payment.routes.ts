@@ -4,6 +4,7 @@ import { ipFilterMiddleware } from "./payment.middleware.js";
 
 const router = Router();
 
+//Роут получения ответа от ЮKassa:
 router.post("/webhook", ipFilterMiddleware, PaymentController.handleWebhook);
 
 export default router;

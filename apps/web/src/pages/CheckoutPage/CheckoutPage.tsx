@@ -110,10 +110,10 @@ export const CheckoutPage = () => {
         //Вариант 1: Редирект в ЮKassa (если создание заказа с оплатой)
         // window.location.href = res.data.paymentUrl;
         window.open(res.data.paymentUrl, "_blank");
-        navigate("/profile/orders");
+        navigate("/orders/my");
       } else {
         //Вариант 2: Редирект на страницу заказов (если просто создание заказа)
-        navigate("/profile/orders");
+        navigate("/orders/my");
         toast.success("Заказ оформлен!");
       }
     },

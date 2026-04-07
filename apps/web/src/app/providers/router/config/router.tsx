@@ -21,6 +21,8 @@ import { CartPage } from "@/pages/CartPage/CartPage";
 import { CheckoutPage } from "@/pages/CheckoutPage/CheckoutPage";
 import { MyOrdersPage } from "@/pages/MyOrdersPage/MyOrdersPage";
 import { PromosPage } from "@/pages/PromosPage/PromosPage";
+import { PaymentSuccess } from "@/pages/PaymentStatus/PaymentSuccess";
+import { PaymentFail } from "@/pages/PaymentStatus/PaymentFail";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -104,6 +106,14 @@ export const router = createBrowserRouter([
       {
         path: "/promos",
         element: <PromosPage />, //Страница с промокодами
+      },
+      {
+        path: "/payment/success",
+        element: <PaymentSuccess />, //Страница с промокодами
+      },
+      {
+        path: "/payment/fail",
+        element: <PaymentFail />, //Страница с промокодами
       },
       { path: "*", element: <div>404</div> },
     ],

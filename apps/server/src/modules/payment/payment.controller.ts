@@ -6,27 +6,26 @@ export class PaymentController {
     try {
       const notification = req.body;
 
-      // 🎯 1. Проверяем тип события
-      // ЮKassa присылает 'notification' с объектом 'object' внутри
+      //1) Проверяем тип события
       if (notification.event === "payment.succeeded") {
+        // ЮKassa присылает 'notification' с объектом 'object' внутри
         const payment = notification.object;
-        const orderId = payment.metadata.orderId; // Тот самый ID, который мы заложили при создании
+        const orderId = payment.metadata.orderId; //ID, который заложили при создании заказа:
 
-        console.log(`💰 Платеж подтвержден для заказа: ${orderId}`);
+        console.log(`Платеж подтвержден для заказа: ${orderId}`);
 
-        // 🎯 2. Обновляем статус заказа в БД
+        //2) Обновляем статус заказа в БД
         await prisma.$transaction(async (tx) => {
           const order = await tx.order.update({
             where: { id: orderId },
             data: {
-              status: "PAID", // Заказ оплачен
-              paymentStatus: "succeeded",
+              status: "PAID", //Меняем статус заказа на "оплачен"
+              paymentStatus: "succeeded", //Меняем статус оплаты на "оплачен"
             },
             include: { items: true },
           });
 
-          // 🎯 3. Окончательно списываем товар со склада
-          // Переносим количество из reserved в физическое списание
+          //3) Окончательно списываем товар со склада:
           for (const item of order.items) {
             await tx.stock.update({
               where: {
@@ -44,12 +43,11 @@ export class PaymentController {
         });
       }
 
-      // 🎯 4. ОБЯЗАТЕЛЬНО отвечаем ЮKassa статусом 200
-      // Иначе она будет слать уведомление снова и снова 24 часа
+      //Обязательно отвечаем ЮKassa статусом 200, иначе она будет слать уведомления в течение 24 часов:
       res.status(200).send("OK");
     } catch (error) {
       console.error("Webhook Error:", error);
-      // Даже при ошибке лучше вернуть 200 или 400, чтобы ЮKassa не зациклилась
+      //Даже при ошибке лучше вернуть 200 или 400, чтобы ЮKassa не зациклилась:
       res.status(400).send("Error");
     }
   }
