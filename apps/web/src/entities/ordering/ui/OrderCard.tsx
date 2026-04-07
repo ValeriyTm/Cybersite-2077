@@ -5,6 +5,7 @@ import { useOrderStore } from "../model/orderStore";
 import { Link } from "react-router";
 import { useState } from "react";
 import { ReviewModal } from "@/features/reviews/ui/ReviewModal/ReviewModal";
+import { PaymentModal } from "@/shared/ui/PaymentModal/PaymentModal";
 
 export const OrderCard = ({ order }: { order: any }) => {
   const isDelivered = order.status === "DELIVERED";
@@ -18,6 +19,9 @@ export const OrderCard = ({ order }: { order: any }) => {
   //Для реализации открытия модалки отзыва:
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+
+  //Состояние для pre-payment модалки:
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const completeMutation = useMutation({
     mutationFn: (orderId: string) =>
@@ -112,14 +116,16 @@ export const OrderCard = ({ order }: { order: any }) => {
 
           {/*Если заказ ожидает оплаты и есть ссылка на оплату — показываем кнопку */}
           {order.status === "PENDING" && order.paymentUrl && (
-            <a
-              href={order.paymentUrl}
-              className={styles.payLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Оплатить заказ
-            </a>
+            // <a
+            //   href={order.paymentUrl}
+            //   className={styles.payLink}
+            //   target="_blank"
+            //   rel="noopener noreferrer"
+            // >
+            //   Оплатить заказ
+            // </a>
+
+            <button onClick={() => setIsModalOpen(true)}>Оплатить заказ</button>
           )}
 
           {/*Кнопка подтверждения получения заказа*/}
@@ -198,6 +204,15 @@ export const OrderCard = ({ order }: { order: any }) => {
           })}
         </div>
       </div>
+
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => (window.location.href = order.paymentUrl)}
+        totalPrice={order.totalPrice}
+        items={order.items}
+        createdAt={order.createdAt}
+      />
     </div>
   );
 };

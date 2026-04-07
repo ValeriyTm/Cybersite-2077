@@ -10,6 +10,7 @@ import { useOrderStore } from "@/entities/ordering/model/orderStore";
 import { useLocation } from "react-router";
 import toast from "react-hot-toast";
 import { should } from "chai";
+import { PaymentModal } from "@/shared/ui/PaymentModal/PaymentModal";
 
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();
@@ -17,6 +18,9 @@ export const CheckoutPage = () => {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null,
   );
+
+  //Состояние для pre-payment модалки:
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -183,6 +187,12 @@ export const CheckoutPage = () => {
     createOrderMutation.mutate(payload);
   };
 
+  //Для модалки оплаты:
+  const handleConfirmPayment = () => {
+    setIsModalOpen(false);
+    handleCreateOrder(true); // Вызываем твою мутацию с флагом shouldPay
+  };
+
   return (
     <main className={styles.CheckoutPage}>
       <h1 className={styles.title}>Оформление заказа</h1>
@@ -301,7 +311,7 @@ export const CheckoutPage = () => {
           <button
             className={styles.payBtn}
             disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
-            onClick={() => handleCreateOrder(true)}
+            onClick={() => setIsModalOpen(true)}
           >
             {createOrderMutation.isPending
               ? "Оформление..."
@@ -309,6 +319,14 @@ export const CheckoutPage = () => {
           </button>
         </aside>
       </div>
+
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmPayment}
+        totalPrice={finalOrderPrice}
+        items={legalSelectedItems}
+      />
     </main>
   );
 };
