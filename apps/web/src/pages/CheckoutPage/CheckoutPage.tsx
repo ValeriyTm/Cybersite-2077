@@ -107,12 +107,12 @@ export const CheckoutPage = () => {
       fetchActiveCount();
 
       if (variables.shouldPay && res.data.paymentUrl) {
-        //Вариант 1: Редирект в ЮKassa (если создание заказа с оплатой)
+        //Вариант 1: Редирект в ЮKassa (если создание заказа с оплатой):
         // window.location.href = res.data.paymentUrl;
         window.open(res.data.paymentUrl, "_blank");
         navigate("/orders/my");
       } else {
-        //Вариант 2: Редирект на страницу заказов (если просто создание заказа)
+        //Вариант 2: Редирект на страницу заказов (если просто создание заказа):
         navigate("/orders/my");
         toast.success("Заказ оформлен!");
       }

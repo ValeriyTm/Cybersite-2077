@@ -6,7 +6,7 @@ paths:
   /:
     post:
       summary: Создать новый заказ
-      description: Инициализирует заказ, резервирует товары в PostgreSQL, обновляет профиль пользователя и ставит задачу в BullMQ на отмену через 1 час.
+      description: Инициализирует заказ, резервирует товары в PostgreSQL, обновляет профиль пользователя и ставит задачу в BullMQ на отмену через 1 час. Если передан флаг оплаты, генерирует paymentUrl для редиректа в ЮKassa.
       tags: [Ordering]
       security:
         - bearerAuth: []
@@ -146,7 +146,7 @@ paths:
             format: uuid
       responses:
         "200":
-          description: Заказ отменен, резерв снят
+          description: Заказ отменен, резерв снят, средства отправлены на возврат с Юкассы
           content:
             application/json:
               schema:
@@ -193,6 +193,8 @@ paths:
                   updatedAt:
                     type: string
                     example: "2026-03-31T06:32:03.893Z"
+        "400":
+          description: Заказ нельзя отменить в текущем статусе
 
   /{orderId}/pay-test:
     patch:

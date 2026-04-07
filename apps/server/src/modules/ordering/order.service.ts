@@ -83,9 +83,14 @@ export class OrderService {
       }
 
       //1.5.Генерируем платеж в ЮKassa:
+      // Достаем email юзера (он нам нужен для чека)
+      const user = await tx.user.findUnique({ where: { id: userId } });
+
       const payment = await PaymentService.createPayment(
         order.id,
         totalPrice,
+        order.items, //Передаем товары
+        user?.email || "test@test.ru", //Передаем email юзера
         `Оплата заказа №${order.orderNumber}`,
       );
 

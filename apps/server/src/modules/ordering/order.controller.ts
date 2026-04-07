@@ -6,6 +6,7 @@ import { addOrderExpirationTask } from "./order.queue.js";
 import { prisma } from "@repo/database";
 import { addDeliveryStartTask } from "./order.queue.js";
 import { searchService } from "../catalog/search.service.js";
+import { PaymentService } from "../payment/payment.service.js";
 
 //Создание заказа:
 export const createOrder = async (
@@ -190,7 +191,6 @@ export const cancelOrder = async (
       where: { id: orderId, userId: req.user.id },
       include: { items: true },
     });
-
     if (!order) return res.status(404).json({ message: "Заказ не найден" });
 
     //Проверяем допустимость отмены (при следующих статусах уже не отменить заказ):
@@ -205,6 +205,21 @@ export const cancelOrder = async (
         message:
           "Этот заказ уже нельзя отменить (он доставлен или уже отменен)",
       });
+    }
+
+    //Логика возврата денег через ЮKassа (если заказ оплачен, инициируем возврат перед транзакцией в БД):
+    if (order.paymentStatus === "succeeded" && order.paymentId) {
+      try {
+        const refundAmount = order.totalPrice / 1000; //Используем ту же логику /1000, что и при оплате, чтобы суммы совпали
+
+        await PaymentService.createRefund(order.paymentId, refundAmount);
+        console.log(`Возврат средств инициирован для заказа: ${order.id}`);
+      } catch (refundError) {
+        console.error("Ошибка при возврате в ЮKassa:", refundError);
+        return res
+          .status(500)
+          .json({ message: "Ошибка при оформлении возврата средств" });
+      }
     }
 
     //Транзакция (отмена + возврат резерва на склад):
@@ -225,7 +240,11 @@ export const cancelOrder = async (
             },
           },
           data: {
-            reserved: { decrement: item.quantity },
+            // Если заказ был PAID, значит quantity уже было списано (в вебхуке)
+            // Если заказ был PENDING, значит списан только reserved
+            ...(order.status === "PAID"
+              ? { quantity: { increment: item.quantity } }
+              : { reserved: { decrement: item.quantity } }),
           },
         });
       }

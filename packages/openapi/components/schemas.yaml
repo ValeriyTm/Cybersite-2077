@@ -742,6 +742,9 @@ OrderCreateRequest:
   type: object
   required: [items, address, coords, deliveryInfo, totalPrice]
   properties:
+    shouldPay:
+      type: boolean
+      description: Нужно ли сразу генерировать ссылку на оплату
     items:
       type: array
       items:
@@ -816,6 +819,9 @@ OrderResponse:
     updatedAt:
       type: string
       example: "2026-03-31T06:32:03.893Z"
+    paymentUrl:
+      type: string
+      example: "https://yoomoney.ru..."
     items:
       type: array
       items:

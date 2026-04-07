@@ -1,3 +1,4 @@
+////-----------Middleware для фильтрации IP-адресов, чтобы на открытый эндпоинт, предназначенный для Юкассы, не слали запросы со сторонних IP
 import { Request, Response, NextFunction } from "express";
 import ipRangeCheck from "ip-range-check";
 

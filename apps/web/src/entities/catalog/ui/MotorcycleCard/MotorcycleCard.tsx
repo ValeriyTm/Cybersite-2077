@@ -130,7 +130,7 @@ export const MotorcycleCard = ({
           <span>{data.year} г.</span>
           <span>{data.displacement} см³</span>
           <span>{data.power !== 0 ? `${data.power} л.с.` : ""}</span>
-          <span className={styles.rating}>★ {data.rating}</span>
+          <span className={styles.rating}>★ {data.rating.toFixed(1)}</span>
         </div>
 
         <div className={styles.footer}>

@@ -114,6 +114,9 @@ paths:
     $ref: "./modules/discount.yaml#/paths/~1apply-promo"
   /api/discount/force-generate:
     $ref: "./modules/discount.yaml#/paths/~1force-generate"
+    # api/payment:
+  /api/payment/webhook:
+    $ref: "./modules/payment.yaml#/paths/~1webhook"
 
 components:
   securitySchemes:
