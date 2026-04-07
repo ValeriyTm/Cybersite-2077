@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { useProfile } from "@/features/auth/model/useProfile";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
 import { useLocation } from "react-router";
+import toast from "react-hot-toast";
 
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();
@@ -90,22 +91,18 @@ export const CheckoutPage = () => {
   });
 
   const createOrderMutation = useMutation({
-    mutationFn: (orderData: any) =>
-      $api.post("/orders", orderData).then((res) => res.data),
-
-    onSuccess: () => {
+    mutationFn: (orderData: any) => $api.post("/orders", orderData),
+    onSuccess: (res) => {
       //Обновляем корзину в Zustand (она уже очищена на бэкенде в Redis):
       fetchCart();
-
       //Обновляем счётчик в Header:
       fetchActiveCount();
-
-      //Редиректим юзера на страницу его заказов:
-      navigate("/orders/my", { state: { success: true } });
+      //Отправляем пользователя на страницу ЮKassa:
+      if (res.data.paymentUrl) {
+        window.location.href = res.data.paymentUrl;
+      }
     },
-    onError: (error: any) => {
-      alert(error.response?.data?.message || "Ошибка при создании заказа");
-    },
+    onError: (err) => toast.error("Ошибка при создании заказа"),
   });
 
   //Если пользователь вручную ввел адрес /checkout, но у него в корзине только «нелегальные» товары или вообще ничего не выбрано, его нужно выкинуть обратно в корзину:

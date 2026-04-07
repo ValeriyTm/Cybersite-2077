@@ -4,6 +4,7 @@ import { prisma } from "@repo/database";
 import { Prisma } from "@repo/database/generated/prisma";
 import { ReviewModel } from "../reviews/review.model.js";
 import { searchService } from "../catalog/search.service.js";
+import { PaymentService } from "../payment/payment.service.js";
 
 export class OrderService {
   //Создание заказа с резервированием остатков и обновлением профиля
@@ -25,6 +26,7 @@ export class OrderService {
           estimatedDate: new Date(deliveryInfo.estimatedDate),
           totalPrice,
           warehouseId: deliveryInfo.warehouse.id,
+          paymentStatus: "pending", //Начальный статус платежа
           items: {
             create: items.map((item: any) => ({
               motorcycleId: item.id,
@@ -80,8 +82,25 @@ export class OrderService {
         }
       }
 
-      //1.5.Возвращаем заказ
-      return order;
+      //1.5.Генерируем платеж в ЮKassa:
+      const payment = await PaymentService.createPayment(
+        order.id,
+        totalPrice,
+        `Оплата заказа №${order.orderNumber}`,
+      );
+
+      //1.6.Сохраняем данные платежа в заказ:
+      const updatedOrder = await tx.order.update({
+        where: { id: order.id },
+        data: {
+          paymentId: payment.id,
+          paymentUrl: payment.confirmation.confirmation_url,
+        },
+        include: { items: true },
+      });
+
+      //1.7.Возвращаем заказ
+      return updatedOrder;
     });
 
     //2.Обновляем остатки в Elasticsearch:
