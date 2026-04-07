@@ -110,6 +110,18 @@ export const OrderCard = ({ order }: { order: any }) => {
             </span>
           </div>
 
+          {/*Если заказ ожидает оплаты и есть ссылка на оплату — показываем кнопку */}
+          {order.status === "PENDING" && order.paymentUrl && (
+            <a
+              href={order.paymentUrl}
+              className={styles.payLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Оплатить заказ
+            </a>
+          )}
+
           {/*Кнопка подтверждения получения заказа*/}
           {isDelivered && (
             <button

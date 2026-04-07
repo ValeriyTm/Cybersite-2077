@@ -9,6 +9,7 @@ import { useProfile } from "@/features/auth/model/useProfile";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
 import { useLocation } from "react-router";
 import toast from "react-hot-toast";
+import { should } from "chai";
 
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();
@@ -92,14 +93,21 @@ export const CheckoutPage = () => {
 
   const createOrderMutation = useMutation({
     mutationFn: (orderData: any) => $api.post("/orders", orderData),
-    onSuccess: (res) => {
+    onSuccess: (res, variables) => {
+      // variables — это данные, которые мы передали в mutate()
+
       //Обновляем корзину в Zustand (она уже очищена на бэкенде в Redis):
       fetchCart();
       //Обновляем счётчик в Header:
       fetchActiveCount();
-      //Отправляем пользователя на страницу ЮKassa:
-      if (res.data.paymentUrl) {
+
+      if (variables.shouldPay && res.data.paymentUrl) {
+        //Вариант 1: Редирект в ЮKassa (если создание заказа с оплатой)
         window.location.href = res.data.paymentUrl;
+      } else {
+        //Вариант 2: Редирект на страницу заказов (если просто создание заказа)
+        navigate("/profile/orders");
+        toast.success("Заказ оформлен!");
       }
     },
     onError: (err) => toast.error("Ошибка при создании заказа"),
@@ -156,7 +164,7 @@ export const CheckoutPage = () => {
   );
 
   //Передаем итоговую цену в мутацию создания заказа:
-  const handleCreateOrder = () => {
+  const handleCreateOrder = (shouldPay: Boolean) => {
     const payload = {
       items: legalSelectedItems.map((item) => ({
         id: item.id,
@@ -169,6 +177,7 @@ export const CheckoutPage = () => {
       deliveryInfo,
       promoCode: promoFromCart?.code || null,
       totalPrice: finalOrderPrice,
+      shouldPay, //Прокидываем флаг, чтобы знать намерение юзера
     };
 
     createOrderMutation.mutate(payload);
@@ -282,7 +291,17 @@ export const CheckoutPage = () => {
           <button
             className={styles.payBtn}
             disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
-            onClick={handleCreateOrder}
+            onClick={() => handleCreateOrder(false)}
+          >
+            {createOrderMutation.isPending
+              ? "Оформление..."
+              : "Создать заказ без оплаты"}
+          </button>
+
+          <button
+            className={styles.payBtn}
+            disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
+            onClick={() => handleCreateOrder(true)}
           >
             {createOrderMutation.isPending
               ? "Оформление..."
