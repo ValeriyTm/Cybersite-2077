@@ -19,6 +19,7 @@ import warehouseRouter from "./modules/warehouse/warehouse.routes.js";
 import orderRouter from "./modules/ordering/order.routes.js";
 import reviewRouter from "./modules/reviews/review.routes.js";
 import discountRouter from "./modules/discount/discount.routes.js";
+import paymentRouter from "./modules/payment/payment.routes.js";
 
 //Создаём экземпляр приложения Express:
 const app = express();
@@ -119,6 +120,8 @@ app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
 //Роуты для модуля Discount:
 app.use("/api/discount", discountRouter);
+//Роуты для модуля Payment:
+app.use("/api/payment", paymentRouter);
 //Тестовый эндпоинт для проверки работоспособности сервера (Health Check):
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });
