@@ -73,15 +73,44 @@ export const SupportPage = () => {
       <h1>Служба поддержки</h1>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <div className={styles.row}>
-          <input {...register("firstName")} placeholder="Имя" />
-          <input {...register("lastName")} placeholder="Фамилия" />
+          <div className={styles.inputGroup}>
+            <input
+              {...register("firstName")}
+              placeholder="Имя"
+              className={errors.firstName ? styles.inputError : ""}
+            />
+            {errors.firstName && (
+              <span className={styles.errorMessage}>
+                {errors.firstName.message}
+              </span>
+            )}
+          </div>
+
+          <div className={styles.inputGroup}>
+            <input
+              {...register("lastName")}
+              placeholder="Фамилия"
+              className={errors.lastName ? styles.inputError : ""}
+            />
+            {errors.lastName && (
+              <span className={styles.errorMessage}>
+                {errors.lastName.message}
+              </span>
+            )}
+          </div>
         </div>
-
-        <input {...register("email")} placeholder="Email" />
-        {/* <input {...register("phone")} placeholder="Телефон" /> */}
-
+        <div className={styles.inputGroup}>
+          <input
+            {...register("email")}
+            placeholder="Email"
+            className={errors.email ? styles.inputError : ""}
+          />
+          {errors.email && (
+            <span className={styles.errorMessage}>{errors.email.message}</span>
+          )}
+        </div>
         {/*Номер телефона:*/}
-        <div className={styles.row}>
+        <div className={styles.rowMobile}>
           <div className={styles.label}>
             <HiOutlinePhone /> Телефон{" "}
           </div>
@@ -101,11 +130,12 @@ export const SupportPage = () => {
                   />
                 )}
               />
-              {/*Вывод ошибки:*/}
-              {errors.phone && (
-                <span className={styles.errorText}>{errors.phone.message}</span>
-              )}
             </>
+            {errors.phone && (
+              <span className={styles.errorMessage}>
+                {errors.phone.message}
+              </span>
+            )}
           </div>
         </div>
 
@@ -117,9 +147,21 @@ export const SupportPage = () => {
           <option value="COMPLAINT">Жалоба</option>
           <option value="OTHER">Другое</option>
         </select>
-
-        <textarea {...register("description")} placeholder="Суть вопроса..." />
-
+        {errors.category && (
+          <span className={styles.errorMessage}>
+            Выберите причину обращения
+          </span>
+        )}
+        <textarea
+          {...register("description")}
+          placeholder="Суть вопроса..."
+          className={errors.description ? styles.inputError : ""}
+        />
+        {errors.description && (
+          <span className={styles.errorMessage}>
+            {errors.description.message}
+          </span>
+        )}
         {/* 📎 Кастомный инпут для файлов */}
         <div className={styles.fileUpload}>
           <label className={styles.fileLabel}>
@@ -134,7 +176,6 @@ export const SupportPage = () => {
           </label>
           <p>Прикреплено файлов: {files.length}</p>
         </div>
-
         <button type="submit" className={styles.subBtn} disabled={isSubmitting}>
           {isSubmitting ? "Отправка..." : "Отправить запрос"}
         </button>

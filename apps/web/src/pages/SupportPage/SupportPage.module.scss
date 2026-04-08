@@ -33,6 +33,48 @@
     gap: 20px;
   }
 
+  // .rowMobile {
+  //   display: flex;
+  //   justify-content: center;
+  //   align-items: center;
+  //   gap: 30px;
+  //   text-align: center;
+  // }
+
+  // .errorText {
+  //   color: red;
+  // }
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .inputError {
+    border-color: #e74c3c !important; // Красная рамка
+    background: rgba(231, 76, 60, 0.05) !important;
+  }
+
+  .errorMessage {
+    color: #e74c3c;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 5px;
+    animation: fadeIn 0.3s ease; // Плавное появление
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   input,
   select,
   textarea {
