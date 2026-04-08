@@ -986,3 +986,45 @@ PromoCode:
       example: true
     usedCount:
       type: integer
+
+# Модуль Support:
+
+SupportTicket:
+  type: object
+  properties:
+    id: { type: string, format: uuid }
+    category:
+      type: string
+      enum: [TECHNICAL, ORDER, COOPERATION, COMPLAINT, OTHER]
+    description: { type: string }
+    status:
+      type: string
+      enum: [OPEN, IN_PROGRESS, RESOLVED, CLOSED]
+    answer: { type: string, nullable: true }
+    answeredAt: { type: string, format: date-time, nullable: true }
+    createdAt: { type: string, format: date-time }
+    email: { type: string }
+    firstName: { type: string }
+    lastName: { type: string }
+    attachments:
+      type: array
+      items:
+        $ref: "#/Attachment"
+
+Attachment:
+  type: object
+  properties:
+    id: { type: string, format: uuid }
+    fileUrl: { type: string }
+    originalName:
+      type: string
+      example: "my-file.jpg"
+    fileType:
+      type: string
+      example: "image/jpeg"
+    size:
+      type: number
+      description: размер файла в байтах
+    ticketId:
+      type: string
+      format: uuid

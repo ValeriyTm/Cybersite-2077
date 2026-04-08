@@ -9,7 +9,6 @@ import styles from "./SupportPage.module.scss";
 import { HiOutlinePhone } from "react-icons/hi";
 //Библиотека для работы с масками в инпутах:
 import { IMaskInput } from "react-imask";
-import IMask from "imask";
 import { Controller } from "react-hook-form";
 import { useProfile } from "@/features/auth/model/useProfile";
 
@@ -33,17 +32,6 @@ export const SupportPage = () => {
       phone: user?.phone || "",
     },
   });
-
-  //   Если данные пользователя загружаются асинхронно,
-  // используем useEffect, чтобы сбросить форму при появлении данных
-  useEffect(() => {
-    if (user) {
-      reset({
-        email: user.email,
-        phone: user.phone,
-      });
-    }
-  }, [user, reset]);
 
   const onSubmit = async (data: any) => {
     if (!executeRecaptcha) return;

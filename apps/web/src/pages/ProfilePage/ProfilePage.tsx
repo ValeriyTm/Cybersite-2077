@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Controller } from "react-hook-form";
 //Роутер:
 import { Navigate } from "react-router";
+import { Link } from "react-router";
 //Серверное хранилище:
 import { useProfile } from "@/features/auth/model/useProfile";
 //Иконки:
@@ -423,6 +424,10 @@ export const ProfilePage = () => {
           </Button>
         </div>
       </div>
+
+      <Link to="/support/tickets" style={{ marginRight: "10px" }}>
+        В тикеты
+      </Link>
     </div>
   );
 };

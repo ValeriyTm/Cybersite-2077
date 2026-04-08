@@ -441,6 +441,10 @@ model SupportTicket {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
+  //Ответ от поддержки:
+  answer      String?  @db.Text //Поле для ответа саппорта
+  answeredAt  DateTime?         //Дата ответа
+
   // Прикрепленные файлы
   attachments     SupportAttachment[]
 

@@ -24,6 +24,7 @@ import { PromosPage } from "@/pages/PromosPage/PromosPage";
 import { PaymentSuccess } from "@/pages/PaymentStatus/PaymentSuccess";
 import { PaymentFail } from "@/pages/PaymentStatus/PaymentFail";
 import { SupportPage } from "@/pages/SupportPage/SupportPage";
+import { UserTicketsPage } from "@/pages/UserTicketsPage/UserTicketsPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -119,6 +120,10 @@ export const router = createBrowserRouter([
       {
         path: "/support",
         element: <SupportPage />, //Страница с промокодами
+      },
+      {
+        path: "/support/tickets",
+        element: <UserTicketsPage />, //Страница с промокодами
       },
       { path: "*", element: <div>404</div> },
     ],

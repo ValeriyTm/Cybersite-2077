@@ -1,0 +1,96 @@
+tags:
+  - name: Support
+    description: Система обращений пользователей, техподдержка и сбор предложений.
+
+paths:
+  /create:
+    post:
+      summary: Создать обращение в поддержку
+      description: Открытый эндпоинт для отправки вопросов. Если пользователь авторизован (Bearer token), тикет привязывается к его профилю. Поддерживает загрузку до 5 файлов (txt, doc, pdf, изображения).
+      tags:
+        - Support
+      security:
+        # Авторизация опциональна:
+        - bearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                [
+                  firstName,
+                  lastName,
+                  email,
+                  category,
+                  description,
+                  captchaToken,
+                ]
+              properties:
+                firstName:
+                  type: string
+                  example: "Иван"
+                lastName:
+                  type: string
+                  example: "Иванов"
+                email:
+                  type: string
+                  format: email
+                  example: "ivan@example.com"
+                phone:
+                  type: string
+                  example: "+7 (999) 000-00-00"
+                category:
+                  type: string
+                  enum: [TECHNICAL, ORDER, COOPERATION, COMPLAINT, OTHER]
+              description:
+                type: string
+                example: "Не могу изменить адрес доставки в заказе #123, помогите"
+              captchaToken:
+                type: string
+                description: Токен от Google reCAPTCHA v3
+              files:
+                type: array
+                items:
+                  type: string
+                  format: binary
+                description: До 5 файлов (max 10MB каждый)
+      responses:
+        "201":
+          description: Тикет успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Обращение успешно отправлено"
+                  ticketId:
+                    type: string,
+                    format: uuid
+        "400":
+          description: Ошибка валидации данных или капчи
+        "500":
+          description: Ошибка при сохранении файлов или записи в БД
+
+  /my-tickets:
+    get:
+      summary: Получить список обращений текущего пользователя
+      description: Возвращает все тикеты, созданные авторизованным пользователем, отсортированные по дате (сначала новые).
+      tags: [Support]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Массив тикетов пользователя
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/SupportTicket"
+        "401":
+          description: Неавторизован

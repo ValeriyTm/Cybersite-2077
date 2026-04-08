@@ -44,15 +44,6 @@ export const createTicket = async (
     } = validation.data;
     const userId = (req as any).user?.id; // Если юзер авторизован
 
-    // 1. Проверка Google reCAPTCHA v3
-    // const googleVerifyUrl = `https://google.com{process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
-    // const { data: captchaRes } = await axios.post(googleVerifyUrl);
-
-    // if (!captchaRes.success || captchaRes.score < 0.5) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Ошибка безопасности: капча не пройдена" });
-    // }
     const isHuman = await RecaptchaService.verify(captchaToken);
     if (!isHuman) {
       throw new AppError(
@@ -114,4 +105,25 @@ export const updateTicketStatus = async (req: Request, res: Response) => {
   }
 
   res.json(ticket);
+};
+
+//Получить тикеты текущего юзера:
+export const getUserTickets = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as any).user.id;
+
+    const tickets = await prisma.supportTicket.findMany({
+      where: { userId },
+      include: { attachments: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.json(tickets);
+  } catch (error) {
+    next(error);
+  }
 };
