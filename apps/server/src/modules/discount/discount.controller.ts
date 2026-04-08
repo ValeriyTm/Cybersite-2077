@@ -3,6 +3,7 @@ import { prisma } from "@repo/database";
 import { redis } from "src/lib/redis.js";
 import { discountService } from "./discount.service.js";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 
 export const checkPromoCode = async (req: Request, res: Response) => {
   const { code } = req.body;
@@ -81,9 +82,18 @@ export const triggerDiscountGen = async (
   next: NextFunction,
 ) => {
   try {
-    await discountService.generateGlobalDiscount();
-    await discountService.generatePersonalDiscounts();
-    await discountService.generateWeeklyPromos();
+    const globals = await discountService.generateGlobalDiscount();
+    const personals = await discountService.generatePersonalDiscounts();
+    const promos = await discountService.generateWeeklyPromos();
+
+    //Вызываем события для генерации оповещений в ТГ:
+    eventBus.emit(EVENTS.DISCOUNT_GENERATED, {
+      year: globals.globalYear,
+      percent: globals.globalPercent,
+      personalCount: personals.personalCount,
+      promoCodes: promos.join(", "),
+    });
+
     res.json({ message: "Скидки и промокоды успешно обновлены!" });
   } catch (e) {
     next(e);

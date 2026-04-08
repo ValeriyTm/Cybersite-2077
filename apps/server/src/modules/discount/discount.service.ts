@@ -17,6 +17,11 @@ export class DiscountService {
       86400,
     );
     console.log(`🔥 Глобальная скидка: ${randomYear} год, -${percent}%`);
+
+    return {
+      globalYear: randomYear,
+      globalPercent: percent,
+    };
   }
 
   //Промокоды (генерируем 5 рандомных слов через Faker):
@@ -24,8 +29,10 @@ export class DiscountService {
     //Деактивируем старые промокоды:
     await prisma.promoCode.updateMany({ data: { isActive: false } });
 
+    const promos = [];
     for (let i = 0; i < 5; i++) {
       const code = faker.word.adjective().toUpperCase();
+      promos.push(code);
       const amount = Math.floor(Math.random() * (200000 - 100000 + 1)) + 100000;
 
       await prisma.promoCode.create({
@@ -36,6 +43,8 @@ export class DiscountService {
         },
       });
     }
+
+    return promos;
   }
 
   //Персональная скидка:
@@ -100,6 +109,8 @@ export class DiscountService {
     console.log(
       `Персональные скидки для ${users.length} пользователей сгенерированы.`,
     );
+
+    return { personalCount: users.length };
   }
 }
 
