@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTicketSchema } from "@repo/validation";
@@ -11,10 +11,13 @@ import { HiOutlinePhone } from "react-icons/hi";
 import { IMaskInput } from "react-imask";
 import IMask from "imask";
 import { Controller } from "react-hook-form";
+import { useProfile } from "@/features/auth/model/useProfile";
 
 export const SupportPage = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [files, setFiles] = useState<File[]>([]);
+  const { user } = useProfile();
+
   const {
     register,
     handleSubmit,
@@ -26,8 +29,21 @@ export const SupportPage = () => {
     defaultValues: {
       // Инициализируем значения по умолчанию
       captchaToken: "",
+      email: user?.email || "",
+      phone: user?.phone || "",
     },
   });
+
+  //   Если данные пользователя загружаются асинхронно,
+  // используем useEffect, чтобы сбросить форму при появлении данных
+  useEffect(() => {
+    if (user) {
+      reset({
+        email: user.email,
+        phone: user.phone,
+      });
+    }
+  }, [user, reset]);
 
   const onSubmit = async (data: any) => {
     if (!executeRecaptcha) return;
@@ -103,6 +119,7 @@ export const SupportPage = () => {
           <input
             {...register("email")}
             placeholder="Email"
+            readOnly={!!user} //Запрещаем менять email, если юзер в системе
             className={errors.email ? styles.inputError : ""}
           />
           {errors.email && (

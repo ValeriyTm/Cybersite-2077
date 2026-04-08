@@ -6,7 +6,9 @@ import { RecaptchaService } from "src/shared/services/recaptcha.service.js";
 import { AppError } from "src/shared/utils/app-error.js";
 import { createTicketSchema } from "@repo/validation";
 import fs from "fs";
+import { scheduleTicketCleanup } from "./support.queue.js";
 
+//Создание запроса от юзера:
 export const createTicket = async (
   req: Request,
   res: Response,
@@ -94,4 +96,22 @@ export const createTicket = async (
   } catch (error) {
     next(error);
   }
+};
+
+//Обновление статуса запроса:
+export const updateTicketStatus = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const ticket = await prisma.supportTicket.update({
+    where: { id },
+    data: { status },
+  });
+
+  //Если статус CLOSED — ставим задачу на удаление в очередь
+  if (status === "CLOSED" || status === "RESOLVED") {
+    await scheduleTicketCleanup(ticket.id);
+  }
+
+  res.json(ticket);
 };

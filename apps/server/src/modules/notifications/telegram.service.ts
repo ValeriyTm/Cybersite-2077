@@ -1,4 +1,5 @@
 import { Telegraf } from "telegraf";
+import { prisma } from "@repo/database";
 
 export class TelegramService {
   private static bot: Telegraf;
@@ -14,6 +15,16 @@ export class TelegramService {
         .catch((err) => console.error("Ошибка запуска TG бота:", err));
 
       console.log("🤖Telegram Bot успешно инициализирован");
+
+      //Через команду "/stats" в боте получим количество всех заказов:
+      this.bot.command("stats", async (ctx) => {
+        if (ctx.from.id.toString() !== this.adminId) return;
+
+        const ordersCount = await prisma.order.count();
+        await ctx.reply(
+          `📈 Статистика магазина:\nВсего заказов: ${ordersCount}`,
+        );
+      });
     }
   }
 
