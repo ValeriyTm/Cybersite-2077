@@ -5,6 +5,7 @@ import { Prisma } from "@repo/database/generated/prisma";
 import { ReviewModel } from "../reviews/review.model.js";
 import { searchService } from "../catalog/search.service.js";
 import { PaymentService } from "../payment/payment.service.js";
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 
 export class OrderService {
   //Создание заказа с резервированием остатков и обновлением профиля
@@ -104,7 +105,10 @@ export class OrderService {
         include: { items: true },
       });
 
-      //1.7.Возвращаем заказ
+      //1.7.Создаём событие для оповещений в ТГ:
+      eventBus.emit(EVENTS.ORDER_CREATED, order);
+
+      //1.8.Возвращаем заказ
       return updatedOrder;
     });
 

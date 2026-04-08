@@ -9,6 +9,8 @@ import { prisma } from "@repo/database";
 import { CleanupService } from "./modules/identity/auth/cleanup.service.js";
 import { connectMongoDB } from "./lib/mongoose.js";
 import { initDiscountCron } from "./modules/discount/discount.queue.js";
+import { TelegramService } from "./modules/notifications/telegram.service.js";
+import { initNotificationListeners } from "./modules/notifications/notification.listener.js";
 //Воркеры:
 import "./modules/ordering/order.worker.js"; //Импортируем воркер заказов, чтобы он начал слушать задачи.
 import "./modules/discount/discount.worker.js"; //Импортируем воркер скидок, чтобы он начал слушать задачи.
@@ -24,6 +26,8 @@ async function bootstrap() {
 
     await connectMongoDB(); //Подключаем MongoDB
     await initDiscountCron(); //Запускаем планировщик задач для скидок и промокодов
+    TelegramService.init(); //Подключаемся к ТГ-боту
+    initNotificationListeners(); //Запускаем слушателя событий для сервиса оповещений
 
     // 2.Только после успеха запускаем сервер:
     const server = app.listen(PORT, () => {

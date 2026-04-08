@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "@repo/database";
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 
 export class PaymentController {
   static async handleWebhook(req: Request, res: Response, next: NextFunction) {
@@ -40,6 +41,9 @@ export class PaymentController {
               },
             });
           }
+
+          //Создаём событие для оповещения в ТГ:
+          eventBus.emit(EVENTS.ORDER_PAID, order);
         });
       }
 

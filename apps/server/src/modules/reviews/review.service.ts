@@ -4,6 +4,7 @@ import { SearchService } from "../catalog/search.service.js";
 import path from "path";
 import * as fs from "node:fs";
 import sanitizeHtml from "sanitize-html";
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 
 const searchService = new SearchService();
 
@@ -73,6 +74,9 @@ export class ReviewService {
       //7.Синхронизируем новый рейтинг с ElasticSearch:
       await searchService.updateRatingInElastic(motorcycleId, newRating);
     }
+
+    //8.Создаём событие для генерации оповещения в ТГ:
+    eventBus.emit(EVENTS.REVIEW_ADDED, review);
 
     return review;
   }
