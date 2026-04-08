@@ -1,5 +1,6 @@
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 import { TelegramService } from "./telegram.service.js";
+import { MailService } from "src/shared/mail.service.js";
 
 export const initNotificationListeners = () => {
   // 1. Слушаем оплату заказа
@@ -60,5 +61,20 @@ export const initNotificationListeners = () => {
 <i>Система лояльности обновлена успешно!</i>
   `;
     await TelegramService.sendMessage(message);
+  });
+
+  //5.Шлем юзеру письмо, что посылка доставлена:
+  eventBus.on(EVENTS.ORDER_DELIVERY_END, async (order) => {
+    //Шлем письмо клиенту:
+    await MailService.sendDeliveryMail(
+      order.user.email,
+      order.orderNumber,
+      order.address,
+    );
+
+    //Шлем себе в Telegram (чтобы знать, что заказ юзеру доставлен):
+    await TelegramService.sendMessage(
+      `🚚 <b>ЗАКАЗ ДОСТАВЛЕН</b>\n————————————————\nЗаказ: <code>#${order.orderNumber}</code>\nАдрес: ${order.address}`,
+    );
   });
 };

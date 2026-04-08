@@ -3,6 +3,7 @@ import { redis } from "src/lib/redis.js";
 import { prisma } from "@repo/database";
 import { addDeliveredTask } from "./order.queue.js";
 import { searchService } from "../catalog/search.service.js";
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 
 export const orderWorker = new Worker(
   "order-tasks", //(Поле должно совпадать с именем в Queue)
@@ -71,11 +72,15 @@ export const orderWorker = new Worker(
 
     //Задача завершения доставки (перевод DELIVERY --> DELIVERED):
     if (job.name === "set-delivered") {
-      await prisma.order.update({
+      const order = await prisma.order.update({
         where: { id: orderId },
         data: { status: "DELIVERED" },
+        include: { user: true }, //Извлекаем данные о юзере
       });
       console.log(`✨ Заказ ${orderId} прибыл в пункт назначения!`);
+
+      //Генерируем событие:
+      eventBus.emit(EVENTS.ORDER_DELIVERY_END, order);
     }
   },
   { connection: redis },

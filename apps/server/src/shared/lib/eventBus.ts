@@ -9,4 +9,5 @@ export const EVENTS = {
   ORDER_PAID: "order.paid",
   REVIEW_ADDED: "review.added",
   DISCOUNT_GENERATED: "discount.generated",
+  ORDER_DELIVERY_END: "delivery.ended",
 };

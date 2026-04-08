@@ -91,4 +91,23 @@ export class MailService {
     `,
     });
   }
+
+  //Метод отправки письма о том, что заказ доставлен:
+  static async sendDeliveryMail(
+    to: string,
+    orderNumber: number,
+    orderAddress: string,
+  ) {
+    await transporter.sendMail({
+      from: process.env.MAIL_USER,
+      to,
+      subject: `🚚 Ваш заказ №${orderNumber} доставлен от Cybersite-2077!`,
+      html: `
+      <div style="font-family: sans-serif; background: #f9f9f9; padding: 20px;">
+        <h2>Ваш мотоцикл уже приехал!</h2>
+        <p>Заказ №${orderNumber} доставлен по адресу ${orderAddress}. Можете забирать его.</p>
+      </div>
+    `,
+    });
+  }
 }
