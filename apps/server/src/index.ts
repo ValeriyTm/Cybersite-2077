@@ -15,6 +15,10 @@ import { initNotificationListeners } from "./modules/notifications/notification.
 import "./modules/ordering/order.worker.js"; //Импортируем воркер заказов, чтобы он начал слушать задачи.
 import "./modules/discount/discount.worker.js"; //Импортируем воркер скидок, чтобы он начал слушать задачи.
 
+//Для модуля Reports:
+import { initReportsSchedule } from "./modules/reports/reports.queue.js";
+import { reportsWorker } from "./modules/reports/reports.worker.js"; // Воркер начнет слушать очередь автоматически при импорте
+
 const PORT = process.env.PORT || 3001;
 
 async function bootstrap() {
@@ -28,6 +32,7 @@ async function bootstrap() {
     await initDiscountCron(); //Запускаем планировщик задач для скидок и промокодов
     TelegramService.init(); //Подключаемся к ТГ-боту
     initNotificationListeners(); //Запускаем слушателя событий для сервиса оповещений
+    initReportsSchedule(); //Запускаем работу очереди для сервиса отчетов
 
     // 2.Только после успеха запускаем сервер:
     const server = app.listen(PORT, () => {
