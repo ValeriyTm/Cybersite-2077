@@ -1,9 +1,9 @@
 import { EventEmitter } from "events";
 
-// Создаем единую шину событий
+//Единая шина событий:
 export const eventBus = new EventEmitter();
 
-// Опишем типы событий, чтобы не ошибиться в названиях
+//Типы событий:
 export const EVENTS = {
   ORDER_CREATED: "order.created",
   ORDER_PAID: "order.paid",

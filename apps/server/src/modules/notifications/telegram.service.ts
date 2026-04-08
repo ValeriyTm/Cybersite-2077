@@ -13,20 +13,18 @@ export class TelegramService {
         .launch()
         .catch((err) => console.error("Ошибка запуска TG бота:", err));
 
-      console.log("🤖 Telegram Bot успешно инициализирован");
+      console.log("🤖Telegram Bot успешно инициализирован");
     }
-
-    // TelegramService.sendMessage("🚀 Тестовое сообщение от сервера CyberSite!");
   }
 
-  // Универсальный метод отправки сообщения админу
+  //Универсальный метод отправки сообщения админу:
   static async sendMessage(message: string) {
     if (!this.bot || !this.adminId) return;
 
     try {
-      // parse_mode: 'HTML' позволяет использовать теги <b>, <i>, <code> и т.д.
       await this.bot.telegram.sendMessage(this.adminId, message, {
         parse_mode: "HTML",
+        //parse_mode: 'HTML' позволяет использовать теги <b>, <i>, <code> и т.д.
       });
     } catch (error) {
       console.error("Ошибка отправки сообщения в Telegram:", error);

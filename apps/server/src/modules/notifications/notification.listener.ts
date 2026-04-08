@@ -3,7 +3,7 @@ import { TelegramService } from "./telegram.service.js";
 import { MailService } from "src/modules/notifications/mail.service.js";
 
 export const initNotificationListeners = () => {
-  // 1. Слушаем оплату заказа
+  //1) Реакция на событие оплаты заказа:
   eventBus.on(EVENTS.ORDER_PAID, async (order) => {
     const message = `
 💰 <b>ОПЛАТА ПОЛУЧЕНА!</b>
@@ -17,7 +17,7 @@ export const initNotificationListeners = () => {
     await TelegramService.sendMessage(message);
   });
 
-  // 2. Слушаем создание нового заказа
+  //2) Реакция на событие создания заказа:
   eventBus.on(EVENTS.ORDER_CREATED, async (order) => {
     const message = `
 🛒 <b>НОВЫЙ ЗАКАЗ</b>
@@ -31,7 +31,7 @@ export const initNotificationListeners = () => {
     await TelegramService.sendMessage(message);
   });
 
-  // 3. Уведомление о новом отзыве (MongoDB)
+  //3) Реакция на событие создания отзыва на товар:
   eventBus.on(EVENTS.REVIEW_ADDED, async (review) => {
     const stars = "⭐".repeat(review.rating);
     const message = `
@@ -49,7 +49,7 @@ export const initNotificationListeners = () => {
     await TelegramService.sendMessage(message);
   });
 
-  // 4. Отчет о работе BullMQ (Скидки)
+  //4) Реакция на событие принудилтельной генерации скидок и промокодов:
   eventBus.on(EVENTS.DISCOUNT_GENERATED, async (data) => {
     const message = `
 📊 <b>ОТЧЕТ ПО АКЦИЯМ</b>
@@ -63,7 +63,7 @@ export const initNotificationListeners = () => {
     await TelegramService.sendMessage(message);
   });
 
-  //5.Шлем юзеру письмо, что посылка доставлена:
+  //5) Реакция на событие перехода заказа в статус "DELIVERED":
   eventBus.on(EVENTS.ORDER_DELIVERY_END, async (order) => {
     //Шлем письмо клиенту:
     await MailService.sendDeliveryMail(
@@ -78,22 +78,23 @@ export const initNotificationListeners = () => {
     );
   });
 
-  //6.Шлем юзеру письмо для активации аккаунта:
+  //6) Реакция на событие регистрации нового аккаунта:
   eventBus.on(EVENTS.ACCOUNT_CREATED, async (email, activationLink) => {
     //Шлем письмо клиенту со ссылкой активации:
     await MailService.sendActivationMail(email, activationLink);
   });
 
-  //7.Шлем юзеру письмо со ссылкой на форму смены пароля:
+  //7) Реакция на приход от юзера запроса на смену пароля через FORGOT PASSWORD:
   eventBus.on(EVENTS.FORGOT_PASSWORD, async (email, link) => {
-    //Шлем письмо клиенту со ссылкой:
+    //Шлем юзеру письмо со ссылкой на форму смены пароля:
     await MailService.sendResetPasswordMail(email, link);
   });
 
-  //8.Шлем юзеру о персональных скидках:
+  //8) Реакция на событие генерации персональных скидок:
   eventBus.on(
     EVENTS.DISCOUNTS_GENERATED,
     async (email, model, brand, slug, oldPrice, newPrice) => {
+      //Шлем юзеру письмо с информацией о персональной скидкой:
       await MailService.sendLuckyBikeMail(
         email,
         model,
