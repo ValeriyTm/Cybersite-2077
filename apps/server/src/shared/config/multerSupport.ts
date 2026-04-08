@@ -2,8 +2,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Папка для документов саппорта
-const uploadDir = "uploads/support";
+const uploadDir = "uploads/support"; //Папка для сохраняемых документов
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -19,8 +18,8 @@ const storage = multer.diskStorage({
 export const supportUpload = multer({
   storage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // Лимит 10МБ на файл
-    files: 5, // Максимум 5 файлов в одном тикете
+    fileSize: 10 * 1024 * 1024, //Лимит 10МБ на файл
+    files: 5, //Максимум 5 файлов в одном тикете
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [

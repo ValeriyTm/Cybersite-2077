@@ -56,7 +56,7 @@ paths:
                 items:
                   type: string
                   format: binary
-                description: До 5 файлов (max 10MB каждый)
+                description: До 5 файлов (max 10MB каждый). Доступно только для авторизованных юзеров.
       responses:
         "201":
           description: Тикет успешно создан

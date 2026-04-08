@@ -7,10 +7,10 @@ import { $api } from "@/shared/api/api";
 import toast from "react-hot-toast";
 import styles from "./SupportPage.module.scss";
 import { HiOutlinePhone } from "react-icons/hi";
-//Библиотека для работы с масками в инпутах:
 import { IMaskInput } from "react-imask";
 import { Controller } from "react-hook-form";
 import { useProfile } from "@/features/auth/model/useProfile";
+import { Link } from "react-router";
 
 export const SupportPage = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -26,7 +26,7 @@ export const SupportPage = () => {
   } = useForm({
     resolver: zodResolver(createTicketSchema),
     defaultValues: {
-      // Инициализируем значения по умолчанию
+      //Инициализируем значения по умолчанию:
       captchaToken: "",
       email: user?.email || "",
       phone: user?.phone || "",
@@ -37,10 +37,10 @@ export const SupportPage = () => {
     if (!executeRecaptcha) return;
 
     try {
-      // 1. Получаем токен капчи
+      //1) Получаем токен капчи
       const captchaToken = await executeRecaptcha("support_form");
 
-      // 2. Формируем FormData (так как передаем файлы)
+      //2) Формируем FormData (так как передаем файлы в форме):
       const formData = new FormData();
       //Добавляем основные данные:
       Object.keys(data).forEach((key) => {
@@ -51,22 +51,22 @@ export const SupportPage = () => {
       //Добавляем файлы:
       files.forEach((file) => formData.append("files", file));
 
-      // 3. Отправка на бэкенд
+      //3) Отправка формы на бэкенд:
       await $api.post("/support/create", formData);
 
-      //4.Очищаем форму
-      // Сбрасываем текстовые поля формы
+      //4) Очищаем форму
+      // Сбрасываем текстовые поля формы:
       reset();
-      //Очищаем состояние файлов в React
+      //Очищаем состояние файлов в React:
       setFiles([]);
-      //Очищаем визуально сам инпут (чтобы исчезла надпись "Выбрано файлов: Х")
+      //Очищаем визуально сам инпут (чтобы исчезла надпись "Выбрано файлов: Х"):
       const fileInput = document.querySelector(
         'input[type="file"]',
       ) as HTMLInputElement;
       if (fileInput) fileInput.value = "";
 
+      //5) Положительное уведомление юзеру:
       toast.success("Ваше обращение принято! Мы ответим в ближайшее время.");
-      // Тут можно очистить стейт или редиректнуть
     } catch (e) {
       toast.error("Ошибка при отправке. Попробуйте позже.");
     }
@@ -114,6 +114,7 @@ export const SupportPage = () => {
             <span className={styles.errorMessage}>{errors.email.message}</span>
           )}
         </div>
+
         {/*Номер телефона:*/}
         <div className={styles.rowMobile}>
           <div className={styles.label}>
@@ -167,20 +168,31 @@ export const SupportPage = () => {
             {errors.description.message}
           </span>
         )}
-        {/* 📎 Кастомный инпут для файлов */}
-        <div className={styles.fileUpload}>
-          <label className={styles.fileLabel}>
-            <input
-              type="file"
-              multiple
-              onChange={(e) => setFiles(Array.from(e.target.files || []))}
-              accept=".jpg,.png,.pdf,.doc,.docx,.txt"
-            />
-            <div className={styles.icon}>📎</div>
-            <span>Нажмите, чтобы прикрепить файлы (PDF, DOC, TXT, PNG)</span>
-          </label>
-          <p>Прикреплено файлов: {files.length}</p>
-        </div>
+
+        {/*Кастомный инпут для файлов */}
+        {user ? (
+          <div className={styles.fileUpload}>
+            <label className={styles.fileLabel}>
+              <input
+                type="file"
+                multiple
+                onChange={(e) => setFiles(Array.from(e.target.files || []))}
+                accept=".jpg,.png,.pdf,.doc,.docx,.txt"
+              />
+              <div className={styles.icon}>📎</div>
+              <span>Нажмите, чтобы прикрепить файлы (PDF, DOC, TXT, PNG)</span>
+            </label>
+            <p>Прикреплено файлов: {files.length}</p>
+          </div>
+        ) : (
+          <div className={styles.fileUploadDisabled}>
+            <p>
+              🔒 <Link to="/auth">Войдите</Link>, чтобы прикрепить документы к
+              обращению
+            </p>
+          </div>
+        )}
+
         <button type="submit" className={styles.subBtn} disabled={isSubmitting}>
           {isSubmitting ? "Отправка..." : "Отправить запрос"}
         </button>

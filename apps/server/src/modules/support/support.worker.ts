@@ -16,7 +16,7 @@ export const supportCleanupWorker = new Worker(
 
     if (!ticket) return;
 
-    // 1. Физическое удаление файлов с диска
+    //Физическое удаление файлов с диска:
     ticket.attachments.forEach((file) => {
       const filePath = path.resolve(file.fileUrl);
       if (fs.existsSync(filePath)) {
@@ -24,7 +24,7 @@ export const supportCleanupWorker = new Worker(
       }
     });
 
-    // 2. Удаление записей об аттачментах из БД
+    //Удаление записей из БД:
     await prisma.supportAttachment.deleteMany({
       where: { ticketId },
     });

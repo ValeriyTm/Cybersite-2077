@@ -1,26 +1,25 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "@repo/database";
 import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
-import axios from "axios";
 import { RecaptchaService } from "src/shared/services/recaptcha.service.js";
 import { AppError } from "src/shared/utils/app-error.js";
 import { createTicketSchema } from "@repo/validation";
 import fs from "fs";
 import { scheduleTicketCleanup } from "./support.queue.js";
+import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
 
-//Создание запроса от юзера:
+//Создание запроса (тикета) от юзера:
 export const createTicket = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    console.log("req.body: ", req.body);
-    //1) Процесс валидации:
+    //1) Процесс валидации Zod:
     const validation = createTicketSchema.safeParse(req.body);
     if (!validation.success) {
       console.log("Валидация провалилась!");
-      // Если есть прикрепленные файлы, а валидация не прошла — удаляем их, чтобы не засорять сервер
+      //Если есть прикрепленные файлы, а валидация не прошла — удаляем их, чтобы не засорять сервер:
       if (req.files) {
         (req.files as Express.Multer.File[]).forEach((file) =>
           fs.unlinkSync(file.path),
@@ -31,7 +30,7 @@ export const createTicket = async (
         errors: validation.error.flatten().fieldErrors,
       });
     }
-    console.log("validation: ", validation);
+
     //2) Извлекаем данные:
     const {
       firstName,
@@ -44,6 +43,16 @@ export const createTicket = async (
     } = validation.data;
     const userId = (req as any).user?.id; // Если юзер авторизован
 
+    //3) Удаляем данные, если юзер не авторизован:
+    const files = req.files as Express.Multer.File[]; //Явно типизируем
+    if (files && files.length > 0 && !userId) {
+      files.forEach((file) => fs.unlinkSync(file.path));
+      return res.status(403).json({
+        message: "Загрузка файлов доступна только авторизованным пользователям",
+      });
+    }
+
+    //4) Проверка капчи:
     const isHuman = await RecaptchaService.verify(captchaToken);
     if (!isHuman) {
       throw new AppError(
@@ -52,7 +61,7 @@ export const createTicket = async (
       );
     }
 
-    // 2. Создание тикета и сохранение файлов в транзакции
+    //5) Создание тикета и сохранение файлов в транзакции:
     const ticket = await prisma.$transaction(async (tx) => {
       const newTicket = await tx.supportTicket.create({
         data: {
@@ -78,7 +87,7 @@ export const createTicket = async (
       return newTicket;
     });
 
-    // 3. Отправляем событие в EventBus (для уведомления в Telegram)
+    //6) Отправляем событие в EventBus (для уведомления в Telegram):
     eventBus.emit(EVENTS.SUPPORT_TICKET_CREATED, ticket);
 
     res
@@ -99,7 +108,7 @@ export const updateTicketStatus = async (req: Request, res: Response) => {
     data: { status },
   });
 
-  //Если статус CLOSED — ставим задачу на удаление в очередь
+  //Если статус CLOSED или RESOLVED — ставим задачу на удаление в очередь:
   if (status === "CLOSED" || status === "RESOLVED") {
     await scheduleTicketCleanup(ticket.id);
   }
