@@ -124,6 +124,7 @@ export const Header = () => {
             <Link to="/contacts">Контакты</Link>
             <Link to="/news">Новости</Link>
             <Link to="/promos">Промокоды</Link>
+            <Link to="/support">Поддержка</Link>
           </nav>
         </div>
       </div>

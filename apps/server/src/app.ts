@@ -20,6 +20,7 @@ import orderRouter from "./modules/ordering/order.routes.js";
 import reviewRouter from "./modules/reviews/review.routes.js";
 import discountRouter from "./modules/discount/discount.routes.js";
 import paymentRouter from "./modules/payment/payment.routes.js";
+import supportRouter from "./modules/support/support.routes.js";
 
 //Создаём экземпляр приложения Express:
 const app = express();
@@ -122,6 +123,8 @@ app.use("/api/reviews", reviewRouter);
 app.use("/api/discount", discountRouter);
 //Роуты для модуля Payment:
 app.use("/api/payment", paymentRouter);
+//Роуты для модуля Support:
+app.use("/api/support", supportRouter);
 //Тестовый эндпоинт для проверки работоспособности сервера (Health Check):
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });

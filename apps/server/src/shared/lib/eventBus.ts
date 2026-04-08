@@ -13,4 +13,5 @@ export const EVENTS = {
   ACCOUNT_CREATED: "account.created",
   FORGOT_PASSWORD: "forgot.password",
   DISCOUNTS_GENERATED: "discounts.generated",
+  SUPPORT_TICKET_CREATED: "support.ticket.created",
 };

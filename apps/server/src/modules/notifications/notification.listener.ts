@@ -105,4 +105,36 @@ export const initNotificationListeners = () => {
       );
     },
   );
+
+  //9) Реакция на событие отправки юзером формы в support:
+  eventBus.on(EVENTS.SUPPORT_TICKET_CREATED, async (ticket) => {
+    //Маппинг категорий на понятный язык:
+    const categories: Record<string, string> = {
+      TECHNICAL: "🛠 Техническая ошибка",
+      ORDER: "📦 Вопрос по заказу",
+      COOPERATION: "🤝 Сотрудничество",
+      COMPLAINT: "🚫 Жалоба",
+      OTHER: "💬 Другое",
+    };
+
+    const categoryName = categories[ticket.category] || ticket.category;
+    const attachmentsCount = ticket.attachments?.length || 0;
+
+    const message = `
+📩 <b>НОВОЕ ОБРАЩЕНИЕ В ПОДДЕРЖКУ</b>
+————————————————
+<b>Категория:</b> ${categoryName}
+<b>Отправитель:</b> ${ticket.firstName} ${ticket.lastName}
+<b>Email:</b> <code>${ticket.email}</code>
+<b>Телефон:</b> <code>${ticket.phone || "не указан"}</code>
+————————————————
+<b>Сообщение:</b>
+<i>"${ticket.description}"</i>
+————————————————
+<b>Вложения:</b> ${attachmentsCount > 0 ? `📎 ${attachmentsCount} шт.` : "отсутствуют"}
+<b>ID тикета:</b> <code>${ticket.id}</code>
+  `;
+
+    await TelegramService.sendMessage(message);
+  });
 };

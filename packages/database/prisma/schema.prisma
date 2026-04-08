@@ -87,6 +87,7 @@ model User {
   favorites        Favorite[] //Связь с избранным
   personalDiscounts PersonalDiscount[] //Связь с персональными скидками
   promos            UsedPromo[] //Связь с использованными промокодами
+  supports          SupportTicket[] //Связь с обращениями в поддержку
 
   @@index([location], type: Gist) // Индекс для быстрого поиска по координатам
   @@map("users") // Название таблицы в БД в нижнем регистре
@@ -414,4 +415,63 @@ model UsedPromo {
   usedAt      DateTime @default(now())
 
   @@unique([userId, promoCodeId]) //юзер + код - это уникальная пара
+}
+
+//------------Схемы для модуля Support:----------
+//Запрос:
+model SupportTicket {
+  id              String         @id @default(uuid())
+  
+  // Связь с юзером (опционально, так как форма открытая)
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id])
+
+  // Контактные данные из формы
+  lastName        String
+  firstName       String
+  email           String
+  phone           String?
+
+  // Суть вопроса
+  category        TicketCategory
+  description     String         @db.Text // Используем Text для длинных описаний
+  
+  // Статус и служебная инфа
+  status          TicketStatus   @default(OPEN)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Прикрепленные файлы
+  attachments     SupportAttachment[]
+
+  @@map("support_tickets")
+}
+
+//Схема для файлов:
+model SupportAttachment {
+  id              String        @id @default(uuid())
+  ticketId        String
+  ticket          SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  
+  fileUrl         String        // Путь к файлу в папке /uploads/support
+  fileType        String        // Например: application/pdf, image/jpeg, text/plain
+  originalName    String        // Исходное имя файла для удобства админа
+  size            Int?          // Размер файла в байтах 
+
+  @@map("support_attachments")
+}
+
+enum TicketCategory {
+  TECHNICAL     //Техническая ошибка
+  ORDER         //Вопрос по заказу
+  COOPERATION   //Сотрудничество
+  COMPLAINT     //Жалоба
+  OTHER         //Другое
+}
+
+enum TicketStatus {
+  OPEN          //Новый
+  IN_PROGRESS   //В работе
+  RESOLVED      //Решен
+  CLOSED        //Закрыт без решения
 }

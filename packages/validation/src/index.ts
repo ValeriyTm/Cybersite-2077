@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TicketCategory } from "@repo/database/generated/prisma";
 
 //-----------------Схемы для регистрации:---------------------//
 
@@ -231,3 +232,50 @@ export const DeleteAccountSchema = z.object({
 });
 
 export type DeleteAccountInput = z.infer<typeof DeleteAccountSchema>;
+
+//-----------------Схемы для формы поддержки:---------------------//
+export const createTicketSchema = z.object({
+  firstName: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(2, { message: "Имя слишком короткое" })
+    .max(20, "Максимум 20 символов для имени")
+    .regex(/^[а-яёА-ЯЁ]+$/, "Для имени используйте только русские буквы"),
+  lastName: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(2, { message: "Фамилия слишком короткая" })
+    .max(30, "Максимум 30 символов для фамилии")
+    .regex(/^[а-яёА-ЯЁ]+$/, "Для фамилии используйте только русские буквы"),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    //Моя оптимальная регулярка для email:
+    .regex(
+      /^[a-zA-Z0-9][a-zA-Z0-9._+-]*[a-zA-Z0-9]@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
+      "Введите корректный адрес электронной почты",
+    ),
+  phone: z
+    .string()
+    .trim()
+    //Телефон: Необязательный "+"" в начале. Первая цифра от 1 до 9. Всего от 2 до 15 цифр (международный стандарт E.164):
+    .regex(
+      /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/,
+      "Введите корректный номер телефона",
+    ),
+  category: z.enum(
+    ["TECHNICAL", "ORDER", "COOPERATION", "COMPLAINT", "OTHER"],
+    {
+      errorMap: () => ({ message: "Выберите корректную причину обращения" }),
+    },
+  ),
+  description: z
+    .string()
+    .min(10, "Описание должно быть подробнее (минимум 10 символов)")
+    .max(3000, "Не более 3000 символов для текста"),
+  captchaToken: z.string({ required_error: "Ошибка безопасности" }),
+  // captchaToken: z.string().min(1, "Токен безопасности обязателен"),
+});
