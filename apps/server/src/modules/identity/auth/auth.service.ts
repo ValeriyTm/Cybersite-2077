@@ -21,10 +21,9 @@ import {
   ChangePasswordInput,
   ResetPasswordInput,
 } from "@repo/validation";
-//Мой сервис для работы с электронной почтой:
-import { MailService } from "../../../shared/mail.service.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
+import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
 
 //Указываем унифицированный объект, который будет возвращаться контроллерам:
 const formatUserResponse = (user: any, rememberMe = false) => ({
@@ -77,8 +76,9 @@ export class AuthService {
     try {
       //Создаём ссылку активации:
       const activationLink = `${process.env.API_URL}/api/identity/auth/activate/${activationToken}`;
-      //Отправляем письмо:
-      await MailService.sendActivationMail(user.email, activationLink);
+
+      //Генерируем событие для отправки письма:
+      eventBus.emit(EVENTS.ACCOUNT_CREATED, user.email, activationLink);
     } catch (e) {
       console.error("❌ Ошибка отправки почты:", e);
       // На этапе разработки просто выведем ошибку в консоль.
@@ -243,7 +243,7 @@ export class AuthService {
 
     //4) Отправляем письмо клиенту с токеном с ссылкой, содержащей токен:
     const link = `${process.env.CLIENT_URL}/reset-password?token=${token}`;
-    await MailService.sendResetPasswordMail(email, link);
+    eventBus.emit(EVENTS.FORGOT_PASSWORD, email, link);
   }
 
   static async resetPassword(data: ResetPasswordInput & { token: string }) {

@@ -79,7 +79,7 @@ export const orderWorker = new Worker(
       });
       console.log(`✨ Заказ ${orderId} прибыл в пункт назначения!`);
 
-      //Генерируем событие:
+      //Генерируем событие для отправки юзеру письма, что заказ доставлен:
       eventBus.emit(EVENTS.ORDER_DELIVERY_END, order);
     }
   },

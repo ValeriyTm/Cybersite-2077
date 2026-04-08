@@ -106,6 +106,7 @@ export class MailService {
       <div style="font-family: sans-serif; background: #f9f9f9; padding: 20px;">
         <h2>Ваш мотоцикл уже приехал!</h2>
         <p>Заказ №${orderNumber} доставлен по адресу ${orderAddress}. Можете забирать его.</p>
+        <p><a href="${process.env.CLIENT_URL}/orders/my">Мои заказы</a></p>
       </div>
     `,
     });

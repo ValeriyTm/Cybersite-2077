@@ -1,7 +1,7 @@
 import { redis } from "src/lib/redis.js";
 import { prisma } from "@repo/database";
 import { faker } from "@faker-js/faker";
-import { MailService } from "src/shared/mail.service.js";
+import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
 
 export class DiscountService {
   //Глобальная скидка (по году выпуска):
@@ -96,7 +96,9 @@ export class DiscountService {
         const oldPrice = randomBike.price;
         const newPrice = Math.round(oldPrice * 0.8); // -20%
 
-        await MailService.sendLuckyBikeMail(
+        //Генерируем событие для отправки письма:
+        eventBus.emit(
+          EVENTS.DISCOUNTS_GENERATED,
           user.email,
           randomBike.model,
           randomBike.brand.name,

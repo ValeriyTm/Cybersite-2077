@@ -1,6 +1,6 @@
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 import { TelegramService } from "./telegram.service.js";
-import { MailService } from "src/shared/mail.service.js";
+import { MailService } from "src/modules/notifications/mail.service.js";
 
 export const initNotificationListeners = () => {
   // 1. Слушаем оплату заказа
@@ -77,4 +77,31 @@ export const initNotificationListeners = () => {
       `🚚 <b>ЗАКАЗ ДОСТАВЛЕН</b>\n————————————————\nЗаказ: <code>#${order.orderNumber}</code>\nАдрес: ${order.address}`,
     );
   });
+
+  //6.Шлем юзеру письмо для активации аккаунта:
+  eventBus.on(EVENTS.ACCOUNT_CREATED, async (email, activationLink) => {
+    //Шлем письмо клиенту со ссылкой активации:
+    await MailService.sendActivationMail(email, activationLink);
+  });
+
+  //7.Шлем юзеру письмо со ссылкой на форму смены пароля:
+  eventBus.on(EVENTS.FORGOT_PASSWORD, async (email, link) => {
+    //Шлем письмо клиенту со ссылкой:
+    await MailService.sendResetPasswordMail(email, link);
+  });
+
+  //8.Шлем юзеру о персональных скидках:
+  eventBus.on(
+    EVENTS.DISCOUNTS_GENERATED,
+    async (email, model, brand, slug, oldPrice, newPrice) => {
+      await MailService.sendLuckyBikeMail(
+        email,
+        model,
+        brand,
+        slug,
+        oldPrice,
+        newPrice,
+      );
+    },
+  );
 };

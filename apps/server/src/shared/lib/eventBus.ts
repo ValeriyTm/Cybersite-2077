@@ -10,4 +10,7 @@ export const EVENTS = {
   REVIEW_ADDED: "review.added",
   DISCOUNT_GENERATED: "discount.generated",
   ORDER_DELIVERY_END: "delivery.ended",
+  ACCOUNT_CREATED: "account.created",
+  FORGOT_PASSWORD: "forgot.password",
+  DISCOUNTS_GENERATED: "discounts.generated",
 };
