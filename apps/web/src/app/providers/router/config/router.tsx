@@ -26,6 +26,7 @@ import { PaymentFail } from "@/pages/PaymentStatus/PaymentFail";
 import { SupportPage } from "@/pages/SupportPage/SupportPage";
 import { UserTicketsPage } from "@/pages/UserTicketsPage/UserTicketsPage";
 import { NotFoundPage } from "@/pages/NotFoundPage/NotFoundPage";
+import { UserAgreement } from "@/pages/Legal/UserAgreement";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/privacy", element: <PrivacyPolicyPage /> },
       { path: "/terms", element: <TermsPage /> },
+      { path: "/agreement", element: <UserAgreement /> },
       {
         path: "/auth",
         element: (

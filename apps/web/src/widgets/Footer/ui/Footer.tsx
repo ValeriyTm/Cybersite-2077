@@ -70,7 +70,7 @@ export const Footer = () => {
       {/* Нижняя часть */}
       <div className={styles.bottom}>
         <span>©{currentYear} Cybersite-2077 &nbsp;&nbsp;&nbsp;&nbsp;|</span>
-        <Link to="/terms">Пользовательское соглашение</Link>
+        <Link to="/agreement">Пользовательское соглашение</Link>
       </div>
     </footer>
   );
