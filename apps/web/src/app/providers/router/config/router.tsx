@@ -25,6 +25,7 @@ import { PaymentSuccess } from "@/pages/PaymentStatus/PaymentSuccess";
 import { PaymentFail } from "@/pages/PaymentStatus/PaymentFail";
 import { SupportPage } from "@/pages/SupportPage/SupportPage";
 import { UserTicketsPage } from "@/pages/UserTicketsPage/UserTicketsPage";
+import { NotFoundPage } from "@/pages/NotFoundPage/NotFoundPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -125,7 +126,7 @@ export const router = createBrowserRouter([
         path: "/support/tickets",
         element: <UserTicketsPage />, //Страница с промокодами
       },
-      { path: "*", element: <div>404</div> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);

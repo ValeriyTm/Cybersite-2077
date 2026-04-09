@@ -1,0 +1,111 @@
+.footer {
+  background: #0a0a0a;
+  color: #fff;
+  padding: 60px 20px 20px;
+  border-top: 1px solid #222;
+
+  .top {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1.5fr 1.5fr 2fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .column,
+  .supportColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+
+    h3 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: #fff;
+      border-bottom: 2px solid #f39c12; // Твой акцентный цвет
+      width: fit-content;
+    }
+
+    a,
+    p {
+      color: #888;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #f39c12;
+      }
+    }
+  }
+
+  .supportBtn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 2px solid #fff;
+    color: #fff !important;
+    border-radius: 50px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+
+    &:hover {
+      background: #fff;
+      color: #000 !important;
+    }
+  }
+
+  .socials {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #444;
+
+    svg {
+      cursor: pointer;
+      transition:
+        color 0.2s,
+        transform 0.2s;
+      &:hover {
+        color: #f39c12;
+        transform: translateY(-3px);
+      }
+    }
+  }
+
+  .divider {
+    border: 0;
+    border-top: 1px solid #222;
+    margin-bottom: 20px;
+  }
+
+  .bottom {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    color: #444;
+    font-size: 0.85rem;
+    a {
+      color: #444;
+      text-decoration: none;
+      &:hover {
+        color: #888;
+      }
+    }
+  }
+}
+
+.logo {
+  height: auto;
+  width: 100%;
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
+}

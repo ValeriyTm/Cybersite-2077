@@ -9,6 +9,7 @@ import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { useCart } from "@/entities/trading/api/useCart";
 //Виджеты:
 import { Header } from "@/widgets/Header/ui/Header";
+import { Footer } from "@/widgets/Footer/ui/Footer";
 
 export const MainLayout = () => {
   //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
@@ -52,6 +53,8 @@ export const MainLayout = () => {
       <main className="content-wrapper">
         <Outlet />
       </main>
+
+      <Footer />
     </>
   );
 };
