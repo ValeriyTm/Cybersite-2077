@@ -7,6 +7,7 @@ import { GlobalDiscountBanner } from "@/widgets/GlobalDiscountBanner/ui/GlobalDi
 import styles from "./HomePage.module.scss";
 import { MainCarousel } from "@/widgets/MainCarousel/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery/ScrollableImageGallery";
+import { motion } from "motion/react";
 
 export const HomePage = () => {
   //Из Zustand берем статус авторизации пользователя:
@@ -16,6 +17,24 @@ export const HomePage = () => {
   //Используется isLoading, чтобы не показывать "Вы не авторизованы", пока идет запрос.
   const { user, isLoading } = useProfile();
 
+  ///
+  // 1. Создаем правила анимации
+  const wheelVariants = {
+    moving: {
+      rotate: 360,
+      transition: { repeat: Infinity, duration: 0.4, ease: "linear" },
+    },
+    stopped: { rotate: 0 },
+  };
+
+  const motoVariants = {
+    moving: {
+      y: [0, -2, 0], // Легкая вибрация вверх-вниз
+      transition: { repeat: Infinity, duration: 0.1 },
+    },
+    stopped: { y: 0 },
+  };
+  ///
   if (isLoading)
     return (
       <div style={{ textAlign: "center", padding: "40px" }}>Загрузка...</div>
@@ -74,37 +93,41 @@ export const HomePage = () => {
         </div>
 
         <div className={styles.cell}>
-          <div className={styles.cellContainer}>
-            <div className={styles.motoWrapper}>
-              {/* <img
-                src="/animation/moto-frame.png"
+          {/* <div className={styles.cellContainer}>
+            <div className={styles.motorcycleFrame}>
+              <img
+                src="/animation/back-wheel.png"
                 alt="part of animation"
-                className={styles.motorcycleFrame}
-              /> */}
-              <div className={styles.motorcycleFrame}>
-                <img
-                  src="/animation/back-wheel.png"
-                  alt="part of animation"
-                  className={`${styles.backWheel}`}
-                />
-                <img
-                  src="/animation/front-wheel.png"
-                  alt="part of animation"
-                  className={`${styles.frontWheel}`}
-                />
-              </div>
+                className={`${styles.backWheel}`}
+              />
+              <img
+                src="/animation/front-wheel.png"
+                alt="part of animation"
+                className={`${styles.frontWheel}`}
+              />
             </div>
-            {/* <img
-              src="/animation/back-wheel.png"
-              alt="part of animation"
-              className={`${styles.overlay} ${styles.img2}`}
-            /> */}
-            {/* <img
-              src="/animation/front-wheel.png"
-              alt="part of animation"
-              className={`${styles.overlay} ${styles.img3}`}
-            /> */}
-          </div>
+          </div> */}
+          <motion.div
+            className={styles.cellContainer}
+            initial="stopped"
+            whileHover="moving" // Запускает анимацию у всех motion-детей
+          >
+            <motion.div
+              className={styles.motorcycleFrame}
+              variants={motoVariants} // Мотоцикл вибрирует
+            >
+              <motion.img
+                src="/animation/back-wheel.png"
+                className={styles.backWheel}
+                variants={wheelVariants} // Колесо крутится
+              />
+              <motion.img
+                src="/animation/front-wheel.png"
+                className={styles.frontWheel}
+                variants={wheelVariants} // Колесо крутится
+              />
+            </motion.div>
+          </motion.div>
         </div>
 
         <div className={styles.sidebar}>
