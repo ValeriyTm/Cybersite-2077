@@ -34,6 +34,24 @@ export const HomePage = () => {
     },
     stopped: { y: 0 },
   };
+
+  const smokeVariants = {
+    stopped: {
+      opacity: 0,
+      scale: 0.5,
+      y: 0,
+    },
+    moving: {
+      opacity: [0, 0.8, 0], // Появляется до 80% и снова в ноль
+      scale: [0.8, 1.2], // Немного увеличивается в размере
+      y: -20, // Улетает вверх на 20px
+      transition: {
+        duration: 1.5, // Скорость одного "пшика" дыма
+        repeat: Infinity, // Повторять бесконечно
+        ease: "easeOut",
+      },
+    },
+  };
   ///
   if (isLoading)
     return (
@@ -125,6 +143,11 @@ export const HomePage = () => {
                 src="/animation/front-wheel.png"
                 className={styles.frontWheel}
                 variants={wheelVariants} // Колесо крутится
+              />
+              <motion.img
+                src="/animation/smoke.png"
+                className={styles.smoke}
+                variants={smokeVariants} // Колесо крутится
               />
             </motion.div>
           </motion.div>

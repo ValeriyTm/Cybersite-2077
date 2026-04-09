@@ -202,6 +202,15 @@
         bottom: -2%;
         left: 57%;
       }
+
+      .smoke {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        bottom: 19%;
+        left: -15%;
+        z-index: 30;
+      }
     }
   }
 
