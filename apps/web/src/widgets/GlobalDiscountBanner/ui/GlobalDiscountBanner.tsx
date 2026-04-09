@@ -33,7 +33,7 @@ export const GlobalDiscountBanner = () => {
     <div className={styles.banner}>
       <div className={styles.content}>
         <div className={styles.info}>
-          <h3>🔥 День {discount.year} года!</h3>
+          <h2>🔥 День {discount.year} года!</h2>
           <p>
             Скидка <strong>-{discount.percent}%</strong> на все модели этого
             года

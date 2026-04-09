@@ -23,12 +23,12 @@ const BANNERS = [
   {
     id: 4,
     src: "/images/carousel/slide4.jpg",
-    title: "Лучший сервис и поддержка",
+    title: "Выбор на любой вкус",
   },
   {
     id: 5,
     src: "/images/carousel/slide5.jpg",
-    title: "Лучший сервис и поддержка",
+    title: "Почувствуй себя сильным",
   },
 ];
 

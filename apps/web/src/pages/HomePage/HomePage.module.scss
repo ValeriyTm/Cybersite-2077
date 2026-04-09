@@ -212,6 +212,28 @@
         z-index: 30;
       }
     }
+
+    .textMain {
+      color: orangered;
+      font-size: 20px;
+      padding-top: 10px;
+    }
+
+    .cont {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .delCont {
+      overflow: hidden;
+      width: 50%;
+      text-align: center;
+
+      .delImage {
+        width: 100%;
+      }
+    }
   }
 
   .teamImage {
@@ -230,4 +252,18 @@
   padding-top: 10px;
   color: orangered;
   -webkit-text-stroke: 1px black;
+}
+
+//------------------
+.reviewSection {
+  text-align: center;
+  background: linear-gradient(to bottom right, rgb(32, 6, 94), rgb(7, 7, 156));
+  color: orangered;
+  font-size: 28px;
+  padding-top: 20px;
+}
+
+.reviewCardSection {
+  display: flex;
+  flex-direction: row;
 }

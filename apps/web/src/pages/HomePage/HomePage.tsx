@@ -8,6 +8,7 @@ import styles from "./HomePage.module.scss";
 import { MainCarousel } from "@/widgets/MainCarousel/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery/ScrollableImageGallery";
 import { motion } from "motion/react";
+import ReviewCard from "@/shared/ui/ReviewCard/ReviewCard";
 
 export const HomePage = () => {
   //Из Zustand берем статус авторизации пользователя:
@@ -102,7 +103,7 @@ export const HomePage = () => {
 
       <div className={styles.container}>
         <div className={styles.cell}>
-          <span>Наша команда:</span>
+          <p className={styles.textMain}>Наша команда:</p>
           <img
             src="/images/banners/team.jpg"
             alt=""
@@ -111,20 +112,6 @@ export const HomePage = () => {
         </div>
 
         <div className={styles.cell}>
-          {/* <div className={styles.cellContainer}>
-            <div className={styles.motorcycleFrame}>
-              <img
-                src="/animation/back-wheel.png"
-                alt="part of animation"
-                className={`${styles.backWheel}`}
-              />
-              <img
-                src="/animation/front-wheel.png"
-                alt="part of animation"
-                className={`${styles.frontWheel}`}
-              />
-            </div>
-          </div> */}
           <motion.div
             className={styles.cellContainer}
             initial="stopped"
@@ -156,14 +143,85 @@ export const HomePage = () => {
         <div className={styles.sidebar}>
           <MainCarousel />
         </div>
-        <div className={styles.cell}>текст3</div>
-        <div className={styles.cell}>текст4</div>
+
+        <div className={styles.cell}>
+          <div className={styles.cont}>
+            <div className={styles.delCont}>
+              <img
+                src="/images/banners/team1.jpg"
+                alt=""
+                className={styles.delImage}
+              />
+            </div>
+            <div className={styles.delCont}>
+              <p className={styles.textMain}>Доставка:</p>
+              <p>
+                Мы доставляем товары по всей территории РФ. Осуществляем
+                доставку до двери при любом количестве товара без праздников и
+                выходных 24/7. Стоимость определяется в зависимости от региона
+                заказа и складских остатков.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.cell}>
+          <div className={styles.cont}>
+            <div className={styles.delCont}>
+              <img
+                src="/images/banners/motos.jpg"
+                alt=""
+                className={styles.delImage}
+              />
+            </div>
+            <div className={styles.delCont}>
+              <p className={styles.textMain}>Ассортимент:</p>
+              <p>
+                В нашем интернет-магазине представлено более 35 тысяч единиц
+                товара от 518 брендов мотопроизводителей. Для заказа кастомной
+                техники обращайтесь в поддержку.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className={styles.decoration}></div>
 
       <p className={styles.brands}>Все популярные бренды у нас в наличии:</p>
       <ScrollableImageGallery />
+
+      <div className={styles.decoration}></div>
+
+      <div className={styles.reviewSection}>
+        <p>Отзывы наших постоянных клиентов:</p>
+        <div className={styles.reviewCardSection}>
+          <ReviewCard
+            name="Алексей Иванов"
+            avatarUrl="/images/reviews/face1.jpg"
+            rating={5}
+            text="Периодически заказываю тут мотоэкипировку - дешевле на 15-20%, чем в других местах. Шлем, купленный тут 10 лет назад, до сих пор целый 👍"
+          />
+          <ReviewCard
+            name="Регина Петрова"
+            avatarUrl="/images/reviews/face2.jpg"
+            rating={4}
+            text="Отличный магазин! Доставили быстро, товар качественный. Оранжевая упаковка просто огонь."
+          />
+          <ReviewCard
+            name="Алихан Ахметов"
+            avatarUrl="/images/reviews/face3.jpg"
+            rating={5}
+            text="Поражает ассортимент мотоциклов! Есть даже модели начала 1900-х годов, вот это да!"
+          />
+          <ReviewCard
+            name="Степан Васильев"
+            avatarUrl="/images/reviews/face4.jpg"
+            rating={5}
+            text="Постоянно тут покупаем детали для нашего мотосервиса. Радуют длительная гарантия и быстрые ответы поддержки"
+          />
+        </div>
+      </div>
 
       <div className={styles.decoration}></div>
     </div>
