@@ -75,21 +75,35 @@ export const HomePage = () => {
 
         <div className={styles.cell}>
           <div className={styles.cellContainer}>
-            <img
-              src="/animation/moto-frame.png"
-              alt="part of animation"
-              className={styles.baseImg}
-            />
-            <img
+            <div className={styles.motoWrapper}>
+              {/* <img
+                src="/animation/moto-frame.png"
+                alt="part of animation"
+                className={styles.motorcycleFrame}
+              /> */}
+              <div className={styles.motorcycleFrame}>
+                <img
+                  src="/animation/back-wheel.png"
+                  alt="part of animation"
+                  className={`${styles.backWheel}`}
+                />
+                <img
+                  src="/animation/front-wheel.png"
+                  alt="part of animation"
+                  className={`${styles.frontWheel}`}
+                />
+              </div>
+            </div>
+            {/* <img
               src="/animation/back-wheel.png"
               alt="part of animation"
               className={`${styles.overlay} ${styles.img2}`}
-            />
-            <img
+            /> */}
+            {/* <img
               src="/animation/front-wheel.png"
               alt="part of animation"
               className={`${styles.overlay} ${styles.img3}`}
-            />
+            /> */}
           </div>
         </div>
 

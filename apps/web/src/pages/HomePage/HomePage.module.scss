@@ -133,6 +133,7 @@
     position: relative;
 
     //------------Анимация
+
     .cellContainer {
       position: relative;
       // display: inline-block;
@@ -150,44 +151,60 @@
         background-image: url("../../../public/animation/background.gif");
       }
 
-      .baseImg {
-        // display: block;
-        position: absolute;
-        width: 240px; /* Или фиксированный размер */
-        height: 120px;
-        // max-height: 70%;
-        // padding-top: 80px;
-
-        // position: relative;
-        // // position: absolute;
-        // // bottom: -100px; /* Расстояние от верхнего края img1 */
-        // left: 10px;
-        left: 10%; /* Центрируем или прижимаем к краю в % */
-        bottom: 10%;
-        z-index: 22;
-        // position: relative;
-        // position: static;
+      .motoWrapper {
+        display: flex;
+        align-items: end;
       }
 
-      .overlay {
+      .motorcycleFrame {
         position: absolute;
-        // height: auto;
-        z-index: 21;
+        width: 240px; /* Размер всей рамы */
+        aspect-ratio: 16 / 9; /* Укажите пропорции вашей картинки img1 */
+        bottom: -2%;
+        left: 10%;
+
+        //Слой, чтобы рама была выше колес:
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: url("../../../public//animation/moto-frame.png");
+          background-size: contain;
+          background-repeat: no-repeat;
+          z-index: 2; // Рама выше колес
+        }
+
+        //Тень под мотоциклом:
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 5%; /* Поднимаем/опускаем тень под колеса */
+          left: 5%; /* Центрируем тень по горизонтали под рамой */
+          width: 90%; /* Длина тени */
+          height: 10px; /* Толщина тени */
+          background: rgba(211, 36, 202, 0.4); /* Полупрозрачный черный */
+          border-radius: 50%; /* Делаем овал */
+          filter: blur(5px); /* Размываем края */
+          z-index: 0; /* Самый нижний слой внутри рамы */
+        }
       }
 
-      .img2 {
+      .backWheel {
+        position: absolute;
         width: 80px;
         height: 80px;
-
-        bottom: 9%;
-        left: 8.5%;
+        bottom: 0%;
+        left: -5%;
       }
 
-      .img3 {
+      .frontWheel {
+        position: absolute;
         width: 80px;
         height: 80px;
-
-        bottom: 9%;
+        bottom: -2%;
         left: 57%;
       }
     }
