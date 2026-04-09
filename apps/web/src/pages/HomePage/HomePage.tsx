@@ -73,7 +73,25 @@ export const HomePage = () => {
           />
         </div>
 
-        <div className={styles.cell}>текст2</div>
+        <div className={styles.cell}>
+          <div className={styles.cellContainer}>
+            <img
+              src="/animation/moto-frame.png"
+              alt="part of animation"
+              className={styles.baseImg}
+            />
+            <img
+              src="/animation/back-wheel.png"
+              alt="part of animation"
+              className={`${styles.overlay} ${styles.img2}`}
+            />
+            <img
+              src="/animation/front-wheel.png"
+              alt="part of animation"
+              className={`${styles.overlay} ${styles.img3}`}
+            />
+          </div>
+        </div>
 
         <div className={styles.sidebar}>
           <MainCarousel />
@@ -84,6 +102,7 @@ export const HomePage = () => {
 
       <div className={styles.decoration}></div>
 
+      <p className={styles.brands}>Все популярные бренды у нас в наличии:</p>
       <ScrollableImageGallery />
 
       <div className={styles.decoration}></div>

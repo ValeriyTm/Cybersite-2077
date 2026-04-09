@@ -131,6 +131,66 @@
     border: 1px solid black;
     overflow: hidden; /* Важно: всё, что больше ячейки, будет обрезано */
     position: relative;
+
+    //------------Анимация
+    .cellContainer {
+      position: relative;
+      // display: inline-block;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+
+      background-image: url("../../../public/animation/frame1.png");
+      // background-size: cover;
+      background-size: 100% 100%;
+      background-position: center; /* чтобы центрировать картинку */
+      background-repeat: no-repeat;
+
+      &:hover {
+        background-image: url("../../../public/animation/background.gif");
+      }
+
+      .baseImg {
+        // display: block;
+        position: absolute;
+        width: 240px; /* Или фиксированный размер */
+        height: 120px;
+        // max-height: 70%;
+        // padding-top: 80px;
+
+        // position: relative;
+        // // position: absolute;
+        // // bottom: -100px; /* Расстояние от верхнего края img1 */
+        // left: 10px;
+        left: 10%; /* Центрируем или прижимаем к краю в % */
+        bottom: 10%;
+        z-index: 22;
+        // position: relative;
+        // position: static;
+      }
+
+      .overlay {
+        position: absolute;
+        // height: auto;
+        z-index: 21;
+      }
+
+      .img2 {
+        width: 80px;
+        height: 80px;
+
+        bottom: 9%;
+        left: 8.5%;
+      }
+
+      .img3 {
+        width: 80px;
+        height: 80px;
+
+        bottom: 9%;
+        left: 57%;
+      }
+    }
   }
 
   .teamImage {
@@ -141,3 +201,12 @@
   }
 }
 //--------------------------------------------
+
+.brands {
+  background-color: #1a1a1a;
+  font-weight: 700;
+  font-size: 30px;
+  padding-top: 10px;
+  color: orangered;
+  -webkit-text-stroke: 1px black;
+}
