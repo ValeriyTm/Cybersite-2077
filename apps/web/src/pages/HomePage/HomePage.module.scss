@@ -1,0 +1,143 @@
+:root {
+  padding: -40px;
+}
+
+.mainBannerSection {
+  display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  max-height: 600px;
+  justify-content: space-between;
+}
+
+.mainBannerPartLeft {
+  // background: linear-gradient(to bottom right, black, darkblue);
+  height: 600px;
+  width: 55%;
+  display: flex;
+  justify-content: center; /* Центрирует по горизонтали */
+  align-items: center; /* Центрирует по вертикали */
+  // position: relative;
+  .img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.mainBannerPartRight {
+  background: linear-gradient(to bottom right, black, darkblue);
+  flex-grow: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    color: orangered;
+    font-size: 28px;
+    font-weight: 800;
+    text-shadow:
+      -1px -1px 0 #c0bd21,
+      1px -1px 0 #c0bd21,
+      -1px 1px 0 #c0bd21,
+      1px 1px 0 #c0bd21;
+    -webkit-text-stroke: 1.5px black;
+    z-index: 2;
+
+    position: absolute;
+    right: 12%;
+    top: 85%;
+    // margin: 0 auto;
+    // position: absolute;
+    // top: 100%;
+  }
+}
+
+.bannerImage {
+  max-height: 100%;
+}
+
+.bannerImageText {
+  max-width: 100%; /* Чтобы картинка не вылезала за края, если она большая */
+  height: auto;
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.mainBannerBtn {
+  z-index: 2;
+  position: absolute;
+  right: 17%;
+  top: 89%;
+  background-color: orangered;
+  border-radius: 20px;
+  height: 40px;
+  width: 140px;
+  // text-align: center;
+  border: 3px solid black;
+  font-weight: 600;
+  font-size: 20px;
+
+  &:hover {
+    background-color: rgb(248, 94, 37);
+  }
+}
+//
+.decoration {
+  width: 100%;
+  height: 8px;
+  background-image: url("../../../public/images/decoration/texture.png");
+  background-repeat: repeat; //По умолчанию
+
+  &:hover {
+    opacity: 0.95;
+  }
+}
+//--------------------------------------------
+.container {
+  display: grid;
+  /* Задаем 3 колонки и 2 строки */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+
+  // grid-template-areas:
+  //   "cell1 cell2 sidebar"
+  //   "cell3 cell4 sidebar";
+  height: 550px;
+
+  // width: 100%;
+  background: linear-gradient(to bottom right, rgb(32, 6, 94), rgb(7, 7, 156));
+  border: 2px solid black;
+
+  .sidebar {
+    // grid-area: sidebar;
+    grid-column: 3; /* Третья колонка */
+    grid-row: 1 / 3;
+
+    width: 100%;
+    height: 100%; /* Должно быть 100%, чтобы занять высоту Grid-area */
+    display: block;
+
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cell {
+    border: 1px solid black;
+    overflow: hidden; /* Важно: всё, что больше ячейки, будет обрезано */
+    position: relative;
+  }
+
+  .teamImage {
+    width: 100%;
+
+    object-fit: cover;
+    display: block;
+  }
+}
+//--------------------------------------------

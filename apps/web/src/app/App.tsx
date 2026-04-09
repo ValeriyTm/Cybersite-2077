@@ -14,6 +14,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { router } from "./providers/router/config/router";
 //Компонент, который отобразится при глобальной ошибке:
 import { GlobalErrorFallback } from "@/shared/ui/GlobalErrorFallback/GlobalErrorFallback";
+// import "./styles/_normalize.scss";
 import "./styles/index.css"; //Подключаем тут глобальные стили
 
 // Создаем клиент React Query:

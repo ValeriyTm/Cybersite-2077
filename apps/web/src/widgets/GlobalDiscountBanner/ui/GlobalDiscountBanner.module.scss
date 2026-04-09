@@ -1,10 +1,12 @@
 .banner {
   background: linear-gradient(90deg, #e74c3c 0%, #f39c12 100%);
-  padding: 15px 20px;
-  margin-bottom: 30px;
+  padding-bottom: 20px;
+  // margin-bottom: 30px;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
   color: #000;
+  width: 100%;
+  z-index: 100;
 }
 
 .content {

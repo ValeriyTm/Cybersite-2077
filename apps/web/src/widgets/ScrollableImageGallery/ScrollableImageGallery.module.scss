@@ -1,0 +1,61 @@
+.wrapper {
+  width: 100%;
+  overflow: hidden;
+  background: #1a1a1a;
+  padding: 20px 0;
+}
+
+.scrollContainer {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 0 20px;
+
+  /* Плавный скролл и "прилипание" */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin; /* Тонкий скроллбар для Firefox */
+
+  /* --- Для Firefox --- */
+  scrollbar-width: thin; /* Толщина: auto, thin, none */
+  scrollbar-color: #f39c12 #333; /* Цвет ползунка и цвет дорожки */
+
+  /* --- Для Chrome, Safari, Edge --- */
+  &::-webkit-scrollbar {
+    height: 8px; /* Высота для горизонтального скролла */
+    width: 8px; /* Ширина для вертикального скролла */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #333; /* Цвет дорожки */
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f39c12; /* Цвет самого ползунка */
+    border-radius: 10px;
+    border: 2px solid #333; /* Отступ вокруг ползунка (имитация gap) */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #e67e22; /* Цвет при наведении */
+  }
+}
+
+.item {
+  flex: 0 0 300px; /* Жесткая ширина ячейки */
+  height: 200px;
+  scroll-snap-align: start; /* Точка фиксации скролла */
+  border-radius: 8px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
