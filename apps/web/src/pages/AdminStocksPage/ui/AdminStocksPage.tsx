@@ -1,23 +1,24 @@
-
-
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import styles from './AdminStocksPage.module.scss';
 import { useState } from 'react';
+import { useSearchParams } from 'react-router';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // 🎯 Добавил useQueryClient
 import { $api } from '@/shared/api/api';
-import toast from 'react-hot-toast';
-import { stockColumns } from '../model/columns';
 import { DataTable } from '@/shared/ui/DataTable/DataTable';
+import { stockColumns } from '../model/columns';
+import toast from 'react-hot-toast';
+import styles from './AdminStocksPage.module.scss';
 
 export const AdminStocksPage = () => {
+    const [searchParams] = useSearchParams();
+    const motoId = searchParams.get('motoId');
+    const [tempQuantity, setTempQuantity] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingStock, setEditingStock] = useState<any>(null);
     const queryClient = useQueryClient();
 
-
-
     const { data, isLoading } = useQuery({
-        queryKey: ['admin-stocks'],
-        queryFn: () => $api.get('/admin/stocks').then(res => res.data)
+        queryKey: ['admin-stocks', motoId],
+        queryFn: () => $api.get('/admin/stocks', { params: { motoId } }).then(res => res.data),
+        enabled: !!motoId
     });
 
     const updateMutation = useMutation({
@@ -34,28 +35,43 @@ export const AdminStocksPage = () => {
         setIsModalOpen(true);
     });
 
+    if (isLoading) return <div>Загрузка...</div>;
+
+    if (!data?.data || data.data.length === 0) {
+        return <div className={styles.empty}>Сначала выберите модель мотоцикла на вкладке "Мотоциклы".</div>;
+    }
+
     return (
         <div className={styles.pageWrapper}>
-            <h3>Управление запасами</h3>
-            <DataTable columns={columns} data={data?.data || []} />
+            <h3>
+                Запасы модели:
+                <span style={{ color: '#f39c12', marginLeft: '10px' }}>
+                    {data.data[0]?.motorcycle?.model}
+                </span>
+            </h3>
 
+            <DataTable columns={columns} data={data.data} />
+
+            {/* 🎯 Добавляем модалку, чтобы редактирование заработало */}
             {isModalOpen && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
                         <h4>Обновить наличие</h4>
-                        <p>{editingStock.motorcycle.model} ({editingStock.warehouse.name})</p>
+                        <p>{editingStock?.warehouse?.name} ({editingStock?.warehouse?.city})</p>
                         <input
                             type="number"
-                            defaultValue={editingStock.quantity}
-                            onKeyDown={(e) => e.key === 'Enter' && updateMutation.mutate(Number(e.currentTarget.value))}
+                            value={tempQuantity}
+                            onChange={(e) => setTempQuantity(Number(e.target.value))}
                             autoFocus
                         />
                         <div className={styles.modalActions}>
                             <button onClick={() => setIsModalOpen(false)}>Отмена</button>
-                            <button className={styles.saveBtn} onClick={() => {
-                                const val = document.querySelector('input')?.value;
-                                updateMutation.mutate(Number(val));
-                            }}>Сохранить</button>
+                            <button
+                                className={styles.saveBtn}
+                                onClick={() => updateMutation.mutate(tempQuantity)}
+                            >
+                                Сохранить
+                            </button>
                         </div>
                     </div>
                 </div>
