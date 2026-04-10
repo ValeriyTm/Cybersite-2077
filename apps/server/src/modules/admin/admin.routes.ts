@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AdminController } from "./admin.controller.js";
 import { authMiddleware } from "src/shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "src/shared/middlewares/role.middleware.js";
+import { productUpload } from "./multer.js";
 
 const router = Router();
 
@@ -32,9 +33,17 @@ router.get("/brands/search", AdminController.searchBrands);
 //Получение мотоциклов конкретного бренда:
 router.get("/motorcycles", AdminController.getMotorcycles);
 //Создание записи о мотоцикле:
-router.post("/motorcycles", AdminController.createMotorcycle);
+router.post(
+  "/motorcycles",
+  productUpload.array("images", 5),
+  AdminController.createMotorcycle,
+);
 //Правка записи о мотоцикле:
-router.patch("/motorcycles/:id", AdminController.updateMotorcycle);
+router.patch(
+  "/motorcycles/:id",
+  productUpload.array("images", 5),
+  AdminController.updateMotorcycle,
+);
 //Удаление записи о мотоцикле:
 router.delete("/motorcycles/:id", AdminController.deleteMotorcycle);
 //---------------------?:-------------

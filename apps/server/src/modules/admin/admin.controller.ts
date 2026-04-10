@@ -199,6 +199,7 @@ export class AdminController {
   ) {
     try {
       const data = req.body;
+      const files = req.files as Express.Multer.File[];
 
       //Формируем slug: соединяем модель и год
       const year = data.year || new Date().getFullYear();
@@ -220,6 +221,12 @@ export class AdminController {
             : null,
           rating: 0,
           colors: Array.isArray(data.colors) ? data.colors : [],
+          images: {
+            create: files.map((file, index) => ({
+              url: file.filename, // 🎯 Сохраняем только имя файла
+              isMain: index === 0, // Первое фото по умолчанию главное
+            })),
+          },
         },
       });
       res.status(201).json(motorcycle);

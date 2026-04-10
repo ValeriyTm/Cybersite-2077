@@ -23,6 +23,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
   const [searchResults, setSearchResults] = useState<
     { id: string; name: string }[]
   >([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   // Если мы редактируем байк, подставим название текущего бренда в инпут поиска
   useEffect(() => {
@@ -44,17 +45,22 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
   };
 
   const handleFormSubmit = (data: any) => {
-    // 🎯 Превращаем строку обратно в массив перед отправкой
-    const formattedData = {
-      ...data,
-      colors: data.colors
-        ? data.colors
-            .split(",")
-            .map((c: string) => c.trim())
-            .filter(Boolean)
-        : [],
-    };
-    onSubmit(formattedData);
+    const formData = new FormData();
+
+    // Добавляем все текстовые поля
+    Object.keys(data).forEach((key) => {
+      if (key === "colors") {
+        const colorsArray = data.colors.split(",").map((c: any) => c.trim());
+        colorsArray.forEach((c: any) => formData.append("colors[]", c));
+      } else {
+        formData.append(key, data[key]);
+      }
+    });
+
+    // Добавляем новые файлы
+    selectedFiles.forEach((file) => formData.append("images", file));
+
+    onSubmit(formData); // Передаем FormData в мутацию
   };
 
   return (
@@ -205,6 +211,29 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
           <div className={styles.fieldGroup + " " + styles.fullWidth}>
             <label>Описание / Комментарии</label>
             <textarea {...register("comments")} rows={3} />
+          </div>
+
+          <div className={`${styles.fieldGroup} ${styles.fullWidth}`}>
+            <label>Фотографии мотоцикла</label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) =>
+                setSelectedFiles(Array.from(e.target.files || []))
+              }
+            />
+
+            {/* Превью новых файлов */}
+            <div className={styles.imagePreviewGrid}>
+              {selectedFiles.map((file, i) => (
+                <img
+                  key={i}
+                  src={URL.createObjectURL(file)}
+                  className={styles.previewImg}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Скрытое поле для категории сайта (по дефолту "Мотоциклы") */}
