@@ -219,6 +219,7 @@ export class AdminController {
             ? Number(data.fuelConsumption)
             : null,
           rating: 0,
+          colors: Array.isArray(data.colors) ? data.colors : [],
         },
       });
       res.status(201).json(motorcycle);
@@ -252,6 +253,7 @@ export class AdminController {
           ...updateData,
           price: data.price ? Number(data.price) : undefined,
           year: data.year ? Number(data.year) : undefined,
+          colors: Array.isArray(data.colors) ? data.colors : [],
           displacement: data.displacement
             ? Number(data.displacement)
             : undefined,

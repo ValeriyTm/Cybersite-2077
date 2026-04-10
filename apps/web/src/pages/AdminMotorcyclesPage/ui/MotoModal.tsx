@@ -12,7 +12,11 @@ import { $api } from "@/shared/api/api";
 
 export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
   const { register, handleSubmit, setValue, watch } = useForm({
-    defaultValues: moto || { model: "", brandId: "", price: 0 },
+    defaultValues: {
+      //   moto: moto || { model: "", brandId: "", price: 0 },
+      ...moto,
+      colors: moto?.colors ? moto.colors.join(", ") : "",
+    },
   });
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,12 +43,29 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
     }
   };
 
+  const handleFormSubmit = (data: any) => {
+    // 🎯 Превращаем строку обратно в массив перед отправкой
+    const formattedData = {
+      ...data,
+      colors: data.colors
+        ? data.colors
+            .split(",")
+            .map((c: string) => c.trim())
+            .filter(Boolean)
+        : [],
+    };
+    onSubmit(formattedData);
+  };
+
   return (
     <div className={styles.modalOverlay}>
       <div className={`${styles.modal} ${styles.largeModal}`}>
         <h4>{moto ? "Редактировать параметры" : "Добавить новый байк"}</h4>
 
-        <form onSubmit={handleSubmit(onSubmit)} className={styles.gridForm}>
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className={styles.gridForm}
+        >
           {/* БЛОК 1: ОСНОВНОЕ */}
           <div className={styles.sectionDivider}>Основные данные</div>
 
@@ -111,7 +132,21 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             <input {...register("price")} type="number" required />
           </div>
 
-          {/* БЛОК 2: ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ */}
+          {/*Блок 2 - Внешний вид */}
+          <div className={styles.sectionDivider}>Внешний вид</div>
+
+          <div className={`${styles.fieldGroup} ${styles.fullWidth}`}>
+            <label>Доступные цвета (через запятую)</label>
+            <input
+              {...register("colors")}
+              placeholder="black, lightgray, white, pink"
+            />
+            <small style={{ color: "#555", marginTop: "4px" }}>
+              Введите названия цветов на английском через запятую
+            </small>
+          </div>
+
+          {/* Блок 3 - Технические хар-ки */}
           <div className={styles.sectionDivider}>Двигатель и трансмиссия</div>
           <div className={styles.fieldGroup}>
             <label>Объем (см³)</label>
