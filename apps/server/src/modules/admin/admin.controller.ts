@@ -514,5 +514,75 @@ export class AdminController {
     }
   }
 
+  //---------------------Работа с заказами:-------------
+  //Получить все заказы:
+  static async getOrders(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { page = 1, limit = 10, status, email } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+
+      // 🎯 Формируем фильтры
+      const where: any = {};
+      if (status) where.status = status;
+      if (email) {
+        where.user = {
+          email: { contains: String(email), mode: "insensitive" },
+        };
+      }
+
+      const [orders, total] = await Promise.all([
+        prisma.order.findMany({
+          where,
+          include: {
+            user: {
+              select: { name: true, email: true, phone: true },
+            },
+            items: {
+              include: {
+                motorcycle: { select: { model: true } },
+              },
+            },
+          },
+          skip,
+          take: Number(limit),
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.order.count({ where }),
+      ]);
+
+      res.json({
+        data: orders,
+        meta: {
+          total,
+          page: Number(page),
+          lastPage: Math.ceil(total / Number(limit)),
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //Изменить статус заказа:
+  static async updateOrderStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const order = await prisma.order.update({
+        where: { id },
+        data: { status },
+      });
+
+      res.json(order);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   //---------------------?:-------------
 }

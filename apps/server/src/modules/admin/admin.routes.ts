@@ -49,5 +49,8 @@ router.delete("/motorcycles/:id", AdminController.deleteMotorcycle);
 //---------------------Работа с остатками:-------------
 router.get("/stocks", AdminController.getStocks);
 router.patch("/stocks/:id", AdminController.updateStock);
+//---------------------Работа с заказами:-------------
+router.get("/orders", AdminController.getOrders);
+router.patch("/orders/:id/status", AdminController.updateOrderStatus);
 //---------------------?:-------------
 export default router;
