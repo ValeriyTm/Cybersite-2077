@@ -6,6 +6,15 @@ import { ReportsService } from "../reports/reports.service.js";
 import { PdfService } from "../reports/pdf.service.js";
 import { ExcelService } from "../reports/excel.service.js";
 
+const slugify = (text: string) =>
+  text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-");
+
 export class AdminController {
   // Метод для управления тикетами поддержки
   static async getTickets(req: Request, res: Response, next: NextFunction) {
@@ -191,22 +200,24 @@ export class AdminController {
     try {
       const data = req.body;
 
-      // Генерируем slug из модели, если он не передан
-      if (!data.slug) {
-        data.slug = data.model
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^\w-]+/g, "");
-      }
+      //Формируем slug: соединяем модель и год
+      const year = data.year || new Date().getFullYear();
+      const rawSlug = `${data.model}${year}`;
+      const finalSlug = slugify(rawSlug);
 
       const motorcycle = await prisma.motorcycle.create({
         data: {
           ...data,
           // Гарантируем, что числовые поля записаны как числа
+          slug: finalSlug,
           price: Number(data.price) || 300000,
           year: Number(data.year) || new Date().getFullYear(),
           displacement: data.displacement ? Number(data.displacement) : null,
           power: data.power ? Number(data.power) : null,
+          topSpeed: data.topSpeed ? Number(data.topSpeed) : null,
+          fuelConsumption: data.fuelConsumption
+            ? Number(data.fuelConsumption)
+            : null,
           rating: 0,
         },
       });
@@ -226,10 +237,19 @@ export class AdminController {
       const { id } = req.params;
       const data = req.body;
 
+      let updateData: any = { ...data };
+      if (data.model || data.year) {
+        // Подтягиваем текущие данные, если чего-то не хватает в запросе
+        const current = await prisma.motorcycle.findUnique({ where: { id } });
+        const model = data.model || current?.model;
+        const year = data.year || current?.year;
+        updateData.slug = slugify(`${model}${year}`);
+      }
+
       const motorcycle = await prisma.motorcycle.update({
         where: { id },
         data: {
-          ...data,
+          ...updateData,
           price: data.price ? Number(data.price) : undefined,
           year: data.year ? Number(data.year) : undefined,
           displacement: data.displacement
