@@ -26,6 +26,8 @@ router.delete("/brands/:id", AdminController.deleteBrand);
 router.post("/brands", AdminController.createBrand);
 //Обновление бренда:
 router.patch("/brands/:id", AdminController.updateBrand);
+//Поиск бренда:
+router.get("/brands/search", AdminController.searchBrands);
 //---------------------Работа с мотоциклами:-------------
 //Получение мотоциклов конкретного бренда:
 router.get("/motorcycles", AdminController.getMotorcycles);

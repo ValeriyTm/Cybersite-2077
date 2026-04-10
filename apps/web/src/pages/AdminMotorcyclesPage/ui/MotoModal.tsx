@@ -7,11 +7,37 @@ import {
   STARTER_TYPES,
 } from "../model/constants";
 import styles from "./AdminMotorcyclesPage.module.scss";
+import { useState, useEffect } from "react";
+import { $api } from "@/shared/api/api";
 
 export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
-  const { register, handleSubmit } = useForm({
-    defaultValues: moto || { year: 2024, price: 0, rating: 0 },
+  const { register, handleSubmit, setValue, watch } = useForm({
+    defaultValues: moto || { model: "", brandId: "", price: 0 },
   });
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<
+    { id: string; name: string }[]
+  >([]);
+
+  // Если мы редактируем байк, подставим название текущего бренда в инпут поиска
+  useEffect(() => {
+    if (moto?.brand?.name) setSearchQuery(moto.brand.name);
+  }, [moto]);
+
+  const handleSearch = async (val: string) => {
+    setSearchQuery(val);
+    if (val.length >= 2) {
+      try {
+        const { data } = await $api.get(`/admin/brands/search?query=${val}`);
+        setSearchResults(data);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
 
   return (
     <div className={styles.modalOverlay}>
@@ -21,6 +47,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
         <form onSubmit={handleSubmit(onSubmit)} className={styles.gridForm}>
           {/* БЛОК 1: ОСНОВНОЕ */}
           <div className={styles.sectionDivider}>Основные данные</div>
+
           <div className={styles.fieldGroup}>
             <label>Модель</label>
             <input
@@ -29,14 +56,45 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
               required
             />
           </div>
+
           <div className={styles.fieldGroup}>
-            <label>Бренд (ID)</label>
-            <input
-              {...register("brandId")}
-              placeholder="UUID бренда"
-              required
-            />
+            <label>Год</label>
+            <input {...register("year")} type="number" step="1" />
           </div>
+
+          <div className={styles.fieldGroup}>
+            <label>Выбор бренда</label>
+            <div className={styles.searchContainer}>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                placeholder="Введите название бренда..."
+                autoComplete="off"
+              />
+
+              {/* Выпадающий список результатов */}
+              {searchResults.length > 0 && (
+                <ul className={styles.dropdown}>
+                  {searchResults.map((brand) => (
+                    <li
+                      key={brand.id}
+                      onClick={() => {
+                        setValue("brandId", brand.id); // Записываем UUID в форму
+                        setSearchQuery(brand.name); // Показываем название в инпуте
+                        setSearchResults([]); // Закрываем список
+                      }}
+                    >
+                      {brand.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {/* Скрытое поле для валидации и отправки */}
+            <input type="hidden" {...register("brandId", { required: true })} />
+          </div>
+
           <div className={styles.fieldGroup}>
             <label>Категория</label>
             <select {...register("category")}>
@@ -47,6 +105,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
               ))}
             </select>
           </div>
+
           <div className={styles.fieldGroup}>
             <label>Цена (₽)</label>
             <input {...register("price")} type="number" required />
@@ -58,6 +117,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             <label>Объем (см³)</label>
             <input {...register("displacement")} type="number" />
           </div>
+
           <div className={styles.fieldGroup}>
             <label>Мощность (л.с.)</label>
             <input {...register("power")} type="number" step="0.1" />
@@ -67,7 +127,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             <label>Охлаждение</label>
             <select {...register("coolingSystem")}>
               {COOLING_TYPES.map((t) => (
-                <option key={t.value} value={t.label}>
+                <option key={t.value} value={t.value}>
                   {t.label}
                 </option>
               ))}
@@ -78,7 +138,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             <label>Коробка передач</label>
             <select {...register("gearbox")}>
               {GEARBOX_TYPES.map((g) => (
-                <option key={g.value} value={g.label}>
+                <option key={g.value} value={g.value}>
                   {g.label}
                 </option>
               ))}
@@ -87,9 +147,9 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
 
           <div className={styles.fieldGroup}>
             <label>Трансмиссия</label>
-            <select {...register("gearbox")}>
+            <select {...register("transmission")}>
               {TRANSMISSION_TYPES.map((g) => (
-                <option key={g.value} value={g.label}>
+                <option key={g.value} value={g.value}>
                   {g.label}
                 </option>
               ))}
@@ -98,9 +158,9 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
 
           <div className={styles.fieldGroup}>
             <label>Стартер</label>
-            <select {...register("gearbox")}>
+            <select {...register("starter")}>
               {STARTER_TYPES.map((g) => (
-                <option key={g.value} value={g.label}>
+                <option key={g.value} value={g.value}>
                   {g.label}
                 </option>
               ))}
@@ -116,7 +176,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
           <input
             type="hidden"
             {...register("siteCategoryId")}
-            value="твой-uuid-категории-мото"
+            value="081b4c44-59b1-4b2a-884b-f4bcfdc7c21e"
           />
 
           <div className={`${styles.modalActions} ${styles.fullWidth}`}>

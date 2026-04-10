@@ -113,6 +113,29 @@ export class AdminController {
     }
   }
   //---------------------Работа с мотоциклами:-------------
+  //Метод поиска бренда (нужен для создания новой записи о мотоцикле):
+  static async searchBrands(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { query } = req.query;
+
+      if (!query || String(query).length < 2) {
+        return res.json([]);
+      }
+
+      const brands = await prisma.brand.findMany({
+        where: {
+          name: { contains: String(query), mode: "insensitive" },
+        },
+        take: 10, // Ограничиваем список для удобства
+        select: { id: true, name: true },
+      });
+
+      res.json(brands);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   //Метод получения информации о всех мотоциклах:
   static async getMotorcycles(req: Request, res: Response, next: NextFunction) {
     try {
@@ -180,9 +203,10 @@ export class AdminController {
         data: {
           ...data,
           // Гарантируем, что числовые поля записаны как числа
-          price: Number(data.price),
-          year: Number(data.year),
-          displacement: Number(data.displacement),
+          price: Number(data.price) || 300000,
+          year: Number(data.year) || new Date().getFullYear(),
+          displacement: data.displacement ? Number(data.displacement) : null,
+          power: data.power ? Number(data.power) : null,
           rating: 0,
         },
       });
