@@ -53,4 +53,9 @@ router.patch("/stocks/:id", AdminController.updateStock);
 router.get("/orders", AdminController.getOrders);
 router.patch("/orders/:id/status", AdminController.updateOrderStatus);
 //---------------------?:-------------
+//Получить роли юзера:
+router.get("/users/", AdminController.getUsers);
+//Изменить роль юзера:
+router.patch("/users/:id/role", AdminController.updateUserRole);
+//---------------------?:-------------
 export default router;

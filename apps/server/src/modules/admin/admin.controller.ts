@@ -584,5 +584,69 @@ export class AdminController {
     }
   }
 
+  //---------------------Управление доступом:-------------
+  //Получить роль юзера:
+  static async getUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { page = 1, limit = 10, role, email } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+
+      const where: any = {};
+      if (role) where.role = role;
+      if (email) where.email = { contains: String(email), mode: "insensitive" };
+
+      const [users, total] = await Promise.all([
+        prisma.user.findMany({
+          where,
+          select: {
+            // 🎯 Не берем пароли и секреты
+            id: true,
+            email: true,
+            name: true,
+            phone: true,
+            isActivated: true,
+            role: true,
+            createdAt: true,
+          },
+          skip,
+          take: Number(limit),
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.user.count({ where }),
+      ]);
+
+      res.json({
+        data: users,
+        meta: { total, lastPage: Math.ceil(total / Number(limit)) },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //Изменить роль юзеру:
+  static async updateUserRole(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { role } = req.body;
+      const adminId = (req as any).user.id; // ID текущего админа из мидлвара
+
+      // 🎯 Защита: нельзя менять роль самому себе
+      if (id === adminId) {
+        return res
+          .status(403)
+          .json({ message: "Вы не можете изменить роль самому себе" });
+      }
+
+      const user = await prisma.user.update({
+        where: { id },
+        data: { role },
+      });
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   //---------------------?:-------------
 }
