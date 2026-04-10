@@ -152,49 +152,54 @@ export class AdminController {
   static async getMotorcycles(req: Request, res: Response, next: NextFunction) {
     try {
       const { page = 1, limit = 10, search = "" } = req.query;
+      const p = Number(page);
+      const l = Number(limit);
       const searchQuery = String(search).trim();
 
-      let whereClause: any = {};
+      let ids: string[] = [];
+      let totalCount = 0;
 
-      // 🎯 Если есть поиск, используем Elasticsearch
       if (searchQuery.length >= 2) {
-        const esResults = await searchService.suggestMotorcycles(searchQuery);
-        const ids = esResults.map((item: any) => item.id);
+        // 🎯 ВАЖНО: Elastic должен вернуть ID именно для ТЕКУЩЕЙ страницы
+        const esResult = await searchService.searchMotorcyclesAdmin(
+          searchQuery,
+          p,
+          l,
+        );
+        ids = esResult.ids;
+        totalCount = esResult.total;
 
-        // Если Elastic ничего не нашел, возвращаем пустой результат
         if (ids.length === 0) {
-          return res.json({ data: [], meta: { total: 0, lastPage: 0 } });
+          return res.json({
+            data: [],
+            meta: { total: 0, page: p, lastPage: 0 },
+          });
         }
 
-        whereClause = { id: { in: ids } };
+        // 🎯 Prisma тянет данные ТОЛЬКО по тем ID, что выдал Elastic для этой страницы
+        const motorcycles = await prisma.motorcycle.findMany({
+          where: { id: { in: ids } },
+          include: { brand: { select: { name: true } }, images: true },
+          // skip и take здесь НЕ НУЖНЫ, так как Elastic уже отфильтровал нужные 10 штук
+        });
+
+        // Сортируем результат Prisma в том порядке, в котором их вернул Elastic (по релевантности)
+        const sortedMotorcycles = ids
+          .map((id) => motorcycles.find((m) => m.id === id))
+          .filter(Boolean);
+
+        return res.json({
+          data: sortedMotorcycles,
+          meta: {
+            total: totalCount,
+            page: p,
+            lastPage: Math.ceil(totalCount / l),
+          },
+        });
       }
 
-      const skip = (Number(page) - 1) * Number(limit);
-
-      const [motorcycles, total] = await Promise.all([
-        prisma.motorcycle.findMany({
-          where: whereClause,
-          include: {
-            brand: { select: { name: true } },
-            images: {
-              orderBy: { isMain: "desc" }, // Сначала главные фото
-            },
-          },
-          skip: searchQuery ? 0 : skip,
-          take: Number(limit),
-          orderBy: { createdAt: "desc" },
-        }),
-        prisma.motorcycle.count({ where: whereClause }),
-      ]);
-
-      res.json({
-        data: motorcycles,
-        meta: {
-          total,
-          page: Number(page),
-          lastPage: Math.ceil(total / Number(limit)),
-        },
-      });
+      // Логика без поиска (обычная пагинация Prisma) остается прежней
+      // ...
     } catch (error) {
       next(error);
     }

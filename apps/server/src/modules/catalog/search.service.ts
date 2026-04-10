@@ -329,6 +329,33 @@ export class SearchService {
     }));
   }
 
+  //Поиск мотоциклов на странице админки:
+  async searchMotorcyclesAdmin(query: string, page: number, limit: number) {
+    const result = await esClient.search({
+      index: this.indexName,
+      from: (page - 1) * limit, // 🎯 Пропуск записей для пагинации
+      size: limit, //Показываем только 7 лучших совпадений
+      query: {
+        match_phrase_prefix: {
+          //Ищет по первым буквам слов:
+          model: {
+            query: query,
+          },
+        },
+      },
+      //Возвращаем только нужные поля для вывода предположений:
+      _source: ["id"],
+    });
+
+    return {
+      ids: result.hits.hits.map((hit) => hit._id),
+      total:
+        typeof result.hits.total === "number"
+          ? result.hits.total
+          : result.hits.total?.value || 0, // 🎯 Получаем общее кол-во совпадений
+    };
+  }
+
   //Обновляем данные в Elasticsearch при изменении остатков:
   async updateStockInElastic(motorcycleId: string) {
     //Считаем актуальный остаток из БД:

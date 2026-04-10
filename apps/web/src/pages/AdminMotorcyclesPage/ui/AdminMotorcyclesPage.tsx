@@ -110,6 +110,27 @@ export const AdminMotorcyclesPage = () => {
           onSubmit={(data: any) => saveMutation.mutate(data)}
         />
       )}
+
+      <div className={styles.paginationControls}>
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((prev) => prev - 1)}
+        >
+          ← Назад
+        </button>
+
+        <span>
+          Страница <strong>{page}</strong> из {data?.meta?.lastPage || 1}
+          (Всего: {data?.meta?.total})
+        </span>
+
+        <button
+          disabled={page >= (data?.meta?.lastPage || 1)}
+          onClick={() => setPage((prev) => prev + 1)}
+        >
+          Вперёд →
+        </button>
+      </div>
     </div>
   );
 };
