@@ -5,6 +5,8 @@ import { prisma } from "@repo/database";
 import { ReportsService } from "../reports/reports.service.js";
 import { PdfService } from "../reports/pdf.service.js";
 import { ExcelService } from "../reports/excel.service.js";
+import fs from "fs";
+import path from "path";
 
 const slugify = (text: string) =>
   text
@@ -163,7 +165,12 @@ export class AdminController {
               },
             ],
           },
-          include: { brand: { select: { name: true } } },
+          include: {
+            brand: { select: { name: true } },
+            images: {
+              orderBy: { isMain: "desc" }, // Сначала главные фото
+            },
+          },
           skip,
           take: Number(limit),
           orderBy: { createdAt: "desc" },
@@ -206,6 +213,29 @@ export class AdminController {
       const rawSlug = `${data.model}${year}`;
       const finalSlug = slugify(rawSlug);
 
+      // 2. Обрабатываем файлы и переименовываем их
+      const imageRecords = files.map((file, index) => {
+        const extension = path.extname(file.originalname); // .jpg, .png
+        // Формат: slug.jpg, slug-1.jpg, slug-2.jpg
+        const newFileName =
+          index === 0
+            ? `${finalSlug}${extension}`
+            : `${finalSlug}-${index}${extension}`;
+
+        const oldPath = file.path;
+        const newPath = path.join(path.dirname(oldPath), newFileName);
+
+        // Физически переименовываем файл на диске
+        if (fs.existsSync(oldPath)) {
+          fs.renameSync(oldPath, newPath);
+        }
+
+        return {
+          url: newFileName, // Сохраняем красивое имя в БД
+          isMain: index === 0,
+        };
+      });
+
       const motorcycle = await prisma.motorcycle.create({
         data: {
           ...data,
@@ -222,10 +252,7 @@ export class AdminController {
           rating: 0,
           colors: Array.isArray(data.colors) ? data.colors : [],
           images: {
-            create: files.map((file, index) => ({
-              url: file.filename, // 🎯 Сохраняем только имя файла
-              isMain: index === 0, // Первое фото по умолчанию главное
-            })),
+            create: imageRecords,
           },
         },
       });
@@ -243,7 +270,41 @@ export class AdminController {
   ) {
     try {
       const { id } = req.params;
-      const data = req.body;
+      const {
+        id: _, // Извлекаем лишнее
+        brand, // Извлекаем лишнее
+        createdAt, // Извлекаем лишнее
+        updatedAt, // Извлекаем лишнее
+        deletedImageIds,
+        mainImageId,
+        ...rawData
+      } = req.body;
+      const files = req.files as Express.Multer.File[];
+
+      //Очистка данных:
+      const data: any = {};
+      Object.keys(rawData).forEach((key) => {
+        const value = rawData[key];
+
+        // Заменяем NaN или строку "null" на реальный null
+        if (Number.isNaN(value) || value === "NaN" || value === "null") {
+          data[key] = null;
+        } else if (
+          [
+            "price",
+            "year",
+            "displacement",
+            "power",
+            "topSpeed",
+            "fuelConsumption",
+          ].includes(key)
+        ) {
+          // Принудительно конвертируем в число, если поле должно быть числом
+          data[key] = value !== "" ? Number(value) : null;
+        } else {
+          data[key] = value;
+        }
+      });
 
       let updateData: any = { ...data };
       if (data.model || data.year) {
@@ -254,17 +315,84 @@ export class AdminController {
         updateData.slug = slugify(`${model}${year}`);
       }
 
+      // 1. Удаляем помеченные изображения
+      if (deletedImageIds) {
+        const idsArray = Array.isArray(deletedImageIds)
+          ? deletedImageIds
+          : [deletedImageIds];
+
+        // Находим файлы, чтобы удалить их с диска
+        const imagesToDelete = await prisma.productImage.findMany({
+          where: { id: { in: idsArray } },
+        });
+
+        for (const img of imagesToDelete) {
+          const filePath = path.resolve("uploads/motorcycles", img.url);
+          if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
+
+        await prisma.productImage.deleteMany({
+          where: { id: { in: idsArray } },
+        });
+      }
+
+      // 2. Обновляем статус "Главная"
+      if (mainImageId) {
+        await prisma.productImage.updateMany({
+          where: { motorcycleId: id },
+          data: { isMain: false },
+        });
+        await prisma.productImage.update({
+          where: { id: mainImageId },
+          data: { isMain: true },
+        });
+      }
+
+      // Узнаем, сколько картинок СЕЙЧАС осталось в базе для этого байка,
+      // чтобы продолжить нумерацию (например, начать с -3, если 3 уже есть)
+      const existingImagesCount = await prisma.productImage.count({
+        where: { motorcycleId: id },
+      });
+
+      // 3. Добавляем новые файлы
+      const newImages = files.map((file, index) => {
+        const extension = path.extname(file.originalname);
+        // Формируем имя: slug-N.jpg
+        const newFileName = `${updateData.slug}-${existingImagesCount + index}${extension}`;
+
+        const oldPath = file.path;
+        const newPath = path.join(path.dirname(oldPath), newFileName);
+
+        // Физически переименовываем файл на диске
+        if (fs.existsSync(oldPath)) {
+          fs.renameSync(oldPath, newPath);
+        }
+
+        return {
+          url: newFileName, // В базу пишем красивое имя
+          isMain: false,
+        };
+      });
+
       const motorcycle = await prisma.motorcycle.update({
         where: { id },
         data: {
           ...updateData,
-          price: data.price ? Number(data.price) : undefined,
-          year: data.year ? Number(data.year) : undefined,
+          price: data.price ? Number(data.price) : 0,
+          year: Number(data.year) || new Date().getFullYear(),
           colors: Array.isArray(data.colors) ? data.colors : [],
+          power: data.power ? Number(data.power) : null,
+          topSpeed: data.topSpeed ? Number(data.topSpeed) : null,
+          fuelConsumption: data.fuelConsumption
+            ? Number(data.fuelConsumption)
+            : null,
+          rating: data.rating ? Number(data.rating) : 0,
           displacement: data.displacement
             ? Number(data.displacement)
             : undefined,
+          images: { create: newImages },
         },
+        include: { images: true },
       });
       res.json(motorcycle);
     } catch (error) {

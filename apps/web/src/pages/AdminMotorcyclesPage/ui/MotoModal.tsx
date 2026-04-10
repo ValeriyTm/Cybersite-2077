@@ -24,6 +24,10 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
     { id: string; name: string }[]
   >([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
+  const [mainImageId, setMainImageId] = useState<string | null>(
+    moto?.images?.find((img: any) => img.isMain)?.id || null,
+  );
 
   // Если мы редактируем байк, подставим название текущего бренда в инпут поиска
   useEffect(() => {
@@ -56,6 +60,12 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
         formData.append(key, data[key]);
       }
     });
+
+    // 🎯 Отправляем список ID на удаление
+    deletedImageIds.forEach((id) => formData.append("deletedImageIds[]", id));
+
+    // 🎯 Отправляем ID новой главной картинки
+    if (mainImageId) formData.append("mainImageId", mainImageId);
 
     // Добавляем новые файлы
     selectedFiles.forEach((file) => formData.append("images", file));
@@ -213,27 +223,57 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             <textarea {...register("comments")} rows={3} />
           </div>
 
-          <div className={`${styles.fieldGroup} ${styles.fullWidth}`}>
-            <label>Фотографии мотоцикла</label>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) =>
-                setSelectedFiles(Array.from(e.target.files || []))
-              }
-            />
+          {/*Изображения:*/}
+          <div className={styles.fieldGroup + " " + styles.fullWidth}>
+            <label>Текущие изображения</label>
+            <div className={styles.existingImagesGrid}>
+              {moto?.images
+                ?.filter((img: any) => !deletedImageIds.includes(img.id))
+                .map((img: any) => {
+                  console.log("img url: ", img.url);
+                  return (
+                    <div
+                      key={img.id}
+                      className={`${styles.imageItem} ${mainImageId === img.id ? styles.main : ""}`}
+                    >
+                      <img
+                        src={`http://localhost:3001/static/motorcycles/${img.url}`}
+                        alt="moto"
+                      />
 
-            {/* Превью новых файлов */}
-            <div className={styles.imagePreviewGrid}>
-              {selectedFiles.map((file, i) => (
-                <img
-                  key={i}
-                  src={URL.createObjectURL(file)}
-                  className={styles.previewImg}
-                />
-              ))}
+                      <div className={styles.imageActions}>
+                        <button
+                          type="button"
+                          onClick={() => setMainImageId(img.id)}
+                          title="Сделать главной"
+                        >
+                          ★
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.deleteImgBtn}
+                          onClick={() =>
+                            setDeletedImageIds((prev) => [...prev, img.id])
+                          }
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
+
+            <label className={styles.uploadLabel}>
+              <input
+                type="file"
+                multiple
+                onChange={(e) =>
+                  setSelectedFiles(Array.from(e.target.files || []))
+                }
+              />
+              <span>+ Добавить новые фото</span>
+            </label>
           </div>
 
           {/* Скрытое поле для категории сайта (по дефолту "Мотоциклы") */}
