@@ -5,6 +5,7 @@ import { prisma } from "@repo/database";
 import { ReportsService } from "../reports/reports.service.js";
 import { PdfService } from "../reports/pdf.service.js";
 import { ExcelService } from "../reports/excel.service.js";
+import { searchService } from "../catalog/search.service.js";
 import fs from "fs";
 import path from "path";
 
@@ -151,47 +152,48 @@ export class AdminController {
   static async getMotorcycles(req: Request, res: Response, next: NextFunction) {
     try {
       const { page = 1, limit = 10, search = "" } = req.query;
+      const searchQuery = String(search).trim();
+
+      let whereClause: any = {};
+
+      // 🎯 Если есть поиск, используем Elasticsearch
+      if (searchQuery.length >= 2) {
+        const esResults = await searchService.suggestMotorcycles(searchQuery);
+        const ids = esResults.map((item: any) => item.id);
+
+        // Если Elastic ничего не нашел, возвращаем пустой результат
+        if (ids.length === 0) {
+          return res.json({ data: [], meta: { total: 0, lastPage: 0 } });
+        }
+
+        whereClause = { id: { in: ids } };
+      }
+
       const skip = (Number(page) - 1) * Number(limit);
 
       const [motorcycles, total] = await Promise.all([
         prisma.motorcycle.findMany({
-          where: {
-            OR: [
-              { model: { contains: String(search), mode: "insensitive" } },
-              {
-                brand: {
-                  name: { contains: String(search), mode: "insensitive" },
-                },
-              },
-            ],
-          },
+          where: whereClause,
           include: {
             brand: { select: { name: true } },
             images: {
               orderBy: { isMain: "desc" }, // Сначала главные фото
             },
           },
-          skip,
+          skip: searchQuery ? 0 : skip,
           take: Number(limit),
           orderBy: { createdAt: "desc" },
         }),
-        prisma.motorcycle.count({
-          where: {
-            OR: [
-              { model: { contains: String(search), mode: "insensitive" } },
-              {
-                brand: {
-                  name: { contains: String(search), mode: "insensitive" },
-                },
-              },
-            ],
-          },
-        }),
+        prisma.motorcycle.count({ where: whereClause }),
       ]);
 
       res.json({
         data: motorcycles,
-        meta: { total, lastPage: Math.ceil(total / Number(limit)) },
+        meta: {
+          total,
+          page: Number(page),
+          lastPage: Math.ceil(total / Number(limit)),
+        },
       });
     } catch (error) {
       next(error);

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { $api } from "@/shared/api/api";
 import { DataTable } from "@/shared/ui/DataTable/DataTable";
 import { getMotoColumns } from "../model/columns";
 import { MotoModal } from "./MotoModal";
 import { toast } from "react-hot-toast";
+import { debounce } from "lodash";
 import styles from "./AdminMotorcyclesPage.module.scss";
 
 export const AdminMotorcyclesPage = () => {
@@ -12,9 +13,43 @@ export const AdminMotorcyclesPage = () => {
   const [editingMoto, setEditingMoto] = useState(null);
   const queryClient = useQueryClient();
 
+  // 1. Стейт для мгновенного отображения в инпуте (Controlled Input)
+  const [searchValue, setSearchValue] = useState("");
+  // 2. Стейт, который реально триггерит запрос к API
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  // 3. Создаем дебаунс-функцию через useMemo, чтобы она не пересоздавалась
+  const updateSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setDebouncedSearch(value);
+        setPage(1); // Сбрасываем страницу на первую при новом поиске
+      }, 500),
+    [],
+  );
+
+  // Обработчик ввода
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value); // Для UI (печатается мгновенно)
+    updateSearch(value); // Для API (сработает через 500мс)
+  };
+
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-motorcycles"],
-    queryFn: () => $api.get("/admin/motorcycles").then((res) => res.data),
+    queryKey: ["admin-motorcycles", page, debouncedSearch],
+    queryFn: () =>
+      $api
+        .get("/admin/motorcycles", {
+          params: {
+            page,
+            limit: 10,
+            search: debouncedSearch, // Уходит на сервер для Elastic
+          },
+        })
+        .then((res) => res.data),
+    // Оптимизация: не делать запрос, если в поиске 1 символ
+    enabled: debouncedSearch.length === 0 || debouncedSearch.length >= 2,
   });
 
   const saveMutation = useMutation({
@@ -48,6 +83,13 @@ export const AdminMotorcyclesPage = () => {
     <div className={styles.pageWrapper}>
       <header style={{ display: "flex", justifyContent: "space-between" }}>
         <h3>Каталог мотоциклов</h3>
+        <input
+          type="text"
+          placeholder="🔍 Быстрый поиск (Elasticsearch)..."
+          value={searchValue}
+          onChange={handleSearchChange}
+          className={styles.searchInput}
+        />
         <button
           className={styles.addBtn}
           onClick={() => {
