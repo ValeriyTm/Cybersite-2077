@@ -112,6 +112,12 @@ export const Header = () => {
     state.cartItems.reduce((acc, item) => acc + item.quantity, 0),
   );
 
+  //----------
+  //Показывать ссылку на страницу администраторов или нет:
+  const isAdmin =
+    user?.role &&
+    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"].includes(user.role);
+  const canSee = isAuth && isAdmin;
   //--------------------------------------------------------------------------
   return (
     <header className={styles.Header}>
@@ -125,7 +131,8 @@ export const Header = () => {
             <Link to="/news">Новости</Link>
             <Link to="/promos">Промокоды</Link>
             <Link to="/support">Поддержка</Link>
-            <Link to="/support">Статьи</Link>
+            <Link to="/titles">Статьи</Link>
+            {canSee && <Link to="/admin">Администрирование</Link>}
           </nav>
         </div>
       </div>

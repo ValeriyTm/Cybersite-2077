@@ -21,6 +21,7 @@
     "@repo/types": "*",
     "@tanstack/react-query": "^5.91.3",
     "@tanstack/react-query-devtools": "^5.91.3",
+    "@tanstack/react-table": "^8.21.3",
     "@types/leaflet": "^1.9.21",
     "axios": "^1.13.6",
     "axios-auth-refresh": "^5.0.2",

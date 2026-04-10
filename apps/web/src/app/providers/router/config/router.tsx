@@ -27,6 +27,8 @@ import { SupportPage } from "@/pages/SupportPage/SupportPage";
 import { UserTicketsPage } from "@/pages/UserTicketsPage/UserTicketsPage";
 import { NotFoundPage } from "@/pages/NotFoundPage/NotFoundPage";
 import { UserAgreement } from "@/pages/Legal/UserAgreement";
+import { AdminRoute } from "../ui/AdminRoute";
+import { AdminLayout } from "@/widgets/AdminLayout/ui/AdminLayout";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -128,6 +130,54 @@ export const router = createBrowserRouter([
         path: "/support/tickets",
         element: <UserTicketsPage />, //Страница с промокодами
       },
+      {
+        path: "/admin",
+        element: <AdminRoute />,
+        children: [
+          {
+            path: "", // Базовый путь /admin
+            element: <AdminLayout />, // Если права есть — показываем сайдбар
+            children: [
+              {
+                path: "brands",
+                element: <NotFoundPage />,
+              },
+              // {
+              //   path: "motorcycles",
+              //   element: <AdminMotorcyclesPage />,
+              // },
+              // ... остальные подстраницы
+            ],
+          },
+        ],
+        // children: [
+        //   {
+        //     path: "brands",
+        //     element: <AdminBrandsPage />,
+        //   },
+        //   {
+        //     path: "motorcycles",
+        //     element: <AdminMotorcyclesPage />,
+        //   },
+        //   {
+        //     path: "orders",
+        //     element: <AdminOrdersPage />,
+        //   },
+        //   {
+        //     path: "tickets",
+        //     element: <AdminTicketsPage />,
+        //   },
+        //   {
+        //     path: "reports",
+        //     element: <AdminReportsPage />,
+        //   },
+        //   {
+        //     path: "users",
+        //     element: <AdminUsersPage />,
+        //   },
+        // ],
+      },
+
       { path: "*", element: <NotFoundPage /> },
     ],
   },
