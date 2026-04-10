@@ -127,7 +127,7 @@ model Motorcycle {
   slug             String           @unique // "cbr-1000rr-fireblade"
   
   brandId          String
-  brand            Brand            @relation(fields: [brandId], references: [id])
+  brand            Brand            @relation(fields: [brandId], references: [id], onDelete: Cascade)
   category         MotoCategory    // Enum: Sport, Scooter, ...
   year             Int
   displacement     Int              //Объем двигателя (см3)

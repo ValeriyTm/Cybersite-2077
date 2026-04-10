@@ -20,4 +20,13 @@ router.get("/tickets", AdminController.getTickets);
 //Работа с отчетами:
 router.get("/reports/:type", AdminController.downloadReport);
 
+//---------------------Работа с брендами:-------------
+//Удаление бренда:
+router.delete("/brands/:id", AdminController.deleteBrand);
+//Создание бренда:
+router.post("/brands", AdminController.createBrand);
+//Обновление бренда:
+router.patch("/brands/:id", AdminController.updateBrand);
+//---------------------?:-------------
+
 export default router;

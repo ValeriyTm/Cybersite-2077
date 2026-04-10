@@ -29,6 +29,7 @@ import { NotFoundPage } from "@/pages/NotFoundPage/NotFoundPage";
 import { UserAgreement } from "@/pages/Legal/UserAgreement";
 import { AdminRoute } from "../ui/AdminRoute";
 import { AdminLayout } from "@/widgets/AdminLayout/ui/AdminLayout";
+import { AdminBrandsPage } from "@/pages/AdminBrandsPage/ui/AdminBrandsPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -140,7 +141,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 path: "brands",
-                element: <NotFoundPage />,
+                element: <AdminBrandsPage />,
               },
               // {
               //   path: "motorcycles",

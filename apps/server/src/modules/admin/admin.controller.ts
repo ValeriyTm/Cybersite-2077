@@ -72,4 +72,45 @@ export class AdminController {
       next(error);
     }
   }
+
+  //---------------------Работа с брендами:-------------
+  //Метод для удаления бренда:
+  static async deleteBrand(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await prisma.brand.delete({ where: { id } });
+      res.json({ message: "Бренд успешно удален" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //Метод для создания бренда:
+  static async createBrand(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { name, country, slug } = req.body;
+      const brand = await prisma.brand.create({
+        data: { name, country, slug },
+      });
+      res.status(201).json(brand);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //Метод для изменения информации о бренде:
+  static async updateBrand(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { name, country, slug } = req.body;
+      const brand = await prisma.brand.update({
+        where: { id },
+        data: { name, country, slug },
+      });
+      res.json(brand);
+    } catch (error) {
+      next(error);
+    }
+  }
+  //---------------------?:-------------
 }
