@@ -470,5 +470,52 @@ export class AdminController {
       next(error);
     }
   }
+  //---------------------Работа с остатками:-------------
+  // 1. Получение всех остатков
+  static async getStocks(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { page = 1, limit = 15 } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+
+      const [stocks, total] = await Promise.all([
+        prisma.stock.findMany({
+          include: {
+            motorcycle: {
+              select: { model: true, brand: { select: { name: true } } },
+            },
+            warehouse: { select: { name: true, city: true } },
+          },
+          skip,
+          take: Number(limit),
+          orderBy: { quantity: "asc" }, // Сначала те, что заканчиваются
+        }),
+        prisma.stock.count(),
+      ]);
+
+      res.json({
+        data: stocks,
+        meta: { total, lastPage: Math.ceil(total / Number(limit)) },
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  // 2. Быстрое обновление количества
+  static async updateStock(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { quantity } = req.body;
+
+      const stock = await prisma.stock.update({
+        where: { id },
+        data: { quantity: Number(quantity) },
+      });
+      res.json(stock);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   //---------------------?:-------------
 }

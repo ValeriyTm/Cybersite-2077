@@ -1,0 +1,123 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+
+  h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 4px solid #f39c12;
+    padding-left: 15px;
+  }
+}
+
+// Модальное окно для быстрого редактирования цифр
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #111;
+  border: 1px solid #333;
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  text-align: center;
+
+  h4 {
+    margin-bottom: 10px;
+    color: #f39c12;
+    text-transform: uppercase;
+  }
+
+  p {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  input {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1.5rem;
+    text-align: center;
+    outline: none;
+    margin-bottom: 25px;
+
+    &:focus {
+      border-color: #f39c12;
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.2);
+    }
+
+    // Убираем стрелочки у input type="number"
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.modalActions {
+  display: flex;
+  gap: 15px;
+
+  button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    transition: 0.2s;
+
+    &:first-child {
+      background: #222;
+      color: #777;
+      &:hover {
+        background: #333;
+        color: #fff;
+      }
+    }
+  }
+
+  .saveBtn {
+    background: #f39c12;
+    color: #000;
+    &:hover {
+      background: #e68a00;
+      transform: translateY(-1px);
+    }
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Статусы наличия для ячеек таблицы
+.statusLow {
+  color: #e74c3c;
+  font-weight: bold;
+} // Критично (<3)
+.statusWarning {
+  color: #f39c12;
+  font-weight: bold;
+} // Мало (<10)
+.statusOk {
+  color: #2ecc71;
+} // Достаточно

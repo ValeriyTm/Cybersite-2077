@@ -31,6 +31,7 @@ import { AdminRoute } from "../ui/AdminRoute";
 import { AdminLayout } from "@/widgets/AdminLayout/ui/AdminLayout";
 import { AdminBrandsPage } from "@/pages/AdminBrandsPage/ui/AdminBrandsPage";
 import { AdminMotorcyclesPage } from "@/pages/AdminMotorcyclesPage/ui/AdminMotorcyclesPage";
+import { AdminStocksPage } from "@/pages/AdminStocksPage/ui/AdminStocksPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -147,6 +148,11 @@ export const router = createBrowserRouter([
               {
                 path: "motorcycles",
                 element: <AdminMotorcyclesPage />,
+              },
+              {
+                path: "stocks",
+                element: <AdminStocksPage />,
+
               },
               //   {
               //     path: "orders",

@@ -46,5 +46,8 @@ router.patch(
 );
 //Удаление записи о мотоцикле:
 router.delete("/motorcycles/:id", AdminController.deleteMotorcycle);
+//---------------------Работа с остатками:-------------
+router.get("/stocks", AdminController.getStocks);
+router.patch("/stocks/:id", AdminController.updateStock);
 //---------------------?:-------------
 export default router;
