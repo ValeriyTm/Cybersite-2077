@@ -1,8 +1,10 @@
 import { type ColumnDef } from '@tanstack/react-table';
+import { FaTrash } from 'react-icons/fa';
 
 export const getUserColumns = (
     currentAdminId: string | undefined,
-    onRoleChange: (id: string, role: string) => void
+    onRoleChange: (id: string, role: string) => void,
+    onDelete: (id: string) => void
 ): ColumnDef<any>[] => [
         { accessorKey: 'email', header: 'Email' },
         { accessorKey: 'name', header: 'Имя' },
@@ -38,5 +40,30 @@ export const getUserColumns = (
                     </select>
                 );
             }
+        },
+        {
+            id: 'actions',
+            header: 'Действия',
+            cell: ({ row }) => {
+                const isSelf = row.original.id === currentAdminId;
+
+                return (
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        {!isSelf && (
+                            <FaTrash
+                                cursor="pointer"
+                                color="#e74c3c"
+                                title="Удалить пользователя"
+                                onClick={() => {
+                                    if (window.confirm(`Вы уверены, что хотите удалить пользователя ${row.original.email}? Это действие необратимо.`)) {
+                                        onDelete(row.original.id);
+                                    }
+                                }}
+                            />
+                        )}
+                    </div>
+                );
+            }
         }
+
     ];

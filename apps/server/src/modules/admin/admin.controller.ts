@@ -648,5 +648,25 @@ export class AdminController {
     }
   }
 
+  //Удалить юзера:
+  static async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const adminId = (req as any).user.id;
+
+      if (id === adminId) {
+        return res
+          .status(403)
+          .json({
+            message: "Вы не можете удалить свою собственную учетную запись",
+          });
+      }
+
+      await prisma.user.delete({ where: { id } });
+      res.json({ message: "Пользователь успешно удален" });
+    } catch (error) {
+      next(error);
+    }
+  }
   //---------------------?:-------------
 }

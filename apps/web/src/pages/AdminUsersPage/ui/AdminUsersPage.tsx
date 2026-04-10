@@ -27,7 +27,21 @@ export const AdminUsersPage = () => {
         onError: (err: any) => toast.error(err.response?.data?.message || 'Ошибка')
     });
 
-    const columns = getUserColumns(currentUser?.id, (id, role) => roleMutation.mutate({ id, role }));
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => $api.delete(`/admin/users/${id}`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+            toast.success('Пользователь удален');
+        },
+        onError: (err: any) => toast.error(err.response?.data?.message || 'Ошибка при удалении')
+    });
+
+    const columns = getUserColumns(
+        currentUser?.id,
+        (id, role) => roleMutation.mutate({ id, role }),
+        (id) => deleteMutation.mutate(id) // 🎯 Передаем функцию удаления
+    );
+
 
     return (
         <div className={styles.pageWrapper}>

@@ -52,10 +52,13 @@ router.patch("/stocks/:id", AdminController.updateStock);
 //---------------------Работа с заказами:-------------
 router.get("/orders", AdminController.getOrders);
 router.patch("/orders/:id/status", AdminController.updateOrderStatus);
-//---------------------?:-------------
+//---------------------Управление доступом:-------------
 //Получить роли юзера:
 router.get("/users/", AdminController.getUsers);
 //Изменить роль юзера:
 router.patch("/users/:id/role", AdminController.updateUserRole);
+//Удалить юзера:
+router.delete("/users/:id", AdminController.deleteUser);
+
 //---------------------?:-------------
 export default router;
