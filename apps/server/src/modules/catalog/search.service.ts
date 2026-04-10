@@ -387,6 +387,55 @@ export class SearchService {
       doc: { rating },
     });
   }
+
+  //Обновляем инфу о мотоцикле после внесения изменений в админке:
+  async indexMotorcycle(id: string) {
+    // Подтягиваем свежие данные из БД со всеми связями для индекса
+    const moto = await prisma.motorcycle.findUnique({
+      where: { id },
+      include: { brand: true, images: true },
+    });
+
+    if (!moto) return;
+
+    await esClient.index({
+      index: this.indexName,
+      id: moto.id,
+      document: {
+        model: moto.model,
+        slug: moto.slug,
+        brandSlug: moto.brand.slug,
+        year: moto.year,
+        mainImage: moto.images.find((img) => img.isMain)?.url || null,
+        price: moto.price,
+      },
+    });
+  }
+
+  //Удаляем мотоцикл из Elasticsearch после удаления записи в админке:
+  async deleteFromIndex(id: string) {
+    await esClient
+      .delete({
+        index: this.indexName,
+        id: id,
+      })
+      .catch(() => {}); // Игнорируем, если в индексе уже нет
+  }
+
+  //Синхронизируем изменения в брендах (админка)
+  async syncBrandMotorcycles(brandId: string) {
+    // Находим все мотоциклы, принадлежащие этому бренду
+    const motorcycles = await prisma.motorcycle.findMany({
+      where: { brandId },
+      select: { id: true },
+    });
+
+    // Переиндексируем каждый мотоцикл (информация о бренде подтянется автоматически внутри indexMotorcycle)
+    const syncPromises = motorcycles.map((moto) =>
+      this.indexMotorcycle(moto.id),
+    );
+    await Promise.all(syncPromises);
+  }
 }
 
 export const searchService = new SearchService();

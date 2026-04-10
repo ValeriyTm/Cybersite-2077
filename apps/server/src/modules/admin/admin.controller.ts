@@ -90,8 +90,21 @@ export class AdminController {
   static async deleteBrand(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+      // Находим все связанные байки ПЕРЕД удалением
+      const affectedMotos = await prisma.motorcycle.findMany({
+        where: { brandId: id },
+        select: { id: true },
+      });
+
       await prisma.brand.delete({ where: { id } });
-      res.json({ message: "Бренд успешно удален" });
+
+      // 🎯 После удаления бренда и байков (каскадно) — чистим индекс Elastic
+      const deletePromises = affectedMotos.map((m) =>
+        searchService.deleteFromIndex(m.id),
+      );
+      await Promise.all(deletePromises);
+
+      res.json({ message: "Бренд и связанные товары удалены из БД и индекса" });
     } catch (error) {
       next(error);
     }
@@ -104,6 +117,9 @@ export class AdminController {
       const brand = await prisma.brand.create({
         data: { name, country, slug },
       });
+
+      // При создании нового бренда мотоциклов еще нет,
+      // поэтому синхронизация не требуется, пока не создадут первый байк.
       res.status(201).json(brand);
     } catch (error) {
       next(error);
@@ -114,12 +130,36 @@ export class AdminController {
   static async updateBrand(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+      const oldBrand = await prisma.brand.findUnique({ where: { id } });
       const { name, country, slug } = req.body;
-      const brand = await prisma.brand.update({
+      const updatedBrand = await prisma.brand.update({
         where: { id },
         data: { name, country, slug },
       });
-      res.json(brand);
+
+      // 🎯 Если изменился slug или name — синхронизируем все байки этого бренда в Elastic
+      if (
+        oldBrand?.slug !== updatedBrand.slug ||
+        oldBrand?.name !== updatedBrand.name
+      ) {
+        // Запускаем в фоне, чтобы не заставлять админа ждать окончания индексации всех байков
+        searchService
+          .syncBrandMotorcycles(id)
+          .catch((err) =>
+            console.error(`Ошибка синхронизации бренда ${id} в ES:`, err),
+          );
+      }
+
+      // 🎯 СИНХРОНИЗАЦИЯ: Обновляем все байки этого бренда в Elastic
+      // const affectedMotos = await prisma.motorcycle.findMany({
+      //   where: { brandId: id },
+      // });
+
+      // // Делаем это асинхронно через Promise.all, чтобы не тормозить ответ админу
+      // await Promise.all(
+      //   affectedMotos.map((m) => searchService.indexMotorcycle(m.id)),
+      // );
+      res.json(updatedBrand);
     } catch (error) {
       next(error);
     }
@@ -263,6 +303,9 @@ export class AdminController {
           },
         },
       });
+
+      //Обновление данных в Elasticsearch:
+      await searchService.indexMotorcycle(motorcycle.id);
       res.status(201).json(motorcycle);
     } catch (error) {
       next(error);
@@ -401,6 +444,9 @@ export class AdminController {
         },
         include: { images: true },
       });
+
+      //СИНХРОНИЗАЦИЯ: Обновляем данные в Elastic
+      await searchService.indexMotorcycle(id);
       res.json(motorcycle);
     } catch (error) {
       next(error);
@@ -416,6 +462,9 @@ export class AdminController {
     try {
       const { id } = req.params;
       await prisma.motorcycle.delete({ where: { id } });
+
+      //СИНХРОНИЗАЦИЯ: Удаляем из Elastic
+      await searchService.deleteFromIndex(id);
       res.json({ message: "Мотоцикл удален" });
     } catch (error) {
       next(error);
