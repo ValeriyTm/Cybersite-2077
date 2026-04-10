@@ -30,6 +30,7 @@ import { UserAgreement } from "@/pages/Legal/UserAgreement";
 import { AdminRoute } from "../ui/AdminRoute";
 import { AdminLayout } from "@/widgets/AdminLayout/ui/AdminLayout";
 import { AdminBrandsPage } from "@/pages/AdminBrandsPage/ui/AdminBrandsPage";
+import { AdminMotorcyclesPage } from "@/pages/AdminMotorcyclesPage/ui/AdminMotorcyclesPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -143,40 +144,29 @@ export const router = createBrowserRouter([
                 path: "brands",
                 element: <AdminBrandsPage />,
               },
-              // {
-              //   path: "motorcycles",
-              //   element: <AdminMotorcyclesPage />,
-              // },
-              // ... остальные подстраницы
+              {
+                path: "motorcycles",
+                element: <AdminMotorcyclesPage />,
+              },
+              //   {
+              //     path: "orders",
+              //     element: <AdminOrdersPage />,
+              //   },
+              //   {
+              //     path: "tickets",
+              //     element: <AdminTicketsPage />,
+              //   },
+              //   {
+              //     path: "reports",
+              //     element: <AdminReportsPage />,
+              //   },
+              //   {
+              //     path: "users",
+              //     element: <AdminUsersPage />,
+              //   },
             ],
           },
         ],
-        // children: [
-        //   {
-        //     path: "brands",
-        //     element: <AdminBrandsPage />,
-        //   },
-        //   {
-        //     path: "motorcycles",
-        //     element: <AdminMotorcyclesPage />,
-        //   },
-        //   {
-        //     path: "orders",
-        //     element: <AdminOrdersPage />,
-        //   },
-        //   {
-        //     path: "tickets",
-        //     element: <AdminTicketsPage />,
-        //   },
-        //   {
-        //     path: "reports",
-        //     element: <AdminReportsPage />,
-        //   },
-        //   {
-        //     path: "users",
-        //     element: <AdminUsersPage />,
-        //   },
-        // ],
       },
 
       { path: "*", element: <NotFoundPage /> },

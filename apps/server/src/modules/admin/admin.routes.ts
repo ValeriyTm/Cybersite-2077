@@ -11,9 +11,6 @@ router.use(
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
 );
 
-//Работа с каталогом:
-router.get("/brands", AdminController.getBrands);
-
 //Работа с поддержкой:
 router.get("/tickets", AdminController.getTickets);
 
@@ -21,12 +18,22 @@ router.get("/tickets", AdminController.getTickets);
 router.get("/reports/:type", AdminController.downloadReport);
 
 //---------------------Работа с брендами:-------------
+//Получение брендов:
+router.get("/brands", AdminController.getBrands);
 //Удаление бренда:
 router.delete("/brands/:id", AdminController.deleteBrand);
 //Создание бренда:
 router.post("/brands", AdminController.createBrand);
 //Обновление бренда:
 router.patch("/brands/:id", AdminController.updateBrand);
+//---------------------Работа с мотоциклами:-------------
+//Получение мотоциклов конкретного бренда:
+router.get("/motorcycles", AdminController.getMotorcycles);
+//Создание записи о мотоцикле:
+router.post("/motorcycles", AdminController.createMotorcycle);
+//Правка записи о мотоцикле:
+router.patch("/motorcycles/:id", AdminController.updateMotorcycle);
+//Удаление записи о мотоцикле:
+router.delete("/motorcycles/:id", AdminController.deleteMotorcycle);
 //---------------------?:-------------
-
 export default router;

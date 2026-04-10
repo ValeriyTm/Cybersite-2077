@@ -1,0 +1,57 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.largeModal {
+  max-width: 900px !important; // Расширяем модалку
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.gridForm {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // Две колонки
+  gap: 20px;
+
+  .fullWidth {
+    grid-column: span 2; // Поля на всю ширину (описание, заголовок секции)
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 0.8rem;
+    color: #f39c12;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  input,
+  select,
+  textarea {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 4px;
+    color: #fff;
+    &:focus {
+      border-color: #f39c12;
+      outline: none;
+    }
+  }
+}
+
+.sectionDivider {
+  grid-column: span 2;
+  border-bottom: 1px solid #222;
+  padding-bottom: 5px;
+  margin-top: 15px;
+  color: #555;
+  font-size: 0.9rem;
+}
