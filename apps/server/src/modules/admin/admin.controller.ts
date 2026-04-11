@@ -8,6 +8,7 @@ import { ExcelService } from "../reports/excel.service.js";
 import { searchService } from "../catalog/search.service.js";
 import fs from "fs";
 import path from "path";
+import { esClient } from "../catalog/search.service.js";
 
 const slugify = (text: string) =>
   text
@@ -499,15 +500,23 @@ export class AdminController {
       const { id } = req.params;
       const { quantity } = req.body;
 
-      console.log("DEBUG STOCK:", { id, quantity, type: typeof quantity });
-
       const stock = await prisma.stock.update({
         where: { id },
         data: {
           // 🎯 Принудительно приводим к числу и проверяем на валидность
           quantity: !isNaN(Number(quantity)) ? Number(quantity) : 0,
         },
+        select: { motorcycleId: true },
       });
+
+      //Обновление инфы в Elasticsearch:
+      searchService.updateStockInElastic(stock.motorcycleId).catch((err) => {
+        console.error(
+          `Ошибка синхронизации остатков для байка ${stock.motorcycleId}:`,
+          err,
+        );
+      });
+
       res.json(stock);
     } catch (e) {
       next(e);
@@ -655,11 +664,9 @@ export class AdminController {
       const adminId = (req as any).user.id;
 
       if (id === adminId) {
-        return res
-          .status(403)
-          .json({
-            message: "Вы не можете удалить свою собственную учетную запись",
-          });
+        return res.status(403).json({
+          message: "Вы не можете удалить свою собственную учетную запись",
+        });
       }
 
       await prisma.user.delete({ where: { id } });
@@ -668,5 +675,31 @@ export class AdminController {
       next(error);
     }
   }
+  //---------------------Глобальная синхронизация:-------------
+  //Синхронизируем всю БД с Elasticsearch:
+  static async globalSearchSync(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      // 1. Очищаем индекс в Elasticsearch
+
+      //Используем адрес  контейнера Elasticsearch
+      const esUrl = process.env.ELASTICSEARCH_URL || "http://localhost:9200";
+      await fetch(`${esUrl}/motorcycles`, {
+        method: "DELETE",
+      });
+
+      // 2. Вызываем твою существующую логику пересоздания индекса и заливки данных
+      // Предположим, твой метод sync-search вызывает searchService.reindexAll()
+      await searchService.syncAllMotorcycles();
+
+      res.json({ message: "Глобальная синхронизация успешно завершена" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   //---------------------?:-------------
 }

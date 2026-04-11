@@ -34,6 +34,7 @@ import { AdminMotorcyclesPage } from "@/pages/AdminMotorcyclesPage/ui/AdminMotor
 import { AdminStocksPage } from "@/pages/AdminStocksPage/ui/AdminStocksPage";
 import { AdminOrdersPage } from "@/pages/AdminOrdersPage/ui/AdminOrdersPage";
 import { AdminUsersPage } from "@/pages/AdminUsersPage/ui/AdminUsersPage";
+import { AdminStatsPage } from "@/pages/AdminStatsPage/ui/AdminStatsPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -171,6 +172,10 @@ export const router = createBrowserRouter([
               {
                 path: "users",
                 element: <AdminUsersPage />,
+              },
+              {
+                path: "stats",
+                element: <AdminStatsPage />,
               },
             ],
           },

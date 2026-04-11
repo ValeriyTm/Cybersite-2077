@@ -1,0 +1,36 @@
+.syncBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #e74c3c; // Красная кнопка, так как действие серьезное
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover:not(:disabled) {
+    background: #c0392b;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

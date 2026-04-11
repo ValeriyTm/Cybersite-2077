@@ -4,7 +4,7 @@ import { warehouseService } from "../warehouse/warehouse.service.js";
 import { DiscountLogic } from "../discount/discount.logic.js";
 
 //Подключаемся к контейнеру:
-const esClient = new Client({ node: "http://localhost:9200" });
+export const esClient = new Client({ node: "http://localhost:9200" });
 
 export class SearchService {
   private readonly indexName = "motorcycles";

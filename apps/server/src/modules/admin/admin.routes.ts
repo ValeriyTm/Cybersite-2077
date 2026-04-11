@@ -59,6 +59,8 @@ router.get("/users/", AdminController.getUsers);
 router.patch("/users/:id/role", AdminController.updateUserRole);
 //Удалить юзера:
 router.delete("/users/:id", AdminController.deleteUser);
-
+//---------------------Статистика:-------------
+//Глобальная синхронизация Elasticsearch:
+router.post("/sync-search/global", AdminController.globalSearchSync);
 //---------------------?:-------------
 export default router;
