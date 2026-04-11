@@ -1,11 +1,37 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { FaEdit, FaTrash, FaBox } from "react-icons/fa";
+import { FaEdit, FaTrash, FaBox, FaCopy } from "react-icons/fa";
 import { useNavigate } from 'react-router';
+import toast from "react-hot-toast";
 
 export const getMotoColumns = (
   onEdit: (val: any) => void,
   onDelete: (id: string) => void,
 ): ColumnDef<any>[] => [
+    {
+      accessorKey: 'id',
+      header: 'ID',
+      cell: ({ getValue }) => {
+        const id = String(getValue());
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <code style={{ color: '#666', fontSize: '0.75rem' }}>{id.slice(0, 8)}...</code>
+            <FaCopy
+              cursor="pointer"
+              color="#555"
+              size={12}
+              title="Копировать полный ID"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigator.clipboard.writeText(id);
+                toast.success('ID скопирован в буфер!');
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#f39c12'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#555'}
+            />
+          </div>
+        );
+      }
+    },
     {
       accessorKey: "model",
       header: "Модель",
