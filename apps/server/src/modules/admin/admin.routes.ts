@@ -62,5 +62,10 @@ router.delete("/users/:id", AdminController.deleteUser);
 //---------------------Статистика:-------------
 //Глобальная синхронизация Elasticsearch:
 router.post("/sync-search/global", AdminController.globalSearchSync);
+//---------------------Скидки и промокоды:-------------
+//Получение промокодов:
+router.get("/promos", AdminController.getPromoCodes);
+//Получение персональных скидок:
+router.get("/personal-discounts", AdminController.getPersonalDiscounts);
 //---------------------?:-------------
 export default router;

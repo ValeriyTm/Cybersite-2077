@@ -700,6 +700,48 @@ export class AdminController {
       next(error);
     }
   }
+  //---------------------Скидки и промокоды:-------------
+  //Получаем промокоды:
+  static async getPromoCodes(req: Request, res: Response, next: NextFunction) {
+    try {
+      const promos = await prisma.promoCode.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      });
+      res.json(promos);
+    } catch (e) {
+      next(e);
+    }
+  }
 
+  //Поулчаем персональные скидки:
+  static async getPersonalDiscounts(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { email } = req.query;
+
+      const discounts = await prisma.personalDiscount.findMany({
+        where: email
+          ? {
+              user: {
+                email: { contains: String(email), mode: "insensitive" }, // Поиск без учета регистра
+              },
+            }
+          : {},
+        include: {
+          user: { select: { email: true } },
+          motorcycle: { select: { model: true } },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+      res.json(discounts);
+    } catch (e) {
+      next(e);
+    }
+  }
   //---------------------?:-------------
 }

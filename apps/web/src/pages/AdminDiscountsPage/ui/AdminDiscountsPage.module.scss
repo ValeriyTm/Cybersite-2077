@@ -1,0 +1,86 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  background: linear-gradient(90deg, #111 0%, #1a1a1a 100%);
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #222;
+}
+
+.magicBtn {
+  background: linear-gradient(45deg, #f39c12, #f1c40f);
+  color: #000;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+  transition: 0.3s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(243, 156, 18, 0.5);
+  }
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+.tableSection {
+  background: #0f0f0f;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #222;
+
+  .sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: #f1b50f;
+    h4 {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; // Чтобы поиск был справа
+  margin-bottom: 20px;
+  color: #f1c40f;
+
+  h4 {
+    text-transform: uppercase;
+    margin: 0;
+  }
+}
+
+.miniSearch {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.85rem;
+  width: 250px;
+  transition: 0.3s;
+
+  &:focus {
+    border-color: #f1c40f;
+    outline: none;
+    width: 300px; // Немного расширяем при фокусе
+  }
+}

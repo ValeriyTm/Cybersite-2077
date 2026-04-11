@@ -73,7 +73,7 @@ export class DiscountService {
 
       if (randomBike) {
         const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 7); //Скидка на неделю
+        expiresAt.setDate(expiresAt.getDate() + 3); //Скидка на 3 дня
 
         //Записываем скидку в БД (обновляем старую или создаем новую):
         const discount = await prisma.personalDiscount.upsert({

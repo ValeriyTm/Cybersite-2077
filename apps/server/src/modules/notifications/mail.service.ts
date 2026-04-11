@@ -86,7 +86,7 @@ export class MailService {
           <p style="font-size: 20px; color: #e74c3c; font-weight: bold;">Новая цена: ${newPrice.toLocaleString()} ₽</p>
           <a href="http://localhost:5173/catalog/motorcycles/${bikeBrand.toLocaleLowerCase()}/${bikeSlug}">Перейти на сайт</a>
         </div>
-        <p>Скидка действует 7 дней. Успей оформить заказ!</p>
+        <p>Скидка действует 3 дня. Успей оформить заказ!</p>
       </div>
     `,
     });
