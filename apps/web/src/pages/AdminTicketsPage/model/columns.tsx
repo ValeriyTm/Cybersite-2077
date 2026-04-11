@@ -102,7 +102,10 @@ export const getTicketColumns = (
                         color="#f39c12"
                         size={18}
                         title="Ответить на тикет"
-                        onClick={() => onReply(row.original)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onReply(row.original);
+                        }}
                         style={{ transition: '0.2s', opacity: row.original.status === 'RESOLVED' ? 0.3 : 1 }}
                     />
                 </div>

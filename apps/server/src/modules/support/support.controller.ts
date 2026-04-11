@@ -75,7 +75,7 @@ export const createTicket = async (
           attachments: {
             create:
               (req.files as Express.Multer.File[])?.map((file) => ({
-                fileUrl: file.path,
+                fileUrl: file.filename,
                 fileType: file.mimetype,
                 originalName: file.originalname,
                 size: file.size,

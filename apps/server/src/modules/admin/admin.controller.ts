@@ -759,8 +759,8 @@ export class AdminController {
       const tickets = await prisma.supportTicket.findMany({
         where,
         include: {
+          attachments: true, //Для вложений
           user: { select: { email: true, name: true } },
-          attachments: true, // Если у тебя есть вложения
         },
         orderBy: { createdAt: "desc" },
       });

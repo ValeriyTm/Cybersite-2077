@@ -46,8 +46,16 @@ export const AdminTicketsPage = () => {
     // 4. Подготовка колонок
     const columns = getTicketColumns(
         (id, status) => statusMutation.mutate({ id, status }),
-        (ticket) => setSelectedTicket(ticket)
+        (ticket) => {
+            setSelectedTicket(ticket);
+        }
     );
+
+    const getFileUrl = (rawUrl: string) => {
+        // Убираем "uploads/support/" и заменяем все \\ на /
+        // const fileName = rawUrl.replace(/static[\\/]support[\\/]/, '').replace(/\\/g, '/');
+        return `http://localhost:3001/static/support/${rawUrl}`;
+    };
 
     if (isLoading) return <div className={styles.loader}>Загрузка тикетов...</div>;
 
@@ -57,6 +65,10 @@ export const AdminTicketsPage = () => {
                 <div className={styles.titleBlock}>
                     <h3>Поддержка пользователей</h3>
                     <p>Обработка входящих тикетов и вопросов</p>
+                    <button onClick={() => setSelectedTicket({ id: 'test', description: 'тест', attachments: [] })}>
+                        ТЕСТ МОДАЛКИ
+                    </button>
+
                 </div>
 
                 <div className={styles.filters}>
@@ -104,17 +116,23 @@ export const AdminTicketsPage = () => {
                                 <div className={styles.attachmentsBlock}>
                                     <strong>Прикрепленные файлы:</strong>
                                     <div className={styles.fileList}>
-                                        {selectedTicket.attachments.map((file: any) => (
-                                            <a
-                                                key={file.id}
-                                                href={`http://localhost:3001/static/support/${file.fileUrl}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className={styles.fileLink}
-                                            >
-                                                <FaPaperclip /> {file.originalName}
-                                            </a>
-                                        ))}
+                                        {selectedTicket.attachments.map((file: any) => {
+
+                                            return (
+                                                <a
+                                                    key={file.id}
+                                                    href={getFileUrl(file.fileUrl)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    download={file.originalName}
+                                                    className={styles.fileLink}
+                                                    style={{ position: 'relative', zIndex: 1001, pointerEvents: 'auto' }}
+                                                >
+                                                    <FaPaperclip /> {file.originalName}
+                                                </a>
+                                            )
+                                        }
+                                        )}
                                     </div>
                                 </div>
                             )}
