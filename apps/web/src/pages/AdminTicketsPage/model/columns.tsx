@@ -7,6 +7,17 @@ import styles from '../ui/AdminTicketsPage.module.scss';
  * @param onStatusChange - функция для смены статуса (вызывает statusMutation)
  * @param onReply - функция для открытия модалки ответа
  */
+
+const CATEGORY_LABELS: Record<string, string> = {
+    COOPERATION: 'Сотрудничество',
+    COMPLAINT: 'Жалоба',
+    ORDER: 'Заказ',
+    TECHNICAL: 'Технический вопрос',
+    OTHER: 'Другое'
+};
+
+
+
 export const getTicketColumns = (
     onStatusChange: (id: string, status: string) => void,
     onReply: (ticket: any) => void
@@ -26,18 +37,25 @@ export const getTicketColumns = (
         {
             accessorKey: 'category',
             header: 'Категория',
-            cell: (info) => (
-                <span style={{
-                    fontSize: '0.75rem',
-                    background: '#222',
-                    padding: '2px 8px',
-                    borderRadius: '4px',
-                    color: '#f39c12',
-                    border: '1px solid #333'
-                }}>
-                    {String(info.getValue())}
-                </span>
-            )
+            cell: (info) => {
+                const value = String(info.getValue());
+                // Проверяем, есть ли перевод, иначе выводим исходное значение
+                const label = CATEGORY_LABELS[value] || value;
+
+                return (
+                    <span style={{
+                        fontSize: '0.75rem',
+                        background: '#222',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        color: '#f39c12',
+                        border: '1px solid #333',
+                        whiteSpace: 'nowrap'
+                    }}>
+                        {label}
+                    </span>
+                );
+            }
         },
         {
             accessorKey: 'description',
@@ -84,10 +102,10 @@ export const getTicketColumns = (
                         style={{ color: statusColors[status] || '#fff' }}
                         onChange={(e) => onStatusChange(row.original.id, e.target.value)}
                     >
-                        <option value="OPEN">OPEN</option>
-                        <option value="IN_PROGRESS">IN_PROGRESS</option>
-                        <option value="RESOLVED">RESOLVED</option>
-                        <option value="CLOSED">CLOSED</option>
+                        <option value="OPEN">Открыт</option>
+                        <option value="IN_PROGRESS">В процессе</option>
+                        <option value="RESOLVED">Решен</option>
+                        <option value="CLOSED">Отменен</option>
                     </select>
                 );
             }

@@ -57,6 +57,32 @@ export const AdminTicketsPage = () => {
         return `http://localhost:3001/static/support/${rawUrl}`;
     };
 
+    //Переводим на русский:
+    const categoryMap = {
+        COOPERATION: 'Сотрудничество',
+        COMPLAINT: 'Жалоба',
+        ORDER: 'Заказ',
+        TECHNICAL: 'Технический вопрос',
+        OTHER: 'Другое'
+    };
+    // let rusCategory;
+    // switch (selectedTicket.category) {
+    //     case 'COOPERATION':
+    //         rusCategory = 'Сотрудничество';
+    //         break;
+    //     case 'COMPLAINT':
+    //         rusCategory = 'Жалоба';
+    //         break;
+    //     case 'ORDER':
+    //         rusCategory = 'Заказ';
+    //         break;
+    //     case 'TECHNICAL':
+    //         rusCategory = 'Технический вопрос';
+    //         break;
+    //     default:
+    //         rusCategory = 'Другое';
+    // };
+
     if (isLoading) return <div className={styles.loader}>Загрузка тикетов...</div>;
 
     return (
@@ -65,9 +91,7 @@ export const AdminTicketsPage = () => {
                 <div className={styles.titleBlock}>
                     <h3>Поддержка пользователей</h3>
                     <p>Обработка входящих тикетов и вопросов</p>
-                    <button onClick={() => setSelectedTicket({ id: 'test', description: 'тест', attachments: [] })}>
-                        ТЕСТ МОДАЛКИ
-                    </button>
+
 
                 </div>
 
@@ -78,10 +102,10 @@ export const AdminTicketsPage = () => {
                         className={styles.filterSelect}
                     >
                         <option value="">Все статусы</option>
-                        <option value="OPEN">Только открытые (OPEN)</option>
-                        <option value="IN_PROGRESS">В работе (IN_PROGRESS)</option>
-                        <option value="RESOLVED">Решенные (RESOLVED)</option>
-                        <option value="CLOSED">Закрытые (CLOSED)</option>
+                        <option value="OPEN">Только открытые</option>
+                        <option value="IN_PROGRESS">В работе</option>
+                        <option value="RESOLVED">Решенные</option>
+                        <option value="CLOSED">Закрытые</option>
                     </select>
                 </div>
             </header>
@@ -104,7 +128,7 @@ export const AdminTicketsPage = () => {
                                 <strong>Отправитель:</strong> {selectedTicket.firstName} {selectedTicket.lastName} ({selectedTicket.email})
                             </div>
                             <div className={styles.infoRow}>
-                                <strong>Категория:</strong> {selectedTicket.category}
+                                <strong>Категория:</strong> {categoryMap[selectedTicket.category] || 'Другое'}
                             </div>
                             <div className={styles.messageBox}>
                                 <strong>Сообщение:</strong>
@@ -152,12 +176,22 @@ export const AdminTicketsPage = () => {
                             <button className={styles.cancelBtn} onClick={() => setSelectedTicket(null)}>
                                 Отмена
                             </button>
+
                             <button
                                 className={styles.submitBtn}
                                 onClick={() => replyMutation.mutate()}
-                                disabled={!answer.trim() || replyMutation.isPending}
+                                disabled={
+                                    !answer.trim() ||
+                                    replyMutation.isPending ||
+                                    !selectedTicket.userId //Блокируем, если нет привязки к аккаунту (вопрос оставил не зарегистрированный пользователь)
+                                }
                             >
-                                {replyMutation.isPending ? 'Отправка...' : 'Отправить ответ'}
+                                {replyMutation.isPending
+                                    ? 'Отправка...'
+                                    : !selectedTicket.userId
+                                        ? 'Ответ невозможен (гость)'
+                                        : 'Отправить ответ'
+                                }
                             </button>
                         </div>
                     </div>
