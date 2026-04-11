@@ -74,10 +74,18 @@ export class OrderService {
         });
 
         if (promo) {
+          //Фиксируем, какой юзер использовал (чтобы не применил дважды):
           await tx.usedPromo.create({
             data: {
               userId,
               promoCodeId: promo.id,
+            },
+          });
+          //Увеличиваем счётчик общего использования промокода (чтобы в админке отображать):
+          await tx.promoCode.update({
+            where: { id: promo.id },
+            data: {
+              usedCount: { increment: 1 }, // Атомарное увеличение на 1
             },
           });
         }
