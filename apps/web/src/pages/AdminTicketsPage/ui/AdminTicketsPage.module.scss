@@ -238,3 +238,25 @@
     }
   }
 }
+
+.filters {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.emailSearch {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 8px 15px;
+  border-radius: 6px;
+  color: #fff;
+  width: 250px;
+  outline: none;
+  transition: 0.2s;
+
+  &:focus {
+    border-color: #f39c12;
+    width: 300px; // Немного расширяем при вводе
+  }
+}

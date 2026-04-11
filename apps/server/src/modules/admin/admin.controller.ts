@@ -753,14 +753,19 @@ export class AdminController {
   //Получение всех тикетов:
   static async getTickets(req: Request, res: Response, next: NextFunction) {
     try {
-      const { status } = req.query;
-      const where = status ? { status: String(status) } : {};
+      const { status, email } = req.query;
+
+      const where: any = {};
+      if (status) where.status = status;
+      if (email) {
+        where.email = { contains: String(email), mode: "insensitive" };
+      }
 
       const tickets = await prisma.supportTicket.findMany({
         where,
         include: {
-          attachments: true, //Для вложений
           user: { select: { email: true, name: true } },
+          attachments: true,
         },
         orderBy: { createdAt: "desc" },
       });

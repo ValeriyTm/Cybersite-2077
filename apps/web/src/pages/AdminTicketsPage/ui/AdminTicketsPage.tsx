@@ -1,23 +1,41 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { $api } from '@/shared/api/api';
 import { DataTable } from '@/shared/ui/DataTable/DataTable';
 import { getTicketColumns } from '../model/columns';
 import { FaPaperclip, FaTimes } from 'react-icons/fa';
+import { debounce } from 'lodash';
+import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import styles from './AdminTicketsPage.module.scss';
 
 export const AdminTicketsPage = () => {
     const [selectedTicket, setSelectedTicket] = useState<any>(null);
     const [answer, setAnswer] = useState('');
+    const [emailValue, setEmailValue] = useState(''); // Для мгновенного ввода
+    const [debouncedEmail, setDebouncedEmail] = useState(''); // Для API-запроса
     const [statusFilter, setStatusFilter] = useState('');
+
     const queryClient = useQueryClient();
+
+    //Настраиваем задержку поиска
+    const updateSearch = useMemo(
+        () => debounce((val: string) => setDebouncedEmail(val), 500),
+        []
+    );
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmailValue(e.target.value);
+        updateSearch(e.target.value);
+    };
 
     // 1. Получение данных
     const { data: tickets, isLoading } = useQuery({
-        queryKey: ['admin-tickets', statusFilter],
+        queryKey: ['admin-tickets', statusFilter, debouncedEmail],
         queryFn: () => $api.get('/admin/tickets', {
-            params: { status: statusFilter }
+            params: {
+                status: statusFilter,
+                email: debouncedEmail
+            }
         }).then(res => res.data)
     });
 
@@ -65,25 +83,9 @@ export const AdminTicketsPage = () => {
         TECHNICAL: 'Технический вопрос',
         OTHER: 'Другое'
     };
-    // let rusCategory;
-    // switch (selectedTicket.category) {
-    //     case 'COOPERATION':
-    //         rusCategory = 'Сотрудничество';
-    //         break;
-    //     case 'COMPLAINT':
-    //         rusCategory = 'Жалоба';
-    //         break;
-    //     case 'ORDER':
-    //         rusCategory = 'Заказ';
-    //         break;
-    //     case 'TECHNICAL':
-    //         rusCategory = 'Технический вопрос';
-    //         break;
-    //     default:
-    //         rusCategory = 'Другое';
-    // };
 
-    if (isLoading) return <div className={styles.loader}>Загрузка тикетов...</div>;
+
+    // if (isLoading) return <div className={styles.loader}>Загрузка тикетов...</div>;
 
     return (
         <div className={styles.pageWrapper}>
@@ -91,11 +93,21 @@ export const AdminTicketsPage = () => {
                 <div className={styles.titleBlock}>
                     <h3>Поддержка пользователей</h3>
                     <p>Обработка входящих тикетов и вопросов</p>
-
-
                 </div>
 
+
+
                 <div className={styles.filters}>
+                    {/*Поиск по email:*/}
+                    <input
+                        type="text"
+                        placeholder="🔍 Поиск по email..."
+                        className={styles.emailSearch}
+                        value={emailValue}
+                        onChange={handleEmailChange}
+                    />
+
+                    {/*Фильтрация по статусам:*/}
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
@@ -110,9 +122,16 @@ export const AdminTicketsPage = () => {
                 </div>
             </header>
 
-            <DataTable columns={columns} data={tickets || []} />
+            {/*Лоадер только на таблицу, чтобы при поиске не сбрасывался фокус:*/}
+            {isLoading ? (
+                <div className={styles.loader}>Загрузка...</div>
+            ) : (
 
-            {/* МОДАЛЬНОЕ ОКНО ОТВЕТА */}
+                <DataTable columns={columns} data={tickets || []} />
+            )}
+
+
+            {/*Модальное окно для ответа на тикет:*/}
             {selectedTicket && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
@@ -198,5 +217,6 @@ export const AdminTicketsPage = () => {
                 </div>
             )}
         </div>
+
     );
 };
