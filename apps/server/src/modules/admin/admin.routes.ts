@@ -15,9 +15,6 @@ router.use(
 //Работа с поддержкой:
 router.get("/tickets", AdminController.getTickets);
 
-//Работа с отчетами:
-router.get("/reports/:type", AdminController.downloadReport);
-
 //---------------------Работа с брендами:-------------
 //Получение брендов:
 router.get("/brands", AdminController.getBrands);
@@ -67,5 +64,7 @@ router.post("/sync-search/global", AdminController.globalSearchSync);
 router.get("/promos", AdminController.getPromoCodes);
 //Получение персональных скидок:
 router.get("/personal-discounts", AdminController.getPersonalDiscounts);
+//---------------------Отчеты:-------------
+router.get("/reports/download", AdminController.downloadSalesReport);
 //---------------------?:-------------
 export default router;

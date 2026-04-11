@@ -743,5 +743,44 @@ export class AdminController {
       next(e);
     }
   }
+  //---------------------Отчеты:-------------
+  //Скачать отчеты:
+  static async downloadSalesReport(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      console.log("req.query: ", req.query);
+      const { format, days = 30 } = req.query; // Получаем формат (pdf/xlsx) и период
+      console.log("Запрошенный формат:", format);
+      const stats = await ReportsService.getStatistics(Number(days));
+
+      if (format === "xlsx") {
+        const filePath = await ExcelService.generateSalesRepo(stats);
+        res.setHeader(
+          "Content-Type",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        );
+
+        return res.download(filePath, (err) => {
+          if (err) console.error("Ошибка при отправке Excel:", err);
+          // Удаляем временный файл после отправки, если нужно
+          // fs.unlinkSync(filePath);
+        });
+      }
+
+      if (format === "pdf") {
+        const filePath = await PdfService.generateSalesPdf(stats);
+        res.contentType("application/pdf");
+        return res.sendFile(filePath);
+      }
+
+      res.status(400).json({ message: "Неверный формат отчета" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   //---------------------?:-------------
 }
