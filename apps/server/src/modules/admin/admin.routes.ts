@@ -69,5 +69,7 @@ router.get("/reports/download", AdminController.downloadSalesReport);
 router.get("/tickets", AdminController.getTickets);
 //Ответить на тикет:
 router.patch("/tickets/:id/reply", AdminController.replyToTicket);
+//Изменить статус тикета:
+router.patch("/tickets/:id/status", AdminController.updateTicketStatus);
 
 export default router;

@@ -792,4 +792,25 @@ export class AdminController {
       next(e);
     }
   }
+
+  //Изменить статус тикета:
+  static async updateTicketStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const ticket = await prisma.supportTicket.update({
+        where: { id },
+        data: { status },
+      });
+
+      res.json(ticket);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
