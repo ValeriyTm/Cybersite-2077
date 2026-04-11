@@ -20,7 +20,6 @@ export const newsColumns = (onEdit: (item: any) => void,
                 <select
                     value={String(getValue())}
                     onChange={(e) => onStatusUpdate(row.original._id, e.target.value)}
-                    // className={styles.statusSelect}
                     style={{
                         color: getValue() === 'PUBLISHED' ? '#2ecc71' : '#f39c12',
                         background: 'transparent',
@@ -44,7 +43,10 @@ export const newsColumns = (onEdit: (item: any) => void,
             cell: ({ row }) => (
                 <div style={{ display: 'flex', gap: '15px', color: '#f39c12' }}>
                     <FaEdit cursor="pointer" onClick={() => onEdit(row.original)} title="Редактировать" />
-                    <FaTrash cursor="pointer" color="#e74c3c" onClick={() => onDelete(row.original._id)} title="Удалить" />
+                    <FaTrash cursor="pointer" color="#e74c3c" onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(row.original._id);
+                    }} title="Удалить" />
                 </div>
             )
         }

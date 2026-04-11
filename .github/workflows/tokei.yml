@@ -1,0 +1,19 @@
+name: Tokei CI
+on:
+  push:
+    branches:
+      - main # или master
+
+jobs:
+  tokei:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Tokei
+        uses: XAMPPRocky/tokei-action@v1.0.0
+        with:
+          # Сохраняем результат в json для Shields.io:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: badges # Ветка, где будет лежать отчет

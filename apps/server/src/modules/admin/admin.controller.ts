@@ -8,9 +8,9 @@ import { ExcelService } from "../reports/excel.service.js";
 import { searchService } from "../catalog/search.service.js";
 import fs from "fs";
 import path from "path";
-import { esClient } from "../catalog/search.service.js";
 import { NewsModel } from "../content/news.model.js";
 
+//Функция для генерации slug для модели мотоцикла:
 const slugify = (text: string) =>
   text
     .toString()
@@ -59,7 +59,7 @@ export class AdminController {
   static async deleteBrand(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      // Находим все связанные байки ПЕРЕД удалением
+      //Находим все связанные модели мотоциклов перед удалением:
       const affectedMotos = await prisma.motorcycle.findMany({
         where: { brandId: id },
         select: { id: true },
@@ -67,7 +67,7 @@ export class AdminController {
 
       await prisma.brand.delete({ where: { id } });
 
-      // 🎯 После удаления бренда и байков (каскадно) — чистим индекс Elastic
+      //После удаления бренда и байков (каскадно) — чистим индекс Elastic:
       const deletePromises = affectedMotos.map((m) =>
         searchService.deleteFromIndex(m.id),
       );
@@ -106,12 +106,12 @@ export class AdminController {
         data: { name, country, slug },
       });
 
-      // 🎯 Если изменился slug или name — синхронизируем все байки этого бренда в Elastic
+      //Если изменился slug или name — синхронизируем все байки этого бренда в Elastic:
       if (
         oldBrand?.slug !== updatedBrand.slug ||
         oldBrand?.name !== updatedBrand.name
       ) {
-        // Запускаем в фоне, чтобы не заставлять админа ждать окончания индексации всех байков
+        //Запускаем в фоне, чтобы не заставлять админа ждать окончания индексации всех байков:
         searchService
           .syncBrandMotorcycles(id)
           .catch((err) =>
@@ -119,15 +119,6 @@ export class AdminController {
           );
       }
 
-      // 🎯 СИНХРОНИЗАЦИЯ: Обновляем все байки этого бренда в Elastic
-      // const affectedMotos = await prisma.motorcycle.findMany({
-      //   where: { brandId: id },
-      // });
-
-      // // Делаем это асинхронно через Promise.all, чтобы не тормозить ответ админу
-      // await Promise.all(
-      //   affectedMotos.map((m) => searchService.indexMotorcycle(m.id)),
-      // );
       res.json(updatedBrand);
     } catch (error) {
       next(error);
@@ -147,7 +138,7 @@ export class AdminController {
         where: {
           name: { contains: String(query), mode: "insensitive" },
         },
-        take: 10, // Ограничиваем список для удобства
+        take: 10,
         select: { id: true, name: true },
       });
 
@@ -169,7 +160,7 @@ export class AdminController {
       let totalCount = 0;
 
       if (searchQuery.length >= 2) {
-        // 🎯 ВАЖНО: Elastic должен вернуть ID именно для ТЕКУЩЕЙ страницы
+        //Elastic должен вернуть ID именно для текущей страницы:
         const esResult = await searchService.searchMotorcyclesAdmin(
           searchQuery,
           p,
@@ -185,14 +176,14 @@ export class AdminController {
           });
         }
 
-        // 🎯 Prisma тянет данные ТОЛЬКО по тем ID, что выдал Elastic для этой страницы
+        //Prisma тянет данные только по тем ID, что выдал Elastic для этой страницы:
         const motorcycles = await prisma.motorcycle.findMany({
           where: { id: { in: ids } },
           include: { brand: { select: { name: true } }, images: true },
-          // skip и take здесь НЕ НУЖНЫ, так как Elastic уже отфильтровал нужные 10 штук
+          //skip и take здесь не нужны, так как Elastic уже отфильтровал нужные 10 штук
         });
 
-        // Сортируем результат Prisma в том порядке, в котором их вернул Elastic (по релевантности)
+        //Сортируем результат Prisma в том порядке, в котором их вернул Elastic (по релевантности):
         const sortedMotorcycles = ids
           .map((id) => motorcycles.find((m) => m.id === id))
           .filter(Boolean);
@@ -206,9 +197,6 @@ export class AdminController {
           },
         });
       }
-
-      // Логика без поиска (обычная пагинация Prisma) остается прежней
-      // ...
     } catch (error) {
       next(error);
     }
@@ -229,7 +217,7 @@ export class AdminController {
       const rawSlug = `${data.model}${year}`;
       const finalSlug = slugify(rawSlug);
 
-      // 2. Обрабатываем файлы и переименовываем их
+      //Обрабатываем файлы и переименовываем их
       const imageRecords = files.map((file, index) => {
         const extension = path.extname(file.originalname); // .jpg, .png
         // Формат: slug.jpg, slug-1.jpg, slug-2.jpg
@@ -241,13 +229,13 @@ export class AdminController {
         const oldPath = file.path;
         const newPath = path.join(path.dirname(oldPath), newFileName);
 
-        // Физически переименовываем файл на диске
+        //Физически переименовываем файл на диске
         if (fs.existsSync(oldPath)) {
           fs.renameSync(oldPath, newPath);
         }
 
         return {
-          url: newFileName, // Сохраняем красивое имя в БД
+          url: newFileName,
           isMain: index === 0,
         };
       });
@@ -255,7 +243,7 @@ export class AdminController {
       const motorcycle = await prisma.motorcycle.create({
         data: {
           ...data,
-          // Гарантируем, что числовые поля записаны как числа
+          //Гарантируем, что числовые поля записаны как числа
           slug: finalSlug,
           price: Number(data.price) || 300000,
           year: Number(data.year) || new Date().getFullYear(),
@@ -290,10 +278,10 @@ export class AdminController {
     try {
       const { id } = req.params;
       const {
-        id: _, // Извлекаем лишнее
-        brand, // Извлекаем лишнее
-        createdAt, // Извлекаем лишнее
-        updatedAt, // Извлекаем лишнее
+        id: _, //Извлекаем лишнее
+        brand, //Извлекаем лишнее
+        createdAt, //Извлекаем лишнее
+        updatedAt, //Извлекаем лишнее
         deletedImageIds,
         mainImageId,
         ...rawData
@@ -305,7 +293,7 @@ export class AdminController {
       Object.keys(rawData).forEach((key) => {
         const value = rawData[key];
 
-        // Заменяем NaN или строку "null" на реальный null
+        //Заменяем NaN или строку "null" на реальный null
         if (Number.isNaN(value) || value === "NaN" || value === "null") {
           data[key] = null;
         } else if (
@@ -334,13 +322,13 @@ export class AdminController {
         updateData.slug = slugify(`${model}${year}`);
       }
 
-      // 1. Удаляем помеченные изображения
+      //Удаляем помеченные изображения
       if (deletedImageIds) {
         const idsArray = Array.isArray(deletedImageIds)
           ? deletedImageIds
           : [deletedImageIds];
 
-        // Находим файлы, чтобы удалить их с диска
+        //Находим файлы, чтобы удалить их с диска
         const imagesToDelete = await prisma.productImage.findMany({
           where: { id: { in: idsArray } },
         });
@@ -355,7 +343,7 @@ export class AdminController {
         });
       }
 
-      // 2. Обновляем статус "Главная"
+      //Обновляем статус "Главная"
       if (mainImageId) {
         await prisma.productImage.updateMany({
           where: { motorcycleId: id },
@@ -367,28 +355,27 @@ export class AdminController {
         });
       }
 
-      // Узнаем, сколько картинок СЕЙЧАС осталось в базе для этого байка,
-      // чтобы продолжить нумерацию (например, начать с -3, если 3 уже есть)
+      //Узнаем, сколько картинок осталось в базе для этого байка, чтобы продолжить нумерацию (например, начать с "-3", если 3 уже есть)
       const existingImagesCount = await prisma.productImage.count({
         where: { motorcycleId: id },
       });
 
-      // 3. Добавляем новые файлы
+      //Добавляем новые файлы
       const newImages = files.map((file, index) => {
         const extension = path.extname(file.originalname);
-        // Формируем имя: slug-N.jpg
+        //Формируем имя: slug-N.jpg
         const newFileName = `${updateData.slug}-${existingImagesCount + index}${extension}`;
 
         const oldPath = file.path;
         const newPath = path.join(path.dirname(oldPath), newFileName);
 
-        // Физически переименовываем файл на диске
+        //Физически переименовываем файл на диске
         if (fs.existsSync(oldPath)) {
           fs.renameSync(oldPath, newPath);
         }
 
         return {
-          url: newFileName, // В базу пишем красивое имя
+          url: newFileName,
           isMain: false,
         };
       });
@@ -414,7 +401,7 @@ export class AdminController {
         include: { images: true },
       });
 
-      //СИНХРОНИЗАЦИЯ: Обновляем данные в Elastic
+      //Обновляем данные в Elastic:
       await searchService.indexMotorcycle(id);
       res.json(motorcycle);
     } catch (error) {
@@ -432,7 +419,7 @@ export class AdminController {
       const { id } = req.params;
       await prisma.motorcycle.delete({ where: { id } });
 
-      //СИНХРОНИЗАЦИЯ: Удаляем из Elastic
+      //Удаляем из Elastic
       await searchService.deleteFromIndex(id);
       res.json({ message: "Мотоцикл удален" });
     } catch (error) {
@@ -440,10 +427,10 @@ export class AdminController {
     }
   }
   //---------------------Работа с остатками:-------------
-  // 1. Получение всех остатков
+  //Получение всех остатков
   static async getStocks(req: Request, res: Response, next: NextFunction) {
     try {
-      const { motoId } = req.query; // Получаем ID из query-параметра
+      const { motoId } = req.query;
 
       const stocks = await prisma.stock.findMany({
         where: {
@@ -462,7 +449,7 @@ export class AdminController {
     }
   }
 
-  // 2. Быстрое обновление количества
+  //Обновление остатков:
   static async updateStock(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -498,7 +485,7 @@ export class AdminController {
       const { page = 1, limit = 10, status, email } = req.query;
       const skip = (Number(page) - 1) * Number(limit);
 
-      // 🎯 Формируем фильтры
+      //Формируем фильтры:
       const where: any = {};
       if (status) where.status = status;
       if (email) {
@@ -606,9 +593,9 @@ export class AdminController {
     try {
       const { id } = req.params;
       const { role } = req.body;
-      const adminId = (req as any).user.id; // ID текущего админа из мидлвара
+      const adminId = (req as any).user.id; //ID текущего админа из мидлвара
 
-      // 🎯 Защита: нельзя менять роль самому себе
+      //Защита - нельзя менять роль самому себе
       if (id === adminId) {
         return res
           .status(403)
@@ -651,16 +638,13 @@ export class AdminController {
     next: NextFunction,
   ) {
     try {
-      // 1. Очищаем индекс в Elasticsearch
-
-      //Используем адрес  контейнера Elasticsearch
+      //Очищаем индекс в Elasticsearch
       const esUrl = process.env.ELASTICSEARCH_URL || "http://localhost:9200";
       await fetch(`${esUrl}/motorcycles`, {
         method: "DELETE",
       });
 
-      // 2. Вызываем твою существующую логику пересоздания индекса и заливки данных
-      // Предположим, твой метод sync-search вызывает searchService.reindexAll()
+      //Вызываем  логику пересоздания индекса и заливки данных
       await searchService.syncAllMotorcycles();
 
       res.json({ message: "Глобальная синхронизация успешно завершена" });
@@ -802,7 +786,7 @@ export class AdminController {
         where: { id },
         data: {
           answer,
-          status: "RESOLVED", // Переводим в RESOLVED по твоей схеме
+          status: "RESOLVED",
           answeredAt: new Date(),
           updatedAt: new Date(),
         },
@@ -915,7 +899,7 @@ export class AdminController {
       const updatedNews = await NewsModel.findByIdAndUpdate(
         id,
         { status },
-        { new: true }, // Возвращаем обновленный документ
+        { new: true }, //Возвращаем обновленный документ
       );
 
       if (!updatedNews) {

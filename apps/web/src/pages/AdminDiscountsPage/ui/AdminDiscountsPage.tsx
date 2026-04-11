@@ -43,7 +43,7 @@ export const AdminDiscountsPage = () => {
             setTimeout(() => {
                 queryClient.invalidateQueries({ queryKey: ['admin-promos'] });
                 queryClient.invalidateQueries({ queryKey: ['admin-personal'] });
-            }, 2000); // Даем время воркерам отработать
+            }, 2000); //Даем время воркерам отработать
         }
     });
 
@@ -86,7 +86,7 @@ export const AdminDiscountsPage = () => {
                             <FaUserTag /> <h4>Персональные скидки</h4>
                         </div>
 
-                        {/*Инпут поиска по Email */}
+                        {/*Инпут поиска по Email:*/}
                         <input
                             type="text"
                             placeholder="🔍 Найти по email клиента..."

@@ -28,7 +28,7 @@ export const getUserColumns = (
                 return (
                     <select
                         value={String(getValue())}
-                        disabled={isSelf} // 🎯 Блокируем выбор для себя
+                        disabled={isSelf} //Блокируем выбор для себя
                         style={{ opacity: isSelf ? 0.5 : 1 }}
                         onChange={(e) => onRoleChange(userId, e.target.value)}
                     >

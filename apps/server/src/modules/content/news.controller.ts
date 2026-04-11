@@ -10,8 +10,8 @@ export class NewsController {
   ) {
     try {
       const news = await NewsModel.find({ status: "PUBLISHED" })
-        .sort({ createdAt: -1 }) // Сначала свежие
-        .select("-content"); // 🎯 Оптимизация: для списка не тянем тяжелый массив блоков
+        .sort({ createdAt: -1 }) //Сначала свежие
+        .select("-content"); //Оптимизация: для списка не тянем тяжелый массив блоков
 
       res.json(news);
     } catch (e) {

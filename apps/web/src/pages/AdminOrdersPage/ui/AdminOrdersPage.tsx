@@ -5,12 +5,14 @@ import { $api } from '@/shared/api/api';
 import { DataTable } from '@/shared/ui/DataTable/DataTable';
 import { getOrderColumns } from '../model/columns';
 import toast from 'react-hot-toast';
+import { useProfile } from '@/features/auth/model/useProfile';
 
 export const AdminOrdersPage = () => {
     const [page, setPage] = useState(1);
     const [status, setStatus] = useState('');
     const [email, setEmail] = useState('');
     const queryClient = useQueryClient();
+    const { user } = useProfile();
 
     const { data, isLoading } = useQuery({
         queryKey: ['admin-orders', page, status, email],
@@ -25,7 +27,10 @@ export const AdminOrdersPage = () => {
         }
     });
 
-    const columns = getOrderColumns((id, newStatus) => statusMutation.mutate({ id, status: newStatus }));
+    const columns = getOrderColumns(
+        (id, status) => statusMutation.mutate({ id, status }),
+        user?.role
+    );
 
 
     return (

@@ -31,7 +31,7 @@ export const NewsModal = ({ news, onClose, onSubmit }: any) => {
         formData.append('title', data.title);
         formData.append('excerpt', data.excerpt);
         formData.append('status', data.status);
-        formData.append('content', JSON.stringify(blocks)); // 🎯 Массив блоков в JSON
+        formData.append('content', JSON.stringify(blocks)); //Массив блоков в JSON
         if (mainImage) formData.append('mainImage', mainImage);
 
         onSubmit(formData);

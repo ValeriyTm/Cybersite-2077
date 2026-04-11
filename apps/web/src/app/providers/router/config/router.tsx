@@ -128,11 +128,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/payment/success",
-        element: <PaymentSuccess />, //Страница с промокодами
+        element: <PaymentSuccess />, //Страница успешной оплаты (пока не используется)
       },
       {
         path: "/payment/fail",
-        element: <PaymentFail />, //Страница с промокодами
+        element: <PaymentFail />, //Страница неудачной оплаты (пока не используется)
       },
       {
         path: "/news",
@@ -149,18 +149,18 @@ export const router = createBrowserRouter([
       },
       {
         path: "/support",
-        element: <SupportPage />, //Страница с промокодами
+        element: <SupportPage />, //Страница поддержки
       },
       {
         path: "/support/tickets",
-        element: <UserTicketsPage />, //Страница с промокодами
+        element: <UserTicketsPage />, //Страница с пользовательскими вопросами
       },
       {
         path: "/admin",
         element: <AdminRoute />,
         children: [
           {
-            path: "", // Базовый путь /admin
+            path: "", // Базовый путь 
             element: <AdminLayout />, // Если права есть — показываем сайдбар
             children: [
               {

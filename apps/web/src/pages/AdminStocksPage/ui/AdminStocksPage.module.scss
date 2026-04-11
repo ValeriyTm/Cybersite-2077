@@ -13,7 +13,7 @@
   }
 }
 
-// Модальное окно для быстрого редактирования цифр
+//Модальное окно для быстрого редактирования цифр:
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -64,7 +64,7 @@
       box-shadow: 0 0 10px rgba(243, 156, 18, 0.2);
     }
 
-    // Убираем стрелочки у input type="number"
+    //Убираем стрелочки у input type="number":
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -109,15 +109,15 @@
   }
 }
 
-// Статусы наличия для ячеек таблицы
+//Статусы наличия для ячеек таблицы:
 .statusLow {
   color: #e74c3c;
   font-weight: bold;
-} // Критично (<3)
+} //Критично (<2):
 .statusWarning {
   color: #f39c12;
   font-weight: bold;
 } // Мало (<10)
 .statusOk {
   color: #2ecc71;
-} // Достаточно
+} //Достаточно

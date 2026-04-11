@@ -5,18 +5,18 @@
 }
 
 .largeModal {
-  max-width: 1000px !important; // Расширяем модалку
+  max-width: 1000px !important;
   max-height: 90vh;
   overflow-y: auto;
 }
 
 .gridForm {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); // Две колонки
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 
   .fullWidth {
-    grid-column: span 2; // Поля на всю ширину (описание, заголовок секции)
+    grid-column: span 2;
   }
 }
 

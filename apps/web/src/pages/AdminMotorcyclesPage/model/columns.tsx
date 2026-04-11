@@ -83,7 +83,7 @@ export const getMotoColumns = (
             {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
               <FaBox
                 cursor="pointer"
-                color="#3498db" // Синий цвет для отличия от редактирования
+                color="#3498db"
                 title="Управление запасами"
                 onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)}
               />}

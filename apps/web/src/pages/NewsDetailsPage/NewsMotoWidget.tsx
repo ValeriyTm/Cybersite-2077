@@ -19,7 +19,7 @@ export const NewsMotoWidget = ({ motoId }: { motoId: string }) => {
             <p style={{ color: '#f39c12', marginBottom: '15px', fontSize: '0.9rem', fontWeight: 'bold' }}>
                 Упомянутая модель:
             </p>
-            {/* Твоя стандартная карточка */}
+
             <MotorcycleCard data={moto} viewMode="grid" />
         </div>
     );

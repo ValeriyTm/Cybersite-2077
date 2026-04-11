@@ -48,11 +48,11 @@ export const NewsDetailsPage = () => {
                             );
 
                         case 'motorcycle':
-                            // 🎯 ВЫЗЫВАЕМ НАШ НОВЫЙ ВИДЖЕТ
+
                             return <NewsMotoWidget key={index} motoId={block.value} />;
 
                         case 'video':
-                            // Твоя логика с iframe...
+
                             return (
                                 <div key={index} className={styles.videoBlock}>
                                     <iframe src={`https://youtube.com{block.value}`} allowFullScreen></iframe>

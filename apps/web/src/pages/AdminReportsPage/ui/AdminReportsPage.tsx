@@ -9,8 +9,7 @@ export const AdminReportsPage = () => {
         try {
             toast.loading('Подготовка отчета...', { id: 'report' });
 
-            // 1. Делаем запрос через наш инстанс axios ($api)
-            // Указываем responseType: 'blob', чтобы axios не пытался парсить файл как JSON
+            //1) Делаем запрос через наш инстанс axios ($api); указываем responseType: 'blob', чтобы axios не пытался парсить файл как JSON
             const response = await $api.get('/admin/reports/download', {
                 params: { format },
                 responseType: 'blob',
@@ -20,20 +19,20 @@ export const AdminReportsPage = () => {
                 ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 : 'application/pdf';
 
-            // 2. Создаем временную ссылку на полученный двоичный объект (Blob)
+            //2) Создаем временную ссылку на полученный двоичный объект (Blob):
             const url = window.URL.createObjectURL(new Blob([response.data], { type: blobType }));
             const link = document.createElement('a');
             link.href = url;
 
-            // 3. Задаем имя файла (можно динамически с датой)
+            //3) Задаем имя файла:
             const fileName = `sales-report-${new Date().toLocaleDateString()}.${format}`;
             link.setAttribute('download', fileName);
 
-            // 4. Инициируем скачивание
+            //4) Инициируем скачивание:
             document.body.appendChild(link);
             link.click();
 
-            // 5. Чистим за собой
+            //5) Чистим за собой:
             link.parentNode?.removeChild(link);
             window.URL.revokeObjectURL(url);
 
@@ -50,7 +49,7 @@ export const AdminReportsPage = () => {
             <p className={styles.subtitle}>Выберите тип отчета для выгрузки данных за последние 30 дней</p>
 
             <div className={styles.reportsGrid}>
-                {/* КАРТОЧКА EXCEL */}
+                {/*Карточка Excel:*/}
                 <div className={styles.reportCard}>
                     <div className={styles.iconWrapper} style={{ background: '#1d6f42' }}>
                         <FaFileExcel size={40} />
@@ -62,7 +61,7 @@ export const AdminReportsPage = () => {
                     </div>
                 </div>
 
-                {/* КАРТОЧКА PDF */}
+                {/*Карточка PDF:*/}
                 <div className={styles.reportCard}>
                     <div className={styles.iconWrapper} style={{ background: '#c0392b' }}>
                         <FaFilePdf size={40} />

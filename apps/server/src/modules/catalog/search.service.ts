@@ -128,7 +128,7 @@ export class SearchService {
         range: {
           year: {
             gte: minYear || 1900,
-            lte: maxYear || 2100, // 🎯 Теперь "До" работает
+            lte: maxYear || 2100,
           },
         },
       });
@@ -155,7 +155,7 @@ export class SearchService {
         range: {
           displacement: {
             gte: minDisplacement || 0,
-            lte: maxDisplacement || 99999, // 🎯 Теперь "До" работает
+            lte: maxDisplacement || 99999,
           },
         },
       });
@@ -333,7 +333,7 @@ export class SearchService {
   async searchMotorcyclesAdmin(query: string, page: number, limit: number) {
     const result = await esClient.search({
       index: this.indexName,
-      from: (page - 1) * limit, // 🎯 Пропуск записей для пагинации
+      from: (page - 1) * limit, //Пропуск записей для пагинации
       size: limit, //Показываем только 7 лучших совпадений
       query: {
         match_phrase_prefix: {
@@ -352,7 +352,7 @@ export class SearchService {
       total:
         typeof result.hits.total === "number"
           ? result.hits.total
-          : result.hits.total?.value || 0, // 🎯 Получаем общее кол-во совпадений
+          : result.hits.total?.value || 0, //Получаем общее кол-во совпадений
     };
   }
 

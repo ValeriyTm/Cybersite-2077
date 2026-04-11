@@ -1,13 +1,17 @@
-
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
-    //Важно для работы в монорепозитории:
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  //Важно для работы в монорепозитории:
   previewFeatures = ["postgresqlExtensions"]
 }
 
+generator markdown {
+  provider = "prisma-markdown"
+  output   = "./ERD.md"
+}
+
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
   //Включаем поддержку PostGIS:
   extensions = [postgis]
 }
@@ -21,6 +25,7 @@ enum Role {
   ADMIN
   SUPERADMIN
 }
+
 //Роли:
 //-User(по умолч): может покупать, оставлять отзывы, смотреть свои заказы.
 //-Manager: может менять статусы заказов, управлять резервами на Складе (Warehouse), добавлять товары в каталог, отвечать в Support.
@@ -31,60 +36,60 @@ enum Role {
 enum Gender {
   MALE
   FEMALE
-  }
+}
 
 //Модель пользователя (для модуля Identity)
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
-  emailVerified   DateTime? // Для OAuth (Google подтверждает почту)
+  emailVerified DateTime? // Для OAuth (Google подтверждает почту)
   name          String    @unique
-  passwordHash  String    // Храним хеш, а не чистый пароль!
-  
- // Данные профиля (указываются не на этапе регистрации):
-  phone           String?   @unique
-  birthday        DateTime? @db.Date 
-  gender          Gender?
+  passwordHash  String // Храним хеш, а не чистый пароль!
+
+  // Данные профиля (указываются не на этапе регистрации):
+  phone    String?   @unique
+  birthday DateTime? @db.Date
+  gender   Gender?
 
   // Добавляем роль с дефолтным значением
-  role          Role      @default(USER)
+  role Role @default(USER)
 
   //Refresh-токены пользователя (виртуальное поле):
-  tokens          Token[]
+  tokens Token[]
 
   //Активация аккаунта по ссылке:
-  isActivated   Boolean   @default(false)
-  activationToken String?  @unique
+  isActivated     Boolean @default(false)
+  activationToken String? @unique
 
   // Поля для OAuth/OIDC
-  provider      String?   // 'google', 'github' и т.д.
-  providerId    String?   @unique
-  
+  provider   String? // 'google', 'github' и т.д.
+  providerId String? @unique
+
   // Данные профиля
-  avatarUrl     String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   //Для обновления пароля при "Forgot Password":
-  resetPasswordToken  String? @unique
+  resetPasswordToken   String?   @unique
   resetPasswordExpires DateTime?
 
   //Для хранения секретного ключа и статуса 2FA:
-  twoFactorSecret  String?  // Секретный ключ (зашифрованный)
-  is2FAEnabled     Boolean  @default(false)
+  twoFactorSecret String? // Секретный ключ (зашифрованный)
+  is2FAEnabled    Boolean @default(false)
 
   //-------География:
   // Предпочтительная гео-точка для доставки (используется тип Unsupported для PostGIS)
   // Мы сможем работать с ней через сырые запросы Prisma $queryRaw
-  location         Unsupported("geometry(Point, 4326)")? 
-  defaultAddress   String? //Текстовый адрес для отображения на фронтенде
+  location       Unsupported("geometry(Point, 4326)")?
+  defaultAddress String? //Текстовый адрес для отображения на фронтенде
   // Координаты в Float (чтобы Leaflet не занимался парсингом геометрии):
-  defaultLat        Float?
-  defaultLng        Float?
+  defaultLat     Float?
+  defaultLng     Float?
 
   //--------Связи:
-  orders           Order[] // У одного юзера может быть много заказов
-  favorites        Favorite[] //Связь с избранным
+  orders            Order[] // У одного юзера может быть много заказов
+  favorites         Favorite[] //Связь с избранным
   personalDiscounts PersonalDiscount[] //Связь с персональными скидками
   promos            UsedPromo[] //Связь с использованными промокодами
   supports          SupportTicket[] //Связь с обращениями в поддержку
@@ -101,179 +106,177 @@ model Token {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
 
-  @@index([userId])    // Индекс для быстрого поиска всех сессий юзера
+  @@index([userId]) // Индекс для быстрого поиска всех сессий юзера
   @@map("tokens")
 }
 
 //------------Схемы для модуля Catalog:----------
 //Таблица брендов:
 model Brand {
-  id          String       @id @default(uuid())
-  name        String       @unique // "Honda"
-  country     String       // "Japan"
-  slug        String       @unique // "honda" (для URL: /catalog/motorcycles/honda)
-  image       String?
-  
+  id      String  @id @default(uuid())
+  name    String  @unique // "Honda"
+  country String // "Japan"
+  slug    String  @unique // "honda" (для URL: /catalog/motorcycles/honda)
+  image   String?
+
   motorcycles Motorcycle[] // Связь: один бренд -> много мотоциклов
 
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 //Таблица мотоциклов:
 model Motorcycle {
-  id               String           @id @default(uuid())
-  model            String           // "CBR 1000RR Fireblade"
-  slug             String           @unique // "cbr-1000rr-fireblade"
-  
-  brandId          String
-  brand            Brand            @relation(fields: [brandId], references: [id], onDelete: Cascade)
-  category         MotoCategory    // Enum: Sport, Scooter, ...
-  year             Int
-  displacement     Int              //Объем двигателя (см3)
-  power            Float?           //Мощность (л.с.)
-  topSpeed         Int?             //Макс. скорость (км/ч)
-  fuelConsumption  Float?           //Расход топлива (л/100км)
-  
-  engineType       String?          //V4, four-stroke
-  fuelSystem       String?          //Injection. Airbox with front dynamic air intakes. 4 Weber-Marelli 48-mm throttle bodies with 4 injectors and latest generation Ride-by-Wire engine management. Choice of three different engine maps selectable by the rider with bike in motion: T (Track), S (Sport), R 
-  coolingSystem    CoolingType?     //Enum: Liquid, Air, Oil
-  gearbox          GearboxType?     //"6-speed"
-  transmission     TransmissionType?          //"Chain", "Cardan", "Belt"
-  
-  frontTyre        String?          //120/70-ZR17 
-  rearTyre         String?          //200/55-ZR17 
-  frontBrakes      String?          //Double disc. ABS. Ø 330 mm floating double disc with aluminium flange Brembo STYLEMA® 4-piston mono-block radial calipers Radial pump and metal braid brake pipe-
-  rearBrakes       String?          //Single disc. ABS. Brembo Ø 32 mm 2 isolated piston caliper Pump with integrated tank and metal braid pipe
-  
-  colors           String[]         //Массив строк: ['Racing Black', 'Fluo Red', 'Racing White']
-  starter          StarterType?     //Enum: Electric, Kick, Electric & kick
-  comments         String?          @db.Text
-  
-  rating           Float            @default(0) //Рейтинг 0-5
-  price            Int              //Цена в рублях
+  id    String @id @default(uuid())
+  model String // "CBR 1000RR Fireblade"
+  slug  String @unique // "cbr-1000rr-fireblade"
+
+  brandId         String
+  brand           Brand        @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  category        MotoCategory // Enum: Sport, Scooter, ...
+  year            Int
+  displacement    Int //Объем двигателя (см3)
+  power           Float? //Мощность (л.с.)
+  topSpeed        Int? //Макс. скорость (км/ч)
+  fuelConsumption Float? //Расход топлива (л/100км)
+
+  engineType    String? //V4, four-stroke
+  fuelSystem    String? //Injection. Airbox with front dynamic air intakes. 4 Weber-Marelli 48-mm throttle bodies with 4 injectors and latest generation Ride-by-Wire engine management. Choice of three different engine maps selectable by the rider with bike in motion: T (Track), S (Sport), R 
+  coolingSystem CoolingType? //Enum: Liquid, Air, Oil
+  gearbox       GearboxType? //"6-speed"
+  transmission  TransmissionType? //"Chain", "Cardan", "Belt"
+
+  frontTyre   String? //120/70-ZR17 
+  rearTyre    String? //200/55-ZR17 
+  frontBrakes String? //Double disc. ABS. Ø 330 mm floating double disc with aluminium flange Brembo STYLEMA® 4-piston mono-block radial calipers Radial pump and metal braid brake pipe-
+  rearBrakes  String? //Single disc. ABS. Brembo Ø 32 mm 2 isolated piston caliper Pump with integrated tank and metal braid pipe
+
+  colors   String[] //Массив строк: ['Racing Black', 'Fluo Red', 'Racing White']
+  starter  StarterType? //Enum: Electric, Kick, Electric & kick
+  comments String?      @db.Text
+
+  rating Float @default(0) //Рейтинг 0-5
+  price  Int //Цена в рублях
 
   // Ссылка на глобальную категорию (Мотоциклы)
-  siteCategoryId   String
-  siteCategory     SiteCategory       @relation(fields: [siteCategoryId], references: [id])
+  siteCategoryId String
+  siteCategory   SiteCategory @relation(fields: [siteCategoryId], references: [id])
 
   //Связи:
   images            ProductImage[] // Список всех картинок этого мотоцикла
   personalDiscounts PersonalDiscount[] //Связь с персональными скидками
-  
-  //Связь с остатками на разных складах:
-  stocks           Stock[]     
-  //Связь с зазаками:
-  orderItems       OrderItem[]
-  //Связь с "избранным":
-  favoritedBy      Favorite[] 
 
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  //Связь с остатками на разных складах:
+  stocks      Stock[]
+  //Связь с зазаками:
+  orderItems  OrderItem[]
+  //Связь с "избранным":
+  favoritedBy Favorite[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 //Таблица категорий:
 model SiteCategory {
-  id          String       @id @default(uuid())
-  name        String       @unique // "Мотоциклы"
-  slug        String       @unique // "motorcycles"
-  imageUrl    String?      // Картинка для главной карточки категории
-  description String?      @db.Text
+  id          String  @id @default(uuid())
+  name        String  @unique // "Мотоциклы"
+  slug        String  @unique // "motorcycles"
+  imageUrl    String? // Картинка для главной карточки категории
+  description String? @db.Text
 
   // Связь с мотоциклами
   motorcycles Motorcycle[]
 
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
 
 //Таблица изображений:
 model ProductImage {
-  id           String     @id @default(uuid())
-  url          String     //Путь к файлу (на самом деле выглядит как "yamaha2009.png")
-  isMain       Boolean    @default(false) // Главное фото для превью
-  
+  id     String  @id @default(uuid())
+  url    String //Путь к файлу (на самом деле выглядит как "yamaha2009.png")
+  isMain Boolean @default(false) // Главное фото для превью
+
   motorcycleId String
   motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime   @default(now())
+  createdAt DateTime @default(now())
 }
 
 //Перечисления для типизации:
 enum MotoCategory {
-  ALLROUND            @map("Allround")
-  ATV                 @map("ATV")
-  CLASSIC             @map("Classic")
-  CROSS_MOTOCROSS     @map("Cross / motocross")
-  CUSTOM_CRUISER      @map("Custom / cruiser")
-  ENDURO_OFFROAD      @map("Enduro / offroad")
-  MINIBIKE_CROSS      @map("Minibike, cross")
-  MINIBIKE_SPORT      @map("Minibike, sport")
-  NAKED_BIKE          @map("Naked bike")
-  PROTOTYPE_CONCEPT   @map("Prototype / concept model")
-  SCOOTER             @map("Scooter")
-  SPEEDWAY            @map("Speedway")
-  SPORT               @map("Sport")
-  SPORT_TOURING       @map("Sport touring")
-  SUPER_MOTARD        @map("Super motard")
-  TOURING             @map("Touring")
-  TRIAL               @map("Trial")
-  UNSPECIFIED         @map("Unspecified category")
+  ALLROUND          @map("Allround")
+  ATV               @map("ATV")
+  CLASSIC           @map("Classic")
+  CROSS_MOTOCROSS   @map("Cross / motocross")
+  CUSTOM_CRUISER    @map("Custom / cruiser")
+  ENDURO_OFFROAD    @map("Enduro / offroad")
+  MINIBIKE_CROSS    @map("Minibike, cross")
+  MINIBIKE_SPORT    @map("Minibike, sport")
+  NAKED_BIKE        @map("Naked bike")
+  PROTOTYPE_CONCEPT @map("Prototype / concept model")
+  SCOOTER           @map("Scooter")
+  SPEEDWAY          @map("Speedway")
+  SPORT             @map("Sport")
+  SPORT_TOURING     @map("Sport touring")
+  SUPER_MOTARD      @map("Super motard")
+  TOURING           @map("Touring")
+  TRIAL             @map("Trial")
+  UNSPECIFIED       @map("Unspecified category")
 }
 
 enum CoolingType {
-  AIR                 @map("Air")
-  LIQUID              @map("Liquid")
-  OIL_AIR             @map("Oil & air")
+  AIR     @map("Air")
+  LIQUID  @map("Liquid")
+  OIL_AIR @map("Oil & air")
 }
 
 enum GearboxType {
-  SPEED1              @map("1-speed")
-  SPEED2              @map("2-speed")
-  SPEED2AUTOMATIC     @map("2-speed automatic")
-  SPEED3              @map("3-speed")
-  SPEED3AUTOMATIC     @map("3-speed automatic")
-  SPEED4              @map("4-speed")
-  SPEED4WITHREVERSE   @map("4-speed with reverse")
-  SPEED5              @map("5-speed")
-  SPEED5WITHREVERSE   @map("5-speed with reverse")
-  SPEED6              @map("6-speed")
-  SPEED6WITHREVERSE   @map("6-speed with reverse")
-  SPEED7              @map("7-speed")
-  SPEED8              @map("8-speed")
-  AUTOMATIC           @map("Automatic")
+  SPEED1            @map("1-speed")
+  SPEED2            @map("2-speed")
+  SPEED2AUTOMATIC   @map("2-speed automatic")
+  SPEED3            @map("3-speed")
+  SPEED3AUTOMATIC   @map("3-speed automatic")
+  SPEED4            @map("4-speed")
+  SPEED4WITHREVERSE @map("4-speed with reverse")
+  SPEED5            @map("5-speed")
+  SPEED5WITHREVERSE @map("5-speed with reverse")
+  SPEED6            @map("6-speed")
+  SPEED6WITHREVERSE @map("6-speed with reverse")
+  SPEED7            @map("7-speed")
+  SPEED8            @map("8-speed")
+  AUTOMATIC         @map("Automatic")
 }
 
 enum TransmissionType {
-  BELT                @map("Belt")
-  CHAIN               @map("Chain")
-  CARDAN              @map("Cardan")
+  BELT   @map("Belt")
+  CHAIN  @map("Chain")
+  CARDAN @map("Cardan")
 }
 
 enum StarterType {
-  ELECTRIC            @map("Electric")
-  ELECTRIC_KICK       @map("Electric & kick")
-  KICK                @map("Kick")
+  ELECTRIC      @map("Electric")
+  ELECTRIC_KICK @map("Electric & kick")
+  KICK          @map("Kick")
 }
 
 //------------Схемы для модуля Trading:----------
 //Модель для "избранного":
 model Favorite {
-  id           String     @id @default(uuid())
-  
+  id String @id @default(uuid())
+
   //Связь с юзером:
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
   //Связь с мотоциклом:
   motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
   motorcycleId String
-  
-  createdAt    DateTime   @default(now())
+
+  createdAt DateTime @default(now())
 
   @@unique([userId, motorcycleId]) //Гарантируем, что юзер не добавит в избранное один и тот же товар дважды
-  
   //Индексы для быстрой выборки:
   @@index([userId])
   @@index([motorcycleId])
@@ -282,137 +285,136 @@ model Favorite {
 //------------Схемы для модуля Warehouse:----------
 //Модель для склада:
 model Warehouse {
-  id        String   @id @default(uuid())
-  name      String   @unique 
-  city      String
-  
-  //Координаты для Leaflet и PostGIS:
-  lat       Float
-  lng       Float
+  id   String @id @default(uuid())
+  name String @unique
+  city String
 
-  stocks    Stock[] // Остатки товара на складах
-  orders    Order[] // Заказы, которые едут именно с этого склада
+  //Координаты для Leaflet и PostGIS:
+  lat Float
+  lng Float
+
+  stocks Stock[] // Остатки товара на складах
+  orders Order[] // Заказы, которые едут именно с этого склада
 }
 
 //Остатки товаров и резерв:
 model Stock {
-  id           String     @id @default(uuid())
-  
+  id String @id @default(uuid())
+
   motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
   motorcycleId String
 
-  warehouse    Warehouse  @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  warehouseId  String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId String
 
-  quantity     Int        @default(0) // Физическое наличие на полке
-  reserved     Int        @default(0) // Забронировано (в ожидании оплаты)
+  quantity Int @default(0) // Физическое наличие на полке
+  reserved Int @default(0) // Забронировано (в ожидании оплаты)
 
   @@unique([motorcycleId, warehouseId])
   @@index([warehouseId])
 }
+
 //------------Схемы для модуля Ordering:----------
 //Статус заказа:
 enum OrderStatus {
-  PENDING   //Создан, товар зарезервирован (на 1 час)
-  PAID      //Оплачен, резерв списан в физический расход
-  CANCELED  //Отменен (время вышло или отказ юзера), резерв возвращен
-  DELIVERY  //Передан в службу доставки
+  PENDING //Создан, товар зарезервирован (на 1 час)
+  PAID //Оплачен, резерв списан в физический расход
+  CANCELED //Отменен (время вышло или отказ юзера), резерв возвращен
+  DELIVERY //Передан в службу доставки
   DELIVERED //Доставлен
   COMPLETED //Подтверждено получение юзером
 }
 
 //Заказы:
 model Order {
-  id              String      @id @default(uuid())
-  orderNumber     Int         @unique @default(autoincrement())
-  user            User        @relation(fields: [userId], references: [id])
-  userId          String
-  
-  status          OrderStatus @default(PENDING)
-  
-  // Данные доставки (snapshot из геокодера)
-  address         String      
-  deliveryLat     Float
-  deliveryLng     Float
-  distance        Float       // Расстояние от склада до юзера (км)
-  deliveryCost    Float       // Стоимость (10р * км)
-  estimatedDate   DateTime    // Рассчитанная дата прибытия
-  
-  totalPrice      Float       // Сумма товаров + доставка
-  
-  // Данные о платежах:
-  paymentId     String?   @unique //ID транзакции в системе ЮKassa (напр. "24b1...")
-  paymentStatus String?   @default("pending") //pending, succeeded, canceled
-  paymentUrl    String?   //Ссылка на оплату (на случай, если юзер закроет вкладку и захочет оплатить позже)
+  id          String @id @default(uuid())
+  orderNumber Int    @unique @default(autoincrement())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String
 
+  status OrderStatus @default(PENDING)
+
+  // Данные доставки (snapshot из геокодера)
+  address       String
+  deliveryLat   Float
+  deliveryLng   Float
+  distance      Float // Расстояние от склада до юзера (км)
+  deliveryCost  Float // Стоимость (10р * км)
+  estimatedDate DateTime // Рассчитанная дата прибытия
+
+  totalPrice Float // Сумма товаров + доставка
+
+  // Данные о платежах:
+  paymentId     String? @unique //ID транзакции в системе ЮKassa (напр. "24b1...")
+  paymentStatus String? @default("pending") //pending, succeeded, canceled
+  paymentUrl    String? //Ссылка на оплату (на случай, если юзер закроет вкладку и захочет оплатить позже)
 
   // Связь со складом отгрузки (который определил сервер)
-  warehouse       Warehouse   @relation(fields: [warehouseId], references: [id])
-  warehouseId     String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  warehouseId String
 
-  items           OrderItem[]
+  items OrderItem[]
 
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 //Товары в конкретном заказе:
 model OrderItem {
-  id           String     @id @default(uuid())
-  order        Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId      String
-  
+  id      String @id @default(uuid())
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId String
+
   motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id])
   motorcycleId String
-  
+
   quantity     Int
-  priceAtOrder Float      //Фиксируем цену на момент создания заказа
+  priceAtOrder Float //Фиксируем цену на момент создания заказа
 }
 
 //------------Схемы для модуля Discount:----------
 //Персональные скидки:
 model PersonalDiscount {
-  id           String     @id @default(uuid())
-  userId       String
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   motorcycleId String
   motorcycle   Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
-  
-  discountPercent Int     @default(20) // Фиксируем 20% 
-  
-  createdAt    DateTime   @default(now())
-  expiresAt    DateTime   // Дата истечения (через неделю после создания)
+
+  discountPercent Int @default(20) // Фиксируем 20% 
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime // Дата истечения (через неделю после создания)
 
   @@unique([userId, motorcycleId]) //Защита от дублей скидок на один и тот же байк
 }
 
-
 //Промокоды:
 model PromoCode {
-  id             String   @id @default(uuid())
-  code           String   @unique //Случайно сгенерированное слово 
-  discountAmount Int      //Сумма скидки в рублях 
-  
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  expiresAt      DateTime //Истекает через неделю
-  
+  id             String @id @default(uuid())
+  code           String @unique //Случайно сгенерированное слово 
+  discountAmount Int //Сумма скидки в рублях 
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  expiresAt DateTime //Истекает через неделю
+
   //Связи:
-  usedPromos     UsedPromo[] //Использованные юзерами промокоды
+  usedPromos UsedPromo[] //Использованные юзерами промокоды
 
   //Поле для отслеживания использования:
-  usedCount      Int      @default(0)
+  usedCount Int @default(0)
 }
 
 //Использованные промокоды (связывает юзера и использованные промокоды):
 model UsedPromo {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
   promoCodeId String
   promoCode   PromoCode @relation(fields: [promoCodeId], references: [id])
-  usedAt      DateTime @default(now())
+  usedAt      DateTime  @default(now())
 
   @@unique([userId, promoCodeId]) //юзер + код - это уникальная пара
 }
@@ -420,62 +422,62 @@ model UsedPromo {
 //------------Схемы для модуля Support:----------
 //Запрос:
 model SupportTicket {
-  id              String         @id @default(uuid())
-  
+  id String @id @default(uuid())
+
   // Связь с юзером (опционально, так как форма открытая)
-  userId          String?
-  user            User?          @relation(fields: [userId], references: [id])
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 
   // Контактные данные из формы
-  lastName        String
-  firstName       String
-  email           String
-  phone           String?
+  lastName  String
+  firstName String
+  email     String
+  phone     String?
 
   // Суть вопроса
-  category        TicketCategory
-  description     String         @db.Text // Используем Text для длинных описаний
-  
+  category    TicketCategory
+  description String         @db.Text // Используем Text для длинных описаний
+
   // Статус и служебная инфа
-  status          TicketStatus   @default(OPEN)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   //Ответ от поддержки:
-  answer      String?  @db.Text //Поле для ответа саппорта
-  answeredAt  DateTime?         //Дата ответа
+  answer     String?   @db.Text //Поле для ответа саппорта
+  answeredAt DateTime? //Дата ответа
 
   // Прикрепленные файлы
-  attachments     SupportAttachment[]
+  attachments SupportAttachment[]
 
   @@map("support_tickets")
 }
 
 //Схема для файлов:
 model SupportAttachment {
-  id              String        @id @default(uuid())
-  ticketId        String
-  ticket          SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  
-  fileUrl         String        // Путь к файлу в папке /uploads/support
-  fileType        String        // Например: application/pdf, image/jpeg, text/plain
-  originalName    String        // Исходное имя файла для удобства админа
-  size            Int?          // Размер файла в байтах 
+  id       String        @id @default(uuid())
+  ticketId String
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  fileUrl      String // Путь к файлу в папке /uploads/support
+  fileType     String // Например: application/pdf, image/jpeg, text/plain
+  originalName String // Исходное имя файла для удобства админа
+  size         Int? // Размер файла в байтах 
 
   @@map("support_attachments")
 }
 
 enum TicketCategory {
-  TECHNICAL     //Техническая ошибка
-  ORDER         //Вопрос по заказу
-  COOPERATION   //Сотрудничество
-  COMPLAINT     //Жалоба
-  OTHER         //Другое
+  TECHNICAL //Техническая ошибка
+  ORDER //Вопрос по заказу
+  COOPERATION //Сотрудничество
+  COMPLAINT //Жалоба
+  OTHER //Другое
 }
 
 enum TicketStatus {
-  OPEN          //Новый
-  IN_PROGRESS   //В работе
-  RESOLVED      //Решен
-  CLOSED        //Закрыт без решения
+  OPEN //Новый
+  IN_PROGRESS //В работе
+  RESOLVED //Решен
+  CLOSED //Закрыт без решения
 }

@@ -1,6 +1,53 @@
 # Cybersite-2077
-
 ![Логотип приложения](MainLogo.png)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![GitHub release](https://img.shields.io/github/v/release/ValeriyTm/Cybersite-2077)
+<!-- ![Version](https://img.shields.io/badge/version-1.9.1-6E9F18) -->
+<!-- ![Lines](https://img.shields.io/badge/lines-число-blue) -->
+
+#### Frontend
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white) 
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?logo=reactrouter&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-000000)
+![React Query](https://img.shields.io/badge/React_Query-FF4154?logo=reactquery&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4)
+![Sass](https://img.shields.io/badge/Sass-CC6699?logo=sass&logoColor=white)
+![PostCSS](https://img.shields.io/badge/PostCSS-DD3A0A?logo=postcss&logoColor=white)
+![Stylelint](https://img.shields.io/badge/Stylelint-263238?logo=stylelint&logoColor=white)
+#### Backend
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white) 
+![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Docker-336791?logo=postgresql&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-Docker-DC382D?logo=redis&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Docker-47A248?logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-ODM-880000?logo=mongoose&logoColor=white)
+![BullMQ](https://img.shields.io/badge/BullMQ-Queue-EA4AAA)
+![Elasticsearch](https://img.shields.io/badge/Elasticsearch-Docker-005571?logo=elasticsearch&logoColor=white)
+#### Testing
+![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)
+![React Testing Library](https://img.shields.io/badge/RTL-Testing-E33332?logo=testinglibrary&logoColor=white)
+![Storybook](https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white)
+![Chromatic](https://img.shields.io/badge/Chromatic-FF5D5B)
+![Cypress](https://img.shields.io/badge/Cypress-17202C?logo=cypress&logoColor=white)
+#### Tooling
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=black)
+![Zod](https://img.shields.io/badge/Zod-3E67B1)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?logo=openapiinitiative&logoColor=white)
+![Turborepo](https://img.shields.io/badge/Turborepo-000000?logo=turborepo&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
+#### DevOps
+![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-Docker-009639?logo=nginx&logoColor=white)
+![Ansible](https://img.shields.io/badge/Ansible-EE0000?logo=ansible&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-Docker-E6522C?logo=prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-Docker-F46800?logo=grafana&logoColor=white)
+![Grafana Loki](https://img.shields.io/badge/Loki-Docker-F46800?logo=grafana&logoColor=white)
+![Grafana Tempo](https://img.shields.io/badge/Tempo-Docker-F46800?logo=grafana&logoColor=white)
+
 
 Read this in other languages:
 
@@ -344,6 +391,83 @@ stateDiagram-v2
 - Реализована автоматизация через BullMQ (Cron) - каждое утро ТГ-бот присылает краткий текстовый дайджест, а каждый понедельник генерирует и присылает полные файлы (Excel + PDF) за неделю.
 - Для ТГ-бота написаны команды, позволяющие мгновенно получить статистику на данный момент (только в pdf или же в обоих форматах) прямо в мессенджер.
 
+---
+
+### Admin Module
+
+**Функционал и подробности реализации:**
+
+- Написана кастомная админ-панель, включающая разделы для: работы с каталогом (бренды, товары, остатки на складах), работы с заказами, работы с вопросами пользователей, работы со скидками и промокодами, работы с контентом приложения (новости), работы с отчетами, управления доступом. Разделы работы с данными поддерживают основные CRUD-операции.
+- Все разделы админ-панели ограничены как визуально (на фронтенде), так и авторизацией на сервере в соответствии с моделью управления доступом RBAC (Role-Based Access Control).
+
+- Матрица прав доступа (RBAC) для админ-панели:
+
+| Категория | Раздел | CONTENT_EDITOR | MANAGER | ADMIN | SUPERADMIN |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Каталог** | Бренды | ❌ | Просмотр, изм., уд. | Просмотр, изм., уд. | Просмотр, изм., уд. |
+| | Мотоциклы | Просмотр | Просмотр, изм., уд. | Просмотр, изм., уд. | Просмотр, изм., уд. |
+| | Склады и наличие | ❌ | Просмотр, изм. кол-ва, уд. | Просмотр, изм. кол-ва, уд. | Просмотр, изм. кол-ва, уд. |
+| **Заказы** | Все заказы | ❌ | Просмотр | Просмотр, изм. статуса | Просмотр, изм. статуса |
+| **Поддержка** | Тикеты саппорта | ❌ | Просмотр, ответ, изм. статуса | Просмотр, ответ, изм. статуса | Просмотр, ответ, изм. статуса |
+| **Маркетинг** | Скидки | ❌ | Просмотр | Просмотр, генерация | Просмотр, генерация |
+| | Отчеты | ❌ | Генерация | Генерация | Генерация |
+| **Техническое обслуживание** | Техническое обслуживание | ❌ | ❌ | Запуск синхронизации | Запуск синхронизации |
+| **Контент** | Новости | Создание, изм., уд. | ❌ | Создание, изм., уд. | Создание, изм., уд. |
+| **Доступ** | Пользователи | ❌ | ❌ | ❌ | Просмотр, изм. роли, уд. |
+
+- На вкладках разделов, предполагающих работу с большим количество имнформации, реализована пагинация и фильтрация / поиск.
+- Изменение данных каталога в админ-панели сопровождается синхронизацией данных в Elasticsearch, что позволяет получать актуальные данные сразу после их правки.
+
+---
+
+### Content Module
+
+**Функционал и подробности реализации:**
+
+- Для создания новостей используется соответствующий раздел админ-панели, предлагающий кастомный конструктор, позволяющий загружать изображения, писать текст, указывать id-мотоциклов (на их основе подтягиваются карточки товара с изображениями, актуальными ценами, характеристиками и т.п.) в различных комбинациях.
+- Для хранения созданных новостей используется MongoDB + Mongoose. Выбор БД обусловлен хаотичной структурой генерируемой информации за счёт использования кастомного конструктора.
+- Создаваемые пользователем с соответствующей ролью новости имеют статусы, что позволяет их писать без мгновенной публикации. Опубликованные новости доступны на соотвествующей вкладке приложения (в компоненте Header).
+- Над новостями можно проделывать стандартные CRUD-операции, что позволяет актуализировать информацию.
+
+## Database Architecture (Архитектура SQL-БД)
+Система построена на базе PostgreSQL с использованием Prisma ORM. Архитектура разделена на независимые модули. Используются PostgreSQL для транзакционных данных и PostGIS для работы с геолокацией.
+
+- [Схемы таблиц PostgreSQL](./packages/database/prisma/ERD.md)
+
+### Identity Module
+- User: Центральная таблица. Поддерживает RBAC (5 ролей), OAuth (Google), 2FA, а также хранит географические координаты пользователя (PostGIS) для расчета доставки по умолчанию.
+- Token: Хранилище Refresh-токенов для управления активными сессиями.
+
+### Catalog Module
+- Brand: Бренды с привязкой к странам и логотипам.
+- Motorcycle: Основная модель с 20+ техническими параметрами (двигатель, трансмиссия, шины, тип охлаждения).
+- SiteCategory: Глобальные категории для навигации на сайте.
+- ProductImage: Галерея изображений (с пометкой главного фото isMain).
+
+### Trading Module
+
+- Favorite: Список товаров с привязкой к юзерам, пометившим этот товар как "избранный".
+
+### Warehouse Module
+
+- Warehouse: Склады с точными координатами для работы с картами.
+- Stock: Таблица остатков. Реализует логику двойного списания: quantity (физический остаток) и reserved (бронь под неоплаченные заказы).
+
+### Ordering Module
+
+- Order: Финансовый документ заказа. Фиксирует стоимость доставки по тарифу, расстояние, статус оплаты (ЮKassa) и расчетную дату прибытия.
+- OrderItem: Состав заказа - позиции, количество, цена товара на момент покупки.
+
+### Discount Module
+
+- PersonalDiscount: Индивидуальные предложения (20%) на конкретные модели с ограниченным сроком действия (3 дней).
+- PromoCode: Глобальные промокоды на фиксированную сумму.
+- UsedPromo: Журнал использованных кодов для защиты от повторного применения одним пользователем.
+
+### Support Module
+
+- SupportTicket: Тикетная система. Поддерживает анонимные запросы и обращения авторизованных пользователей.
+- SupportAttachment: Хранилище метаданных прикрепленных файлов (логи, изображения).
 
 ## ⚙️ Getting Started (Запуск проекта)
 

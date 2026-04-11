@@ -10,7 +10,7 @@ import { DataTable } from "@/shared/ui/DataTable/DataTable";
 export const AdminUsersPage = () => {
     const [role, setRole] = useState('');
     const [email, setEmail] = useState('');
-    const { user: currentUser } = useProfile(); // Твой стор для получения ID текущего админа
+    const { user: currentUser } = useProfile();
     const queryClient = useQueryClient();
 
     const { data } = useQuery({
@@ -39,7 +39,7 @@ export const AdminUsersPage = () => {
     const columns = getUserColumns(
         currentUser?.id,
         (id, role) => roleMutation.mutate({ id, role }),
-        (id) => deleteMutation.mutate(id) // 🎯 Передаем функцию удаления
+        (id) => deleteMutation.mutate(id)
     );
 
 

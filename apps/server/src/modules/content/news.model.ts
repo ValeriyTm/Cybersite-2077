@@ -25,7 +25,7 @@ const NewsSchema = new Schema<INews>(
     excerpt: { type: String, required: true },
     content: [
       {
-        _id: false, // Отключаем генерацию ID для каждого блока внутри массива
+        _id: false, //Отключаем генерацию ID для каждого блока внутри массива
         type: {
           type: String,
           enum: ["text", "image", "video", "motorcycle"],

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // 🎯 Добавил useQueryClient
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { $api } from '@/shared/api/api';
 import { DataTable } from '@/shared/ui/DataTable/DataTable';
 import { stockColumns } from '../model/columns';
@@ -52,7 +52,7 @@ export const AdminStocksPage = () => {
 
             <DataTable columns={columns} data={data.data} />
 
-            {/* 🎯 Добавляем модалку, чтобы редактирование заработало */}
+            {/*Добавляем модалку, чтобы редактирование заработало:*/}
             {isModalOpen && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>

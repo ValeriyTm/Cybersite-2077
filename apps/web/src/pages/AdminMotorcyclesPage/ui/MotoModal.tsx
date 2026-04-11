@@ -14,7 +14,7 @@ import { $api } from "@/shared/api/api";
 export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
   const { register, handleSubmit, setValue, watch } = useForm({
     defaultValues: {
-      //   moto: moto || { model: "", brandId: "", price: 0 },
+
       ...moto,
       colors: moto?.colors ? moto.colors.join(", ") : "",
     },
@@ -30,7 +30,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
     moto?.images?.find((img: any) => img.isMain)?.id || null,
   );
 
-  // Если мы редактируем байк, подставим название текущего бренда в инпут поиска
+  //Если мы редактируем байк, подставим название текущего бренда в инпут поиска:
   useEffect(() => {
     if (moto?.brand?.name) setSearchQuery(moto.brand.name);
   }, [moto]);
@@ -52,7 +52,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
   const handleFormSubmit = (data: any) => {
     const formData = new FormData();
 
-    // Добавляем все текстовые поля
+    //Добавляем все текстовые поля:
     Object.keys(data).forEach((key) => {
       if (key === "colors") {
         const colorsArray = data.colors.split(",").map((c: any) => c.trim());
@@ -62,16 +62,16 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
       }
     });
 
-    // 🎯 Отправляем список ID на удаление
+    //Отправляем список ID на удаление:
     deletedImageIds.forEach((id) => formData.append("deletedImageIds[]", id));
 
-    // 🎯 Отправляем ID новой главной картинки
+    //Отправляем ID новой главной картинки:
     if (mainImageId) formData.append("mainImageId", mainImageId);
 
-    // Добавляем новые файлы
+    //Добавляем новые файлы:
     selectedFiles.forEach((file) => formData.append("images", file));
 
-    onSubmit(formData); // Передаем FormData в мутацию
+    onSubmit(formData); //Передаем FormData в мутацию
   };
 
   return (
@@ -83,7 +83,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
           onSubmit={handleSubmit(handleFormSubmit)}
           className={styles.gridForm}
         >
-          {/* БЛОК 1: ОСНОВНОЕ */}
+          {/*Блок 1: Основные данные*/}
           <div className={styles.sectionDivider}>Основные данные</div>
 
           <div className={styles.fieldGroup}>
@@ -111,16 +111,16 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
                 autoComplete="off"
               />
 
-              {/* Выпадающий список результатов */}
+              {/*Выпадающий список результатов:*/}
               {searchResults.length > 0 && (
                 <ul className={styles.dropdown}>
                   {searchResults.map((brand) => (
                     <li
                       key={brand.id}
                       onClick={() => {
-                        setValue("brandId", brand.id); // Записываем UUID в форму
-                        setSearchQuery(brand.name); // Показываем название в инпуте
-                        setSearchResults([]); // Закрываем список
+                        setValue("brandId", brand.id); //Записываем UUID в форму
+                        setSearchQuery(brand.name); //Показываем название в инпуте
+                        setSearchResults([]); //Закрываем список
                       }}
                     >
                       {brand.name}
@@ -129,7 +129,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
                 </ul>
               )}
             </div>
-            {/* Скрытое поле для валидации и отправки */}
+            {/*Скрытое поле для валидации и отправки:*/}
             <input type="hidden" {...register("brandId", { required: true })} />
           </div>
 
@@ -277,7 +277,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             </label>
           </div>
 
-          {/* Скрытое поле для категории сайта (по дефолту "Мотоциклы") */}
+          {/*Скрытое поле для категории сайта (по дефолту "Мотоциклы"):*/}
           <input
             type="hidden"
             {...register("siteCategoryId")}

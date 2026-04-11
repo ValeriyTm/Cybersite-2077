@@ -46,7 +46,12 @@ const ADMIN_MENU = [
     items: [
       { name: "Скидки", link: "/admin/discounts", icon: <FaPercentage />, roles: ["MANAGER", "ADMIN", "SUPERADMIN"], },
       { name: "Отчеты", link: "/admin/reports", icon: <FaFileAlt />, roles: ["MANAGER", "ADMIN", "SUPERADMIN"], },
-      { name: "Статистика", link: "/admin/stats", icon: <FaChartBar />, roles: ["ADMIN", "SUPERADMIN"], },
+    ],
+  },
+  {
+    group: "Техническое обслуживание",
+    items: [
+      { name: "Техническое обслуживание", link: "/admin/stats", icon: <FaChartBar />, roles: ["ADMIN", "SUPERADMIN"], },
     ],
   },
   {

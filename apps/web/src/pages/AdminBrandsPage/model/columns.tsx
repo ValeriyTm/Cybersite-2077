@@ -34,7 +34,7 @@ export const getColumns = (
             cursor="pointer"
             title="Редактировать"
             style={{ color: "#f39c12" }}
-            onClick={() => onEdit(row.original)} // 🎯 Передаем объект бренда целиком
+            onClick={() => onEdit(row.original)}
           />
           <FaTrash
             cursor="pointer"

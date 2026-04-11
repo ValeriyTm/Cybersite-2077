@@ -58,7 +58,7 @@
 .sectionHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between; // Чтобы поиск был справа
+  justify-content: space-between;
   margin-bottom: 20px;
   color: #f1c40f;
 
@@ -81,6 +81,6 @@
   &:focus {
     border-color: #f1c40f;
     outline: none;
-    width: 300px; // Немного расширяем при фокусе
+    width: 300px;
   }
 }

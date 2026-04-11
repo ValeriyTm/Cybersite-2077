@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { $api } from '@/shared/api/api';
 import { DataTable } from '@/shared/ui/DataTable/DataTable';
-import { NewsModal } from './NewsModal'; // Сейчас создадим
+import { NewsModal } from './NewsModal';
 import { newsColumns } from '../model/columns';
 import toast from 'react-hot-toast';
 import styles from './AdminNewsPage.module.scss';
@@ -30,7 +30,7 @@ export const AdminNewsPage = () => {
         onError: () => toast.error('Ошибка при сохранении')
     });
 
-    // 🎯 МУТАЦИЯ для смены статуса
+    //Мутация для смены статуса:
     const statusMutation = useMutation({
         mutationFn: ({ id, status }: { id: string; status: string }) =>
             $api.patch(`/admin/news/${id}/status`, { status }),
@@ -41,11 +41,29 @@ export const AdminNewsPage = () => {
         onError: () => toast.error('Не удалось изменить статус')
     });
 
+    //Мутация для удаления:
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => $api.delete(`/admin/news/${id}`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-news'] });
+            toast.success('Новость успешно удалена');
+        },
+        onError: () => toast.error('Ошибка при удалении новости')
+    });
+
 
     const columns = newsColumns(
-        (item) => { setEditingNews(item); setIsModalOpen(true); },
-        (id) => { /* логика удаления */ },
-        (id, status) => statusMutation.mutate({ id, status }) // <-- Новая функция
+        (item) => {
+            setEditingNews(item);
+            setIsModalOpen(true);
+        },
+        (id) => {
+            //Добавляем подтверждение, чтобы не удалить случайно:
+            if (window.confirm("Вы уверены, что хотите удалить эту новость?")) {
+                deleteMutation.mutate(id);
+            }
+        },
+        (id, status) => statusMutation.mutate({ id, status })
     );
 
     return (
@@ -63,7 +81,6 @@ export const AdminNewsPage = () => {
                 <NewsModal
                     news={editingNews}
                     onClose={() => setIsModalOpen(false)}
-                    // 🎯 ВОТ ЭТОГО ПРОПСА НЕ ХВАТАЛО:
                     onSubmit={(formData: FormData) => saveMutation.mutate(formData)}
                 />
             )}

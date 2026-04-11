@@ -12,19 +12,19 @@ export const AdminTicketsPage = () => {
     const [selectedTicket, setSelectedTicket] = useState<any>(null);
     const [page, setPage] = useState(1);
     const [answer, setAnswer] = useState('');
-    const [emailValue, setEmailValue] = useState(''); // Для мгновенного ввода
-    const [debouncedEmail, setDebouncedEmail] = useState(''); // Для API-запроса
+    const [emailValue, setEmailValue] = useState(''); //Для мгновенного ввода
+    const [debouncedEmail, setDebouncedEmail] = useState(''); //Для API-запроса
     const [statusFilter, setStatusFilter] = useState('');
 
     const queryClient = useQueryClient();
 
-    //Настраиваем задержку поиска
+    //Настраиваем задержку поиска:
     const updateSearch = useMemo(
         () => debounce((val: string) => setDebouncedEmail(val), 500),
         []
     );
 
-    //При смене фильтров сбрасываем страницу на первую
+    //При смене фильтров сбрасываем страницу на первую:
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmailValue(e.target.value);
         updateSearch(e.target.value);
@@ -49,7 +49,7 @@ export const AdminTicketsPage = () => {
         }).then(res => res.data)
     });
 
-    // 2. Мутация изменения статуса (из Select в таблице)
+    //Мутация изменения статуса (из Select в таблице):
     const statusMutation = useMutation({
         mutationFn: ({ id, status }: { id: string; status: string }) =>
             $api.patch(`/admin/tickets/${id}/status`, { status }),
@@ -59,7 +59,7 @@ export const AdminTicketsPage = () => {
         }
     });
 
-    // 3. Мутация отправки ответа
+    //Мутация отправки ответа:
     const replyMutation = useMutation({
         mutationFn: () => $api.patch(`/admin/tickets/${selectedTicket.id}/reply`, { answer }),
         onSuccess: () => {
@@ -71,7 +71,7 @@ export const AdminTicketsPage = () => {
         onError: () => toast.error('Ошибка при отправке ответа')
     });
 
-    // 4. Подготовка колонок
+    //Подготовка колонок:
     const columns = getTicketColumns(
         (id, status) => statusMutation.mutate({ id, status }),
         (ticket) => {
@@ -80,8 +80,6 @@ export const AdminTicketsPage = () => {
     );
 
     const getFileUrl = (rawUrl: string) => {
-        // Убираем "uploads/support/" и заменяем все \\ на /
-        // const fileName = rawUrl.replace(/static[\\/]support[\\/]/, '').replace(/\\/g, '/');
         return `http://localhost:3001/static/support/${rawUrl}`;
     };
 
@@ -94,8 +92,6 @@ export const AdminTicketsPage = () => {
         OTHER: 'Другое'
     };
 
-
-    // if (isLoading) return <div className={styles.loader}>Загрузка тикетов...</div>;
 
     return (
         <div className={styles.pageWrapper}>
@@ -189,7 +185,7 @@ export const AdminTicketsPage = () => {
                                 <p>{selectedTicket.description}</p>
                             </div>
 
-                            {/* БЛОК ВЛОЖЕНИЙ */}
+                            {/*Блок вложений:*/}
                             {selectedTicket.attachments?.length > 0 && (
                                 <div className={styles.attachmentsBlock}>
                                     <strong>Прикрепленные файлы:</strong>

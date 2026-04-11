@@ -43,7 +43,7 @@
   }
 }
 
-// Стили для Select внутри таблицы (используются в columns.tsx)
+//Стили для Select внутри таблицы (используются в columns.tsx)
 .statusSelect {
   background: transparent;
   border: 1px solid #333;
@@ -59,7 +59,7 @@
   }
 }
 
-// МОДАЛЬНОЕ ОКНО
+//Модалка:
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -68,7 +68,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999; // Поверх всего
+  z-index: 9999; //Поверх всего
   padding: 20px;
 }
 
@@ -149,7 +149,7 @@
   }
 }
 
-// БЛОК ВЛОЖЕНИЙ
+//Блок вложений:
 .attachmentsBlock {
   margin-top: 10px;
 
@@ -257,6 +257,6 @@
 
   &:focus {
     border-color: #f39c12;
-    width: 300px; // Немного расширяем при вводе
+    width: 300px; //Немного расширяем при вводе
   }
 }

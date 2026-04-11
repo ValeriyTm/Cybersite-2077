@@ -14,7 +14,7 @@ export const AdminBrandsPage = () => {
 
   const queryClient = useQueryClient();
 
-  // Запрос с учетом страницы
+  //Запрос с учетом страницы:
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-brands", page],
     queryFn: () =>
@@ -25,13 +25,13 @@ export const AdminBrandsPage = () => {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => $api.delete(`/admin/brands/${id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-brands"] }); // Обновляем таблицу
+      queryClient.invalidateQueries({ queryKey: ["admin-brands"] }); //Обновляем таблицу
       toast.success("Бренд удален");
     },
     onError: () => toast.error("Ошибка при удалении"),
   });
 
-  // Мутация для сохранения (создание или апдейт):
+  //Мутация для сохранения (создание или апдейт):
   const saveMutation = useMutation({
     mutationFn: (formData: any) =>
       editingBrand
@@ -45,13 +45,13 @@ export const AdminBrandsPage = () => {
     },
   });
 
-  // Прокидываем функцию редактирования в колонки
+  //Прокидываем функцию редактирования в колонки:
   const handleEdit = (brand: any) => {
     setEditingBrand(brand);
     setIsModalOpen(true);
   };
 
-  // Передаем функцию удаления в генератор колонок
+  //Передаем функцию удаления в генератор колонок:
   const columns = getColumns(
     (id) => deleteMutation.mutate(id), // onDelete
     (brand) => handleEdit(brand), // onEdit
@@ -76,10 +76,10 @@ export const AdminBrandsPage = () => {
         </button>
       </header>
 
-      {/* 2. Рендерим нашу универсальную таблицу */}
+
       <DataTable columns={columns} data={data?.data || []} />
 
-      {/* Пагинация */}
+      {/* Пагинация: */}
       <div className={styles.paginationControls}>
         <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
           Назад
