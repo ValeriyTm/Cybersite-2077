@@ -40,6 +40,7 @@ import { AdminReportsPage } from "@/pages/AdminReportsPage/ui/AdminReportsPage";
 import { AdminTicketsPage } from "@/pages/AdminTicketsPage/ui/AdminTicketsPage";
 import { AdminNewsPage } from "@/pages/AdminNewsPage.tsx/ui/AdminNewsPage";
 import { NewsPage } from "@/pages/NewsPage/ui/NewsPage";
+import { NewsDetailsPage } from "@/pages/NewsDetailsPage/NewsDetailsPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -135,7 +136,16 @@ export const router = createBrowserRouter([
       },
       {
         path: "/news",
-        element: <NewsPage />, //Страница с промокодами       
+        children: [
+          {
+            index: true, // Путь /news
+            element: <NewsPage />,
+          },
+          {
+            path: ":slug", // Путь /news/honda-cbr-review
+            element: <NewsDetailsPage />,
+          },
+        ],
       },
       {
         path: "/support",
