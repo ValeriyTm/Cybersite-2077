@@ -7,11 +7,15 @@ import { MotoModal } from "./MotoModal";
 import { toast } from "react-hot-toast";
 import { debounce } from "lodash";
 import styles from "./AdminMotorcyclesPage.module.scss";
+import { useProfile } from "@/features/auth/model/useProfile";
 
 export const AdminMotorcyclesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMoto, setEditingMoto] = useState(null);
   const queryClient = useQueryClient();
+
+  const { user } = useProfile();
+  const userRole = user?.role;
 
   // 1. Стейт для мгновенного отображения в инпуте (Controlled Input)
   const [searchValue, setSearchValue] = useState("");
@@ -68,6 +72,7 @@ export const AdminMotorcyclesPage = () => {
     (moto) => {
       setEditingMoto(moto);
       setIsModalOpen(true);
+
     },
     (id) => {
       if (confirm("Удалить байк?"))
@@ -77,6 +82,7 @@ export const AdminMotorcyclesPage = () => {
             queryClient.invalidateQueries({ queryKey: ["admin-motorcycles"] }),
           );
     },
+    userRole //Передаём роль третьим аргументом
   );
 
   return (
@@ -90,15 +96,16 @@ export const AdminMotorcyclesPage = () => {
           onChange={handleSearchChange}
           className={styles.searchInput}
         />
-        <button
-          className={styles.addBtn}
-          onClick={() => {
-            setEditingMoto(null);
-            setIsModalOpen(true);
-          }}
-        >
-          + Добавить модель
-        </button>
+        {(userRole == 'ADMIN' || userRole == 'SUPERADMIN' || userRole == 'MANAGER') &&
+          <button
+            className={styles.addBtn}
+            onClick={() => {
+              setEditingMoto(null);
+              setIsModalOpen(true);
+            }}
+          >
+            + Добавить модель
+          </button>}
       </header>
 
       <DataTable columns={columns} data={data?.data || []} />
@@ -108,6 +115,7 @@ export const AdminMotorcyclesPage = () => {
           moto={editingMoto}
           onClose={() => setIsModalOpen(false)}
           onSubmit={(data: any) => saveMutation.mutate(data)}
+
         />
       )}
 

@@ -10,6 +10,7 @@ import styles from "./AdminMotorcyclesPage.module.scss";
 import { useState, useEffect } from "react";
 import { $api } from "@/shared/api/api";
 
+
 export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
   const { register, handleSubmit, setValue, watch } = useForm({
     defaultValues: {

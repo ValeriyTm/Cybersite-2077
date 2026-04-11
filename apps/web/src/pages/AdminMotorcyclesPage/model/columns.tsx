@@ -3,9 +3,11 @@ import { FaEdit, FaTrash, FaBox, FaCopy } from "react-icons/fa";
 import { useNavigate } from 'react-router';
 import toast from "react-hot-toast";
 
+
 export const getMotoColumns = (
   onEdit: (val: any) => void,
   onDelete: (id: string) => void,
+  userRole: string | undefined,
 ): ColumnDef<any>[] => [
     {
       accessorKey: 'id',
@@ -56,16 +58,18 @@ export const getMotoColumns = (
       header: "Действия",
       cell: ({ row }) => (
         <div style={{ display: "flex", gap: "12px" }}>
-          <FaEdit
-            color="#f39c12"
-            cursor="pointer"
-            onClick={() => onEdit(row.original)}
-          />
-          <FaTrash
-            color="#e74c3c"
-            cursor="pointer"
-            onClick={() => onDelete(row.original.id)}
-          />
+          {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
+            <FaEdit
+              color="#f39c12"
+              cursor="pointer"
+              onClick={() => onEdit(row.original)}
+            />}
+          {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
+            <FaTrash
+              color="#e74c3c"
+              cursor="pointer"
+              onClick={() => onDelete(row.original.id)}
+            />}
         </div>
       ),
     },
@@ -75,12 +79,15 @@ export const getMotoColumns = (
       cell: ({ row }) => {
         const navigate = useNavigate();
         return (
-          <FaBox
-            cursor="pointer"
-            color="#3498db" // Синий цвет для отличия от редактирования
-            title="Управление запасами"
-            onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)}
-          />
+          <>
+            {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
+              <FaBox
+                cursor="pointer"
+                color="#3498db" // Синий цвет для отличия от редактирования
+                title="Управление запасами"
+                onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)}
+              />}
+          </>
         );
       }
     },

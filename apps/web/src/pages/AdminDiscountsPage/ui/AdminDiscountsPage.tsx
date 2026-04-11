@@ -7,11 +7,15 @@ import styles from './AdminDiscountsPage.module.scss';
 import toast from 'react-hot-toast';
 import { debounce } from 'lodash';
 import { useMemo, useState } from 'react';
+import { useProfile } from '@/features/auth/model/useProfile';
 
 export const AdminDiscountsPage = () => {
     const [emailSearch, setEmailSearch] = useState('');
     const [debouncedEmail, setDebouncedEmail] = useState('');
     const queryClient = useQueryClient();
+
+    const { user } = useProfile();
+    const userRole = user?.role;
 
     // 1. Дебаунс для поиска
     const updateSearch = useMemo(
@@ -55,15 +59,17 @@ export const AdminDiscountsPage = () => {
             <header className={styles.header}>
                 <div className={styles.titleBlock}>
                     <h3>Маркетинг и лояльность</h3>
-                    <p>Управление промокодами и персональными предложениями. Можно запустить генерацию новых промокодов (старые деактивируются), глобальной скидки (старая заменяется) и персональных скидок (появляются дополнительные)</p>
+                    <p>Управление промокодами и персональными предложениями.</p>
+                    {(userRole == 'ADMIN' || userRole == 'SUPERADMIN') && <p>Можно запустить генерацию новых промокодов (старые деактивируются), глобальной скидки (старая заменяется) и персональных скидок (появляются дополнительные)</p>}
                 </div>
-                <button
-                    className={styles.magicBtn}
-                    onClick={() => generateMutation.mutate()}
-                    disabled={generateMutation.isPending}
-                >
-                    <FaMagic /> {generateMutation.isPending ? 'Генерация...' : 'Запустить алгоритм скидок'}
-                </button>
+                {(userRole == 'ADMIN' || userRole == 'SUPERADMIN') &&
+                    <button
+                        className={styles.magicBtn}
+                        onClick={() => generateMutation.mutate()}
+                        disabled={generateMutation.isPending}
+                    >
+                        <FaMagic /> {generateMutation.isPending ? 'Генерация...' : 'Запустить алгоритм скидок'}
+                    </button>}
             </header>
 
             <div className={styles.contentGrid}>
