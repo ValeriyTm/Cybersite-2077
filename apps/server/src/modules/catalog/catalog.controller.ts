@@ -4,8 +4,10 @@ import { searchService } from "./search.service.js";
 import { sitemapService } from "./sitemap.service.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+import { prisma } from "@repo/database";
 
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { DiscountLogic } from "../discount/discount.logic.js";
 
 //Получение главных категорий:
 export const getCategories = catchAsync(
@@ -101,7 +103,7 @@ export const getMotorcycles = catchAsync(
   },
 );
 
-//Получение информации о конкретном мотоцикле:
+//Получение информации о конкретном мотоцикле по его slug:
 export const getMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { brandSlug, slug } = req.params;
@@ -141,6 +143,47 @@ export const getSuggestions = catchAsync(
 
     const suggestions = await searchService.suggestMotorcycles(query);
     res.json(suggestions);
+  },
+);
+
+//Получение информации о конкретном мотоцикле по его id:
+export const getMotorcycleById = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
+
+    const motorcycle = await prisma.motorcycle.findUnique({
+      where: { id },
+      include: {
+        brand: true,
+        siteCategory: true,
+        images: true, //Галерея изображений
+        //Подтягиваем остатки со всех складов:
+        stocks: {
+          select: { quantity: true, reserved: true },
+        },
+      },
+    });
+
+    if (!motorcycle) {
+      return res.status(404).json({ message: "Мотоцикл не найден" });
+    }
+
+    // Считаем общее доступное количество для фронтенда
+    const totalInStock = motorcycle.stocks.reduce(
+      (acc, s) => acc + (s.quantity - s.reserved),
+      0,
+    );
+
+    //Считаем скидку:
+    const discountData = await DiscountLogic.calculateFinalPrice(
+      motorcycle,
+      userId,
+    );
+
+    const result = { ...motorcycle, totalInStock, discountData };
+
+    res.json(result);
   },
 );
 

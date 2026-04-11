@@ -35,11 +35,17 @@ router.get(
   optionalAuth,
   catalogController.getRelated,
 );
-//Получение информации о конкретном мотоцикле (/api/catalog/motorcycles/:brandSlug/:slug):
+//Получение информации о конкретном мотоцикле по slug (/api/catalog/motorcycles/:brandSlug/:slug):
 router.get(
   "/motorcycles/:brandSlug/:slug",
   optionalAuth,
   catalogController.getMotorcycle,
 ); //Добавили опциональную авторизацию, чтобы получать токен и на его основе выводить персонализированную скидку
+//Получение информации о конкретном мотоцикле по id (/api/catalog/motorcycles/:id):
+router.get(
+  "/motorcycles/:id",
+  optionalAuth,
+  catalogController.getMotorcycleById,
+);
 
 export default router;

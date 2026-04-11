@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { $api } from '@/shared/api/api';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { NewsMotoWidget } from './NewsMotoWidget';
 import styles from './NewsDetailsPage.module.scss';
 
 export const NewsDetailsPage = () => {
@@ -38,29 +39,30 @@ export const NewsDetailsPage = () => {
                     switch (block.type) {
                         case 'text':
                             return <p key={index} className={styles.textBlock}>{block.value}</p>;
+
                         case 'image':
                             return (
                                 <figure key={index} className={styles.imageBlock}>
-                                    <img src={`http://localhost:3001/static/motorcycles/${block.value}`} alt="content" />
+                                    <img src={`http://localhost:3001/static/products/${block.value}`} alt="Content" />
                                 </figure>
                             );
+
+                        case 'motorcycle':
+                            // 🎯 ВЫЗЫВАЕМ НАШ НОВЫЙ ВИДЖЕТ
+                            return <NewsMotoWidget key={index} motoId={block.value} />;
+
                         case 'video':
+                            // Твоя логика с iframe...
                             return (
                                 <div key={index} className={styles.videoBlock}>
-                                    {/* Логика вставки YouTube через iframe */}
-                                    <iframe src={`https://youtube.com{block.value}`} frameBorder="0" allowFullScreen></iframe>
+                                    <iframe src={`https://youtube.com{block.value}`} allowFullScreen></iframe>
                                 </div>
                             );
-                        case 'motorcycle':
-                            return (
-                                <div key={index} className={styles.motoWidget}>
-                                    {/* Сюда можно вставить компонент карточки мотоцикла по его ID */}
-                                    <p>Упомянутый байк: <strong>{block.value}</strong></p>
-                                </div>
-                            );
+
                         default:
                             return null;
                     }
+
                 })}
             </div>
         </article>
