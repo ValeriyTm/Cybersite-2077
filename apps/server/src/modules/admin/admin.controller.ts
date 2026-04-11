@@ -9,6 +9,7 @@ import { searchService } from "../catalog/search.service.js";
 import fs from "fs";
 import path from "path";
 import { esClient } from "../catalog/search.service.js";
+import { NewsModel } from "../content/news.model.js";
 
 const slugify = (text: string) =>
   text
@@ -829,6 +830,99 @@ export class AdminController {
       });
 
       res.json(ticket);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  //---------------------Контент:-------------
+  //Получить список новостей:
+  static async getNews(req: Request, res: Response, next: NextFunction) {
+    try {
+      const news = await NewsModel.find().sort({ createdAt: -1 });
+      res.json(news);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  //Создать новость:
+  static async createNews(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { title, excerpt, content, status, tags } = req.body;
+      const file = req.file;
+
+      const news = await NewsModel.create({
+        title,
+        excerpt,
+        content: typeof content === "string" ? JSON.parse(content) : content,
+        status,
+        tags: Array.isArray(tags) ? tags : [],
+        mainImage: file ? file.filename : "",
+        slug: slugify(title),
+        authorId: (req as any).user.id,
+      });
+
+      res.status(201).json(news);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  //Обновить новость:
+  static async updateNews(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { content, ...updateData } = req.body;
+      const file = req.file;
+
+      const preparedData = {
+        ...updateData,
+        content: typeof content === "string" ? JSON.parse(content) : content,
+      };
+
+      if (file) preparedData.mainImage = file.filename;
+
+      const updated = await NewsModel.findByIdAndUpdate(id, preparedData, {
+        new: true,
+      });
+      res.json(updated);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  //Удалить новость:
+  static async deleteNews(req: Request, res: Response, next: NextFunction) {
+    try {
+      await NewsModel.findByIdAndDelete(req.params.id);
+      res.json({ message: "Новость удалена" });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  //Изменить статус новости:
+  static async updateNewsStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const updatedNews = await NewsModel.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true }, // Возвращаем обновленный документ
+      );
+
+      if (!updatedNews) {
+        return res.status(404).json({ message: "Новость не найдена" });
+      }
+
+      res.json(updatedNews);
     } catch (e) {
       next(e);
     }

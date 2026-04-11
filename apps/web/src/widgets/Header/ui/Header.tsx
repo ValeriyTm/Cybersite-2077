@@ -131,7 +131,6 @@ export const Header = () => {
             <Link to="/news">Новости</Link>
             <Link to="/promos">Промокоды</Link>
             <Link to="/support">Поддержка</Link>
-            <Link to="/titles">Статьи</Link>
             {canSee && <Link to="/admin">Администрирование</Link>}
           </nav>
         </div>

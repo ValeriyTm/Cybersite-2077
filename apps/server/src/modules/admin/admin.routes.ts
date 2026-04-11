@@ -71,5 +71,24 @@ router.get("/tickets", AdminController.getTickets);
 router.patch("/tickets/:id/reply", AdminController.replyToTicket);
 //Изменить статус тикета:
 router.patch("/tickets/:id/status", AdminController.updateTicketStatus);
+//---------------------Контент:-------------
+//Получение всех новостей:
+router.get("/news", AdminController.getNews);
+//Создать новость:
+router.post(
+  "/news",
+  productUpload.single("mainImage"),
+  AdminController.createNews,
+);
+//Изменить новость:
+router.patch(
+  "/news/:id",
+  productUpload.single("mainImage"),
+  AdminController.updateNews,
+);
+//Удалить новость:
+router.delete("/news/:id", AdminController.deleteNews);
+//Обновить статус новости:
+router.patch("/news/:id/status", AdminController.updateNewsStatus);
 
 export default router;

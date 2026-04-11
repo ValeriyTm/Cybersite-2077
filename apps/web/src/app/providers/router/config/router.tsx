@@ -38,6 +38,8 @@ import { AdminStatsPage } from "@/pages/AdminStatsPage/ui/AdminStatsPage";
 import { AdminDiscountsPage } from "@/pages/AdminDiscountsPage/ui/AdminDiscountsPage";
 import { AdminReportsPage } from "@/pages/AdminReportsPage/ui/AdminReportsPage";
 import { AdminTicketsPage } from "@/pages/AdminTicketsPage/ui/AdminTicketsPage";
+import { AdminNewsPage } from "@/pages/AdminNewsPage.tsx/ui/AdminNewsPage";
+import { NewsPage } from "@/pages/NewsPage/ui/NewsPage";
 
 // Охранник для гостей (PublicOnly)
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -132,6 +134,10 @@ export const router = createBrowserRouter([
         element: <PaymentFail />, //Страница с промокодами
       },
       {
+        path: "/news",
+        element: <NewsPage />, //Страница с промокодами       
+      },
+      {
         path: "/support",
         element: <SupportPage />, //Страница с промокодами
       },
@@ -183,6 +189,10 @@ export const router = createBrowserRouter([
               {
                 path: "stats",
                 element: <AdminStatsPage />,
+              },
+              {
+                path: "news",
+                element: <AdminNewsPage />,
               },
             ],
           },

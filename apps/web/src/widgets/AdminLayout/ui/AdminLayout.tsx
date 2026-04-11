@@ -8,6 +8,7 @@ import {
   FaFileAlt,
   FaUsersCog,
   FaChartBar,
+  FaNewspaper
 } from "react-icons/fa"; // Используем Font Awesome из react-icons
 import styles from "./AdminLayout.module.scss";
 
@@ -42,6 +43,12 @@ const ADMIN_MENU = [
       { name: "Скидки", link: "/admin/discounts", icon: <FaPercentage /> },
       { name: "Отчеты", link: "/admin/reports", icon: <FaFileAlt /> },
       { name: "Статистика", link: "/admin/stats", icon: <FaChartBar /> },
+    ],
+  },
+  {
+    group: "Контент",
+    items: [
+      { name: "Новости", link: "/admin/news", icon: <FaNewspaper /> },
     ],
   },
   {

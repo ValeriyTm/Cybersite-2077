@@ -1,0 +1,90 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.largeModal {
+  max-width: 800px !important;
+}
+
+.mainFields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+  input,
+  textarea {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 12px;
+    color: #fff;
+    border-radius: 6px;
+  }
+}
+
+.blocksSection {
+  background: #0a0a0a;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #222;
+  h5 {
+    color: #f39c12;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+  }
+}
+
+.blockItem {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  background: #111;
+  padding: 10px;
+  border-radius: 6px;
+  align-items: flex-start;
+
+  .blockType {
+    font-size: 0.7rem;
+    color: #555;
+    text-transform: uppercase;
+    width: 80px;
+  }
+  textarea,
+  input {
+    flex: 1;
+    background: transparent;
+    border: 1px solid #222;
+    color: #ccc;
+    padding: 8px;
+  }
+  button {
+    color: #e74c3c;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding-top: 10px;
+  }
+}
+
+.blockControls {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  button {
+    background: #222;
+    color: #aaa;
+    border: 1px solid #333;
+    padding: 8px 15px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    &:hover {
+      background: #f39c12;
+      color: #000;
+      border-color: #f39c12;
+    }
+  }
+}
