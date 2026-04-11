@@ -76,7 +76,7 @@ export const AdminLayout = () => {
 
       <main className={styles.content}>
         <header className={styles.adminHeader}>
-          <h2>Панель управления</h2>
+          <h2>Панель управления|</h2>
           <div className={styles.adminInfo}>
             {/* Сюда можно будет вывести имя залогиненного админа */}
             <span>Admin Mode</span>

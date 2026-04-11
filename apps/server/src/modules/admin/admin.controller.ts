@@ -20,39 +20,6 @@ const slugify = (text: string) =>
     .replace(/--+/g, "-");
 
 export class AdminController {
-  // Метод для управления тикетами поддержки
-  static async getTickets(req: Request, res: Response, next: NextFunction) {
-    try {
-      const tickets = await prisma.supportTicket.findMany({
-        include: { attachments: true },
-        orderBy: { createdAt: "desc" },
-      });
-      res.json(tickets);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  //Метод для получения отчетов:
-  static async downloadReport(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { type } = req.params; // 'pdf' или 'xlsx'
-      const stats = await ReportsService.getStatistics(30);
-
-      let filePath: string;
-      if (type === "xlsx") {
-        filePath = await ExcelService.generateSalesRepo(stats);
-        res.download(filePath);
-      } else {
-        filePath = await PdfService.generateSalesPdf(stats);
-        res.contentType("application/pdf");
-        res.sendFile(filePath);
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-
   //---------------------Работа с брендами:-------------
   // Универсальный метод для получения списка брендов
   static async getBrands(req: Request, res: Response, next: NextFunction) {
@@ -782,5 +749,47 @@ export class AdminController {
     }
   }
 
-  //---------------------?:-------------
+  //---------------------Тикеты поддержки:-------------
+  //Получение всех тикетов:
+  static async getTickets(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { status } = req.query;
+      const where = status ? { status: String(status) } : {};
+
+      const tickets = await prisma.supportTicket.findMany({
+        where,
+        include: {
+          user: { select: { email: true, name: true } },
+          attachments: true, // Если у тебя есть вложения
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      res.json(tickets);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  //Дать ответ на тикет:
+  static async replyToTicket(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { answer } = req.body;
+
+      const ticket = await prisma.supportTicket.update({
+        where: { id },
+        data: {
+          answer,
+          status: "RESOLVED", // Переводим в RESOLVED по твоей схеме
+          answeredAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
+
+      res.json(ticket);
+    } catch (e) {
+      next(e);
+    }
+  }
 }

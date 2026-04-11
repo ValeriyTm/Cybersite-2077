@@ -12,9 +12,6 @@ router.use(
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
 );
 
-//Работа с поддержкой:
-router.get("/tickets", AdminController.getTickets);
-
 //---------------------Работа с брендами:-------------
 //Получение брендов:
 router.get("/brands", AdminController.getBrands);
@@ -65,6 +62,12 @@ router.get("/promos", AdminController.getPromoCodes);
 //Получение персональных скидок:
 router.get("/personal-discounts", AdminController.getPersonalDiscounts);
 //---------------------Отчеты:-------------
+//Скачать отчет:
 router.get("/reports/download", AdminController.downloadSalesReport);
-//---------------------?:-------------
+//---------------------Тикеты поддержки:-------------
+//Получить все тикеты:
+router.get("/tickets", AdminController.getTickets);
+//Ответить на тикет:
+router.patch("/tickets/:id/reply", AdminController.replyToTicket);
+
 export default router;
