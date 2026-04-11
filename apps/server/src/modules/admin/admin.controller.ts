@@ -753,7 +753,10 @@ export class AdminController {
   //Получение всех тикетов:
   static async getTickets(req: Request, res: Response, next: NextFunction) {
     try {
-      const { status, email } = req.query;
+      const { page = 1, limit = 10, status, email } = req.query;
+      const p = Number(page);
+      const l = Number(limit);
+      const skip = (p - 1) * l;
 
       const where: any = {};
       if (status) where.status = status;
@@ -761,16 +764,28 @@ export class AdminController {
         where.email = { contains: String(email), mode: "insensitive" };
       }
 
-      const tickets = await prisma.supportTicket.findMany({
-        where,
-        include: {
-          user: { select: { email: true, name: true } },
-          attachments: true,
-        },
-        orderBy: { createdAt: "desc" },
-      });
+      const [tickets, total] = await Promise.all([
+        prisma.supportTicket.findMany({
+          where,
+          include: {
+            attachments: true,
+            user: { select: { email: true, name: true } },
+          },
+          skip,
+          take: l,
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.supportTicket.count({ where }),
+      ]);
 
-      res.json(tickets);
+      res.json({
+        data: tickets,
+        meta: {
+          total,
+          page: p,
+          lastPage: Math.ceil(total / l),
+        },
+      });
     } catch (e) {
       next(e);
     }

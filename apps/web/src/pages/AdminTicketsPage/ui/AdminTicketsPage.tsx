@@ -10,6 +10,7 @@ import styles from './AdminTicketsPage.module.scss';
 
 export const AdminTicketsPage = () => {
     const [selectedTicket, setSelectedTicket] = useState<any>(null);
+    const [page, setPage] = useState(1);
     const [answer, setAnswer] = useState('');
     const [emailValue, setEmailValue] = useState(''); // Для мгновенного ввода
     const [debouncedEmail, setDebouncedEmail] = useState(''); // Для API-запроса
@@ -23,16 +24,25 @@ export const AdminTicketsPage = () => {
         []
     );
 
+    //При смене фильтров сбрасываем страницу на первую
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEmailValue(e.target.value);
         updateSearch(e.target.value);
+        setPage(1);
+    };
+
+    const handleStatusChange = (val: string) => {
+        setStatusFilter(val);
+        setPage(1);
     };
 
     // 1. Получение данных
-    const { data: tickets, isLoading } = useQuery({
-        queryKey: ['admin-tickets', statusFilter, debouncedEmail],
+    const { data, isLoading } = useQuery({
+        queryKey: ['admin-tickets', page, statusFilter, debouncedEmail],
         queryFn: () => $api.get('/admin/tickets', {
             params: {
+                page,
+                limit: 10,
                 status: statusFilter,
                 email: debouncedEmail
             }
@@ -127,7 +137,32 @@ export const AdminTicketsPage = () => {
                 <div className={styles.loader}>Загрузка...</div>
             ) : (
 
-                <DataTable columns={columns} data={tickets || []} />
+                <DataTable columns={columns} data={data?.data || []} />
+            )}
+
+
+
+            {/*Блок пагинации:*/}
+            {data?.meta && data.meta.lastPage > 1 && (
+                <div className={styles.pagination}>
+                    <button
+                        disabled={page === 1}
+                        onClick={() => setPage(p => p - 1)}
+                    >
+                        ← Назад
+                    </button>
+
+                    <span>
+                        Страница <strong>{page}</strong> из {data.meta.lastPage}
+                    </span>
+
+                    <button
+                        disabled={page >= data.meta.lastPage}
+                        onClick={() => setPage(p => p + 1)}
+                    >
+                        Вперёд →
+                    </button>
+                </div>
             )}
 
 
