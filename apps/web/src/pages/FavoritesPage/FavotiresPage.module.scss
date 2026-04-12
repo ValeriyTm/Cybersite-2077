@@ -61,3 +61,39 @@
     opacity: 0.3;
   }
 }
+
+//Кнопка "Наверх"
+.scrollToTop {
+  position: fixed;
+  bottom: 80px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  background: #f39c12;
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2000;
+
+  //Изначально скрыта:
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
+
+  &:hover {
+    background: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+  }
+
+  // Когда добавим класс .visible
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}

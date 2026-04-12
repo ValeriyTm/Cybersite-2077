@@ -47,7 +47,7 @@ export const getOrderColumns = (
             accessorKey: 'status',
             header: 'Статус заказа',
             cell: ({ row, getValue }) => {
-                const isRestricted = userRole === 'CONTENT_EDITOR' || userRole === 'USER' userRole === 'MANAGER';
+                const isRestricted = userRole === 'CONTENT_EDITOR' || userRole === 'USER' || userRole === 'MANAGER';
                 return (
                     <select
                         value={String(getValue())}

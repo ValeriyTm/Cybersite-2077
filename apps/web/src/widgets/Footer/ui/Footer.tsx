@@ -61,8 +61,8 @@ export const Footer = () => {
 
       {/* Иконки соцсетей */}
       <div className={styles.socials}>
-        <FaFacebook /> <FaTelegram /> <FaWhatsapp /> <FaViber />
-        <FaTwitter /> <FaTiktok /> <FaVk /> <FaYoutube />
+        <FaFacebook className={styles.facebook} /> <FaTelegram className={styles.telegram} /> <FaWhatsapp className={styles.whatsapp} /> <FaViber className={styles.viber} />
+        <FaTwitter className={styles.twitter} /> <FaTiktok className={styles.tiktok} /> <FaVk className={styles.vk} /> <FaYoutube className={styles.youtube} />
       </div>
 
       <hr className={styles.divider} />

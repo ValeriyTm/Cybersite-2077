@@ -109,3 +109,52 @@
     opacity: 1;
   }
 }
+
+//Иконки:
+.facebook {
+  &:hover {
+    color: #1877f2 !important;
+  }
+}
+
+.twitter {
+  &:hover {
+    color: #1da1f2 !important;
+  }
+}
+
+.youtube {
+  &:hover {
+    color: #ff0000 !important;
+  }
+}
+
+.whatsapp {
+  &:hover {
+    color: #25d366 !important;
+  }
+}
+
+.viber {
+  &:hover {
+    color: #7360f2 !important;
+  }
+}
+
+.vk {
+  &:hover {
+    color: #0077ff !important;
+  }
+}
+
+.tiktok {
+  &:hover {
+    color: #69c9d0 !important;
+  }
+}
+
+.telegram {
+  &:hover {
+    color: #24a1de !important;
+  }
+}
