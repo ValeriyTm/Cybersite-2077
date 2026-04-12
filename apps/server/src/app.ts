@@ -13,6 +13,8 @@ import { xssClean } from "./shared/middlewares/xss-clean.js";
 import { commonLimiter } from "./shared/middlewares/rate-limiter.js";
 //Для передачи логов из Morgan в Grafana Loki:
 import { logger } from "./shared/lib/logger.js";
+//Для Prometheus:
+import client from "prom-client";
 //Роутеры для модулей:
 import { identityRouter } from "./modules/identity/identity.routes.js";
 import catalogRouter from "./modules/catalog/catalog.routes.js";
@@ -29,6 +31,9 @@ import contentRouter from "./modules/content/content.routes.js";
 //Создаём экземпляр приложения Express:
 const app = express();
 
+//Для сбора стандартных метрик (память, процессор и т.д.)
+const collectDefaultMetrics = client.collectDefaultMetrics;
+
 //Настройки CORS:
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost"],
@@ -39,6 +44,8 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 //----------------------------------Подключаем middleware:--------
+collectDefaultMetrics(); //Включаем сбор стандартных метрик (память, процессор и т.д.) (Prometheus)
+
 //Логирование входящих данных (ставим первым, чтобы фиксировать запрос в тот момент, когда он только пришел на сервер):
 app.use(
   morgan(
@@ -161,6 +168,11 @@ app.use("/api/content", contentRouter);
 //Тестовый эндпоинт для проверки работоспособности сервера (Health Check):
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });
+});
+//Эндпоинт, которым будет пользоваться Prometheus:
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.send(await client.register.metrics());
 });
 
 //Обработка ошибок со всего приложения (всегда ставится в конце):
