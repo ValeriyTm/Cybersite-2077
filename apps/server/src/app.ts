@@ -11,6 +11,8 @@ import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 import { xssClean } from "./shared/middlewares/xss-clean.js";
 //Middleware для защиты всех эндпоинтов от DDoS и brute force (Rate Limiting):
 import { commonLimiter } from "./shared/middlewares/rate-limiter.js";
+//Для передачи логов из Morgan в Grafana Loki:
+import { logger } from "./shared/lib/logger.js";
 //Роутеры для модулей:
 import { identityRouter } from "./modules/identity/identity.routes.js";
 import catalogRouter from "./modules/catalog/catalog.routes.js";
@@ -39,14 +41,30 @@ const corsOptions = {
 //----------------------------------Подключаем middleware:--------
 //Логирование входящих данных (ставим первым, чтобы фиксировать запрос в тот момент, когда он только пришел на сервер):
 app.use(
-  morgan((tokens, req, res) => {
-    return JSON.stringify({
-      method: tokens.method(req, res),
-      url: tokens.url(req, res),
-      status: tokens.status(req, res),
-      responseTime: tokens["response-time"](req, res),
-    });
-  }),
+  morgan(
+    (tokens, req, res) => {
+      return JSON.stringify({
+        method: tokens.method(req, res),
+        url: tokens.url(req, res),
+        status: tokens.status(req, res),
+        responseTime: tokens["response-time"](req, res),
+      });
+    },
+    {
+      //Следующий код перенаправляет вывод Morgan в Winston логгер:
+      stream: {
+        write: (message) => {
+          try {
+            const logData = JSON.parse(message);
+            logger.info("HTTP Request", logData); // Отправляем как объект
+          } catch (e) {
+            logger.info(message.trim()); // Если вдруг придет не JSON
+            console.log(`Ошибка: `, e);
+          }
+        },
+      },
+    },
+  ),
 );
 
 //Настройка заголовков безопасности. Helmet всегда должен стоять самым первым (кроме логирования):
