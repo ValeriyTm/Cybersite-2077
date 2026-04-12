@@ -1,6 +1,20 @@
 version: "3.8"
 
 services:
+  # ------------Инфраструктура:--------------- #
+  nginx:
+    build: ./nginx
+    container_name: cybersite_nginx
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "80:80"
+    networks:
+      - cybersite_net
+    depends_on:
+      - grafana
+  # ------------Базы данных:--------------- #
+
   # Основная база: PostgreSQL с расширением PostGIS для реализации карты
   postgres:
     image: postgis/postgis:15-3.3 # Специальный образ с уже установленным PostGIS
@@ -14,6 +28,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cybersite_net
 
   # Кэш и очереди: Redis (для корзины и BullMQ)
   redis:
@@ -24,8 +40,10 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - cybersite_net
 
-  # Дополнительная база: MongoDB (для отзывов и новостей)
+  # MongoDB (для отзывов и новостей)
   mongodb:
     image: mongo:6.0
     container_name: cybersite_mongodb
@@ -37,40 +55,8 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-
-  # Веб-интерфейс для просмотра таблиц PostgreSQL
-  adminer:
-    image: adminer
-    container_name: cybersite_adminer
-    restart: always
-    ports:
-      - "8080:8080"
-
-    # Веб-интерфейс для управления MongoDB
-  mongo-express:
-    image: mongo-express
-    container_name: cybersite_mongo_express
-    restart: always
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: password
-      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
-      ME_CONFIG_BASICAUTH_USERNAME: dev
-      ME_CONFIG_BASICAUTH_PASSWORD: dev
-    depends_on:
-      - mongodb
-
-  # Веб-интерфейс для управления Redis:
-  redis-insight:
-    image: redis/redisinsight:latest
-    container_name: cybersite_redis_insight
-    restart: always
-    ports:
-      - "5540:5540"
-    depends_on:
-      - redis
+    networks:
+      - cybersite_net
 
   # Поисковый движок:
   elasticsearch:
@@ -99,6 +85,10 @@ services:
       - "9200:9200"
     volumes:
       - es_data:/usr/share/elasticsearch/data
+    networks:
+      - cybersite_net
+
+  # ------------Мониторинг:--------------- #
 
   # Визуализация и мониторинг (дашборды):
   grafana:
@@ -111,8 +101,73 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafana_data:/var/lib/grafana
+    networks:
+      - cybersite_net
     depends_on:
       - elasticsearch
+      - loki
+      - prometheus
+
+  loki:
+    image: grafana/loki:latest
+    container_name: cybersite_loki
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - cybersite_net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cybersite_prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - cybersite_net
+  # ------------Утилиты:--------------- #
+  # Веб-интерфейс для просмотра таблиц PostgreSQL
+  adminer:
+    image: adminer
+    container_name: cybersite_adminer
+    restart: always
+    ports:
+      - "8085:8080"
+    networks:
+      - cybersite_net
+
+    # Веб-интерфейс для управления MongoDB
+  mongo-express:
+    image: mongo-express
+    container_name: cybersite_mongo_express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: dev
+      ME_CONFIG_BASICAUTH_PASSWORD: dev
+    networks:
+      - cybersite_net
+    depends_on:
+      - mongodb
+
+  # Веб-интерфейс для управления Redis:
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: cybersite_redis_insight
+    restart: always
+    ports:
+      - "5540:5540"
+    networks:
+      - cybersite_net
+    depends_on:
+      - redis
+  # --------------------------------------------------- #
+networks:
+  cybersite_net:
+    driver: bridge
 
 volumes:
   # Для PostgreSQL:

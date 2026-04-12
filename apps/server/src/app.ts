@@ -29,7 +29,7 @@ const app = express();
 
 //Настройки CORS:
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5000"],
+  origin: ["http://localhost:5173", "http://localhost"],
   //Разрешаем передачу cookies, HTTP-авторизацию и TLS-сертификатов:
   credentials: true,
   //HTTP-статус, который сервер вернет в ответ на «предварительный»
