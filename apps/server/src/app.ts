@@ -63,8 +63,11 @@ app.use(
         // Разрешаем политику DOMPurify
         // или политики популярных библиотек:
         "trusted-types": ["default", "dompurify"],
+
+        "frame-ancestors": ["'none'"], //Защита от Clickjacking
       },
     },
+    xFrameOptions: { action: "deny" }, //Защита от Clickjacking
   }),
 );
 //При использовании helmet не допускается какой-либо JS-код

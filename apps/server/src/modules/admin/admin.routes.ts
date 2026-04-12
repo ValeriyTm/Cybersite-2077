@@ -3,11 +3,13 @@ import { AdminController } from "./admin.controller.js";
 import { authMiddleware } from "src/shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "src/shared/middlewares/role.middleware.js";
 import { productUpload } from "./multer.js";
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
 
 const router = Router();
 
 // Все роуты админки требуют авторизации и роли выше USER:
 router.use(authMiddleware);
+router.use(noCacheMiddleware); //Запрещаем кэширование страниц браузером
 
 //---------------------Работа с брендами:-------------
 //Получение брендов:

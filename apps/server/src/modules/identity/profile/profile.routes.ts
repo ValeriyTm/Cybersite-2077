@@ -6,8 +6,12 @@ import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js";
 import { uploadAvatar } from "../../../shared/middlewares/upload.middleware.js";
 //Middleware для авторизации:
 import { roleMiddleware } from "../../../shared/middlewares/role.middleware.js";
+//Middleware для запрета кэширования данных на стороне клиента:
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
 
 const router = Router();
+
+router.use(noCacheMiddleware); //Запрещаем кэширование страниц браузером
 
 //Роут для получения данных о профиле:
 router.get("/me", authMiddleware, ProfileController.getMe);

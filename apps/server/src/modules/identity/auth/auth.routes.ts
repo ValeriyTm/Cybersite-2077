@@ -4,6 +4,7 @@ import * as AuthController from "./auth.controller.js";
 import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js";
 //Middleware жесткий rate-лимитер для защиты от перебора паролей:
 import { authLimiter } from "../../../shared/middlewares/rate-limiter.js";
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
 
 const router = Router();
 
@@ -17,13 +18,28 @@ router.post("/login", authLimiter, AuthController.login);
 //Роут выхода из аккаунта:
 router.post("/logout", AuthController.logout);
 //Роут выхода из всех аккаунтов:
-router.post("/logout-all", authMiddleware, AuthController.logoutAll);
+router.post(
+  "/logout-all",
+  authMiddleware,
+  noCacheMiddleware,
+  AuthController.logoutAll,
+);
 //Роут для обновления токенов:
 router.get("/refresh", AuthController.refresh);
 //Роут для замены пароля (из профиля):
-router.post("/change-password", authMiddleware, AuthController.changePassword);
+router.post(
+  "/change-password",
+  authMiddleware,
+  noCacheMiddleware,
+  AuthController.changePassword,
+);
 //Роут для удаления аккаунта:
-router.delete("/delete-account", authMiddleware, AuthController.deleteAccount);
+router.delete(
+  "/delete-account",
+  authMiddleware,
+  noCacheMiddleware,
+  AuthController.deleteAccount,
+);
 //Роут для замены пароля (Forgot password):
 router.post("/forgot-password", authLimiter, AuthController.forgotPassword);
 //Роут для сброса пароля (Forgot password):
@@ -35,9 +51,19 @@ router.get("/google", AuthController.googleAuth);
 router.get("/google/callback", AuthController.googleCallback);
 //-------Роуты для 2FA:
 //Роут для генерации данных для включения 2FA:
-router.post("/2fa/setup", authMiddleware, AuthController.setup2FA);
+router.post(
+  "/2fa/setup",
+  authMiddleware,
+  noCacheMiddleware,
+  AuthController.setup2FA,
+);
 //Роут для включения 2FA:
-router.post("/2fa/enable", authMiddleware, AuthController.enable2FA);
+router.post(
+  "/2fa/enable",
+  authMiddleware,
+  noCacheMiddleware,
+  AuthController.enable2FA,
+);
 //Роут для входа в аккаунт для тех, у кого включена 2FA:
 router.post("/2fa/verify", authLimiter, AuthController.verify2FA); // Этот роут публичный (используется на этапе логина)
 

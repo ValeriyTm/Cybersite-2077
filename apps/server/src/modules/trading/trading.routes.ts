@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import * as tradingController from "./trading.controller.js";
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
 
 const router = Router();
 
+router.use(noCacheMiddleware); //Запрещаем кэширование страниц браузером
 //--------------------------Избранное:------------------------//
 //Роут получения списка (массив id мотоциклов ['5gd..', 'cb55..', ...]) избранных товаров:
 router.get("/favorites/ids", authMiddleware, tradingController.getFavoriteIds);
