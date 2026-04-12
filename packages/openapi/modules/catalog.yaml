@@ -184,7 +184,7 @@ paths:
                 items:
                   $ref: "../components/schemas.yaml#/MotorcycleRelated"
 
-  # 6.Детальная информация о конкретном мотоцикле:
+  # 6.Детальная информация о конкретном мотоцикле по его slug:
   /motorcycles/{brandSlug}/{slug}:
     get:
       summary: Детальная информация о мотоцикле
@@ -240,3 +240,29 @@ paths:
             application/xml:
               schema:
                 type: string
+
+  # 9..Детальная информация о конкретном мотоцикле по его id:
+  /motorcycles/{id}:
+    get:
+    summary: Получить детальную информацию о мотоцикле по ID
+    description: Возвращает полные данные мотоцикла, включая технические характеристики, бренд и список изображений.
+    tags: [Catalog]
+    security:
+      - bearerAuth: [] # Опционально, так как используется optionalAuth
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: UUID мотоцикла
+        schema:
+          type: string
+          format: uuid
+    responses:
+      200:
+        description: Данные мотоцикла успешно получены
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MotorcycleFull"
+      404:
+        description: Мотоцикл с таким ID не найден в базе данных

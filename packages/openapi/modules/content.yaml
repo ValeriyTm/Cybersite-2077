@@ -1,0 +1,39 @@
+tags:
+  - name: Content
+    description: Управление новостями и контентом (MongoDB)
+
+paths:
+  /news:
+    get:
+      summary: Получить список всех опубликованных новостей
+      tags: [Content]
+      responses:
+        200:
+          description: Список новостей получен успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "../components/schemas.yaml#/NewsPreview"
+
+  /news/{slug}:
+    get:
+      summary: Получить полную новость по её slug
+      tags: [Content]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Уникальный URL-адрес новости
+          schema:
+            type: string
+      responses:
+        200:
+          description: Полная новость получена
+          content:
+            application/json:
+              schema:
+                $ref: "../components/schemas.yaml#/NewsFull"
+        404:
+          description: Новость не найдена или еще не опубликована

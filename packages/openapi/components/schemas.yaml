@@ -1028,3 +1028,61 @@ Attachment:
     ticketId:
       type: string
       format: uuid
+
+# Content Module
+
+NewsPreview:
+  type: object
+  properties:
+    _id:
+      type: string
+      example: "65f1234567890abcdef12345"
+    title:
+      type: string
+      example: "Новое поступление Ducati 2026"
+    slug:
+      type: string
+      example: "ducati-2026-arrival"
+    mainImage:
+      type: string
+      example: "news_ducati_v4.jpg"
+    excerpt:
+      type: string
+      example: "Краткий обзор новой линейки супербайков, которые уже доступны на нашем складе в Москве."
+    status:
+      type: string
+      enum: [DRAFT, PUBLISHED]
+    createdAt:
+      type: string
+      format: date-time
+
+NewsFull:
+  allOf:
+    - $ref: "#/NewsPreview"
+    - type: object
+      properties:
+        content:
+          type: array
+          description: Массив динамических блоков контента
+          items:
+            $ref: "#/ContentBlock"
+        authorId:
+          type: string
+          format: uuid
+
+ContentBlock:
+  type: object
+  required:
+    - type
+    - value
+  properties:
+    type:
+      type: string
+      enum: [text, image, video, motorcycle]
+    value:
+      oneOf:
+        - type: string
+          description: Текст или имя файла картинки или ID видео YouTube
+        - type: string
+          format: uuid
+          description: UUID мотоцикла из Postgres (для типа motorcycle)

@@ -20,21 +20,37 @@ import { initReportsSchedule } from "./modules/reports/reports.queue.js";
 import { reportsWorker } from "./modules/reports/reports.worker.js"; // Воркер начнет слушать очередь автоматически при импорте
 
 const PORT = process.env.PORT || 3001;
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 async function bootstrap() {
   try {
-    // 1.Проверяем соединение с БД:
-    console.log("⏳Проверка соединения с PostgreSQL...");
-    await prisma.$connect();
-    console.log("✅PostgreSQL подключен успешно");
+    //1) Пробуем 5 раз подключиться ко всем БД с задержкой 3 сек между попытками:
+    let retries = 5;
+    while (retries) {
+      try {
+        // 1.Проверяем соединение с БД:
+        console.log("⏳Проверка соединения с PostgreSQL...");
+        await prisma.$connect();
+        console.log("✅PostgreSQL подключен успешно");
 
-    await connectMongoDB(); //Подключаем MongoDB
+        await connectMongoDB(); //Подключаем MongoDB
+
+        break; // Выходим из цикла, если подключились
+      } catch (err) {
+        retries -= 1;
+        console.error(`Ошибка подключения. Осталось попыток: ${retries}`, err);
+        if (retries === 0) process.exit(1);
+        await sleep(3000); // Ждем 3 секунды перед следующей попыткой
+      }
+    }
+
+    //2.Запускаем остальное:
     await initDiscountCron(); //Запускаем планировщик задач для скидок и промокодов
     TelegramService.init(); //Подключаемся к ТГ-боту
     initNotificationListeners(); //Запускаем слушателя событий для сервиса оповещений
     initReportsSchedule(); //Запускаем работу очереди для сервиса отчетов
 
-    // 2.Только после успеха запускаем сервер:
+    //3.Только после успеха запускаем сервер:
     const server = app.listen(PORT, () => {
       console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
 
@@ -45,7 +61,7 @@ async function bootstrap() {
       );
     });
 
-    //3. Механизм плавного завершения работы (Graceful Shutdown):
+    //4. Механизм плавного завершения работы (Graceful Shutdown):
     //(Цель — не просто убить процесс мгновенно, а дать приложению время корректно завершить текущие дела перед выходом).
     //Без этого при каждом перезапуске сервера старые соединения могут «висеть» в PostgreSQL, пока не забьют весь лимит подключений.
     const gracefulShutdown = async (signal: string) => {
@@ -70,7 +86,7 @@ async function bootstrap() {
       }
     };
 
-    //4.Слушаем сигналы прерывания процесса:
+    //5.Слушаем сигналы прерывания процесса:
     process.on("SIGINT", () => gracefulShutdown("SIGINT")); //"SIGINT" = Нажатие "Ctrl+C" в терминале.
     process.on("SIGTERM", () => gracefulShutdown("SIGTERM")); //"SIGTERM" = Сигнал, который посылает Docker (и Kubernetes) при остановке контейнера. Если сервер его игнорирует, Docker через 10 секунд принудительно «убивает» его (SIGKILL), что может повредить файлы БД.
   } catch (error) {

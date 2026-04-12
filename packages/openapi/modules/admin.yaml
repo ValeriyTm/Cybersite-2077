@@ -1,0 +1,5 @@
+tags:
+  - name: Admin
+    description: API взаимодействия с БД (админ-панель).
+
+paths:

@@ -51,6 +51,8 @@ paths:
     $ref: "./modules/catalog.yaml#/paths/~1motorcycles"
   /api/catalog/motorcycles/{brandSlug}/{slug}:
     $ref: "./modules/catalog.yaml#/paths/~1motorcycles~1{brandSlug}~1{slug}"
+  /api/catalog/motorcycles/{id}:
+    $ref: "./modules/catalog.yaml#/paths/~1motorcycles~1{id}"
   /api/catalog/search/suggest:
     $ref: "./modules/catalog.yaml#/paths/~1search~1suggest"
   /api/catalog/motorcycles/{slug}/related:
@@ -122,7 +124,11 @@ paths:
     $ref: "./modules/support.yaml#/paths/~1create"
   /api/support/my-tickets:
     $ref: "./modules/support.yaml#/paths/~1my-tickets"
-
+    # api/content:
+  /api/content/news:
+    $ref: "./modules/content.yaml#/paths/~1news"
+  /api/content/news/{slug}:
+    $ref: "./modules/content.yaml#/paths/~1news~1{slug}"
 components:
   securitySchemes:
     bearerAuth:
