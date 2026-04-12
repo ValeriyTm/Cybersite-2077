@@ -201,3 +201,101 @@
   font-weight: 800;
   // width: 30%;
 }
+
+.fileLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border: 2px dashed #333;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #0a0a0a;
+
+  &:hover {
+    border-color: #f39c12;
+    background: #111;
+  }
+
+  //Стили при перетаскивании файла:
+  &.dragActive {
+    border-color: #f39c12;
+    background: rgba(243, 156, 18, 0.1);
+    transform: scale(1.02);
+  }
+}
+
+.fileCount {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #888;
+  strong {
+    color: #f39c12;
+  }
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.previewItem {
+  position: relative;
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  .thumb {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+
+  .fileIcon {
+    font-size: 2rem;
+    height: 80px;
+    display: flex;
+    align-items: center;
+  }
+
+  .fileName {
+    font-size: 0.7rem;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  .removeBtn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

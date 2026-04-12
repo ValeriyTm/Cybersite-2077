@@ -15,6 +15,7 @@ import { Link } from "react-router";
 export const SupportPage = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [files, setFiles] = useState<File[]>([]);
+  const [isDragActive, setIsDragActive] = useState(false); //Стейт для отслеживания того, находится ли файл над областью загрузки:
   const { user } = useProfile();
 
   const {
@@ -32,6 +33,46 @@ export const SupportPage = () => {
       phone: user?.phone || "",
     },
   });
+
+  //Удаление прикрепленного файла:
+  const removeFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+
+  //При размонтировании компонента ссылки на картинки нужно удалять
+  useEffect(() => {
+    return () => {
+      // Очищаем временные URL, чтобы не забивать память
+      files.forEach((file) => {
+        if (file.type.startsWith("image/")) {
+          URL.revokeObjectURL(URL.createObjectURL(file));
+        }
+      });
+    };
+  }, [files]);
+
+  // Обработчики событий для Drag'n'Drop:
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setIsDragActive(true);
+    } else if (e.type === "dragleave") {
+      setIsDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      // Соединяем новые файлы с уже выбранными (если нужно) или просто заменяем:
+      setFiles(Array.from(e.dataTransfer.files));
+    }
+  };
 
   const onSubmit = async (data: any) => {
     if (!executeRecaptcha) return;
@@ -172,17 +213,55 @@ export const SupportPage = () => {
         {/*Кастомный инпут для файлов */}
         {user ? (
           <div className={styles.fileUpload}>
-            <label className={styles.fileLabel}>
+            <label
+              className={`${styles.fileLabel} ${isDragActive ? styles.dragActive : ""}`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
               <input
                 type="file"
                 multiple
                 onChange={(e) => setFiles(Array.from(e.target.files || []))}
                 accept=".jpg,.png,.pdf,.doc,.docx,.txt"
               />
-              <div className={styles.icon}>📎</div>
-              <span>Нажмите, чтобы прикрепить файлы (PDF, DOC, TXT, PNG)</span>
+              <div className={styles.icon}>{isDragActive ? "📥" : "📎"}</div>
+              <span>Нажмите или перетащите файлы сюда</span>
             </label>
-            <p>Прикреплено файлов: {files.length}</p>
+
+            {/* БЛОК ПРЕДПРОСМОТРА */}
+            {files.length > 0 && (
+              <div className={styles.previewGrid}>
+                {files.map((file, index) => (
+                  <div key={index} className={styles.previewItem}>
+                    <div className={styles.previewContent}>
+                      {file.type.startsWith("image/") ? (
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt="preview"
+                          className={styles.thumb}
+                        />
+                      ) : (
+                        <div className={styles.fileIcon}>📄</div>
+                      )}
+                      <span className={styles.fileName}>{file.name}</span>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.removeBtn}
+                      onClick={() => removeFile(index)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <p className={styles.fileCount}>
+              Прикреплено файлов: <strong>{files.length}</strong>
+            </p>
           </div>
         ) : (
           <div className={styles.fileUploadDisabled}>
