@@ -37,11 +37,17 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 //----------------------------------Подключаем middleware:--------
-//Тут будет Morgan
-
 //Логирование входящих данных (ставим первым, чтобы фиксировать запрос в тот момент, когда он только пришел на сервер):
-app.use(morgan("combined"));
-//combined - подробность выводимой инфы в логи
+app.use(
+  morgan((tokens, req, res) => {
+    return JSON.stringify({
+      method: tokens.method(req, res),
+      url: tokens.url(req, res),
+      status: tokens.status(req, res),
+      responseTime: tokens["response-time"](req, res),
+    });
+  }),
+);
 
 //Настройка заголовков безопасности. Helmet всегда должен стоять самым первым (кроме логирования):
 app.use(

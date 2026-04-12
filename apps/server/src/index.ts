@@ -11,13 +11,12 @@ import { connectMongoDB } from "./lib/mongoose.js";
 import { initDiscountCron } from "./modules/discount/discount.queue.js";
 import { TelegramService } from "./modules/notifications/telegram.service.js";
 import { initNotificationListeners } from "./modules/notifications/notification.listener.js";
-//Воркеры:
-import "./modules/ordering/order.worker.js"; //Импортируем воркер заказов, чтобы он начал слушать задачи.
-import "./modules/discount/discount.worker.js"; //Импортируем воркер скидок, чтобы он начал слушать задачи.
-
-//Для модуля Reports:
 import { initReportsSchedule } from "./modules/reports/reports.queue.js";
-import { reportsWorker } from "./modules/reports/reports.worker.js"; // Воркер начнет слушать очередь автоматически при импорте
+//Воркеры (подключаем, чтобы задачи не просто копились в Redis, а реально выполнялись) (воркеры начнают слушать очередь автоматически при импорте):
+import "./modules/ordering/order.worker.js"; //Воркер заказов, чтобы он начал слушать задачи.
+import "./modules/discount/discount.worker.js"; //Воркер скидок, чтобы он начал слушать задачи.
+import "./modules/identity/auth/cleanup.worker.js"; //Воркер сервиса очистки аккаунтов, чтобы он начал слушать задачи.
+import "./modules/reports/reports.worker.js"; //Воркер отчетов.
 
 const PORT = process.env.PORT || 3001;
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -46,19 +45,19 @@ async function bootstrap() {
 
     //2.Запускаем остальное:
     await initDiscountCron(); //Запускаем планировщик задач для скидок и промокодов
+
     TelegramService.init(); //Подключаемся к ТГ-боту
+    console.log("К ТГ-боту подключение завершено");
+
     initNotificationListeners(); //Запускаем слушателя событий для сервиса оповещений
     initReportsSchedule(); //Запускаем работу очереди для сервиса отчетов
+
+    await CleanupService.init(); //Запускаем сервис удаления неподтвержденных аккаунтов спустя 7 дней
+    console.log("Сервис очистки неподтвержденных аккаунтов запущен");
 
     //3.Только после успеха запускаем сервер:
     const server = app.listen(PORT, () => {
       console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-
-      //Запускаем планировщик задач сразу после старта сервера:
-      CleanupService.init();
-      console.log(
-        "🧹 Cleanup Service: Scheduled task for unactivated users initialized",
-      );
     });
 
     //4. Механизм плавного завершения работы (Graceful Shutdown):
