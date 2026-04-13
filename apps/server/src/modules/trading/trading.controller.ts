@@ -1,10 +1,16 @@
-import { Response, NextFunction } from "express";
-import { FavoritesService } from "./favorites.service.js";
+//Главные сервисы модуля Trading:
 import { cartService } from "./cart.service.js";
-import { type ToggleFavoriteRequest } from "./trading.types.js";
+import { FavoritesService } from "./favorites.service.js";
+//Типы:
+import { Response, NextFunction } from "express";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { type ToggleFavoriteRequest } from "./trading.types.js";
+//Используем свой класс для выбрасывания ошибок:
+import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+
+//!!!!!!!!!!!Убрать!!!!!!!!!!!!
 import { prisma } from "@repo/database";
 
 //Контроллер добавления нового мотоцикла в избранное:

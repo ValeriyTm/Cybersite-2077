@@ -1,3 +1,4 @@
+//Клиент призмы для работы с БД:
 import { prisma } from "@repo/database";
 import { DiscountLogic } from "../discount/discount.logic.js";
 

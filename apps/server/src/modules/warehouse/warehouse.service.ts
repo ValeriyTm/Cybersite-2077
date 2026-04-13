@@ -1,4 +1,4 @@
-//Клиент призмы для работы с БД:
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Пространство имен из библиотеки:
 import { Prisma } from "@repo/database/generated/prisma";
@@ -27,7 +27,7 @@ export class WarehouseService {
     lng: number,
     items: { id: string; quantity: number }[],
   ) {
-    //Перебираем склады по удаленности и выбираем только тот, на котором есть в наличии все позиции заказа.
+    //Перебираем склады по удаленности и выбираем только тот, на котором есть в наличии все позиции заказа:
     const itemIds = items.map((i) => i.id);
     const totalUniqueItems = itemIds.length;
 
@@ -40,7 +40,7 @@ export class WarehouseService {
     WHERE s."motorcycleId" IN (${Prisma.join(itemIds)}) 
       AND (s.quantity - s.reserved) >= 1 -- Проверяем, что хотя бы 1 есть (упрощенно)
     GROUP BY w.id
-    HAVING COUNT(DISTINCT s."motorcycleId") = ${totalUniqueItems} -- 🎯 Ключевой момент: склад должен иметь ВСЕ типы товаров из корзины
+    HAVING COUNT(DISTINCT s."motorcycleId") = ${totalUniqueItems} -- Склад должен иметь все типы товаров из корзины
     ORDER BY "distanceKm" ASC
   `;
     //Используем ST_DistanceSphere для расчета расстояния в метрах по дуге сферы (Земли). Делим на 1000, чтобы получить километры.

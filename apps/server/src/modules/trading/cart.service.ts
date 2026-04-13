@@ -1,6 +1,11 @@
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../lib/redis.js";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-import { warehouseService } from "../warehouse/warehouse.service.js";
+//Сервис из модуля Warehouse:
+import { warehouseService } from "../warehouse/index.js";
+
+///??????????
 import { DiscountLogic } from "../discount/discount.logic.js";
 
 export class CartService {

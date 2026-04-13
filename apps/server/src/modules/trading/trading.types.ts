@@ -1,4 +1,4 @@
-// apps/server/src/modules/trading/trading.types.ts
+//Типы:
 import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
 
 //Тип для запроса POST "/favorites/toggle/:motorcycleId":

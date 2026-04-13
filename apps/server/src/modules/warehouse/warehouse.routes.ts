@@ -1,18 +1,19 @@
 import { Router } from "express";
+//Основной контроллер модуля Warehouse:
 import * as warehouseController from "./warehouse.controller.js";
-import { authMiddleware } from "src/shared/middlewares/auth.middleware.js";
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
+//Middleware:
+import { authMiddleware } from "src/shared/middlewares/auth.middleware.js"; //Проверка авторизации
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 
 const router = Router();
 
-router.use(noCacheMiddleware); //Запрещаем кэширование страниц браузером
-
-// Получить все склады для карты
+// Получить все склады для карты:
 router.get("/", warehouseController.getAllWarehouses);
 // Рассчитать доставку:
 router.post(
   "/calculate",
   authMiddleware,
+  noCacheMiddleware,
   warehouseController.calculateDelivery,
 );
 

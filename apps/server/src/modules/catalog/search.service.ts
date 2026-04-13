@@ -1,6 +1,5 @@
 import { Client } from "@elastic/elasticsearch";
 import { prisma } from "@repo/database";
-import { warehouseService } from "../warehouse/warehouse.service.js";
 import { DiscountLogic } from "../discount/discount.logic.js";
 
 //Подключаемся к контейнеру:
