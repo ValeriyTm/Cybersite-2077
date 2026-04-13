@@ -1,9 +1,11 @@
+//Библиотека дял работы с прверащения html/css-кода в pdf-документ:
 import puppeteer from "puppeteer";
+//Для взаимодействия с файлами и путями:
 import path from "path";
 import fs from "fs";
 
 export class PdfService {
-  static async generateSalesPdf(stats: any): Promise<string> {
+  async generateSalesPdf(stats: any): Promise<string> {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
@@ -81,3 +83,5 @@ export class PdfService {
     return filePath;
   }
 }
+
+export const pdfService = new PdfService();

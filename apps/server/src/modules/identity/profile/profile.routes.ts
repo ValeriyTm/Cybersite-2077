@@ -1,13 +1,10 @@
 import { Router } from "express";
 import * as ProfileController from "./profile.controller.js";
-//Middleware для аутентификации:
-import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js";
-//Middleware для загрузки аватара:
-import { uploadAvatar } from "../../../shared/middlewares/upload.middleware.js";
-//Middleware для авторизации:
-import { roleMiddleware } from "../../../shared/middlewares/role.middleware.js";
-//Middleware для запрета кэширования данных на стороне клиента:
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
+//Middleware:
+import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js"; //Middleware для аутентификации:
+import { uploadAvatar } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
+import { roleMiddleware } from "../../../shared/middlewares/role.middleware.js"; //Middleware для авторизации:
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Middleware для запрета кэширования данных на стороне клиента:
 
 const router = Router();
 

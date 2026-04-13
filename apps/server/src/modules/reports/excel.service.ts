@@ -1,9 +1,11 @@
+//Библиотека дял работы с .xlsx:
 import ExcelJS from "exceljs";
+//Для взаимодействия с файлами и путями:
 import path from "path";
 import fs from "fs";
 
 export class ExcelService {
-  static async generateSalesRepo(stats: any): Promise<string> {
+  async generateSalesRepo(stats: any): Promise<string> {
     const workbook = new ExcelJS.Workbook();
     workbook.creator = "CyberSite Admin";
 
@@ -69,3 +71,5 @@ export class ExcelService {
     return filePath;
   }
 }
+
+export const excelService = new ExcelService();

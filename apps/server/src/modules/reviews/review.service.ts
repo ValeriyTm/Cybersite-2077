@@ -1,15 +1,21 @@
+//Модель для взаимодействия с MongoDB:
 import { ReviewModel } from "./review.model.js";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-import { SearchService } from "../catalog/search.service.js";
+//Для работы с событиями:
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
+//Для работы с путями и файлами:
 import path from "path";
 import * as fs from "node:fs";
+//Санитайзинг пользовательсих данных:
 import sanitizeHtml from "sanitize-html";
-import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
-
-const searchService = new SearchService();
+//Используем свой класс для выбрасывания ошибок:
+import { AppError } from "../../shared/utils/app-error.js";
+//Импортируем поисковый сервис из модуля Catalog:
+import { searchService } from "../catalog/index.js";
 
 export class ReviewService {
-  //Для создания отзыва:
+  //Создание отзыва:
   async createReview(
     userId: string,
     userName: string,
@@ -22,7 +28,9 @@ export class ReviewService {
     const order = await prisma.order.findUnique({
       where: { id: orderId, userId, status: "COMPLETED" }, //Статус должен быть COMPLETED
     });
-    if (!order) throw new Error("Вы не можете оставить отзыв на этот товар");
+    if (!order) {
+      throw new AppError(403, "Вы не можете оставить отзыв на этот товар");
+    }
 
     //2.Проверяем размер комментария:
     if (comment.length < 5 || comment.length > 2000) {
@@ -81,7 +89,7 @@ export class ReviewService {
     return review;
   }
 
-  //Получения отзывов по мотоциклу:
+  //Получение отзывов по мотоциклу:
   async getByMotorcycle(motorcycleId: string) {
     return ReviewModel.find({ motorcycleId }).sort({ createdAt: -1 });
   }
@@ -94,7 +102,7 @@ export class ReviewService {
 
     //Проверка прав:
     if (review.userId !== userId && !isAdmin) {
-      throw new Error("У вас нет прав на удаление этого отзыва");
+      throw new AppError(403, "У вас нет прав на удаление этого отзыва");
     }
 
     //Удаляем файлы изображений из отзыва:

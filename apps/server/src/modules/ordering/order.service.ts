@@ -2,7 +2,9 @@
 import { prisma } from "@repo/database";
 //Пространство имен из библиотеки:
 import { Prisma } from "@repo/database/generated/prisma";
-import { ReviewModel } from "../reviews/review.model.js";
+//Схема взаимодействия с MongoDB из модуля Review:
+import { ReviewModel } from "../reviews/index.js";
+
 import { searchService } from "../catalog/search.service.js";
 import { PaymentService } from "../payment/payment.service.js";
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";

@@ -7,7 +7,8 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 import { prisma } from "@repo/database";
 
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
-import { DiscountLogic } from "../discount/discount.logic.js";
+//Логика расчёта цены с учетом скидок (из модуля Discount):
+import { discountLogic } from "../discount/index.js";
 
 //Получение главных категорий:
 export const getCategories = catchAsync(
@@ -176,7 +177,7 @@ export const getMotorcycleById = catchAsync(
     );
 
     //Считаем скидку:
-    const discountData = await DiscountLogic.calculateFinalPrice(
+    const discountData = await discountLogic.calculateFinalPrice(
       motorcycle,
       userId,
     );

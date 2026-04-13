@@ -1,4 +1,6 @@
+//Очередь:
 import { Queue } from "bullmq";
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "src/lib/redis.js";
 
 export const reportsQueue = new Queue("reports-queue", {

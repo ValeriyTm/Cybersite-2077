@@ -1,8 +1,9 @@
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 
 export class ReportsService {
-  //Метод сбора данных за период:
-  static async getStatistics(days = 30) {
+  //Метод сбора статистики за указанный период:
+  async getStatistics(days = 30) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
@@ -51,3 +52,5 @@ export class ReportsService {
     };
   }
 }
+
+export const reportsService = new ReportsService();

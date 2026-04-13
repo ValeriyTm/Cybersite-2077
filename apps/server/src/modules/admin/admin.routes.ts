@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { AdminController } from "./admin.controller.js";
+//Middleware:
 import { authMiddleware } from "src/shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "src/shared/middlewares/role.middleware.js";
-import { productUpload } from "./multer.js";
+import { productUpload } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
 import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
 
 const router = Router();

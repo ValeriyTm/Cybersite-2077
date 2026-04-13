@@ -1,14 +1,20 @@
+//Воркер:
 import { Worker } from "bullmq";
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "src/lib/redis.js";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-import fs from "fs";
+//Для работы с путями и файлами:
+import fs from "fs/promises";
 import path from "path";
 
 export const supportCleanupWorker = new Worker(
-  "support-cleanup",
+  "support-cleanup", //Имя отслеживаемой очереди
   async (job) => {
+    //1) Извлекаем значение ticketId из задачи:
     const { ticketId } = job.data;
 
+    //3) Ищем тикет в PostgreSQL:
     const ticket = await prisma.supportTicket.findUnique({
       where: { id: ticketId },
       include: { attachments: true },
@@ -16,20 +22,31 @@ export const supportCleanupWorker = new Worker(
 
     if (!ticket) return;
 
-    //Физическое удаление файлов с диска:
-    ticket.attachments.forEach((file) => {
+    //4) Физическое удаление файлов с диска:
+    // Создаем массив промисов для удаления файлов
+    const deletePromises = ticket.attachments.map(async (file) => {
       const filePath = path.resolve(file.fileUrl);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      try {
+        // Проверяем доступность файла асинхронно
+        await fs.access(filePath);
+        // Удаляем файл асинхронно:
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        await fs.unlink(filePath);
+      } catch (err) {
+        // Если файла нет или ошибка доступа — просто логируем,
+        // чтобы не прерывать удаление остальных файлов
+        console.error(`Не удалось удалить файл ${filePath}:`, err.message);
       }
     });
+    // Ждем завершения всех операций удаления
+    await Promise.all(deletePromises);
 
-    //Удаление записей из БД:
+    //5) Удаление сопутствующих записей из БД:
     await prisma.supportAttachment.deleteMany({
       where: { ticketId },
     });
 
-    console.log(`🧹 Очистка файлов для тикета ${ticketId} завершена`);
+    console.log(`Очистка файлов для тикета ${ticketId} завершена!`);
   },
   { connection: redis },
 );

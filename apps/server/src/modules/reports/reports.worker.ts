@@ -1,25 +1,29 @@
+//Воркер:
 import { Worker } from "bullmq";
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "src/lib/redis.js";
-import { ReportsService } from "./reports.service.js";
-import { ExcelService } from "./excel.service.js";
-import { TelegramService } from "../notifications/telegram.service.js";
-import { PdfService } from "./pdf.service.js";
+//Основной сервис модуля Reports:
+import { reportsService } from "./reports.service.js";
+//Прочие сервисы модуля Reports:
+import { excelService } from "./excel.service.js";
+import { pdfService } from "./pdf.service.js";
+//Для взаимодействия с файлами:
 import fs from "fs";
+//Сервис для отправки сообщений в Telegram из модуля Notifications:
+import { telegramService } from "../notifications/index.js";
 
 export const reportsWorker = new Worker(
   "reports-queue",
   async (job) => {
     if (job.name === "weekly-excel-report") {
       // 1. Собираем статистику за неделю
-      const stats = await ReportsService.getStatistics(7);
+      const stats = await reportsService.getStatistics(7);
 
       // 2. Генерируем файл
-      const filePath = await ExcelService.generateSalesRepo(stats);
+      const filePath = await excelService.generateSalesRepo(stats);
 
       // 3. Отправляем в Telegram
-      // В Telegraf метод sendDocument позволяет отправить файл
-      // Нам нужно добавить этот метод в наш TelegramService (ниже покажу как)
-      await TelegramService.sendDocument(
+      await telegramService.sendDocument(
         filePath,
         `📊 Еженедельный отчет готов!\nВыручка: ${stats.totalRevenue.toLocaleString()} ₽`,
       );
@@ -29,15 +33,15 @@ export const reportsWorker = new Worker(
     }
 
     if (job.name === "weekly-excel-report") {
-      const stats = await ReportsService.getStatistics(7);
+      const stats = await reportsService.getStatistics(7);
 
       // Генерируем оба формата
-      const excelPath = await ExcelService.generateSalesRepo(stats);
-      const pdfPath = await PdfService.generateSalesPdf(stats);
+      const excelPath = await excelService.generateSalesRepo(stats);
+      const pdfPath = await pdfService.generateSalesPdf(stats);
 
       // Отправляем оба файла в Telegram
-      await TelegramService.sendDocument(excelPath, `📊 Excel: Итоги недели`);
-      await TelegramService.sendDocument(
+      await telegramService.sendDocument(excelPath, `📊 Excel: Итоги недели`);
+      await telegramService.sendDocument(
         pdfPath,
         `📄 PDF: Аналитика за неделю`,
       );
@@ -49,7 +53,7 @@ export const reportsWorker = new Worker(
 
     //Ежедневный отчет в ТГ за вчера:
     if (job.name === "daily-status-report") {
-      const stats = await ReportsService.getStatistics(1); // За 1 день
+      const stats = await reportsService.getStatistics(1); // За 1 день
 
       const message = `
 📊 <b>ИТОГИ ЗА ВЧЕРА</b>
@@ -61,7 +65,7 @@ export const reportsWorker = new Worker(
 <i>Склад: ${stats.lowStock.length} позиций требуют внимания!</i>
     `;
 
-      await TelegramService.sendMessage(message);
+      await telegramService.sendMessage(message);
     }
   },
   { connection: redis },

@@ -1,5 +1,5 @@
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
-import { TelegramService } from "./telegram.service.js";
+import { telegramService } from "./telegram.service.js";
 import { MailService } from "src/modules/notifications/mail.service.js";
 
 export const initNotificationListeners = () => {
@@ -14,7 +14,7 @@ export const initNotificationListeners = () => {
 ————————————————
 <i>Пора готовить байк к отгрузке!</i> 🏍️
     `;
-    await TelegramService.sendMessage(message);
+    await telegramService.sendMessage(message);
   });
 
   //2) Реакция на событие создания заказа:
@@ -28,7 +28,7 @@ export const initNotificationListeners = () => {
 ————————————————
 <i>Статус: Ожидает оплаты</i>
     `;
-    await TelegramService.sendMessage(message);
+    await telegramService.sendMessage(message);
   });
 
   //3) Реакция на событие создания отзыва на товар:
@@ -46,7 +46,7 @@ export const initNotificationListeners = () => {
 ————————————————
 <a href="http://localhost:5173/catalog/motorcycles/${review.motorcycleId}">Открыть на сайте</a>
   `;
-    await TelegramService.sendMessage(message);
+    await telegramService.sendMessage(message);
   });
 
   //4) Реакция на событие принудилтельной генерации скидок и промокодов:
@@ -60,7 +60,7 @@ export const initNotificationListeners = () => {
 ————————————————
 <i>Система лояльности обновлена успешно!</i>
   `;
-    await TelegramService.sendMessage(message);
+    await telegramService.sendMessage(message);
   });
 
   //5) Реакция на событие перехода заказа в статус "DELIVERED":
@@ -73,7 +73,7 @@ export const initNotificationListeners = () => {
     );
 
     //Шлем себе в Telegram (чтобы знать, что заказ юзеру доставлен):
-    await TelegramService.sendMessage(
+    await telegramService.sendMessage(
       `🚚 <b>ЗАКАЗ ДОСТАВЛЕН</b>\n————————————————\nЗаказ: <code>#${order.orderNumber}</code>\nАдрес: ${order.address}`,
     );
   });
@@ -135,6 +135,6 @@ export const initNotificationListeners = () => {
 <b>ID тикета:</b> <code>${ticket.id}</code>
   `;
 
-    await TelegramService.sendMessage(message);
+    await telegramService.sendMessage(message);
   });
 };

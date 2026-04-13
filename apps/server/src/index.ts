@@ -3,13 +3,14 @@
 import "./shared/env.js"; // Загрузка .env должна быть первой
 //Настройки сервера:
 import app from "./app.js";
-//Клиент призмы для взаимодействия с БД:
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-//Импортируем мой сервис удаления неподтвержденных аккаунтов:
+//Сервис удаления неподтвержденных аккаунтов:
 import { CleanupService } from "./modules/identity/auth/cleanup.service.js";
 import { connectMongoDB } from "./lib/mongoose.js";
 import { initDiscountCron } from "./modules/discount/discount.queue.js";
-import { TelegramService } from "./modules/notifications/telegram.service.js";
+//Подключение к ТГ-боту из сервиса Notifications:
+import { TelegramService } from "./modules/notifications/index.js";
 import { initNotificationListeners } from "./modules/notifications/notification.listener.js";
 import { initReportsSchedule } from "./modules/reports/reports.queue.js";
 //Воркеры (подключаем, чтобы задачи не просто копились в Redis, а реально выполнялись) (воркеры начнают слушать очередь автоматически при импорте):

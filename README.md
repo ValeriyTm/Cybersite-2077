@@ -20,11 +20,12 @@
 ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white) 
 ![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Docker-336791?logo=postgresql&logoColor=white)
+![PostGIS](https://img.shields.io/badge/PostGIS-Extension-336791?logo=postgresql&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-Docker-DC382D?logo=redis&logoColor=white)
+![BullMQ](https://img.shields.io/badge/BullMQ-Redis_Queue-DC382D?logo=redis&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Docker-47A248?logo=mongodb&logoColor=white)
 ![Mongoose](https://img.shields.io/badge/Mongoose-ODM-880000?logo=mongoose&logoColor=white)
-![BullMQ](https://img.shields.io/badge/BullMQ-Queue-EA4AAA)
 ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-Docker-005571?logo=elasticsearch&logoColor=white)
 #### Testing
 ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)

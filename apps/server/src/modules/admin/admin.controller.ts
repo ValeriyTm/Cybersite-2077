@@ -1,13 +1,19 @@
-//Этот контроллер будет отвечать за получение списков с пагинацией и поиском.
-
+//--------Этот контроллер будет отвечать за получение списков с пагинацией и поиском.
+//Типы:
 import { Request, Response, NextFunction } from "express";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-import { ReportsService } from "../reports/reports.service.js";
-import { PdfService } from "../reports/pdf.service.js";
-import { ExcelService } from "../reports/excel.service.js";
+//Сервисы модуля Reports:
+import { reportsService } from "../reports/index.js";
+import { pdfService } from "../reports/index.js";
+import { excelService } from "../reports/index.js";
+//Сервисы модуля Catalog:
 import { searchService } from "../catalog/search.service.js";
+//Взаимодействие с файлами и путями:
 import fs from "fs";
 import path from "path";
+
+//??????
 import { NewsModel } from "../content/news.model.js";
 
 //Функция для генерации slug для модели мотоцикла:
@@ -706,10 +712,10 @@ export class AdminController {
       console.log("req.query: ", req.query);
       const { format, days = 30 } = req.query; // Получаем формат (pdf/xlsx) и период
       console.log("Запрошенный формат:", format);
-      const stats = await ReportsService.getStatistics(Number(days));
+      const stats = await reportsService.getStatistics(Number(days));
 
       if (format === "xlsx") {
-        const filePath = await ExcelService.generateSalesRepo(stats);
+        const filePath = await excelService.generateSalesRepo(stats);
         res.setHeader(
           "Content-Type",
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -723,7 +729,7 @@ export class AdminController {
       }
 
       if (format === "pdf") {
-        const filePath = await PdfService.generateSalesPdf(stats);
+        const filePath = await pdfService.generateSalesPdf(stats);
         res.contentType("application/pdf");
         return res.sendFile(filePath);
       }

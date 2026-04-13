@@ -1,14 +1,18 @@
 import { Telegraf } from "telegraf";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-import { ReportsService } from "../reports/reports.service.js";
-import { PdfService } from "../reports/pdf.service.js";
-import { ExcelService } from "../reports/excel.service.js";
+//Сервисы для генерации отчетов из модуля Notifications:
+import { reportsService } from "../reports/index.js";
+import { pdfService } from "../reports/index.js";
+import { excelService } from "../reports/index.js";
+//Для работы с файлами:
 import fs from "fs";
 
 export class TelegramService {
   private static bot: Telegraf;
   private static adminId: string = process.env.TG_ADMIN_CHAT_ID || "";
 
+  //Подключение к ТГ-боту:
   static init() {
     if (!this.bot && process.env.TG_BOT_TOKEN) {
       this.bot = new Telegraf(process.env.TG_BOT_TOKEN);
@@ -38,8 +42,8 @@ export class TelegramService {
         await ctx.reply("⏳ Формирую отчет за последние 30 дней, подождите...");
 
         try {
-          const stats = await ReportsService.getStatistics(30);
-          const pdfPath = await PdfService.generateSalesPdf(stats);
+          const stats = await reportsService.getStatistics(30);
+          const pdfPath = await pdfService.generateSalesPdf(stats);
 
           await ctx.replyWithDocument(
             { source: pdfPath },
@@ -65,11 +69,11 @@ export class TelegramService {
 
         try {
           // Собираем данные за последние 30 дней
-          const stats = await ReportsService.getStatistics(30);
+          const stats = await reportsService.getStatistics(30);
 
           // Генерируем оба формата
-          const pdfPath = await PdfService.generateSalesPdf(stats);
-          const excelPath = await ExcelService.generateSalesRepo(stats);
+          const pdfPath = await pdfService.generateSalesPdf(stats);
+          const excelPath = await excelService.generateSalesRepo(stats);
 
           // Отправляем файлы по очереди
           await ctx.replyWithDocument(
@@ -100,7 +104,7 @@ export class TelegramService {
   }
 
   //Универсальный метод отправки сообщения админу:
-  static async sendMessage(message: string) {
+  async sendMessage(message: string) {
     if (!this.bot || !this.adminId) return;
 
     try {
@@ -114,7 +118,7 @@ export class TelegramService {
   }
 
   //Метод для отправки файлов:
-  static async sendDocument(filePath: string, caption: string) {
+  async sendDocument(filePath: string, caption: string) {
     if (!this.bot || !this.adminId) return;
     try {
       await this.bot.telegram.sendDocument(
@@ -127,3 +131,5 @@ export class TelegramService {
     }
   }
 }
+
+export const telegramService = new TelegramService();
