@@ -1,4 +1,6 @@
+//Очередь:
 import { Queue } from "bullmq";
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../lib/redis.js";
 
 // Создаем очередь для заказов
@@ -24,7 +26,7 @@ export const addDeliveryStartTask = async (orderId: string) => {
   await orderQueue.add("start-delivery", { orderId }, { delay: randomDelay });
 
   console.log(
-    `🚚 Задача на доставку для ${orderId} запланирована через ${randomDelay / 60000} мин.`,
+    `Задача на доставку для ${orderId} запланирована через ${randomDelay / 60000} мин.`,
   );
 };
 

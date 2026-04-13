@@ -6,7 +6,7 @@ import { addOrderExpirationTask } from "./order.queue.js";
 import { prisma } from "@repo/database";
 import { addDeliveryStartTask } from "./order.queue.js";
 import { searchService } from "../catalog/search.service.js";
-import { PaymentService } from "../payment/payment.service.js";
+import { paymentService } from "../payment/index.js";
 
 //Создание заказа:
 export const createOrder = async (
@@ -165,11 +165,11 @@ export const completeOrder = async (
         .json({ message: "Нельзя завершить заказ, который еще не доставлен" });
     }
 
-    //Обновляем статус:
-    const updatedOrder = await prisma.order.update({
-      where: { id: orderId },
-      data: { status: "COMPLETED" },
-    });
+    //Обновляем статус заказа в PostgreSQL:
+    const updatedOrder = await orderService.changeStatusOrder(
+      orderId,
+      "COMPLETED",
+    );
 
     res.json(updatedOrder);
   } catch (e) {
@@ -212,7 +212,7 @@ export const cancelOrder = async (
       try {
         const refundAmount = order.totalPrice / 1000; //Используем ту же логику /1000, что и при оплате, чтобы суммы совпали
 
-        await PaymentService.createRefund(order.paymentId, refundAmount);
+        await paymentService.createRefund(order.paymentId, refundAmount);
         console.log(`Возврат средств инициирован для заказа: ${order.id}`);
       } catch (refundError) {
         console.error("Ошибка при возврате в ЮKassa:", refundError);

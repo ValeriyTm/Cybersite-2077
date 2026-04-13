@@ -1,5 +1,7 @@
 ////-----------Middleware для фильтрации IP-адресов, чтобы на открытый эндпоинт, предназначенный для Юкассы, не слали запросы со сторонних IP
+//Типы:
 import { Request, Response, NextFunction } from "express";
+//Библиотека для фильтрации IP-адресов:
 import ipRangeCheck from "ip-range-check";
 
 export const ipFilterMiddleware = (
@@ -7,8 +9,8 @@ export const ipFilterMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
-  //1) Извлекаем IP. Т.к. сервер за ngrok, то берем "x-forwarded-for":
-  const xForwardedFor = req.headers["x-forwarded-for"];
+  //1) Извлекаем IP:
+  const xForwardedFor = req.headers["x-forwarded-for"]; //Поскольку сервер за ngrok, то берем "x-forwarded-for"
   const requesterIp = Array.isArray(xForwardedFor)
     ? xForwardedFor[0]
     : xForwardedFor?.split(",")[0] || req.socket.remoteAddress || "";
@@ -33,7 +35,7 @@ export const ipFilterMiddleware = (
 
   if (!isAllowed) {
     console.warn(
-      `🚨 [Webhook] Попытка несанкционированного доступа с IP: ${cleanIp}`,
+      `[Webhook] Попытка несанкционированного доступа с IP: ${cleanIp}`,
     );
     return res.status(403).json({
       message: "Forbidden: IP not allowed",
@@ -41,8 +43,6 @@ export const ipFilterMiddleware = (
     });
   }
 
-  console.log(
-    `✅ [Webhook] Получен доверенный запрос от ЮKassa (IP: ${cleanIp})`,
-  );
+  console.log(`[Webhook] Получен доверенный запрос от ЮKassa (IP: ${cleanIp})`);
   next();
 };

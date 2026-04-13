@@ -1,14 +1,16 @@
 //Клиент призмы для работы с БД:
 import { prisma } from "@repo/database";
-//Пространство имен из библиотеки:
+//Клиент призмы для работы с PostgreSQL:
 import { Prisma } from "@repo/database/generated/prisma";
 //Схема взаимодействия с MongoDB из модуля Review:
 import { ReviewModel } from "../reviews/index.js";
-
-import { searchService } from "../catalog/search.service.js";
-import { PaymentService } from "../payment/payment.service.js";
+//Используем сервис модуля Payment:
+import { paymentService } from "../payment/index.js";
+//Для генерации событий:
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 
+//????????
+import { searchService } from "../catalog/search.service.js";
 export class OrderService {
   //Создание заказа с резервированием остатков и обновлением профиля
   async createOrder(userId: string, data: any) {
@@ -97,7 +99,7 @@ export class OrderService {
       // Достаем email юзера (он нам нужен для чека)
       const user = await tx.user.findUnique({ where: { id: userId } });
 
-      const payment = await PaymentService.createPayment(
+      const payment = await paymentService.createPayment(
         order.id,
         totalPrice,
         order.items, //Передаем товары
@@ -187,6 +189,15 @@ export class OrderService {
         return { ...order, items: itemsWithReviewStatus };
       }),
     );
+  }
+
+  //Изменить статус заказа:
+  async changeStatusOrder(orderId: string, newStatus: string, tx?: any) {
+    const client = tx || prisma; //Если tx передан, то используем его (для случая, когда мы вызываем этот метод внутри транзакции)
+    return await client.order.update({
+      where: { id: orderId },
+      data: { status: newStatus },
+    });
   }
 }
 

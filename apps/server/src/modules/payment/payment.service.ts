@@ -1,5 +1,11 @@
+//Библиотека (не официальная, но указана на сайте Юкассы) для взаимодействия с Юкассой:
 import { YooCheckout, ICreatePayment } from "@a2seven/yoo-checkout";
+//Библиотека генерации uuid v4:
 import { v4 as uuidv4 } from "uuid";
+//Клиент призмы для работы с PostgreSQL:
+import { prisma } from "@repo/database";
+//Используем сервис модуля Ordering:
+import { orderService } from "../ordering/index.js";
 
 const checkout = new YooCheckout({
   shopId: process.env.YOOKASSA_SHOP_ID!,
@@ -8,7 +14,7 @@ const checkout = new YooCheckout({
 
 export class PaymentService {
   //Создание платежа:
-  static async createPayment(
+  async createPayment(
     orderId: string,
     amount: number,
     items: any[],
@@ -42,7 +48,7 @@ export class PaymentService {
           description: item.motorcycle?.model || "Мотоцикл", // Название
           quantity: item.quantity.toFixed(2), // Кол-во (строкой)
           amount: {
-            value: ((item.priceAtOrder || item.price) / 1000).toFixed(2), // Цена за 1 шт / 1000
+            value: ((item.priceAtOrder || item.price) / 1000).toFixed(2), // Цена за 1 шт, деленная на 1000 (т.к. лимиты тестовой юкассы ограничивают большие суммы)
             currency: "RUB",
           },
           vat_code: 1, //1 — без НДС (для тестов)
@@ -51,8 +57,6 @@ export class PaymentService {
         })),
       },
     };
-
-    // return await checkout.createPayment(createPayload, idempotenceKey);
 
     try {
       //Совершаем платеж с указанными параметрами:
@@ -67,8 +71,8 @@ export class PaymentService {
     }
   }
 
-  //Возврат:
-  static async createRefund(paymentId: string, amount: number) {
+  //Осуществляем возврат:
+  async createRefund(paymentId: string, amount: number) {
     const idempotenceKey = uuidv4();
 
     try {
@@ -89,4 +93,33 @@ export class PaymentService {
       throw error;
     }
   }
+
+  //Изменяем статус заказа на PAID и списываем товар со склада (после успешной оплаты):
+  async applyChangeAfterPayment(orderId: string) {
+    //Выполняем смену статуса и списание остатков за одну транзакцию:
+    await prisma.$transaction(async (tx) => {
+      //Меняем статус заказа в PostgreSQL:
+      const order = await orderService.changeStatusOrder(orderId, "PAID", tx);
+
+      //Окончательно списываем товар со склада в PostgreSQL:
+      for (const item of order.items) {
+        await tx.stock.update({
+          where: {
+            motorcycleId_warehouseId: {
+              motorcycleId: item.motorcycleId,
+              warehouseId: order.warehouseId,
+            },
+          },
+          data: {
+            reserved: { decrement: item.quantity },
+            quantity: { decrement: item.quantity },
+          },
+        });
+      }
+    });
+
+    return order;
+  }
 }
+
+export const paymentService = new PaymentService();

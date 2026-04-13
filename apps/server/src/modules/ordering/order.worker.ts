@@ -1,9 +1,16 @@
+//Воркер:
 import { Worker } from "bullmq";
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "src/lib/redis.js";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
+//Очередь для изменения статусов заказов:
 import { addDeliveredTask } from "./order.queue.js";
-import { searchService } from "../catalog/search.service.js";
+//Для генерации событий:
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
+
+//???????
+import { searchService } from "../catalog/search.service.js";
 
 export const orderWorker = new Worker(
   "order-tasks", //(Поле должно совпадать с именем в Queue)
