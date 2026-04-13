@@ -4,9 +4,8 @@ import { redis } from "../../lib/redis.js";
 import { prisma } from "@repo/database";
 //Сервис из модуля Warehouse:
 import { warehouseService } from "../warehouse/index.js";
-
-///??????????
-import { DiscountLogic } from "../discount/discount.logic.js";
+//Логика расчёта цены с учетом скидок (из модуля Discount):
+import { discountLogic } from "../discount/index.js";
 
 export class CartService {
   private getCartKey(userId: string) {
@@ -23,7 +22,7 @@ export class CartService {
     //Собираем все ID товаров из корзины:
     const ids = cartItems.map((item: any) => item.id);
 
-    // Получаем полные данные мотоциклов (нужны для года выпуска и цены)
+    //Получаем полные данные мотоциклов (нужны для года выпуска и цены):
     const motorcycles = await prisma.motorcycle.findMany({
       where: { id: { in: ids } },
       include: {
@@ -32,7 +31,7 @@ export class CartService {
       },
     });
 
-    //Получаем актуальные остатки из БД
+    //Получаем актуальные остатки из БД:
     const stocks = await prisma.stock.groupBy({
       by: ["motorcycleId"],
       _sum: {
@@ -58,28 +57,23 @@ export class CartService {
         const moto = motorcycles.find((m) => m.id === item.id);
         if (!moto) return null;
 
-        // 🎯 Рассчитываем скидку для этого товара и этого юзера
-        const discountData = await DiscountLogic.calculateFinalPrice(
+        //Рассчитываем скидку для этого товара и этого юзера:
+        const discountData = await discountLogic.calculateFinalPrice(
           moto,
           userId,
         );
 
         return {
-          ...moto, // Данные из БД (модель, бренд, базовая цена)
-          selected: item.selected, // Чекбокс выбора
+          ...moto, //Данные из БД (модель, бренд, базовая цена)
+          selected: item.selected, //Чекбокс выбора
           quantity: item.quantity,
-          totalInStock: stockMap[item.id] || 0, //Если товара нет в таблице Stock — пишем 0
-          discountData, // Скидки { finalPrice, discountPercent, isPersonal }
+          totalInStock: stockMap[item.id] || 0, //Если товара нет в таблице Stock, то указываем "0"
+          discountData, //Скидки { finalPrice, discountPercent, isPersonal }
         };
       }),
     );
 
     return enrichedCart.filter(Boolean);
-    // //Добавляем актуальный totalInStock к каждому предмету корзины:
-    // return cartItems.map((item: any) => ({
-    //   ...item,
-    //   totalInStock: stockMap[item.id] || 0, // Если товара нет в таблице Stock — пишем 0
-    // }));
   }
 
   //Добавить товар в корзину / обновить количество:
@@ -171,10 +165,10 @@ export class CartService {
     );
 
     await redis.set(key, JSON.stringify(updatedCart));
-    return this.getCart(userId); // Возвращаем полную корзину с данными из БД и скидками
+    return this.getCart(userId); //Возвращаем полную корзину с данными из БД и скидками
   }
 
-  //Метод "Выбрать всё / Снять всё" для товаров корзины:
+  //Метод для работы чекбокса "Выбрать всё / Снять всё" для товаров корзины:
   async toggleSelectAll(userId: string, isSelected: boolean) {
     const key = this.getCartKey(userId);
     const data = await redis.get(key);

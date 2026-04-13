@@ -4,7 +4,7 @@ import { prisma } from "@repo/database";
 
 export class DiscountLogic {
   //Вычисляет финальную цену мотоцикла для конкретного пользователя
-  static async calculateFinalPrice(motorcycle: any, userId?: string) {
+  async calculateFinalPrice(motorcycle: any, userId?: string) {
     let finalPrice = motorcycle.price;
     let appliedDiscount = 0; // В процентах (выбираем бОльшую)
 
@@ -45,3 +45,5 @@ export class DiscountLogic {
     };
   }
 }
+
+export const discountLogic = new DiscountLogic();

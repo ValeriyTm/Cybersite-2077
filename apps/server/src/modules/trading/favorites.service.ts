@@ -1,10 +1,11 @@
-//Клиент призмы для работы с БД:
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-import { DiscountLogic } from "../discount/discount.logic.js";
+//Логика расчёта цены с учетом скидок (из модуля Discount):
+import { discountLogic } from "../discount/index.js";
 
 export class FavoritesService {
-  // 1. Переключить статус (Лайк/Анлайк) 🔄
-  static async toggleFavorite(userId: string, motorcycleId: string) {
+  //Переключить статус (в избранном / не в избранном):
+  async toggleFavorite(userId: string, motorcycleId: string) {
     //Ищем, есть ли уже такая запись:
     const existing = await prisma.favorite.findUnique({
       where: {
@@ -27,8 +28,8 @@ export class FavoritesService {
     return { isFavorite: true };
   }
 
-  // 2. Получить список ID избранного (для синхронизации иконок) 🆔
-  static async getFavoriteIds(userId: string) {
+  //Получить список ID избранного (для синхронизации иконок):
+  async getFavoriteIds(userId: string) {
     const favorites = await prisma.favorite.findMany({
       where: { userId },
       select: { motorcycleId: true },
@@ -37,7 +38,7 @@ export class FavoritesService {
   }
 
   //Пернуть полные данные о моделях по массиву id от юзера:
-  static async getFavoritesByIds(
+  async getFavoritesByIds(
     ids: string[],
     limit: number = 20,
     skip: number = 0,
@@ -64,7 +65,7 @@ export class FavoritesService {
           0,
         );
 
-        const discountData = await DiscountLogic.calculateFinalPrice(
+        const discountData = await discountLogic.calculateFinalPrice(
           moto,
           userId,
         );
@@ -82,4 +83,13 @@ export class FavoritesService {
       hasMore: skip + limit < ids.length, //Есть ли, что подгружать дальше
     };
   }
+
+  //Получить количество товаров в избранном:
+  async getFavoritesCount(userId: string) {
+    return await prisma.favorite.count({
+      where: { userId: userId },
+    });
+  }
 }
+
+export const favoritesService = new FavoritesService();

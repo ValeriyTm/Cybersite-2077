@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { orderService } from "./order.service.js";
-import { cartService } from "../trading/cart.service.js";
+import { cartService } from "../trading/index.js";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
 import { addOrderExpirationTask } from "./order.queue.js";
 import { prisma } from "@repo/database";

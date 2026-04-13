@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
+//Основной контроллер модуля Trading:
 import * as tradingController from "./trading.controller.js";
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
+//Middleware:
+import { authMiddleware } from "src/shared/middlewares/auth.middleware.js"; //Проверка авторизации
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 
 const router = Router();
 
-router.use(noCacheMiddleware); //Запрещаем кэширование страниц браузером
+router.use(noCacheMiddleware);
 
 //--------------------------Избранное:------------------------//
 //Роут получения списка (массив id мотоциклов ['5gd..', 'cb55..', ...]) избранных товаров:
