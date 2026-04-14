@@ -2,35 +2,29 @@
 import { Toaster } from "react-hot-toast";
 //Роутер:
 import { Outlet } from "react-router";
-//Хранилища:
-import { useProfile } from "@/features/auth/model/useProfile"; //Серверный стор
-import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентский стор
+//Данные пользователя:
+import { useProfile } from "@/features/auth/model/useProfile";
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
+//Работа с избранным:
 import { useFavorites } from "@/entities/trading/api/useFavorites";
+//Работа с корзиной:
 import { useCart } from "@/entities/trading/api/useCart";
 //Виджеты:
 import { Header } from "@/widgets/Header/ui/Header";
 import { Footer } from "@/widgets/Footer/ui/Footer";
+//Прочие компоненты:
+import { PageLoader } from "@/pages/PageLoader";
 
 export const MainLayout = () => {
-  //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
-  const { isLoading, isError } = useProfile();
-  //Получим статус авторизации:
-  const isAuth = useAuthStore((state) => state.isAuth);
+  const { isLoading, isError } = useProfile();   //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
+  const isAuth = useAuthStore((state) => state.isAuth);   //Статус авторизации
 
-  //Чтобы список избранных товаров подгружался сразу при старте приложения:
-  useFavorites();
-  //Чтобы список товаров в корзине подгружался сразу при старте приложения:
-  useCart();
+  useFavorites(); //Чтобы список избранных товаров подгружался сразу при старте приложения:
+  useCart(); //Чтобы список товаров в корзине подгружался сразу при старте приложения:
 
   //Если авторизован и идёт загрузка, то покажем универсальный лоадер для всех страниц:
   if (isAuth && isLoading) {
-    return (
-      <div
-        style={{ display: "flex", justifyContent: "center", padding: "100px" }}
-      >
-        <h2>Загрузка приложения...</h2>
-      </div>
-    );
+    return <PageLoader />
   }
 
   return (
@@ -49,7 +43,7 @@ export const MainLayout = () => {
 
       <Header />
 
-      {/* Основной контент страницы */}
+      {/*Основной контент страницы:*/}
       <main className="content-wrapper">
         <Outlet />
       </main>
@@ -58,6 +52,3 @@ export const MainLayout = () => {
     </>
   );
 };
-{
-  /* Outlet подставит текущую страницу */
-}

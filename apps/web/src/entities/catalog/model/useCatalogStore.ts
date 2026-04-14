@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
-// Тип для режима отображения
+//Тип для выбранного режима отображения карточек:
 export type ViewMode = "grid" | "list";
 
 interface CatalogState {
@@ -38,7 +38,7 @@ export const useCatalogStore = create<CatalogState>()(
           })),
       }),
       {
-        // Браузер запомнит, что пользователь выбрал "Список", и при следующем заходе на сайт сразу включит этот режим:
+        //Сохраняем режим отображения в localStorage:
         name: "catalog-storage",
         partialize: (state) => ({ viewMode: state.viewMode }), //Сохраняем только режим вида
       },

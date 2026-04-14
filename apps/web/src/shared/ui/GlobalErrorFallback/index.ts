@@ -1,0 +1,1 @@
+export { GlobalErrorFallback } from "./GlobalErrorFallback";

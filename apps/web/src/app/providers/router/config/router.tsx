@@ -1,5 +1,6 @@
+//Роутинг:
 import { createBrowserRouter, Navigate } from "react-router";
-//Клиентское хранилище:
+//Данные пользователя:
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 //Компоненты:
 import { AuthCard } from "@/features/auth/ui/AuthCard/AuthCard";
@@ -42,10 +43,10 @@ import { AdminNewsPage } from "@/pages/AdminNewsPage.tsx/ui/AdminNewsPage";
 import { NewsPage } from "@/pages/NewsPage/ui/NewsPage";
 import { NewsDetailsPage } from "@/pages/NewsDetailsPage/NewsDetailsPage";
 
-// Охранник для гостей (PublicOnly)
+//Публичный маршрут:
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuth = useAuthStore((state) => state.isAuth);
-  // Если залогинен — не пускаем на форму логина, отправляем в профиль
+  //Если юзер залогинен, то не пускаем его на форму логина, а отправляем в профиль:
   return isAuth ? <Navigate to="/profile" replace /> : children;
 };
 

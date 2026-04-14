@@ -5,12 +5,10 @@ import axios from "axios";
 import { AppError } from "../utils/app-error.js";
 
 export class RecaptchaService {
-  //Endpoint Google API, куда нужно отправить данные для проверки:
-  private static readonly GOOGLE_URL =
-    "https://www.google.com/recaptcha/api/siteverify";
-
   //Метод, который принимает токен, сгенерированную браузером пользователя и проверяет токен:
   async verify(token: string) {
+    const GOOGLE_URL = "https://www.google.com/recaptcha/api/siteverify"; //Эндпоинт Google API, куда нужно отправить данные для проверки
+
     //Если мы в режиме разработки или тестов, можно пропускать проверку, чтобы лишний раз не обращаться к Google:
     if (process.env.NODE_ENV === "test") return true;
 
@@ -22,7 +20,7 @@ export class RecaptchaService {
     try {
       //Отправка запроса к Google для проверки токена:
       const response = await axios.post(
-        this.GOOGLE_URL,
+        GOOGLE_URL,
         null, // Тело пустое, шлем всё в params
         {
           params: {

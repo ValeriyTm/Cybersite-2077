@@ -3,9 +3,9 @@
  */
 import { render, screen, cleanup } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import * as matchers from "@testing-library/jest-dom/matchers";
 import { ProtectedRoute } from "../ui/ProtectedRoute";
 import { MemoryRouter, Routes, Route } from "react-router";
-import * as matchers from "@testing-library/jest-dom/matchers";
 
 expect.extend(matchers);
 

@@ -6,7 +6,7 @@ import createAuthRefreshInterceptor from "axios-auth-refresh";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 
 //Адрес сервера:
-export const API_URL = "http://localhost:3001";
+export const API_URL = "http://localhost"; //Заменяю порт 3001 на 80-й для Nginx
 
 //Создание кастомного экземпляра Axios с базовыми настройками:
 export const $api = axios.create({

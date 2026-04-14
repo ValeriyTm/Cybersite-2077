@@ -1,5 +1,6 @@
-//Роутер:
+//Роутинг:
 import { RouterProvider } from "react-router";
+import { router } from "./providers/router/config/router";
 //Глобальная обработка ошибок (если проблемы на уровне приложения):
 import { ErrorBoundary } from "react-error-boundary";
 //React Query:
@@ -10,12 +11,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 //React Helmet для SEO:
 import { HelmetProvider } from "react-helmet-async";
-//Мой роутер:
-import { router } from "./providers/router/config/router";
 //Компонент, который отобразится при глобальной ошибке:
-import { GlobalErrorFallback } from "@/shared/ui/GlobalErrorFallback/GlobalErrorFallback";
+import { GlobalErrorFallback } from "@/shared/ui/GlobalErrorFallback/index";
 // import "./styles/_normalize.scss";
-import "./styles/index.css"; //Подключаем тут глобальные стили
+import "./styles/index.css"; //Подключаем глобальные стили
 
 // Создаем клиент React Query:
 const queryClient = new QueryClient({

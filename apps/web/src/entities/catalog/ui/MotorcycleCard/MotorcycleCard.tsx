@@ -1,13 +1,21 @@
+//Роутинг:
 import { Link } from "react-router";
+//API:
+import { API_URL } from "@/shared/api/api";
+//Типы:
 import { type MotorcycleShort } from "../../model/types";
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useFavorites } from "@/entities/trading/api/useFavorites";
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
+//Состояния:
+import { useTradingStore } from "@/entities/trading/model/tradingStore"; //Состояние корзины
+import { useFavorites } from "@/entities/trading/api/useFavorites"; //Состояние избранного
+import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Состояние авторизации
+//Компоненты:
 import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
-
+//Стили:
 import styles from "./MotorcycleCard.module.scss";
 
-const STATIC_URL = "http://localhost:3001/static";
+
+//Пути для изображений карточки:
+const STATIC_URL = `${API_URL}/static`;
 const DEFAULT_IMG = `${STATIC_URL}/defaults/default-card-icon.jpg`;
 
 export interface MotorcycleCardProps {
@@ -16,10 +24,10 @@ export interface MotorcycleCardProps {
 }
 
 export const MotorcycleCard = ({
-  data,
-  viewMode = "grid",
+  data, //Данные
+  viewMode = "grid", //Вид карточки (сетка или список)
 }: MotorcycleCardProps) => {
-  const isAuth = useAuthStore((state) => state.isAuth);
+  const isAuth = useAuthStore((state) => state.isAuth); //Авторизован ли юзер
 
   //Определяем какое изображение ставить для отображения изображения:
   const getImageUrl = (path: string | null | undefined) => {
@@ -53,7 +61,7 @@ export const MotorcycleCard = ({
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Чтобы клик по сердечку не перекидывал на страницу байка
     if (!isAuth) {
-      alert("Войдите, чтобы добавлять в избранное"); // Позже заменим на красивую модалку
+      alert("Войдите, чтобы добавлять в избранное"); //Можно когда-нибудь заменить на красивую модалку
       return;
     }
     toggleFavorite(data.id);
@@ -66,10 +74,10 @@ export const MotorcycleCard = ({
       ? data.brand.name // Если прилетел объект (из избранного)
       : data.brand; // Если прилетела строка (из общего каталога)
 
-  //Скидки:
-  const currentPrice = data.discountData?.finalPrice ?? data.price;
-  const hasDiscount = data.discountData.discountPercent > 0;
-  const isPersonalDiscount = data.discountData.isPersonal;
+  //Скидки и расчёт цены с учетом скидки:
+  const currentPrice = data.discountData?.finalPrice ?? data.price; //
+  const hasDiscount = data.discountData.discountPercent > 0; //Есть ли скидка 
+  const isPersonalDiscount = data.discountData.isPersonal; //Персональная ли скидка
 
   return (
     <Link
@@ -109,7 +117,7 @@ export const MotorcycleCard = ({
             {isFavorite ? "❤️" : "🤍"}
           </button>
 
-          {/*Плашка высокого рейтинга:*/}
+          {/*Бадж высокого рейтинга:*/}
           {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
 
           {data.totalInStock && (
@@ -137,14 +145,17 @@ export const MotorcycleCard = ({
           <div className={styles.priceBlock}>
             {hasDiscount ? (
               <>
+                {/*Старая цена:*/}
                 <span className={styles.oldPrice}>
                   {data.price.toLocaleString()} ₽
                 </span>
+                {/*Актуальная цена с учетом скидки:*/}
                 <span className={styles.newPrice}>
                   {currentPrice.toLocaleString()} ₽
                 </span>
               </>
             ) : (
+              //Просто цена (без скидки):
               <span className={styles.price}>
                 {data.price.toLocaleString()} ₽
               </span>

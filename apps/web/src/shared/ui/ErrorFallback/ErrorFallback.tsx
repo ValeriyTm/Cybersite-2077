@@ -1,33 +1,4 @@
 // //Этот компонент будет отображен, если произойдет ошибка внутри любого компонента внутри компонента App.
-
-// import { useEffect } from "react";
-// import { type FallbackProps } from "react-error-boundary";
-
-// export const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
-//   // Выводим ошибку в консоль только если объект error существует
-//   useEffect(() => {
-//     if (error) {
-//       console.error("Caught by ErrorBoundary:", error);
-//     }
-//   }, [error]);
-
-//   return (
-//     <div className="error-card" role="alert">
-//       <h2>Упс! Что-то пошло не так 😭</h2>
-
-//       {/*
-//          Используем опциональную цепочку (?.) и запасной вариант,
-//          чтобы компонент сам не "падал", если error вдруг окажется пустым
-//       */}
-//       <pre style={{ whiteSpace: "pre-wrap" }}>
-//         {error?.message || "Произошла неизвестная ошибка"}
-//       </pre>
-
-//       <button onClick={resetErrorBoundary}>Попробовать снова</button>
-//     </div>
-//   );
-// };
-
 import { useEffect } from "react";
 import { useRouteError, isRouteErrorResponse } from "react-router";
 

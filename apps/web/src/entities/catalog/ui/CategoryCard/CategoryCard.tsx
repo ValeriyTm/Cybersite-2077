@@ -1,18 +1,20 @@
-import React from "react";
+//Роутинг:
 import { Link } from "react-router";
+//Типы:
 import { type SiteCategory } from "../../model/types";
+//Стили:
 import styles from "./CategoryCard.module.scss";
 
 interface CategoryCardProps {
   category: SiteCategory;
 }
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
+export const CategoryCard = ({ category }: CategoryCardProps) => {
   const { name, slug, motorcyclesCount } = category;
 
   const isReady = slug === "motorcycles";
 
-  const localImage = `/public/${slug}.jpg`;
+  const localImage = `/public/${slug}.jpg`; //Адрес на фронтенде
 
   return (
     <Link

@@ -1,12 +1,16 @@
+//Роутинг:
 import { Link } from "react-router";
+//Типы:
 import { type Brand } from "../../model/types";
+//API:
+import { API_URL } from "@/shared/api/api";
+//Стили:
 import styles from "./BrandCard.module.scss";
-
 interface BrandCardProps {
   brand: Brand;
 }
 
-const server = "http://localhost:3001/static/brands/";
+const server = `${API_URL}/static/brands`;
 
 export const BrandCard = ({ brand }: BrandCardProps) => {
   const { name, country, slug, motorcyclesCount, image } = brand;
