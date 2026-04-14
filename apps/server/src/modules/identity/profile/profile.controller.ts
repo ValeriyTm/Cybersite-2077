@@ -1,8 +1,8 @@
+//Типы:
 import { Response } from "express";
+import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../../shared/utils/catch-async.js";
-//Интерфейс получаемых данных от пользователя:
-import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js";
 //Сервис для взаимодействия с БД для подмодуля profule:
 import { ProfileService } from "./profile.service.js";
 //Схема валидации Zod для обновления профиля:

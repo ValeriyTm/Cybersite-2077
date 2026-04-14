@@ -1,35 +1,28 @@
-import { NewsModel } from "../content/news.model.js";
-import { Request, Response, NextFunction } from "express";
+//Типы:
+import { Request, Response } from "express";
+//Новостной сервис модуля Content:
+import { newsService } from "./news.service.js";
+//Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
+import { catchAsync } from "../../shared/utils/catch-async.js";
+//Используем свой класс для выбрасывания ошибок:
+import { AppError } from "../../shared/utils/app-error.js";
 
-export class NewsController {
-  //Получить все опубликованные новости:
-  static async getAllPublished(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const news = await NewsModel.find({ status: "PUBLISHED" })
-        .sort({ createdAt: -1 }) //Сначала свежие
-        .select("-content"); //Оптимизация: для списка не тянем тяжелый массив блоков
+//Получить все опубликованные новости:
+export const getAllPublished = catchAsync(
+  async (req: Request, res: Response) => {
+    const news = await newsService.getAllPublished();
+    res.json(news);
+  },
+);
 
-      res.json(news);
-    } catch (e) {
-      next(e);
-    }
+//Получить конкретную новость:
+export const getBySlug = catchAsync(async (req: Request, res: Response) => {
+  const { slug } = req.params;
+  const article = await newsService.getBySlug(slug);
+
+  if (!article) {
+    throw new AppError(404, "Новость не найдена");
   }
 
-  //Получить конкретную новость:
-  static async getBySlug(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { slug } = req.params;
-      const article = await NewsModel.findOne({ slug, status: "PUBLISHED" });
-
-      if (!article)
-        return res.status(404).json({ message: "Новость не найдена" });
-      res.json(article);
-    } catch (e) {
-      next(e);
-    }
-  }
-}
+  res.json(article);
+});

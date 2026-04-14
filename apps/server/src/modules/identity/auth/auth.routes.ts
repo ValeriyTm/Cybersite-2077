@@ -1,10 +1,10 @@
 import { Router } from "express";
+//Основной контроллер подмодуля Auth:
 import * as AuthController from "./auth.controller.js";
-//Middleware для проверки аутентифицирован ли пользователь:
-import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js";
-//Middleware жесткий rate-лимитер для защиты от перебора паролей:
-import { authLimiter } from "../../../shared/middlewares/rate-limiter.js";
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
+//Middleware:
+import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js"; //Middleware для авторизации
+import { authLimiter } from "../../../shared/middlewares/rate-limiter.js"; //rate-лимитер для защиты от перебора паролей:
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Middleware для запрета кэширования данных на стороне клиента
 
 const router = Router();
 

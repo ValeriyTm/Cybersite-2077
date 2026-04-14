@@ -1,6 +1,10 @@
+//Для работы с событиями:
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
+//Сервисы модуля Notifications:
 import { telegramService } from "./telegram.service.js";
-import { MailService } from "src/modules/notifications/mail.service.js";
+import { mailService } from "src/modules/notifications/mail.service.js";
+//Логгер Grafana Loki:
+import { logger } from "src/shared/lib/logger.js";
 
 export const initNotificationListeners = () => {
   //1) Реакция на событие оплаты заказа:
@@ -65,44 +69,72 @@ export const initNotificationListeners = () => {
 
   //5) Реакция на событие перехода заказа в статус "DELIVERED":
   eventBus.on(EVENTS.ORDER_DELIVERY_END, async (order) => {
-    //Шлем письмо клиенту:
-    await MailService.sendDeliveryMail(
-      order.user.email,
-      order.orderNumber,
-      order.address,
-    );
+    try {
+      //Шлем письмо клиенту:
+      await mailService.sendDeliveryMail(
+        order.user.email,
+        order.orderNumber,
+        order.address,
+      );
 
-    //Шлем себе в Telegram (чтобы знать, что заказ юзеру доставлен):
-    await telegramService.sendMessage(
-      `🚚 <b>ЗАКАЗ ДОСТАВЛЕН</b>\n————————————————\nЗаказ: <code>#${order.orderNumber}</code>\nАдрес: ${order.address}`,
-    );
+      //Шлем себе в Telegram (чтобы знать, что заказ юзеру доставлен):
+      await telegramService.sendMessage(
+        `🚚 <b>ЗАКАЗ ДОСТАВЛЕН</b>\n————————————————\nЗаказ: <code>#${order.orderNumber}</code>\nАдрес: ${order.address}`,
+      );
+    } catch (error) {
+      logger.error(
+        `[EventBus] Critical failure: Delivered status mail not sent to ${order.user.email}`,
+      ); //Логгируем в Loki
+      console.log("Возникла ошибка с отправкой письма: ", error);
+    }
   });
 
   //6) Реакция на событие регистрации нового аккаунта:
   eventBus.on(EVENTS.ACCOUNT_CREATED, async (email, activationLink) => {
-    //Шлем письмо клиенту со ссылкой активации:
-    await MailService.sendActivationMail(email, activationLink);
+    try {
+      //Шлем письмо клиенту со ссылкой активации:
+      await mailService.sendActivationMail(email, activationLink);
+    } catch (error) {
+      logger.error(
+        `[EventBus] Critical failure: Activation mail not sent to ${email}`,
+      ); //Логгируем в Loki
+      console.log("Возникла ошибка с отправкой письма: ", error);
+    }
   });
 
   //7) Реакция на приход от юзера запроса на смену пароля через FORGOT PASSWORD:
   eventBus.on(EVENTS.FORGOT_PASSWORD, async (email, link) => {
-    //Шлем юзеру письмо со ссылкой на форму смены пароля:
-    await MailService.sendResetPasswordMail(email, link);
+    try {
+      //Шлем юзеру письмо со ссылкой на форму смены пароля:
+      await mailService.sendResetPasswordMail(email, link);
+    } catch (error) {
+      logger.error(
+        `[EventBus] Critical failure: Reset password mail not sent to ${email}`,
+      ); //Логгируем в Loki
+      console.log("Возникла ошибка с отправкой письма: ", error);
+    }
   });
 
   //8) Реакция на событие генерации персональных скидок:
   eventBus.on(
     EVENTS.DISCOUNTS_GENERATED,
     async (email, model, brand, slug, oldPrice, newPrice) => {
-      //Шлем юзеру письмо с информацией о персональной скидкой:
-      await MailService.sendLuckyBikeMail(
-        email,
-        model,
-        brand,
-        slug,
-        oldPrice,
-        newPrice,
-      );
+      try {
+        //Шлем юзеру письмо с информацией о персональной скидкой:
+        await mailService.sendLuckyBikeMail(
+          email,
+          model,
+          brand,
+          slug,
+          oldPrice,
+          newPrice,
+        );
+      } catch (error) {
+        logger.error(
+          `[EventBus] Critical failure: Personal discount mail not sent to ${email}`,
+        ); //Логгируем в Loki
+        console.log("Возникла ошибка с отправкой письма: ", error);
+      }
     },
   );
 

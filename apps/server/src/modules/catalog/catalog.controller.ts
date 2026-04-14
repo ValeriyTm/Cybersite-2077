@@ -1,65 +1,63 @@
-import { Request, Response, NextFunction } from "express";
+//Типы:
+import { Request, Response } from "express";
+import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+//Сервисы модуля Catalog:
 import { catalogService } from "./catalog.service.js";
 import { searchService } from "./search.service.js";
 import { sitemapService } from "./sitemap.service.js";
-//Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
-import { catchAsync } from "../../shared/utils/catch-async.js";
-import { prisma } from "@repo/database";
-
-import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
+//Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
+import { catchAsync } from "../../shared/utils/catch-async.js";
+//Используем свой класс для выбрасывания ошибок:
+import { AppError } from "../../shared/utils/app-error.js";
 
 //Получение главных категорий:
-export const getCategories = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    //Получаем данные с БД:
-    const categories = await catalogService.getSiteCategories();
+export const getCategories = catchAsync(async (req: Request, res: Response) => {
+  //Получаем данные с БД:
+  const categories = await catalogService.getSiteCategories();
 
-    //Форматируем ответ согласно OpenAPI (переименовываем _count в motorcyclesCount):
-    const result = categories.map((cat) => ({
-      ...cat,
-      motorcyclesCount: cat._count.motorcycles,
-      _count: undefined, //Убираем техническое поле Prisma
-    }));
+  //Форматируем ответ согласно OpenAPI (переименовываем _count в motorcyclesCount):
+  const result = categories.map((cat) => ({
+    ...cat,
+    motorcyclesCount: cat._count.motorcycles,
+    _count: undefined, //Убираем техническое поле Prisma
+  }));
 
-    res.status(200).json(result);
-  },
-);
+  res.status(200).json(result);
+});
 
 //Получение списка всех брендов мотоциклов:
-export const getBrands = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    //Вытаскиваем параметры из адресной строки и приводим к числам с дефолтными значениями:
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 20;
-    const search = req.query.search as string; //Забираем строку поиска
+export const getBrands = catchAsync(async (req: Request, res: Response) => {
+  //Вытаскиваем параметры из адресной строки и приводим к числам с дефолтными значениями:
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  const search = req.query.search as string; //Забираем строку поиска
 
-    const { items, total, pages } = await catalogService.getBrands(
-      page,
-      limit,
-      search,
-    );
+  const { items, total, pages } = await catalogService.getBrands(
+    page,
+    limit,
+    search,
+  );
 
-    //Мапим результат:
-    const formattedItems = items.map((brand) => ({
-      ...brand,
-      motorcyclesCount: brand._count.motorcycles,
-      _count: undefined,
-    }));
+  //Мапим результат:
+  const formattedItems = items.map((brand) => ({
+    ...brand,
+    motorcyclesCount: brand._count.motorcycles,
+    _count: undefined,
+  }));
 
-    res.status(200).json({
-      items: formattedItems,
-      total,
-      page,
-      pages,
-    });
-  },
-);
+  res.status(200).json({
+    items: formattedItems,
+    total,
+    page,
+    pages,
+  });
+});
 
 //Получение всех мотоциклов конкретного бренда:
 export const getMotorcycles = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response) => {
     // Собираем все значеняи из фильтров из строки запроса:
     const filters = {
       brandSlug: req.query.brandSlug as string,
@@ -106,7 +104,7 @@ export const getMotorcycles = catchAsync(
 
 //Получение информации о конкретном мотоцикле по его slug:
 export const getMotorcycle = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response) => {
     const { brandSlug, slug } = req.params;
     const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
@@ -122,7 +120,7 @@ export const getMotorcycle = catchAsync(
 
 //Поиск аналогичных мотоциклов (рекомендации):
 export const getRelated = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response) => {
     const { slug } = req.params;
     const userId = req.user?.id;
     const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
@@ -138,7 +136,7 @@ export const getRelated = catchAsync(
 
 //Поиск с выводом предположений:
 export const getSuggestions = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const query = req.query.q as string;
     if (!query || query.length < 2) return res.json([]); //Ищем от 2-х символов
 
@@ -149,25 +147,14 @@ export const getSuggestions = catchAsync(
 
 //Получение информации о конкретном мотоцикле по его id:
 export const getMotorcycleById = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
     const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
-    const motorcycle = await prisma.motorcycle.findUnique({
-      where: { id },
-      include: {
-        brand: true,
-        siteCategory: true,
-        images: true, //Галерея изображений
-        //Подтягиваем остатки со всех складов:
-        stocks: {
-          select: { quantity: true, reserved: true },
-        },
-      },
-    });
+    const motorcycle = await catalogService.getMotorcycleById(id);
 
     if (!motorcycle) {
-      return res.status(404).json({ message: "Мотоцикл не найден" });
+      throw new AppError(404, "Мотоцикл не найден");
     }
 
     // Считаем общее доступное количество для фронтенда
@@ -188,8 +175,17 @@ export const getMotorcycleById = catchAsync(
   },
 );
 
-export const getSitemap = async (req: Request, res: Response) => {
+//Получение sitemap для каталога:
+export const getSitemap = catchAsync(async (req: Request, res: Response) => {
   const xml = await sitemapService.generateSitemapXml();
-  res.header("Content-Type", "application/xml"); //Поисковик поймет, что это XML
+  res.header("Content-Type", "application/xml");
   res.send(xml);
-};
+});
+
+//Запуск полной синхронизации Elasticsearch:
+export const syncAllMotorcycles = catchAsync(
+  async (req: Request, res: Response) => {
+    await searchService.syncAllMotorcycles();
+    res.send("Синхронизация завершена! Проверь консоль бэкенда.");
+  },
+);

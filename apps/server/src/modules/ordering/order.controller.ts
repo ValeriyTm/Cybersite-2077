@@ -1,20 +1,24 @@
-import { Response, NextFunction } from "express";
-import { orderService } from "./order.service.js";
-import { cartService } from "../trading/index.js";
+//Типы:
+import { Response } from "express";
 import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
-import { addOrderExpirationTask } from "./order.queue.js";
-import { prisma } from "@repo/database";
-import { addDeliveryStartTask } from "./order.queue.js";
+//Главный сервис модуля Ordering:
+import { orderService } from "./order.service.js";
+//Поисковый сервис модуля Catalog:
 import { searchService } from "../catalog/search.service.js";
+//Сервис оплаты модуля Payment:
 import { paymentService } from "../payment/index.js";
+//Сервис корзины модуля Trading:
+import { cartService } from "../trading/index.js";
+//Очереди для отмены заказа / изменения статуса заказа:
+import { addOrderExpirationTask, addDeliveryStartTask } from "./order.queue.js";
+//Используем свой класс для выбрасывания ошибок:
+import { AppError } from "../../shared/utils/app-error.js";
+//Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
+import { catchAsync } from "../../shared/utils/catch-async.js";
 
 //Создание заказа:
-export const createOrder = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const createOrder = catchAsync(
+  async (req: AuthRequest, res: Response) => {
     const order = await orderService.createOrder(req.user.id, req.body);
 
     //Добавляем задачу в очередь BullMQ (таймер на 1 час):
@@ -27,18 +31,12 @@ export const createOrder = async (
     await cartService.removeMultiple(req.user.id, orderedIds);
 
     res.status(201).json(order);
-  } catch (e) {
-    next(e);
-  }
-};
+  },
+);
 
 //Получить заказы пользователя:
-export const getMyOrders = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const getMyOrders = catchAsync(
+  async (req: AuthRequest, res: Response) => {
     //Забираем статус из query-параметров (например, /api/orders/my?status=PAID):
     const { status } = req.query;
 
@@ -48,45 +46,28 @@ export const getMyOrders = async (
     );
 
     res.json(orders);
-  } catch (e) {
-    next(e);
-  }
-};
+  },
+);
 
 //Получить список активных заказов юзера (для отображения счетчика на иконке "Мои заказы"):
-export const getActiveOrdersCount = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const count = await prisma.order.count({
-      where: {
-        userId: req.user.id,
-        status: { in: ["PENDING", "PAID", "DELIVERY"] }, //Статусы, при которых заказы считаются активными
-      },
-    });
-    res.json({ count });
-  } catch (e) {
-    next(e);
-  }
-};
+export const getActiveOrdersCount = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const userId = req.user.id;
 
-//!!!!!!!!!-Тестовый эндпоинт для оплаты (для проверки работы BullMQ):
+    const count = orderService.getActiveOrdersCount(userId);
+    res.json({ count });
+  },
+);
+
+//!Тестовый эндпоинт для оплаты (для проверки работы BullMQ)!:
 //(он меняет статус заказа на PAID и удаляет резерв и физический товар из БД)
-export const payOrderTest = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const payOrderTest = catchAsync(
+  async (req: AuthRequest, res: Response) => {
     const { orderId } = req.params;
+    const userId = req.user.id;
 
     //Достаем состав заказа, чтобы знать, что списывать:
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
-      include: { items: true },
-    });
+    const order = await orderService.getUserOrderWithItems(orderId, userId);
 
     if (!order || order.status !== "PENDING") {
       return res
@@ -94,30 +75,8 @@ export const payOrderTest = async (
         .json({ message: "Заказ не найден или уже оплачен/отменен" });
     }
 
-    //Транзакция списания:
-    await prisma.$transaction(async (tx) => {
-      //Обновляем статус заказа:
-      await tx.order.update({
-        where: { id: orderId },
-        data: { status: "PAID" },
-      });
-
-      //Списываем со склада:
-      for (const item of order.items) {
-        await tx.stock.update({
-          where: {
-            motorcycleId_warehouseId: {
-              motorcycleId: item.motorcycleId,
-              warehouseId: order.warehouseId,
-            },
-          },
-          data: {
-            quantity: { decrement: item.quantity }, // Физическое списание со склада
-            reserved: { decrement: item.quantity }, // Снятие брони
-          },
-        });
-      }
-    });
+    //Транзакция списания остатков (+ удаления зарезервироанного кол-ва) и изменения статуса:
+    await orderService.confirmUserOrder(orderId, order);
 
     //Обновляем данные по остаткам в Elastic:
     try {
@@ -137,25 +96,17 @@ export const payOrderTest = async (
     res.json({
       message: "Оплата прошла, остатки списаны, доставка запланирована!",
     });
-  } catch (e) {
-    next(e);
-  }
-};
+  },
+);
 
 //Контроллер для перевода статуса заказа из DELIVERED в COMPLETED:
-export const completeOrder = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const completeOrder = catchAsync(
+  async (req: AuthRequest, res: Response) => {
     const { orderId } = req.params;
+    const userId = req.user.id;
 
     //Ищем заказ и проверяем, принадлежит ли он текущему юзеру:
-    const order = await prisma.order.findUnique({
-      where: { id: orderId, userId: req.user.id },
-    });
-
+    const order = await orderService.getUserOrder(orderId, userId);
     if (!order) return res.status(404).json({ message: "Заказ не найден" });
 
     //Разрешаем завершать только доставленные заказы:
@@ -172,25 +123,17 @@ export const completeOrder = async (
     );
 
     res.json(updatedOrder);
-  } catch (e) {
-    next(e);
-  }
-};
+  },
+);
 
 //Контроллер для перевода статуса заказа в CANCELED:
-export const cancelOrder = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const cancelOrder = catchAsync(
+  async (req: AuthRequest, res: Response) => {
     const { orderId } = req.params;
+    const userId = req.user.id;
 
     //Ищем заказ со всеми позициями:
-    const order = await prisma.order.findUnique({
-      where: { id: orderId, userId: req.user.id },
-      include: { items: true },
-    });
+    const order = await orderService.getUserOrderWithItems(orderId, userId);
     if (!order) return res.status(404).json({ message: "Заказ не найден" });
 
     //Проверяем допустимость отмены (при следующих статусах уже не отменить заказ):
@@ -201,10 +144,10 @@ export const cancelOrder = async (
       "CANCELED",
     ];
     if (forbiddenStatuses.includes(order.status)) {
-      return res.status(400).json({
-        message:
-          "Этот заказ уже нельзя отменить (он доставлен или уже отменен)",
-      });
+      throw new AppError(
+        400,
+        "Этот заказ уже нельзя отменить (он доставлен или уже отменен)",
+      );
     }
 
     //Логика возврата денег через ЮKassа (если заказ оплачен, инициируем возврат перед транзакцией в БД):
@@ -216,44 +159,13 @@ export const cancelOrder = async (
         console.log(`Возврат средств инициирован для заказа: ${order.id}`);
       } catch (refundError) {
         console.error("Ошибка при возврате в ЮKassa:", refundError);
-        return res
-          .status(500)
-          .json({ message: "Ошибка при оформлении возврата средств" });
+        throw new AppError(500, "Ошибка при оформлении возврата средств");
       }
     }
 
     //Транзакция (отмена + возврат резерва на склад):
-    const canceledOrder = await prisma.$transaction(async (tx) => {
-      // Меняем статус заказа
-      const updated = await tx.order.update({
-        where: { id: orderId },
-        data: { status: "CANCELED" },
-      });
-
-      //Возвращаем товар в доступные остатки (уменьшаем резерв):
-      for (const item of order.items) {
-        await tx.stock.update({
-          where: {
-            motorcycleId_warehouseId: {
-              motorcycleId: item.motorcycleId,
-              warehouseId: order.warehouseId,
-            },
-          },
-          data: {
-            // Если заказ был PAID, значит quantity уже было списано (в вебхуке)
-            // Если заказ был PENDING, значит списан только reserved
-            ...(order.status === "PAID"
-              ? { quantity: { increment: item.quantity } }
-              : { reserved: { decrement: item.quantity } }),
-          },
-        });
-      }
-
-      return updated;
-    });
+    const canceledOrder = await orderService.cancelUserOrder(orderId, order);
 
     res.json(canceledOrder);
-  } catch (e) {
-    next(e);
-  }
-};
+  },
+);

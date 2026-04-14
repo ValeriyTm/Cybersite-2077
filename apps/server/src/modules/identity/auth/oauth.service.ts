@@ -14,7 +14,7 @@ const client = new OAuth2Client(
 
 export class OAuthService {
   //Генерируем ссылку на страницу входа Google:
-  static getGoogleAuthUrl() {
+  getGoogleAuthUrl() {
     return client.generateAuthUrl({
       //Запрашиваем разрешение на получение refresh_token (чтобы могли обновлять доступ, даже когда юзер не на сайте):
       access_type: "offline",
@@ -24,7 +24,7 @@ export class OAuthService {
   }
 
   //Обмениваем код на данные пользователя:
-  static async getGoogleUser(code: string) {
+  async getGoogleUser(code: string) {
     try {
       // 1. Обмениваем код на токены
       const { tokens } = await client.getToken(code);
@@ -54,3 +54,5 @@ export class OAuthService {
     }
   }
 }
+
+export const oAuthService = new OAuthService();

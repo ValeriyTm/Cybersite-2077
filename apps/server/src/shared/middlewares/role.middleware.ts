@@ -1,9 +1,11 @@
 //-------------------Middleware для авторизации на основе RBAC-------
-// Это middleware будет принимать список разрешенных ролей и проверять, есть ли нужная роль у пользователя в req.user (которую туда положил authMiddleware).
+//---Это middleware будет принимать список разрешенных ролей и проверять, есть ли нужная роль у пользователя в req.user (которую туда положил authMiddleware).
+//Типы:
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "./auth.middleware.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../utils/app-error.js";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 
 //При вызове функции в её аргумент помещаем массив разрешенных ролей:

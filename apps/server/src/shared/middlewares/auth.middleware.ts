@@ -1,7 +1,9 @@
 ////-------------------------Middleware для авторизации через JWT-токены------
 //(Проверяет, залогинен ли пользователь, прежде чем пустить его к защищенным данным).
+//Типы:
 import { Request, Response, NextFunction } from "express";
-import { TokenService } from "../../modules/identity/auth/token.service.js";
+//Сервис работы с токенами:
+import { tokenService } from "../../modules/identity/auth/token.service.js";
 
 // Расширяем стандартный тип Request в Express, чтобы TS не ругался на req.user:
 export interface AuthRequest extends Request {
@@ -32,7 +34,7 @@ export const authMiddleware = (
     }
 
     // 3.Проверяем валидность токена через наш TokenService (расшифровка JWT-токена, проверка подписи и срока годности):
-    const userData = TokenService.validateAccessToken(accessToken) as any;
+    const userData = tokenService.validateAccessToken(accessToken) as any;
     if (!userData) {
       return res
         .status(401)

@@ -1,19 +1,18 @@
-//----Тут только логика. Этот код не знает про req и res, он работает только с данными и БД------
 //Библиотека для хэширования паролей:
 import argon2 from "argon2";
-import fs from "node:fs/promises"; // Используем промисы для асинхронности
-import path from "node:path";
-import crypto from "node:crypto";
-//Функция для генерации уникального идентификатора версии 4:
-import { randomUUID } from "node:crypto";
-//Клиент призмы для работы с БД:
+
+//Встроенный модуль для работы с криптографией:
+import crypto, { randomUUID } from "node:crypto";
+//randomUUID - функция для генерации уникального идентификатора версии 4:
+
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Мой сервис для работы с токенами:
-import { TokenService } from "./token.service.js";
+import { tokenService } from "./token.service.js";
 //Мой сервис для работы с сессиями пользователей:
-import { SessionService } from "./session.service.js";
+import { sessionService } from "./session.service.js";
 //Мой сервис для реазилации 2FA:
-import { TwoFactorService } from "./two-factor.service.js";
+import { twoFactorService } from "./two-factor.service.js";
 //Схемы валидации Zod:
 import {
   RegisterInput,
@@ -23,6 +22,10 @@ import {
 } from "@repo/validation";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
+//Для работы с путями и файлами:
+import fs from "node:fs/promises"; // Используем промисы для асинхронности
+import path from "node:path";
+//Для генерации событий:
 import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
 
 //Указываем унифицированный объект, который будет возвращаться контроллерам:
@@ -41,7 +44,7 @@ const formatUserResponse = (user: any, rememberMe = false) => ({
 
 export class AuthService {
   //Записываем нового пользователя в БД:
-  static async register(data: RegisterInput) {
+  async register(data: RegisterInput) {
     //1) Проверяем email по БД (вдруг такой уже зарегистрирован):
     const existingEmail = await prisma.user.findUnique({
       where: { email: data.email },
@@ -89,7 +92,7 @@ export class AuthService {
   }
 
   //Меняем статус активации аккаунта пользователя в БД:
-  static async activate(token: string) {
+  async activate(token: string) {
     //Ищем в БД пользователя по ссылке активации:
     const user = await prisma.user.findUnique({
       where: { activationToken: token },
@@ -106,7 +109,7 @@ export class AuthService {
     });
   }
 
-  static async login(data: LoginInput) {
+  async login(data: LoginInput) {
     //1) Ищем пользователя в БД по email:
     const user = await prisma.user.findUnique({ where: { email: data.email } });
     if (!user || !user.passwordHash) {
@@ -142,7 +145,7 @@ export class AuthService {
     return formatUserResponse(user, data.rememberMe ?? false);
   }
 
-  static async getUserData(userId: string) {
+  async getUserData(userId: string) {
     return prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -162,14 +165,14 @@ export class AuthService {
     });
   }
 
-  static async logoutAll(userId: string) {
+  async logoutAll(userId: string) {
     // Удаляем абсолютно все токены этого пользователя из БД
     return prisma.token.deleteMany({
       where: { userId: userId },
     });
   }
 
-  static async changePassword(userId: string, data: ChangePasswordInput) {
+  async changePassword(userId: string, data: ChangePasswordInput) {
     //1) Ищем пользователя в базе:
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.passwordHash) {
@@ -192,7 +195,7 @@ export class AuthService {
     });
   }
 
-  static async deleteAccount(userId: string, password: string) {
+  async deleteAccount(userId: string, password: string) {
     //1) Ищем пользователя в БД:
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.passwordHash)
@@ -226,7 +229,7 @@ export class AuthService {
     return prisma.user.delete({ where: { id: userId } });
   }
 
-  static async forgotPassword(email: string) {
+  async forgotPassword(email: string) {
     //1) Ищем юзера в БД по его email:
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return; // Для безопасности не говорим, что юзера нет
@@ -246,7 +249,7 @@ export class AuthService {
     eventBus.emit(EVENTS.FORGOT_PASSWORD, email, link);
   }
 
-  static async resetPassword(data: ResetPasswordInput & { token: string }) {
+  async resetPassword(data: ResetPasswordInput & { token: string }) {
     // 1) Ищем юзера, у которого совпадает токен и срок жизни ещё не истек:
     const user = await prisma.user.findFirst({
       where: {
@@ -278,7 +281,7 @@ export class AuthService {
   }
 
   //-----Реализуем OAuth + OIDC:
-  static async processGoogleUser(googleUser: any) {
+  async processGoogleUser(googleUser: any) {
     //1) Ищем или создаем пользователя:
     let user = await prisma.user.findUnique({
       where: { email: googleUser.email },
@@ -296,14 +299,14 @@ export class AuthService {
     }
 
     //2) Генерируем токены:
-    const tokens = TokenService.generateTokens({
+    const tokens = tokenService.generateTokens({
       id: user.id,
       email: user.email,
       role: user.role,
     });
 
     //3) Сохраняем сессию:
-    await SessionService.saveToken(user.id, tokens.refreshToken);
+    await sessionService.saveToken(user.id, tokens.refreshToken);
 
     //4) Возвращаем данные о юзере и токены:
     return { user, tokens };
@@ -311,9 +314,9 @@ export class AuthService {
 
   //-----Реализуем 2FA:
   //Инициация настройки: генерация секрета и QR для клиента:
-  static async setup2FA(userId: string, email: string) {
+  async setup2FA(userId: string, email: string) {
     //При помощи нашего сервиса генерируем секрет и QR-код и получаем их:
-    const { secret, qrCodeUrl } = await TwoFactorService.generateSecret(email);
+    const { secret, qrCodeUrl } = await twoFactorService.generateSecret(email);
 
     //Вносим секрет в БД:
     await prisma.user.update({
@@ -326,7 +329,7 @@ export class AuthService {
   }
 
   //Подтверждение и включение 2FA для клиента:
-  static async enable2FA(userId: string, code: string) {
+  async enable2FA(userId: string, code: string) {
     //1) Ищем пользователя в БД:
     const user = await prisma.user.findUnique({ where: { id: userId } });
     //Если у пользователя в БД не записан секрет для 2FA, то ему не требуется 2FA:
@@ -335,7 +338,7 @@ export class AuthService {
     }
 
     //2) Проверяем на валидность код от пользователя:
-    const isValid = TwoFactorService.verifyToken(
+    const isValid = twoFactorService.verifyToken(
       code.trim(),
       user.twoFactorSecret,
     );
@@ -349,7 +352,7 @@ export class AuthService {
   }
 
   //Логин для клиента с 2FA:
-  static async verify2FA(userId: string, code: string) {
+  async verify2FA(userId: string, code: string) {
     //1) Ищем пользователя в БД:
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -360,7 +363,7 @@ export class AuthService {
     }
 
     //2) Проверяем 6-значный код пользователя через OTPLib:
-    const isValid = TwoFactorService.verifyToken(code, user.twoFactorSecret);
+    const isValid = twoFactorService.verifyToken(code, user.twoFactorSecret);
     if (!isValid) {
       throw new AppError(401, "Неверный код 2FA");
     }
@@ -369,3 +372,5 @@ export class AuthService {
     return formatUserResponse(user);
   }
 }
+
+export const authService = new AuthService();

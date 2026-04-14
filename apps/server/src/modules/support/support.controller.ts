@@ -10,7 +10,7 @@ import { createTicketSchema } from "@repo/validation";
 //Главный сервис модуля Support:
 import { supportService } from "./support.service.js";
 //Сервис для reCaptcha v3:
-import { RecaptchaService } from "src/shared/services/recaptcha.service.js";
+import { recaptchaService } from "src/shared/services/recaptcha.service.js";
 //Очередь для удаления закрытых тикетов:
 import { scheduleTicketCleanup } from "./support.queue.js";
 //Для генерации события:
@@ -74,7 +74,7 @@ export const createTicket = catchAsync(
     }
 
     //4) Проверка капчи:
-    const isHuman = await RecaptchaService.verify(captchaToken);
+    const isHuman = await recaptchaService.verify(captchaToken);
     if (!isHuman) {
       throw new AppError(
         403,

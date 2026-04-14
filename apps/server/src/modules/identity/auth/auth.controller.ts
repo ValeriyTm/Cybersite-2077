@@ -1,6 +1,7 @@
 //--Тут связь с HTTP. Этот код принимает запросы от клиентов, направляет их в сервис (где осуществляется взаимодействие с БД), получает ответ от сервиса, затем отправляет ответ клиентам--
-
+//Типы:
 import { Request, Response } from "express";
+import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js"; //Интерфейс получаемых данных от пользователя:
 //Схемы валидации Zod:
 import {
   RegisterSchema,
@@ -11,21 +12,19 @@ import {
   ForgotPasswordSchema,
 } from "@repo/validation";
 //Сервис для взаимодействия с БД для подмодуля auth:
-import { AuthService } from "./auth.service.js";
+import { authService } from "./auth.service.js";
 //Сервис для работы с JWT-токенами:
-import { TokenService } from "./token.service.js";
+import { tokenService } from "./token.service.js";
 //Сервис управления сессиями пользователей:
-import { SessionService } from "./session.service.js";
+import { sessionService } from "./session.service.js";
 //Сервис для авторизации при помощи OAuth2:
-import { OAuthService } from "./oauth.service.js";
+import { oAuthService } from "./oauth.service.js";
 //Сервис для работы с Google reCAPTCHA v3:
-import { RecaptchaService } from "../../../shared/services/recaptcha.service.js";
+import { recaptchaService } from "../../../shared/services/recaptcha.service.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../../shared/utils/catch-async.js";
-//Интерфейс получаемых данных от пользователя:
-import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js";
 
 //Контроллер регистрации нового пользователя:
 export const register = catchAsync(async (req: Request, res: Response) => {
@@ -42,7 +41,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
 
   //2) Проверяем капчу (до того, как лезть в БД и проверять пароль):
   //Отправляем токен капчи в Google, и получаем true или false:
-  const isHuman = await RecaptchaService.verify(result.data.captchaToken);
+  const isHuman = await recaptchaService.verify(result.data.captchaToken);
   if (!isHuman) {
     throw new AppError(
       403,
@@ -51,7 +50,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
   }
 
   //Если все проверки пройдены, то вызываем наш сервис работы с БД:
-  const user = await AuthService.register(result.data);
+  const user = await authService.register(result.data);
   //Ответ от нашего сервиса пересылаем пользователю:
   res.status(201).json({
     message: "Пользователь создан!",
@@ -65,7 +64,7 @@ export const activate = catchAsync(async (req: Request, res: Response) => {
   //Извлекаем токен из запроса пользователя:
   const { token } = req.params;
   //Указываем пользователя как активировавшего свой аккаунт:
-  await AuthService.activate(token);
+  await authService.activate(token);
   //После редиректим пользователя на фронтенд:
   return res.redirect(`${process.env.CLIENT_URL}/auth?activated=true`);
 });
@@ -79,7 +78,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   }
 
   //2) Проверяем капчу (до того, как лезть в БД и проверять пароль):
-  const isHuman = await RecaptchaService.verify(result.data.captchaToken);
+  const isHuman = await recaptchaService.verify(result.data.captchaToken);
   if (!isHuman) {
     throw new AppError(
       403,
@@ -91,7 +90,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   const { rememberMe } = result.data;
 
   //4) Передаём данные сервису для проверки на корректность введенных данных, активирован ли пользователь и не является ли запрос ботом. А тот нам передаёт ответ (ошибку или данные пользователя с полем необходимости пройти 2FA):
-  const loginResult = await AuthService.login(result.data);
+  const loginResult = await authService.login(result.data);
 
   //5) Проверка на необходимость 2FA:
   if ("requires2FA" in loginResult && loginResult.requires2FA) {
@@ -108,7 +107,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   const { ...user } = loginResult;
 
   //7) Генерируем токены:
-  const tokens = TokenService.generateTokens({
+  const tokens = tokenService.generateTokens({
     id: user.id,
     email: user.email,
     role: user.role,
@@ -116,7 +115,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   });
 
   //8) Записываем сессию в БД:
-  await SessionService.saveToken(user.id as string, tokens.refreshToken);
+  await sessionService.saveToken(user.id as string, tokens.refreshToken);
 
   //9) Задаём настройки куки:
   const cookieOptions: any = {
@@ -153,7 +152,7 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 
   //2) Если токен есть, то удаляем refresh-токен из БД:
   if (refreshToken) {
-    await SessionService.removeToken(refreshToken);
+    await sessionService.removeToken(refreshToken);
   }
 
   //3) Очищаем куку с теми же параметрами, с которыми создавали:
@@ -177,9 +176,9 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   }
 
   //2) Проверяем подпись токена (не протух ли он криптографически):
-  const userData = TokenService.validateRefreshToken(refreshToken) as any;
+  const userData = tokenService.validateRefreshToken(refreshToken) as any;
   //3) Ищем этот конкретный токен в нашей базе данных:
-  const tokenFromDb = await SessionService.findToken(refreshToken);
+  const tokenFromDb = await sessionService.findToken(refreshToken);
   // Если токена нет в базе или он не валиден по подписи — сессия скомпрометирована:
   if (!userData || !tokenFromDb) {
     // На всякий случай чистим куку на клиенте, чтобы не гонять битый токен:
@@ -188,16 +187,16 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   }
 
   //4) Идем в базу за самыми свежими данными о пользователе:
-  const freshUser = await AuthService.getUserData(userData.id);
+  const freshUser = await authService.getUserData(userData.id);
   if (!freshUser) {
     throw new AppError(404, "Пользователь не найден");
   }
 
   //5) Осуществляем ротацию токенов (Refresh Token Rotation):
   //Удаляем старый токен:
-  await SessionService.removeToken(refreshToken);
+  await sessionService.removeToken(refreshToken);
   //Генерируем новую пару токенов:
-  const tokens = TokenService.generateTokens({
+  const tokens = tokenService.generateTokens({
     id: freshUser.id,
     email: freshUser.email,
     role: freshUser.role,
@@ -205,7 +204,7 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   });
 
   //6) Сохраняем новый токен в БД:
-  await SessionService.saveToken(freshUser.id, tokens.refreshToken);
+  await sessionService.saveToken(freshUser.id, tokens.refreshToken);
 
   //7) Обновляем куку:
   res.cookie("refreshToken", tokens.refreshToken, {
@@ -231,7 +230,7 @@ export const logoutAll = catchAsync(async (req: AuthRequest, res: Response) => {
     throw new AppError(401, "Пользователь не авторизован");
   }
   //2) Удаляем из БД все сессии пользователя:
-  await AuthService.logoutAll(req.user.id);
+  await authService.logoutAll(req.user.id);
 
   //3) Чистим куку текущего браузера
   res.clearCookie("refreshToken", { path: "/api/identity/auth" });
@@ -250,7 +249,7 @@ export const changePassword = catchAsync(
     }
 
     //2) Вызываем сервис (req.user.id берем из мидлвара авторизации) для смены пароля в БД:
-    await AuthService.changePassword(req.user!.id, result.data);
+    await authService.changePassword(req.user!.id, result.data);
 
     //3) Посылаем ответ:
     res.status(200).json({ message: "Пароль успешно изменен" });
@@ -265,7 +264,7 @@ export const deleteAccount = catchAsync(
     if (!password) throw new AppError(400, "Введите пароль для подтверждения");
 
     //2) Удаляем аккаунт в БД:
-    await AuthService.deleteAccount(req.user!.id, password);
+    await authService.deleteAccount(req.user!.id, password);
 
     //3) Обнуляем куки клиенту:
     res.clearCookie("refreshToken", { path: "/api/identity/auth" });
@@ -290,7 +289,7 @@ export const forgotPassword = catchAsync(
     if (!email) throw new AppError(400, "Email обязателен");
 
     //3) Проверка капчи:
-    const isHuman = await RecaptchaService.verify(captchaToken);
+    const isHuman = await recaptchaService.verify(captchaToken);
     if (!isHuman) {
       throw new AppError(
         403,
@@ -299,7 +298,7 @@ export const forgotPassword = catchAsync(
     }
 
     //4) Вызываем сервис для отправки клиенту ссылки на форму восстановления пароля:
-    await AuthService.forgotPassword(email);
+    await authService.forgotPassword(email);
 
     //5) Всегда отвечаем 200, даже если email нет в базе (защита от сканирования базы):
     return res.status(200).json({
@@ -321,7 +320,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
 
   //2) Проверяем капчу (до того, как лезть в БД и проверять пароль)
   const { captchaToken, ...passwordData } = validation.data;
-  const isHuman = await RecaptchaService.verify(captchaToken);
+  const isHuman = await recaptchaService.verify(captchaToken);
   if (!isHuman) {
     throw new AppError(
       403,
@@ -336,7 +335,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   }
 
   //4) Вызываем сервис, передав в него токен и данные:
-  await AuthService.resetPassword({
+  await authService.resetPassword({
     ...validation.data,
     token,
   });
@@ -351,7 +350,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
 // 1) Отправляем данные в Google:
 export const googleAuth = (req: Request, res: Response) => {
   //Отправляем запрос в Google:
-  const url = OAuthService.getGoogleAuthUrl();
+  const url = oAuthService.getGoogleAuthUrl();
   //Редиректим пользователя на страницу Google для подтверждения входа:
   res.redirect(url);
 };
@@ -363,11 +362,11 @@ export const googleCallback = catchAsync(
     const { code } = req.query;
     if (!code) throw new AppError(400, "Код авторизации не получен");
 
-    //2) Обмениваем код на данные из Google через OAuthService:
-    const googleUser = await OAuthService.getGoogleUser(code as string);
+    //2) Обмениваем код на данные из Google через oAuthService:
+    const googleUser = await oAuthService.getGoogleUser(code as string);
 
-    //3) Обрабатываем логин/регистрацию через AuthService:
-    const { user, tokens } = await AuthService.processGoogleUser(googleUser);
+    //3) Обрабатываем логин/регистрацию через authService:
+    const { user, tokens } = await authService.processGoogleUser(googleUser);
 
     //4) Устанавливаем куку (используем те же настройки, что для обычного логина):
     res.cookie("refreshToken", tokens.refreshToken, {
@@ -390,7 +389,7 @@ export const googleCallback = catchAsync(
 //1) Генерируем QR-код для клиента:
 export const setup2FA = catchAsync(async (req: AuthRequest, res: Response) => {
   //Получаем QR-код и передаём его пользователю:
-  const result = await AuthService.setup2FA(req.user!.id, req.user!.email);
+  const result = await authService.setup2FA(req.user!.id, req.user!.email);
   return res.json(result);
 });
 
@@ -399,7 +398,7 @@ export const enable2FA = catchAsync(async (req: AuthRequest, res: Response) => {
   //Получаем от клиента его введенный код:
   const { code } = req.body;
   //Передаём код в наш сервис:
-  await AuthService.enable2FA(req.user!.id, code);
+  await authService.enable2FA(req.user!.id, code);
   //Сообщаем пользователю об успехе:
   return res.json({ message: "2FA успешно включена" });
 });
@@ -418,17 +417,17 @@ export const verify2FA = catchAsync(async (req: Request, res: Response) => {
   const { userId, code } = result.data;
 
   //3) Проверяем код через наш сервис:
-  const user = await AuthService.verify2FA(userId, code);
+  const user = await authService.verify2FA(userId, code);
 
   //4) Генерируем токены:
-  const tokens = TokenService.generateTokens({
+  const tokens = tokenService.generateTokens({
     id: user.id,
     email: user.email,
     role: user.role,
   });
 
   //5) Записываем токены в БД:
-  await SessionService.saveToken(user.id, tokens.refreshToken);
+  await sessionService.saveToken(user.id, tokens.refreshToken);
 
   //6) Устанавливаем куки:
   res.cookie("refreshToken", tokens.refreshToken, {

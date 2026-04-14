@@ -1,9 +1,11 @@
 //-----------Логика расчёта цены с учетом скидок:-------------//
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "src/lib/redis.js";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 
 export class DiscountLogic {
-  //Вычисляет финальную цену мотоцикла для конкретного пользователя
+  //Метод вычисляет финальную цену мотоцикла для конкретного пользователя:
   async calculateFinalPrice(motorcycle: any, userId?: string) {
     let finalPrice = motorcycle.price;
     let appliedDiscount = 0; // В процентах (выбираем бОльшую)

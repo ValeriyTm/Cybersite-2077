@@ -1,11 +1,13 @@
 import { Router } from "express";
+//Главный контроллер модуля Ordering:
 import * as orderController from "./order.controller.js";
-import { authMiddleware } from "src/shared/middlewares/auth.middleware.js";
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
+//Middleware:
+import { authMiddleware } from "src/shared/middlewares/auth.middleware.js"; //Проверка авторизации
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 
 const router = Router();
 
-router.use(noCacheMiddleware); //Запрещаем кэширование страниц браузером
+router.use(noCacheMiddleware);
 
 //Роутер создания заказа:
 router.post("/", authMiddleware, orderController.createOrder);
@@ -27,7 +29,7 @@ router.patch(
 router.patch("/:orderId/cancel", authMiddleware, orderController.cancelOrder);
 
 //-----------------------Тестовые эндпоинты---------------
-//1) Тестовый эндпоинт для оплаты (для проверки работы BullMQ):
+//1) Тестовый эндпоинт для оплаты (если модуль Payment недоступен):
 router.patch(
   "/:orderId/pay-test",
   authMiddleware,

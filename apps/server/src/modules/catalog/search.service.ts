@@ -1,6 +1,9 @@
+//Клиент Elasticsearch:
 import { Client } from "@elastic/elasticsearch";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
-import { DiscountLogic } from "../discount/discount.logic.js";
+//Логика расчёта цены с учетом скидок (из модуля Discount):
+import { discountLogic } from "../discount/index.js";
 
 //Подключаемся к контейнеру:
 export const esClient = new Client({ node: "http://localhost:9200" });
@@ -201,7 +204,7 @@ export class SearchService {
       sort = [{ rating: "desc" }];
     }
 
-    console.log("Debag elastic query:", JSON.stringify(query, null, 2));
+    // console.log("Debag elastic query:", JSON.stringify(query, null, 2));
 
     const result = await esClient.search({
       index: this.indexName,
@@ -220,7 +223,7 @@ export class SearchService {
     //Прогоняем каждый товар через логику скидок; передаем userId, чтобы подтянулись персональные скидки:
     const itemsWithDiscounts = await Promise.all(
       rawItems.map(async (moto: any) => {
-        const discountData = await DiscountLogic.calculateFinalPrice(
+        const discountData = await discountLogic.calculateFinalPrice(
           moto,
           userId,
         );
@@ -296,7 +299,7 @@ export class SearchService {
 
     return await Promise.all(
       rawItems.map(async (moto: any) => {
-        const discountData = await DiscountLogic.calculateFinalPrice(
+        const discountData = await discountLogic.calculateFinalPrice(
           moto,
           userId,
         );

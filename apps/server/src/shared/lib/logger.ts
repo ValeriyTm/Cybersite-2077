@@ -12,7 +12,6 @@ export const logger = winston.createLogger({
     }),
     // 2. Настраиваем отправку в Loki
     new LokiTransport({
-      // host.docker.internal, так как бэк в VS Code, а Loki в Docker
       //   host: "http://host.docker.internal:3100",
       host: "http://127.0.0.1:3100",
       labels: { app: "cybersite-backend", env: "development" },

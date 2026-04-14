@@ -1,6 +1,8 @@
+//Типы:
 import { Response, NextFunction } from "express";
 import { AuthRequest } from "./auth.middleware.js";
-import { TokenService } from "../../modules/identity/auth/token.service.js";
+//Сервис работы с токенами:
+import { tokenService } from "../../modules/identity/auth/token.service.js";
 
 export const optionalAuth = (
   req: AuthRequest,
@@ -12,7 +14,7 @@ export const optionalAuth = (
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      //Если токена нет, просто переходим к следующему middleware:
+      //Если токена нет, просто переходим к следующему middleware (в этом отличие от authMiddleware):
       return next();
     }
 
@@ -23,7 +25,7 @@ export const optionalAuth = (
     }
 
     // 3.Проверяем валидность токена через наш TokenService (расшифровка JWT-токена, проверка подписи и срока годности):
-    const userData = TokenService.validateAccessToken(accessToken) as any;
+    const userData = tokenService.validateAccessToken(accessToken) as any;
     if (!userData) {
       return res
         .status(401)

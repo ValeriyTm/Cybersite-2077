@@ -6,7 +6,7 @@ import { reportsService } from "../reports/index.js";
 import { pdfService } from "../reports/index.js";
 import { excelService } from "../reports/index.js";
 //Для работы с файлами:
-import fs from "fs";
+import fs from "fs/promises";
 
 export class TelegramService {
   private static bot: Telegraf;
@@ -52,7 +52,7 @@ export class TelegramService {
             },
           );
 
-          fs.unlinkSync(pdfPath);
+          await fs.unlink(pdfPath);
         } catch (error) {
           await ctx.reply("❌ Ошибка при генерации отчета");
           console.error(error);
@@ -90,9 +90,9 @@ export class TelegramService {
             },
           );
 
-          // Обязательно чистим сервер от временных файлов
-          fs.unlinkSync(pdfPath);
-          fs.unlinkSync(excelPath);
+          //Чистим сервер от временных файлов:
+          await fs.unlink(pdfPath);
+          await fs.unlink(excelPath);
 
           await ctx.reply("✅ Все файлы успешно отправлены.");
         } catch (error) {

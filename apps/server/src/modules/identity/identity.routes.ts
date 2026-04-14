@@ -1,4 +1,5 @@
 import { Router } from "express";
+//Роуты подмодулей:
 import { authRouter } from "./auth/auth.routes.js";
 import { profileRoutes } from "./profile/profile.routes.js"; // добавим позже
 

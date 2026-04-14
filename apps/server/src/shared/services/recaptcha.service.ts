@@ -1,5 +1,5 @@
 //--------------Сервис для работы с Google reCAPTCHA v3.--
-//Сервис отправляет полученный от клиента токен в Google, чтобы понять, является ли пользователь человеком или ботом.
+//------Сервис отправляет полученный от клиента токен в Google, чтобы понять, является ли пользователь человеком или ботом.
 import axios from "axios";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../utils/app-error.js";
@@ -10,8 +10,8 @@ export class RecaptchaService {
     "https://www.google.com/recaptcha/api/siteverify";
 
   //Метод, который принимает токен, сгенерированную браузером пользователя и проверяет токен:
-  static async verify(token: string) {
-    // Если мы в режиме разработки или тестов, можно пропускать проверку, чтобы лишний раз не обращаться к Google:
+  async verify(token: string) {
+    //Если мы в режиме разработки или тестов, можно пропускать проверку, чтобы лишний раз не обращаться к Google:
     if (process.env.NODE_ENV === "test") return true;
 
     //Если клиент не прислал токен, выбрасываем ошибку:
@@ -58,3 +58,5 @@ export class RecaptchaService {
     }
   }
 }
+
+export const recaptchaService = new RecaptchaService();

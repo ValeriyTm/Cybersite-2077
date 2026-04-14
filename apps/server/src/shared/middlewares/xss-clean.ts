@@ -4,7 +4,7 @@
 import createDOMPurify from "dompurify";
 //Эмулятор браузерного окружения (DOM), так как DOMPurify изначально создан для работы в браузере^
 import { JSDOM } from "jsdom";
-//Импорт типов TS:
+//Типы:
 import { Request, Response, NextFunction } from "express";
 
 //Создание виртуального окна браузера:
@@ -12,7 +12,6 @@ const window = new JSDOM("").window;
 //Инициализация очистителя, привязанного к виртуальному окну:
 const DOMPurify = createDOMPurify(window as any);
 
-//Создаём middleware:
 export const xssClean = (req: Request, res: Response, next: NextFunction) => {
   //Проверяем есть ли в запросе тело:
   if (req.body) {

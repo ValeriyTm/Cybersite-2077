@@ -8,9 +8,8 @@ import { prisma } from "@repo/database";
 import { addDeliveredTask } from "./order.queue.js";
 //Для генерации событий:
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
-
-//???????
-import { searchService } from "../catalog/search.service.js";
+//Поисковый сервис модуля Catalog:
+import { searchService } from "../catalog/index.js";
 
 export const orderWorker = new Worker(
   "order-tasks", //(Поле должно совпадать с именем в Queue)
@@ -49,17 +48,14 @@ export const orderWorker = new Worker(
             await searchService.updateStockInElastic(item.motorcycleId);
           }
           console.log(
-            `✅ Остатки заказа №${order.orderNumber} возвращены в Elastic (отмена)`,
+            `Остатки заказа №${order.orderNumber} возвращены в Elastic (отмена)`,
           );
         } catch (error) {
-          console.error(
-            "⚠️ Ошибка обновления Elastic при отмене заказа:",
-            error,
-          );
+          console.error("Ошибка обновления Elastic при отмене заказа:", error);
         }
 
         console.log(
-          `✅ Заказ №${order.orderNumber} автоматически отменен (истекло время)`,
+          `Заказ №${order.orderNumber} автоматически отменен (истекло время)`,
         );
       }
     }
@@ -74,7 +70,7 @@ export const orderWorker = new Worker(
       //Как только начадась доставка, сразу планируем её завершение:
       await addDeliveredTask(order.id, order.estimatedDate);
 
-      console.log(`🚚 Заказ ${orderId} переведен в статус ДОСТАВКА`);
+      console.log(`Заказ ${orderId} переведен в статус ДОСТАВКА`);
     }
 
     //Задача завершения доставки (перевод DELIVERY --> DELIVERED):
@@ -84,7 +80,7 @@ export const orderWorker = new Worker(
         data: { status: "DELIVERED" },
         include: { user: true }, //Извлекаем данные о юзере
       });
-      console.log(`✨ Заказ ${orderId} прибыл в пункт назначения!`);
+      console.log(`Заказ ${orderId} прибыл в пункт назначения!`);
 
       //Генерируем событие для отправки юзеру письма, что заказ доставлен:
       eventBus.emit(EVENTS.ORDER_DELIVERY_END, order);
@@ -95,5 +91,5 @@ export const orderWorker = new Worker(
 
 //Обработка ошибок воркера:
 orderWorker.on("failed", (job, err) => {
-  console.error(`❌ Ошибка в задаче ${job?.id}: ${err.message}`);
+  console.error(`Ошибка в задаче ${job?.id}: ${err.message}`);
 });

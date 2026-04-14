@@ -1,4 +1,4 @@
-//Клиент призмы для работы с БД:
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
@@ -58,8 +58,8 @@ export class CatalogService {
     };
   }
 
-  //Получение данных о конкретном мотоцикле:
-  async getMotorcycleBySlug(slug: string, userId: string) {
+  //Получение данных о конкретном мотоцикле по его slug:
+  async getMotorcycleBySlug(slug: string, userId?: string) {
     //Достаем из БД все данные о мотоцикле:
     const moto = await prisma.motorcycle.findUnique({
       where: { slug },
@@ -86,6 +86,22 @@ export class CatalogService {
     const discountData = await discountLogic.calculateFinalPrice(moto, userId);
 
     return { ...moto, totalInStock, discountData };
+  }
+
+  //Получение данных о конкретном мотоцикле по его id:
+  async getMotorcycleById(id: string) {
+    return await prisma.motorcycle.findUnique({
+      where: { id },
+      include: {
+        brand: true,
+        siteCategory: true,
+        images: true, //Галерея изображений
+        //Подтягиваем остатки со всех складов:
+        stocks: {
+          select: { quantity: true, reserved: true },
+        },
+      },
+    });
   }
 }
 

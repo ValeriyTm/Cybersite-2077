@@ -1,8 +1,10 @@
 import { Router } from "express";
+//Главный контроллер модуля Discount:
 import * as discountController from "./discount.controller.js";
-import { authMiddleware } from "src/shared/middlewares/auth.middleware.js";
-import { roleMiddleware } from "src/shared/middlewares/role.middleware.js";
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
+//Middleware:
+import { authMiddleware } from "src/shared/middlewares/auth.middleware.js"; //Проверка авторизации
+import { roleMiddleware } from "src/shared/middlewares/role.middleware.js"; //Проверка роли пользователя
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 
 const router = Router();
 

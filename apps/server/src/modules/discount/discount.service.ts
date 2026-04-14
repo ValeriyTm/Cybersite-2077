@@ -1,10 +1,16 @@
+//Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "src/lib/redis.js";
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
+//Библиотека для генерации рандомных слов:
 import { faker } from "@faker-js/faker";
+//Для создания событий:
 import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
+//Используем свой класс для выбрасывания ошибок:
+import { AppError } from "../../shared/utils/app-error.js";
 
 export class DiscountService {
-  //Глобальная скидка (по году выпуска):
+  //Генерация глобальной скидки (по году выпуска):
   async generateGlobalDiscount() {
     const randomYear = Math.floor(Math.random() * (2021 - 1894 + 1)) + 1894; //Выбираем рандомный год для мотоциклов (1894-2021)
     const percent = Math.floor(Math.random() * (15 - 5 + 1)) + 5; //Выбираем рандомный размрер скидки (5-15%)
@@ -24,7 +30,7 @@ export class DiscountService {
     };
   }
 
-  //Промокоды (генерируем 5 рандомных слов через Faker):
+  //Генерация промокодов (генерируем 5 рандомных слов через Faker):
   async generateWeeklyPromos() {
     //Деактивируем старые промокоды:
     await prisma.promoCode.updateMany({ data: { isActive: false } });
@@ -47,7 +53,7 @@ export class DiscountService {
     return promos;
   }
 
-  //Персональная скидка:
+  //Генерация персональных скидкок:
   async generatePersonalDiscounts() {
     //Чистим просроченные скидки в БД перед началом:
     await prisma.personalDiscount.deleteMany({
@@ -113,6 +119,49 @@ export class DiscountService {
     );
 
     return { personalCount: users.length };
+  }
+
+  //Применение промокода:
+  async applyPromoCode(code: string, userId: string) {
+    const promo = await prisma.promoCode.findUnique({
+      where: { code: code.toUpperCase(), isActive: true },
+      include: { usedPromos: { where: { userId } } }, //Подтягиваем использование этим юзером
+    });
+
+    if (!promo || promo.expiresAt < new Date()) {
+      throw new AppError(400, "Промокод не найден или истек");
+    }
+
+    //Если промокод уже использован юзером - отказ
+    const alreadyUsed = await prisma.usedPromo.findFirst({
+      where: { userId, promoCodeId: promo.id },
+    });
+    if (alreadyUsed) {
+      throw new AppError(400, "Вы уже использовали этот промокод");
+    }
+
+    return {
+      promoCode: promo.code,
+      promoDiscountAmount: promo.discountAmount,
+    };
+  }
+
+  //Получение текущей глобальной скидки:
+  async getGlobalDiscount() {
+    const raw = await redis.get("global_sale");
+    const data = raw ? JSON.parse(raw) : null;
+    return data;
+  }
+
+  //Получить все действующие промокоды:
+  async getAllActivePromos() {
+    return await prisma.promoCode.findMany({
+      where: {
+        isActive: true,
+        expiresAt: { gt: new Date() }, //Только действующие
+      },
+      orderBy: { createdAt: "desc" },
+    });
   }
 }
 

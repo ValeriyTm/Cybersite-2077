@@ -7,8 +7,8 @@ import { prisma } from "@repo/database";
 import { reportsService } from "../reports/index.js";
 import { pdfService } from "../reports/index.js";
 import { excelService } from "../reports/index.js";
-//Сервисы модуля Catalog:
-import { searchService } from "../catalog/search.service.js";
+//Поисковый сервис модуля Catalog:
+import { searchService } from "../catalog/index.js";
 //Взаимодействие с файлами и путями:
 import fs from "fs";
 import path from "path";

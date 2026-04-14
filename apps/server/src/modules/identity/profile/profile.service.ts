@@ -1,7 +1,9 @@
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
 import { UpdateProfileInput } from "@repo/validation";
+//Для работы с путями и файлами:
 import fs from "node:fs/promises";
 import path from "node:path";
 export class ProfileService {

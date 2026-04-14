@@ -1,6 +1,9 @@
 //Скрипт для заполнения таблицы изображений в БД.
-//Запускаю командой "npx tsx src/scripts/sync-images.ts" из apps/server
+//Запускаю командой "npx tsx src/scripts/syncImages.ts" из apps/server
+
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
+//Для работы с путями и файлами:
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -11,7 +14,7 @@ const __dirname = path.dirname(__filename);
 const UPLOADS_PATH = path.join(__dirname, "../../uploads/motorcycles");
 
 async function syncImages() {
-  console.log("🚀 Начинаем синхронизацию изображений с базой...");
+  console.log("Начинаем синхронизацию изображений с базой...");
 
   // 1. Читаем все файлы из папки
   const files = fs.readdirSync(UPLOADS_PATH);
@@ -47,7 +50,7 @@ async function syncImages() {
     }
   }
 
-  console.log("🏁 Синхронизация завершена!");
+  console.log("Синхронизация завершена!");
 }
 
 syncImages()

@@ -1,3 +1,4 @@
+//Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 
 const BASE_URL = "https://cybersite2077.com"; //Мой будущий домен тут будет
@@ -15,7 +16,6 @@ export class SitemapService {
       },
     });
 
-    // const BASE_URL = "https://cybersite2077.com";
     const urls: string[] = [];
 
     //Статические ссылки:

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { TwoFactorService } from "../two-factor.service.js";
+import { twoFactorService } from "../two-factor.service.js";
 
 //Используем рабочий способ получения authenticator из otplib:
 import { createRequire } from "module";
@@ -20,7 +20,7 @@ describe("Тестируем 2FA (сервис TwoFactorService)", () => {
     vi.spyOn(authenticator, "check").mockReturnValue(true);
 
     //Вызываем настоящий метод, он лезет в authenticator.check, а там шпион ему отдаёт результат true.
-    const isValid = TwoFactorService.verifyToken(token, secret);
+    const isValid = twoFactorService.verifyToken(token, secret);
 
     expect(isValid).toBe(true);
     //Проверяем, что шпион был вызван:
@@ -30,7 +30,7 @@ describe("Тестируем 2FA (сервис TwoFactorService)", () => {
   it("Должно возвращаться false при неверном коде", () => {
     vi.spyOn(authenticator, "check").mockReturnValue(false);
 
-    const isValid = TwoFactorService.verifyToken("000000", "SECRET");
+    const isValid = twoFactorService.verifyToken("000000", "SECRET");
 
     expect(isValid).toBe(false);
   });
