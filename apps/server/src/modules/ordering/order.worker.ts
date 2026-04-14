@@ -86,7 +86,8 @@ export const orderWorker = new Worker(
       eventBus.emit(EVENTS.ORDER_DELIVERY_END, order);
     }
   },
-  { connection: redis },
+  { connection: redis }, //Указываем воркеру, к какому именно экземпляру Redis ему нужно
+  //подключиться, чтобы «слушать» задачи.
 );
 
 //Обработка ошибок воркера:

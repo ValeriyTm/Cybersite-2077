@@ -31,7 +31,7 @@ import contentRouter from "./modules/content/content.routes.js";
 //Создаём экземпляр приложения Express:
 const app = express();
 
-//Для сбора стандартных метрик (память, процессор и т.д.)
+//Для сбора стандартных метрик (память, процессор и т.д.) (для Prometheus):
 const collectDefaultMetrics = client.collectDefaultMetrics;
 
 //Настройки CORS:
@@ -58,7 +58,7 @@ app.use(
       });
     },
     {
-      //Следующий код перенаправляет вывод Morgan в Winston логгер:
+      //Следующий код перенаправляет вывод Morgan в Loki (при помощи Winston):
       stream: {
         write: (message) => {
           try {

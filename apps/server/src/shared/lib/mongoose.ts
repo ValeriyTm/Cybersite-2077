@@ -8,7 +8,7 @@ export const connectMongoDB = async () => {
     // Настройки для стабильного подключения
     mongoose.set("strictQuery", false);
 
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGO_URI); //Подключаемся к БД
 
     console.log("✅MongoDB подключен успешно");
   } catch (error) {

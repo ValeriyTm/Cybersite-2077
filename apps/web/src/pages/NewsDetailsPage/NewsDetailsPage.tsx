@@ -29,7 +29,7 @@ export const NewsDetailsPage = () => {
                 <h1 className={styles.title}>{article.title}</h1>
                 {article.mainImage && (
                     <div className={styles.mainImage}>
-                        <img src={`http://localhost:3001/static/motorcycles/${article.mainImage}`} alt={article.title} />
+                        <img src={`http://localhost:3001/static/news/${article.mainImage}`} alt={article.title} />
                     </div>
                 )}
             </header>
@@ -43,7 +43,7 @@ export const NewsDetailsPage = () => {
                         case 'image':
                             return (
                                 <figure key={index} className={styles.imageBlock}>
-                                    <img src={`http://localhost:3001/static/products/${block.value}`} alt="Content" />
+                                    <img src={`http://localhost:3001/static/news/${block.value}`} alt="Content" />
                                 </figure>
                             );
 

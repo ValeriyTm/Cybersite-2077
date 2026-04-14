@@ -8,6 +8,7 @@ import { warehouseService } from "../warehouse/index.js";
 import { discountLogic } from "../discount/index.js";
 
 export class CartService {
+  //Удобный перевод userId в название записи в хранилище Redis:
   private getCartKey(userId: string) {
     return `cart:${userId}`;
   }
@@ -157,14 +158,18 @@ export class CartService {
     isSelected: boolean,
   ) {
     const key = this.getCartKey(userId);
-    const data = await redis.get(key);
+    const data = await redis.get(key); //Получаем данные по корзине из Redis
     const cartItems = data ? JSON.parse(data) : [];
+    //Если данные есть, превращаем строку JSON обратно в массив объектов.
+    //Если данных нет (корзина пуста), создаем пустой массив.
 
     const updatedCart = cartItems.map((item: any) =>
       item.id === motorcycleId ? { ...item, selected: isSelected } : item,
     );
+    //Пробегаем по всем товарам в корзине. Если id товара совпадает с нужным motorcycleId, создаём
+    //копию этого товара с обновленным полем selected. Остальные товары оставляем без изменений.
 
-    await redis.set(key, JSON.stringify(updatedCart));
+    await redis.set(key, JSON.stringify(updatedCart)); //Сохраняем обновленный массив обратно в Redis, предварительно превратив его в строку
     return this.getCart(userId); //Возвращаем полную корзину с данными из БД и скидками
   }
 
