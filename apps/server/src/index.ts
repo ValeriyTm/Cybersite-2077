@@ -7,7 +7,7 @@ import app from "./app.js";
 import { prisma } from "@repo/database";
 //Сервис удаления неподтвержденных аккаунтов:
 import { CleanupService } from "./modules/identity/auth/cleanup.service.js";
-import { connectMongoDB } from "./lib/mongoose.js";
+import { connectMongoDB } from "./shared/lib/mongoose.js";
 import { initDiscountCron } from "./modules/discount/discount.queue.js";
 //Подключение к ТГ-боту из сервиса Notifications:
 import { TelegramService } from "./modules/notifications/index.js";

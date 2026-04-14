@@ -19,7 +19,7 @@ export default defineConfig({
           globals: true,
           environment: "jsdom",
           alias: {
-            // ЖЕСТКАЯ ПРИВЯЗКА: теперь @ всегда ведет в apps/web/src 🎯
+            // ЖЕСТКАЯ ПРИВЯЗКА: теперь @ всегда ведет в apps/web/src
             "@": path.resolve(__dirname, "./apps/web/src"),
           },
         },

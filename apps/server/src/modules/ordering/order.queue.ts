@@ -1,7 +1,7 @@
 //Очередь:
 import { Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "../../lib/redis.js";
+import { redis } from "../../shared/lib/redis.js";
 
 // Создаем очередь для заказов
 export const orderQueue = new Queue("order-tasks", {

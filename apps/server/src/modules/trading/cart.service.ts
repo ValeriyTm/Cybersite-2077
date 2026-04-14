@@ -1,5 +1,5 @@
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "../../lib/redis.js";
+import { redis } from "../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Сервис из модуля Warehouse:

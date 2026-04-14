@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { AdminController } from "./admin.controller.js";
+//Главный контроллер модуля Admin:
+import * as adminController from "./admin.controller.js";
 //Middleware:
-import { authMiddleware } from "src/shared/middlewares/auth.middleware.js";
-import { roleMiddleware } from "src/shared/middlewares/role.middleware.js";
+import { authMiddleware } from "src/shared/middlewares/auth.middleware.js"; //Middleware для авторизации
+import { roleMiddleware } from "src/shared/middlewares/role.middleware.js"; //Middleware для проверки роли пользователя
 import { productUpload } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js";
+import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 
 const router = Router();
 
@@ -17,178 +18,178 @@ router.use(noCacheMiddleware); //Запрещаем кэширование ст�
 router.get(
   "/brands",
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
-  AdminController.getBrands,
+  adminController.getBrands,
 );
 //Удаление бренда:
 router.delete(
   "/brands/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.deleteBrand,
+  adminController.deleteBrand,
 );
 //Создание бренда:
 router.post(
   "/brands",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.createBrand,
+  adminController.createBrand,
 );
 //Обновление бренда:
 router.patch(
   "/brands/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.updateBrand,
+  adminController.updateBrand,
 );
 //Поиск бренда:
 router.get(
   "/brands/search",
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
-  AdminController.searchBrands,
+  adminController.searchBrands,
 );
 //---------------------Работа с мотоциклами:-------------
 //Получение мотоциклов конкретного бренда:
 router.get(
   "/motorcycles",
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
-  AdminController.getMotorcycles,
+  adminController.getMotorcycles,
 );
 //Создание записи о мотоцикле:
 router.post(
   "/motorcycles",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   productUpload.array("images", 5),
-  AdminController.createMotorcycle,
+  adminController.createMotorcycle,
 );
 //Правка записи о мотоцикле:
 router.patch(
   "/motorcycles/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   productUpload.array("images", 5),
-  AdminController.updateMotorcycle,
+  adminController.updateMotorcycle,
 );
 //Удаление записи о мотоцикле:
 router.delete(
   "/motorcycles/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.deleteMotorcycle,
+  adminController.deleteMotorcycle,
 );
 //---------------------Работа с остатками:-------------
 //Получить остатки по складам:
 router.get(
   "/stocks",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.getStocks,
+  adminController.getStocks,
 );
 //Обновить значения остатков:
 router.patch(
   "/stocks/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.updateStock,
+  adminController.updateStock,
 );
 //---------------------Работа с заказами:-------------
 //Получить все заказы:
 router.get(
   "/orders",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.getOrders,
+  adminController.getOrders,
 );
 //Изменить статус заказа:
 router.patch(
   "/orders/:id/status",
   roleMiddleware(["ADMIN", "SUPERADMIN"]),
-  AdminController.updateOrderStatus,
+  adminController.updateOrderStatus,
 );
 //---------------------Управление доступом:-------------
 //Получить роли юзера:
-router.get("/users/", roleMiddleware(["SUPERADMIN"]), AdminController.getUsers);
+router.get("/users/", roleMiddleware(["SUPERADMIN"]), adminController.getUsers);
 //Изменить роль юзера:
 router.patch(
   "/users/:id/role",
   roleMiddleware(["SUPERADMIN"]),
-  AdminController.updateUserRole,
+  adminController.updateUserRole,
 );
 //Удалить юзера:
 router.delete(
   "/users/:id",
   roleMiddleware(["SUPERADMIN"]),
-  AdminController.deleteUser,
+  adminController.deleteUser,
 );
 //---------------------Статистика:-------------
 //Глобальная синхронизация Elasticsearch:
 router.post(
   "/sync-search/global",
   roleMiddleware(["ADMIN", "SUPERADMIN"]),
-  AdminController.globalSearchSync,
+  adminController.globalSearchSync,
 );
 //---------------------Скидки и промокоды:-------------
 //Получение промокодов:
 router.get(
   "/promos",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.getPromoCodes,
+  adminController.getPromoCodes,
 );
 //Получение персональных скидок:
 router.get(
   "/personal-discounts",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.getPersonalDiscounts,
+  adminController.getPersonalDiscounts,
 );
 //---------------------Отчеты:-------------
 //Скачать отчет:
 router.get(
   "/reports/download",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.downloadSalesReport,
+  adminController.downloadSalesReport,
 );
 //---------------------Тикеты поддержки:-------------
 //Получить все тикеты:
 router.get(
   "/tickets",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.getTickets,
+  adminController.getTickets,
 );
 //Ответить на тикет:
 router.patch(
   "/tickets/:id/reply",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.replyToTicket,
+  adminController.replyToTicket,
 );
 //Изменить статус тикета:
 router.patch(
   "/tickets/:id/status",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
-  AdminController.updateTicketStatus,
+  adminController.updateTicketStatus,
 );
 //---------------------Контент:-------------
 //Получение всех новостей:
 router.get(
   "/news",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
-  AdminController.getNews,
+  adminController.getNews,
 );
 //Создать новость:
 router.post(
   "/news",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
   productUpload.single("mainImage"),
-  AdminController.createNews,
+  adminController.createNews,
 );
 //Изменить новость:
 router.patch(
   "/news/:id",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
   productUpload.single("mainImage"),
-  AdminController.updateNews,
+  adminController.updateNews,
 );
 //Удалить новость:
 router.delete(
   "/news/:id",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
-  AdminController.deleteNews,
+  adminController.deleteNews,
 );
 //Обновить статус новости:
 router.patch(
   "/news/:id/status",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
-  AdminController.updateNewsStatus,
+  adminController.updateNewsStatus,
 );
 
 export default router;

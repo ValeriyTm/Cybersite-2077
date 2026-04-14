@@ -2,7 +2,7 @@
 //Очередь:
 import { Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "src/lib/redis.js";
+import { redis } from "src/shared/lib/redis.js";
 
 const cleanupQueue = new Queue("cleanup-queue", { connection: redis });
 

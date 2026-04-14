@@ -524,7 +524,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [userId, code] # 🎯 userId берем из ответа /login
+              required: [userId, code] #  userId берем из ответа /login
               properties:
                 userId:
                   type: string

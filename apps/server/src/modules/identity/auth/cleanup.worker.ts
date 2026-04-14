@@ -1,7 +1,7 @@
 //Воркер:
 import { Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "src/lib/redis.js";
+import { redis } from "src/shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 
