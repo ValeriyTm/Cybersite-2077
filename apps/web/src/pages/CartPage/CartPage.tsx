@@ -1,27 +1,32 @@
+//Состояния:
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useCart } from "@/entities/trading/api/useCart";
-import { useFavorites } from "@/entities/trading/api/useFavorites";
-import styles from "./CartPage.module.scss";
-import { ConfirmModal } from "@/shared/ui/ConfirmModal/ConfirmModal";
 import { useMemo, useState } from "react";
-import { Link } from "react-router";
 import { useProfile } from "@/features/auth/model/useProfile";
+//Навигация:
 import { useNavigate } from "react-router";
+//Компоненты:
+import { ConfirmModal } from "@/shared/ui/ConfirmModal/ConfirmModal";
+import { CartItem } from "@/entities/trading/ui/CartItem/CartItem";
+//API:
 import { $api } from "@/shared/api/api";
+//Уведомления:
 import toast from "react-hot-toast";
+//Стили:
+import styles from "./CartPage.module.scss";
 
 export const CartPage = () => {
-  const { cartItems, toggleSelectItem, toggleSelectAll, updateItemQuantity } =
+  const { user } = useProfile(); // Достаем данные профиля
+
+  const { cartItems } =
     useTradingStore();
   const {
-    updateQuantity,
     removeItem,
     removeSelected,
-    toggleSelect,
     selectAll,
   } = useCart();
 
-  // Проверяем, выбраны ли все товары сейчас
+  //Проверяем, выбраны ли все товары сейчас:
   const isAllSelected =
     cartItems.length > 0 && cartItems.every((item) => item.selected);
 
@@ -32,10 +37,6 @@ export const CartPage = () => {
     amount: number;
   } | null>(null);
 
-  const { user } = useProfile(); // Достаем данные профиля
-
-  const favoriteIds = useTradingStore((state) => state.favoriteIds);
-  const { toggleFavorite } = useFavorites();
 
   const navigate = useNavigate();
 
@@ -43,7 +44,35 @@ export const CartPage = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
 
-  //Для применения промокода:
+  //------------------------------Расчёт цены:--------------------------//
+  const selectedItems = cartItems.filter((item) => item.selected); //Рассматриваем не все товары корзины, а только выделенные
+  //Применяем к ним действие скидок:
+  const subtotal = selectedItems.reduce(
+    (acc, item) =>
+      acc + (item.discountData?.finalPrice || item.price) * item.quantity,
+    0,
+  );
+  //Применяем действие промокодов и получаем конечную цену:
+  const finalTotal = useMemo(() => {
+    const promoAmount = Number(appliedPromo?.amount || 0); //Уменьшение суммы от промокода
+    return Math.max(0, subtotal - promoAmount); //Получаем конечную сумму
+  }, [subtotal, appliedPromo]); //Пересчитываем при каждом изменении выделенных товаров и примененного промокода
+
+  //Обработчик удаления одного товара из корзины:
+  const handleConfirmSingle = () => {
+    if (deletingId) {
+      removeItem(deletingId);
+      setDeletingId(null);
+    }
+  };
+  //-----------------------------------Обработчики----------------------------//
+  //
+  const handleDeletingId = (data) => {
+    setDeletingId(data);
+  }
+
+
+  //Обработчик для применения промокода:
   const handleApplyPromo = async () => {
     try {
       const res = await $api.post("/discount/apply-promo", { code: promoCode });
@@ -55,58 +84,19 @@ export const CartPage = () => {
     }
   };
 
-  //Расчеты для боковой панели
-
-  // const totalPrice = selectedItems.reduce(
-  //   (acc, item) => acc + item.price * item.quantity,
-  //   0,
-  // );
-
+  //Обработчик для выбора всех чекбоксов:
   const handleToggleAll = () => {
     selectAll(!isAllSelected);
   };
 
-  //Применяем скидки к сумме заказа:
-  const selectedItems = cartItems.filter((item) => item.selected);
-
-  const subtotal = selectedItems.reduce(
-    (acc, item) =>
-      acc + (item.discountData?.finalPrice || item.price) * item.quantity,
-    0,
-  );
-
-  const finalTotal = useMemo(() => {
-    const promoAmount = Number(appliedPromo?.amount || 0);
-    return Math.max(0, subtotal - promoAmount);
-  }, [subtotal, appliedPromo]);
-
-  //Уменьшение цены от промокода:
-  // let promoAmount = appliedPromo?.amount ? appliedPromo?.amount : 0;
-
-  // const currentPromoAmount = Number(appliedPromo?.amount || 0);
-  // const currentSubtotal = Number(subtotal || 0);
-  //Применяем промокод к сумме заказа (конечная сумма):
-  // const finalTotal = Math.max(0, currentSubtotal - currentPromoAmount);
-
-  // const isAllSelected =
-  //   cartItems.length > 0 && selectedItems.length === cartItems.length;
-
-  //Обработчик удаления одного товара
-  const handleConfirmSingle = () => {
-    if (deletingId) {
-      removeItem(deletingId);
-      setDeletingId(null);
-    }
-  };
-
-  //Обработчик массового удаления
+  //Обработчик массового удаления товаров из корзины:
   const handleConfirmBulk = () => {
     const ids = selectedItems.map((i) => i.id);
     removeSelected(ids); // Передаем массив
     setIsBulkDeleteOpen(false);
   };
 
-  //--------------Проверяем допустимо ли юзеру нажать кнопку оформления заказа:-----
+  //--------------Проверяем допустимо ли юзеру нажать кнопку оформления заказа:-----//
   //Проверяем заполненность профиля
   const isProfileIncomplete = !user?.phone || !user?.birthday;
 
@@ -115,19 +105,20 @@ export const CartPage = () => {
     (item) => item.quantity > item.totalInStock,
   );
 
+  //Итог - доступна ли кнопка оформления заказа:
   const isCheckoutDisabled =
     selectedItems.length === 0 || //Ничего не выбрано
     hasStockErrorInSelected || //Выбран товар, которого нет на складе (или кол-во не соответствует)
     isProfileIncomplete; //Профиль не заполнен
 
-  ///--------------------------
+  ///--------------------------При отсутствии товаров:------------------------//
   if (cartItems.length === 0) {
     return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
   }
 
   return (
     <main className={styles.CartPage}>
-      {/*Модалка для удаления одного товара из корзины*/}
+      {/*1) Модалка для удаления одного товара из корзины*/}
       <ConfirmModal
         isOpen={!!deletingId}
         title="Вы действительно хотите удалить этот товар из корзины?"
@@ -135,7 +126,7 @@ export const CartPage = () => {
         onCancel={() => setDeletingId(null)}
       />
 
-      {/*Модалка для массового удаления товаров из корзины*/}
+      {/*2) Модалка для массового удаления товаров из корзины*/}
       <ConfirmModal
         isOpen={isBulkDeleteOpen}
         title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
@@ -146,7 +137,7 @@ export const CartPage = () => {
       <h1 className={styles.title}>Корзина</h1>
 
       <div className={styles.content}>
-        {/* Список товаров */}
+        {/*3) Header:*/}
         <div className={styles.main}>
           <div className={styles.controls}>
             <label className={styles.checkboxLabel}>
@@ -166,151 +157,19 @@ export const CartPage = () => {
             </button>
           </div>
 
+          {/*4) Список товаров:*/}
           <div className={styles.list}>
             {cartItems.map((item) => {
-              //Ошибка, если товара на складе осталось меньше, чем у нас в корзине:
-              const isError = item.quantity > item.totalInStock;
-              //Скидки:
-              const hasDiscount =
-                item.discountData && item.discountData.discountPercent > 0;
-              const displayPrice = hasDiscount
-                ? item.discountData.finalPrice
-                : item.price;
-
-              //
-              const handleCheckboxChange = () => {
-                // Отправляем ID и инвертированное текущее состояние
-                toggleSelect({ id: item.id, selected: !item.selected });
-              };
-
               return (
-                <div
-                  key={item.id}
-                  className={`${styles.cartItem} ${isError && styles.Error}`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={item.selected}
-                    onChange={handleCheckboxChange}
-                  />
-
-                  <div className={styles.itemImg}>
-                    <img
-                      src={
-                        item.image
-                          ? `http://localhost:3001/static/motorcycles/${item.image}`
-                          : "http://localhost:3001/static/defaults/default-card-icon.jpg"
-                      }
-                      alt=""
-                    />
-                  </div>
-
-                  <div className={styles.itemInfo}>
-                    <Link
-                      to={`/catalog/motorcycles/${item.brandSlug}/${item.slug}`}
-                      className={styles.itemName}
-                    >
-                      <p>
-                        {item.model}, {item.year} г
-                      </p>
-                    </Link>
-
-                    <div className={styles.actions}>
-                      <button
-                        className={`${styles.favIconBtn} ${favoriteIds.includes(item.id) ? styles.active : ""}`}
-                        onClick={() => toggleFavorite(item.id)}
-                        title={
-                          favoriteIds.includes(item.id)
-                            ? "Удалить из избранного"
-                            : "В избранное"
-                        }
-                      >
-                        {favoriteIds.includes(item.id) ? "❤️" : "🤍"}
-                      </button>
-                      <button onClick={() => setDeletingId(item.id)}>
-                        Удалить
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className={styles.quantityControl}>
-                    <button
-                      onClick={() =>
-                        updateQuantity({
-                          id: item.id,
-                          quantity: item.quantity - 1,
-                        })
-                      }
-                    >
-                      -
-                    </button>
-                    <span>{item.quantity}</span>
-                    <button
-                      onClick={() =>
-                        updateQuantity({
-                          id: item.id,
-                          quantity: item.quantity + 1,
-                        })
-                      }
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  {/* <div className={styles.priceBlock}>
-                    <span className={styles.currentPrice}>
-                      {item.price?.toLocaleString() ?? 0} ₽ / шт.
-                    </span>
-                    <span className={styles.totalItemPrice}>
-                      {(item.price * item.quantity).toLocaleString()} ₽
-                    </span>
-                  </div> */}
-
-                  <div className={styles.priceBlock}>
-                    {hasDiscount ? (
-                      <>
-                        {/*Старая цена:*/}
-                        <span className={styles.oldPrice}>
-                          {item.price?.toLocaleString() ?? 0} ₽ / шт.
-                        </span>
-                        {/*Новая цена:*/}
-                        <span className={styles.currentPrice}>
-                          {displayPrice.toLocaleString() ?? 0} ₽ / шт.
-                        </span>
-                        {/*Общая сумма:*/}
-                        <span className={styles.totalItemPrice}>
-                          {(displayPrice * item.quantity).toLocaleString()} ₽
-                        </span>
-                        {/*Скидка:*/}
-                        <span className={styles.badgeDiscount}>
-                          -{item.discountData.discountPercent}%
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span className={styles.currentPrice}>
-                          {item.price?.toLocaleString() ?? 0} ₽ / шт.
-                        </span>
-                        <span className={styles.totalItemPrice}>
-                          {(item.price * item.quantity).toLocaleString()} ₽
-                        </span>
-                      </>
-                    )}
-                  </div>
-
-                  {isError && (
-                    <span className={styles.errorHint}>
-                      Ошибка: на складе осталось всего {item.totalInStock} шт.
-                    </span>
-                  )}
-                </div>
-              );
+                <CartItem key={item.id} data={item} handleDeletingId={handleDeletingId} />
+              )
             })}
           </div>
         </div>
 
-        {/* Боковая панель: Итоговая цена */}
+        {/*5) Сайдбар с итоговой ценой:*/}
         <aside className={styles.summary}>
+          {/*5.1.) Окно с ценой и кнопкой оформления заказа:*/}
           <h3>Условия заказа</h3>
           <div className={styles.summaryRow}>
             <span>Выбрано товаров:</span>
@@ -348,7 +207,7 @@ export const CartPage = () => {
             Перейти к оформлению
           </button>
 
-          {/*Зона ввода промокода:*/}
+          {/*5.2.) Зона ввода промокода:*/}
           <div className={styles.promoSection}>
             <p className={styles.promoLabel}>Промокод на скидку:</p>
 

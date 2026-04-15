@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router";
 export const useMotorcycleFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Читаем параметры из URL:
+  //Извлекаем отдельные параметры из адресной строки:
   const filters = {
     page: Number(searchParams.get("page")) || 1,
     limit: Number(searchParams.get("limit")) || 20,
@@ -26,20 +26,22 @@ export const useMotorcycleFilters = () => {
 
   //Функция обновления URL:
   const updateFilters = (newValues: Record<string, any>) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams); //Берем все текущие GET-параметры из URL, чтобы не потерять те, которые мы сейчас не меняем
 
     Object.entries(newValues).forEach(([key, value]) => {
       if (value !== undefined && value !== "" && value !== null) {
         params.set(key, String(value));
+        //Если значение фильтра передано (не пустое, не null, не undefined), оно добавляется в URL или перезаписывает старое через params.set
       } else {
         params.delete(key);
+        //Если значение пустое (например, пользователь очистил поле поиска), параметр полностью удаляется из URL через params.delete
       }
     });
 
-    //Если обновляем не страницу, то сбрасываем на 1-ю страницу:
+    //Если меняем любой фильтр, но при этом явно не указываем страницу, код принудительно поставит page=1:
     if (!newValues.page) params.set("page", "1");
 
-    setSearchParams(params);
+    setSearchParams(params); //Обновляем URL
   };
 
   return { filters, updateFilters };

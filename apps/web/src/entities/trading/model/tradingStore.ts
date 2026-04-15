@@ -1,6 +1,8 @@
-//Хранилище для работы с состоянием избранного и корзины
+//--------------Хранилище для работы с состоянием избранного и корзины-------------//
+//Zustand:
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+//API:
 import { $api } from "@/shared/api/api";
 
 interface CartItem {

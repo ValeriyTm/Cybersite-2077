@@ -53,6 +53,12 @@ export interface MotorcycleShort {
   rating: number;
   mainImage: string;
   totalInStock: number;
+  discountData: {
+    originalPrice: string;
+    finalPrice: string;
+    discountPercent: string | null;
+    isPersonal: boolean;
+  };
 }
 
 export interface MotorcycleFull extends MotorcycleShort {
@@ -73,6 +79,11 @@ export interface MotorcycleFull extends MotorcycleShort {
   comments: string;
   images: { id: string; url: string; isMain: boolean }[];
   totalInStock: number;
+}
+
+export interface MotorcycleCart extends MotorcycleFull {
+  quantity: number;
+  selected: boolean;
 }
 
 export interface MotorcycleResponse {

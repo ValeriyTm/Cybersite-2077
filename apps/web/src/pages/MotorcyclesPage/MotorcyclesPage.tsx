@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useMemo } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
@@ -30,7 +30,7 @@ export const MotorcyclesPage = () => {
   //Получаем UI-настройки (какой тип отображения карточек выбран) из Zustand:
   const { viewMode, setViewMode } = useCatalogStore();
 
-  //Кэширование и состояние загрузки из react query:
+  //Загружаем и кэшируем даннеы о моделях мотоциклов с учетом фильтров:
   const { data, isLoading } = useQuery({
     queryKey: ["motorcycles", brandSlug, filters],
     queryFn: () =>
@@ -38,8 +38,9 @@ export const MotorcyclesPage = () => {
         .get(`catalog/motorcycles/`, {
           params: { ...filters, brandSlug },
         })
+        //Оставляем только полезные данные в data:
         .then((res) => res.data),
-    // Магия: при переключении страниц старые данные не пропадают мгновенно (нет мерцания)
+    //При переключении страниц старые данные не пропадают мгновенно:
     placeholderData: (previousData) => previousData,
     // Кэшируем результат на 5 минут, чтобы при кнопке "Назад" всё было мгновенно
     staleTime: 5 * 60 * 1000,
@@ -86,7 +87,7 @@ export const MotorcyclesPage = () => {
   ];
 
   //--------Debounce для поиска (дебаунс для фильтров зашит в комоненте фильтра):--------
-  const debouncedSearch = React.useMemo(
+  const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
         updateFilters({ search: value, page: 1 }); //Обновляем URL спустя 500мс
@@ -94,10 +95,12 @@ export const MotorcyclesPage = () => {
     [updateFilters],
   );
 
-  //Очистка при размонтировании:
-  React.useEffect(() => {
+
+  //Очистка при размонтировании (т.е. поиск не будет работать):
+  useEffect(() => {
     return () => debouncedSearch.cancel();
   }, [debouncedSearch]);
+
 
   //---------------------------------SEO:-----------------------//
   const seoTitle = `Каталог мотоциклов ${brandSlug?.toUpperCase()}: все модели и поколения | CyberBike`;
@@ -261,7 +264,6 @@ export const MotorcyclesPage = () => {
           <div className={styles.loadingOverlay}>Обновление...</div>
         )}
         <div className={viewMode === "grid" ? styles.grid : styles.list}>
-          {/* Мапим data.items вместо старого стейта items */}
           {data?.items?.map((moto) => {
             return (
               <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />

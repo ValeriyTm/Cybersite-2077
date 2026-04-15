@@ -11,6 +11,7 @@ export const AddToCartButton = ({
   data,
   variant = "details",
 }: AddToCartButtonProps) => {
+  //Мутации для работы с корзиной:
   const { addToCart, updateQuantity, removeItem } = useCart();
 
   //Ищем, есть ли этот конкретный мотоцикл в корзине:
@@ -29,7 +30,7 @@ export const AddToCartButton = ({
   if (!cartItem) {
     return (
       <button
-        disabled={!data.totalInStock}
+        disabled={!data.totalInStock} //Если товара нет в наличии, кнопка будет неактивной
         className={styles.addBtn}
         onClick={(e) =>
           handleAction(e, () => addToCart({ ...data, quantity: 1 }))
@@ -40,13 +41,15 @@ export const AddToCartButton = ({
     );
   }
 
-  //2) Если товар есть в корзине, то показываем счетчик и бейдж (если это карточка):
+  //2) Если товар есть в корзине, то показываем счетчик:
   return (
     <div className={styles.wrapper} onClick={(e) => e.preventDefault()}>
       <div className={styles.stepper}>
+        {/*Кнопка уменьшения количества товара в корзине:*/}
         <button
           onClick={(e) =>
             handleAction(e, () => {
+              //Если товара более 1 в корзине, то уменьшаем на "1". Если товара "1", то просто удаляем из корзины:
               if (cartItem.quantity > 1) {
                 updateQuantity({
                   id: data.id,
@@ -61,8 +64,10 @@ export const AddToCartButton = ({
           -
         </button>
 
+        {/*Счетчик количества товара в корзине:*/}
         <span className={styles.count}>{cartItem.quantity}</span>
 
+        {/*Кнопка увеличения количества товара в корзине:*/}
         <button
           onClick={(e) =>
             handleAction(e, () =>
@@ -74,6 +79,7 @@ export const AddToCartButton = ({
         </button>
       </div>
 
+      {/*Отображаем текст "В корзине", если формат card:*/}
       {variant === "card" && <div className={styles.addedBadge}>В корзине</div>}
     </div>
   );
