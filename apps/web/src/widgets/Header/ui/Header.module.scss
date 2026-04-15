@@ -162,6 +162,10 @@
   }
 }
 
+.userName {
+  color: var(--accent-color);
+}
+
 .iconBtn {
   background: none;
   border: none;
@@ -385,4 +389,29 @@
   background-color: #3498db;
   right: -5px;
   top: -5px;
+}
+
+//Переключатели темы:
+.themeSwitcher {
+  display: flex;
+  gap: 10px;
+
+  img {
+    width: 30px;
+    cursor: pointer;
+    transition:
+      filter 0.3s ease,
+      transform 0.2s;
+
+    &.inactive {
+      filter: grayscale(100%);
+      opacity: 0.8;
+    }
+
+    &.active {
+      filter: grayscale(0%);
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
 }

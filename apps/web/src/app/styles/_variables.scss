@@ -1,0 +1,68 @@
+@use "fonts";
+
+:root {
+  //Шрифты:
+  --font-family-base: "Tektur", sans-serif;
+  --font-family-accent-eng-basic: "Orbitron", sans-serif;
+  --font-family-accent-eng-title: "BlackOpsOne", sans-serif;
+  --font-family-doom-rus: "Rubik Wet Paint", sans-serif;
+  --font-family-doom-eng: "StalinistOne", sans-serif;
+
+  //Цвета:
+  --color-light: #ffffff;
+  --color-black-main: #151515;
+  --color-orange: #f39c12;
+  --color-danger: #e7110a;
+
+  //Темы:
+  body.theme-orange {
+    --accent-color: #f39c12;
+    --bg-color: #050505;
+    --text-color: #ffffff;
+    --glow-color: rgba(243, 156, 18, 0.4);
+  }
+
+  body.theme-blue {
+    --accent-color: #1c4cb3;
+    --bg-color: #050505;
+    --text-color: #ffffff;
+    --glow-color: rgba(243, 156, 18, 0.4);
+  }
+
+  body.theme-retrowave {
+    --accent-color: #ee31bf;
+    --bg-color: #050505;
+    --text-color: #ffffff;
+    --glow-color: rgba(243, 156, 18, 0.4);
+  }
+
+  body.theme-doom {
+    --accent-color: #ee2f2f;
+    --bg-color: #050505;
+    --text-color: #ffffff;
+    --glow-color: rgba(243, 156, 18, 0.4);
+  }
+
+  //Пути к изображениям:
+
+  //Левое, мб пригодится:
+  --transition-duration: 0.2s;
+  //   --container-width: #{rem(1600)};
+  //   --container-padding-x: #{rem(16)};
+  //   --100vw: calc(100vw - var(--scrollbar-width));
+  --gradient: linear-gradient(
+    45deg,
+    var(--color-dark-15) 64%,
+    var(--color-accent) 136%
+  );
+
+  //   linear-gradient(to bottom right, black, darkblue);
+
+  //   --border: #{rem(1)} solid var(--color-dark-15);
+
+  //   --shadow: 0 0 0 #{rem(3)} #191919;
+
+  //   @include laptop {
+  //     --container-width: #{rem(1280)};
+  //   }
+}

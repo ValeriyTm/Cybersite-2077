@@ -1,0 +1,40 @@
+@font-face {
+  font-family: "Tektur";
+  src: url("@/shared/assets/fonts/Tektur-Refular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  /* swap заставляет браузер сначала показать текст стандартным системным шрифтом, а как только кастомный шрифт загрузится — мгновенно заменить его.*/
+}
+
+@font-face {
+  font-family: "BlackOpsOne";
+  src: url("@/shared/assets/fonts/BlackOpsOne-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Orbitron";
+  src: url("@/shared/assets/fonts/Orbitron-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik Wet Paint";
+  src: url("@/shared/assets/fonts/RubikWetPaint-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "StalinistOne";
+  src: url("@/shared/assets/fonts/StalinistOne-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

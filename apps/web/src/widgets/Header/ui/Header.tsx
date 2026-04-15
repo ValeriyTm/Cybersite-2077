@@ -10,6 +10,7 @@ import { Avatar } from "@/shared/ui/Avatar";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import styles from "./Header.module.scss";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
+import { useThemeStore } from "@/entities/session/model/themeStore";
 
 type MainCategory = "moto" | "gear" | "parts";
 
@@ -18,6 +19,9 @@ export const Header = () => {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   //Состояние выбранной категории:
   const [activeMainCat, setActiveMainCat] = useState<MainCategory>("moto");
+  //Переключение темы:
+  const { theme, setTheme } = useThemeStore();
+
 
   const navigate = useNavigate();
 
@@ -30,6 +34,9 @@ export const Header = () => {
 
   const { resetOrders } = useOrderStore();
   const { clearTrading, fetchCart, fetchFavoritesIds } = useTradingStore();
+
+
+
 
   //--------Для работы с данными юзера:
   //Технический статус из Zustand:
@@ -56,6 +63,14 @@ export const Header = () => {
       }, 300),
     [],
   );
+
+  //Для иконок смены темы:
+  const themes = [
+    { id: 'theme-orange', img: 'theme/theme-icon1.png' },
+    { id: 'theme-blue', img: 'theme/theme-icon4.png' },
+    { id: 'theme-retrowave', img: 'theme/theme-icon2.png' },
+    { id: 'theme-doom', img: 'theme/theme-icon3-alternative.png' },
+  ];
 
   //При загркузке получаем кол-во активных заказов:
   useEffect(() => {
@@ -111,6 +126,23 @@ export const Header = () => {
   const cartCount = useTradingStore((state) =>
     state.cartItems.reduce((acc, item) => acc + item.quantity, 0),
   );
+  //-----------
+  //Путь к логотипу в зависимости от темы:
+  let logoUrl;
+  switch (theme) {
+    case "theme-orange":
+      logoUrl = `/logos/logo-orange.png`;
+      break;
+    case "theme-blue":
+      logoUrl = `/logos/logo-blue.png`;
+      break;
+    case "theme-retrowave":
+      logoUrl = `/logos/logo-retro.png`;
+      break;
+    case "theme-doom":
+      logoUrl = `/logos/logo-doom.png`;
+      break;
+  }
 
   //----------
   //Показывать ссылку на страницу администраторов или нет:
@@ -124,6 +156,7 @@ export const Header = () => {
       {/*1)Верхняя часть: Ссылки */}
       <div className={styles.topLine}>
         <div className={styles.container}>
+          {/*1.1)Навбар:*/}
           <nav className={styles.topNav}>
             <Link to="/about">О компании</Link>
             <Link to="/shipping">Доставка и оплата</Link>
@@ -133,6 +166,17 @@ export const Header = () => {
             <Link to="/support">Поддержка</Link>
             {canSee && <Link to="/admin">Администрирование</Link>}
           </nav>
+          {/*1.2)Смена темы:*/}
+          <div className={styles.themeSwitcher}>
+            {themes.map((t) => (
+              <img
+                key={t.id}
+                src={t.img}
+                onClick={() => setTheme(t.id as any)}
+                className={theme === t.id ? styles.active : styles.inactive}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -141,7 +185,7 @@ export const Header = () => {
         <div className={styles.container}>
           {/*Логотип*/}
           <Link to="/" className={styles.logolink}>
-            <img src="/MainLogo.png" alt="Main Logo" className={styles.logo} />
+            <img src={logoUrl} alt="Main Logo" className={styles.logo} />
           </Link>
 
           {/*Кнопка каталога с Hover-меню*/}

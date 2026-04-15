@@ -13,8 +13,8 @@ import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { HelmetProvider } from "react-helmet-async";
 //Компонент, который отобразится при глобальной ошибке:
 import { GlobalErrorFallback } from "@/shared/ui/GlobalErrorFallback/index";
-// import "./styles/_normalize.scss";
-import "./styles/index.css"; //Подключаем глобальные стили
+//Глобальные стили:
+import "./styles/index.scss";
 
 // Создаем клиент React Query:
 const queryClient = new QueryClient({

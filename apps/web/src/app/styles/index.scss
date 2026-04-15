@@ -1,3 +1,9 @@
+// @use 'normalize';
+@use "fonts";
+@use "variables";
+// @use 'utils';
+// @use 'globals';
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -60,6 +66,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  // font-family: var(--font-family-base);
 }
 
 body {

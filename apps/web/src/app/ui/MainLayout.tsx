@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 //Библиотека всплывающих уведомлений:
 import { Toaster } from "react-hot-toast";
 //Роутер:
@@ -15,13 +16,23 @@ import { Footer } from "@/widgets/Footer/ui/Footer";
 //Прочие компоненты:
 import { PageLoader } from "@/pages/PageLoader";
 import { CursorTrail } from "@/shared/ui/CursorTrail";
+import { useThemeStore } from "@/entities/session/model/themeStore";
 
 export const MainLayout = () => {
   const { isLoading, isError } = useProfile();   //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
   const isAuth = useAuthStore((state) => state.isAuth);   //Статус авторизации
 
+  const theme = useThemeStore((state) => state.theme); //Получаем текущую тему
+
+
   useFavorites(); //Чтобы список избранных товаров подгружался сразу при старте приложения:
   useCart(); //Чтобы список товаров в корзине подгружался сразу при старте приложения:
+
+  useEffect(() => {
+    //Гарантируем, что класс на body всегда соответствует стору:
+    document.body.className = theme;
+  }, [theme]);
+
 
   //Если авторизован и идёт загрузка, то покажем универсальный лоадер для всех страниц:
   if (isAuth && isLoading) {
