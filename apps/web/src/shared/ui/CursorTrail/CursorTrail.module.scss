@@ -1,0 +1,16 @@
+.dot {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: #008f11;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 1px;
+  box-shadow:
+    0 0 8px #003b00,
+    0 0 15px #0d0208;
+
+  // Плавное изменение при обновлении стейта
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity, left, top;
+}

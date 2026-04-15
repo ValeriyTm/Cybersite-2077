@@ -14,6 +14,7 @@ import { Header } from "@/widgets/Header/ui/Header";
 import { Footer } from "@/widgets/Footer/ui/Footer";
 //Прочие компоненты:
 import { PageLoader } from "@/pages/PageLoader";
+import { CursorTrail } from "@/shared/ui/CursorTrail";
 
 export const MainLayout = () => {
   const { isLoading, isError } = useProfile();   //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
@@ -41,6 +42,7 @@ export const MainLayout = () => {
         }}
       />
 
+      <CursorTrail />
       <Header />
 
       {/*Основной контент страницы:*/}
