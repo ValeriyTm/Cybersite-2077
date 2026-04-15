@@ -1,19 +1,16 @@
-//React Hook Form:
+//Работа с формами:
 import { useForm } from "react-hook-form";
-//Библиотека для связывания Zod и React Hook Form:
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import { zodResolver } from "@hookform/resolvers/zod"; //Библиотека для связывания Zod и React Hook Form
 //Схемы валидации Zod:
 import {
   ForgotPasswordSchema,
   type ForgotPasswordInput,
 } from "@repo/validation";
-//Экземпляр axios:
+//API:
 import { $api } from "@/shared/api/api";
-
-//Роутер:
+//Роутинг:
 import { Link } from "react-router";
-//Кастомные хуки:
+//Состояния:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Компоненты:
 import { Button } from "@/shared/ui/Button";

@@ -1,29 +1,31 @@
-import { useEffect, useState } from "react";
+//Извлечение параметров из URL:
 import { useParams } from "react-router";
 import {
   fetchMotorcycleBySlug,
-  // fetchRelatedMotorcycles,
   type MotorcycleFull,
 } from "@/entities/catalog";
-import { SpecRow } from "@/shared/ui/SpecRow";
-import { MotorcycleCard } from "@/entities/catalog";
+//Типы:
 import { type MotorcycleShort } from "@/entities/catalog/model/types";
 //Для SEO:
 import { Helmet } from "react-helmet-async";
-//Компонент Breadcrumbs:
-import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
-//Состояние:
+//Состояния:
+import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCart } from "@/entities/trading/api/useCart";
-//Стили
-import styles from "./MotorcycleDetailsPage.module.scss";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
-import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
 import { useProfile } from "@/features/auth/model/useProfile";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+//API:
 import { $api } from "@/shared/api/api";
+//Компоненты:
+import { SpecRow } from "@/shared/ui/SpecRow";
+import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+import { MotorcycleCard } from "@/entities/catalog";
+import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
 import { ReviewCard } from "@/entities/reviews/ui/ReviewCard/ReviewCard";
+//Стили
+import styles from "./MotorcycleDetailsPage.module.scss";
 
 const STATIC_URL = "http://localhost:3001/static/motorcycles";
 const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg`;

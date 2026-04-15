@@ -1,6 +1,10 @@
+//Состояния:
 import { useQuery } from "@tanstack/react-query";
+//API:
 import { $api } from "@/shared/api/api";
+//Уведомления:
 import toast from "react-hot-toast";
+//Стили:
 import styles from "./PromosPage.module.scss";
 
 export const PromosPage = () => {

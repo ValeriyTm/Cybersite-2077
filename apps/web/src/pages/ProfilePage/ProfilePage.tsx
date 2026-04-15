@@ -1,11 +1,12 @@
 import { useRef } from "react";
-//React Hook Form:
+//Работа с формами:
 import { Controller } from "react-hook-form";
 //Роутер:
 import { Navigate } from "react-router";
 import { Link } from "react-router";
-//Серверное хранилище:
+//Состояния:
 import { useProfile } from "@/features/auth/model/useProfile";
+import { useProfileActions } from "@/features/auth/lib/useProfileActions";
 //Иконки:
 import {
   HiOutlineUser,
@@ -16,8 +17,6 @@ import {
 //Библиотека для работы с масками в инпутах:
 import { IMaskInput } from "react-imask";
 import IMask from "imask";
-//Кастомный хук:
-import { useProfileActions } from "@/features/auth/lib/useProfileActions";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
@@ -395,7 +394,7 @@ export const ProfilePage = () => {
           setVerificationCode={setVerificationCode}
           onActivate={handleEnable2FA}
           onClose={() => setQrCode(null)}
-          // isLoading={is2FALoading}
+        // isLoading={is2FALoading}
         />
       )}
 

@@ -1,22 +1,30 @@
+//Состояния:
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useProfile } from "@/features/auth/model/useProfile";
+//Валидация:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTicketSchema } from "@repo/validation";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+//API:
 import { $api } from "@/shared/api/api";
-import toast from "react-hot-toast";
-import styles from "./SupportPage.module.scss";
-import { HiOutlinePhone } from "react-icons/hi";
+//Работа с формами:
+import { Controller, useForm } from "react-hook-form";
 import { IMaskInput } from "react-imask";
-import { Controller } from "react-hook-form";
-import { useProfile } from "@/features/auth/model/useProfile";
+//Роутинг:
 import { Link } from "react-router";
+//reCAPTCHA:
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+//Компоненты:
+import { HiOutlinePhone } from "react-icons/hi";
+//Уведомления:
+import toast from "react-hot-toast";
+//Стили:
+import styles from "./SupportPage.module.scss";
 
 export const SupportPage = () => {
-  const { executeRecaptcha } = useGoogleReCaptcha();
   const [files, setFiles] = useState<File[]>([]);
   const [isDragActive, setIsDragActive] = useState(false); //Стейт для отслеживания того, находится ли файл над областью загрузки:
-  const { user } = useProfile();
+  const { user } = useProfile(); //Данные юзера
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const {
     register,
@@ -34,6 +42,7 @@ export const SupportPage = () => {
     },
   });
 
+  //-------------------------------------------
   //Удаление прикрепленного файла:
   const removeFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
@@ -52,7 +61,7 @@ export const SupportPage = () => {
     };
   }, [files]);
 
-  // Обработчики событий для Drag'n'Drop:
+  //-----------------Обработчики событий для Drag'n'Drop:-----------------------
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -74,6 +83,7 @@ export const SupportPage = () => {
     }
   };
 
+  //----------------------Отправка формы:------------------------------------
   const onSubmit = async (data: any) => {
     if (!executeRecaptcha) return;
 
@@ -230,7 +240,7 @@ export const SupportPage = () => {
               <span>Нажмите или перетащите файлы сюда</span>
             </label>
 
-            {/* БЛОК ПРЕДПРОСМОТРА */}
+            {/*Блок предпросмотра:*/}
             {files.length > 0 && (
               <div className={styles.previewGrid}>
                 {files.map((file, index) => (

@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
 import {
   fetchSiteCategories,
   type SiteCategory,
   CategoryCard,
 } from "@/entities/catalog";
+//Состояния:
+import { useEffect, useState } from "react";
+//Стили:
 import styles from "./CatalogPage.module.scss";
 
 export const CatalogPage = () => {

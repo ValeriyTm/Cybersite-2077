@@ -1,5 +1,8 @@
+//API:
 import { $api } from "@/shared/api/api";
+//Состояния:
 import { useQuery } from "@tanstack/react-query";
+//Стили:
 import styles from "./UserTicketsPage.module.scss";
 
 export const UserTicketsPage = () => {

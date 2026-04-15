@@ -1,4 +1,6 @@
+//Роутинг:
 import { useNavigate } from "react-router";
+//Стили:
 import styles from "./NotFoundPage.module.scss";
 
 export const NotFoundPage = () => {

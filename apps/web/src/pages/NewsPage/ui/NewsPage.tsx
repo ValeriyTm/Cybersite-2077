@@ -1,8 +1,13 @@
+//Состояния:
 import { useQuery } from '@tanstack/react-query';
+//API:
 import { $api } from '@/shared/api/api';
+//Роутинг:
 import { Link } from 'react-router';
+//Работа с датами:
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+//Стили:
 import styles from './NewsPage.module.scss';
 
 export const NewsPage = () => {

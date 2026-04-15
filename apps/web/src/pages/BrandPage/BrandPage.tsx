@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
 import { fetchBrands, type Brand, BrandCard } from "@/entities/catalog";
+//Состояния:
+import { useQuery } from "@tanstack/react-query";
+//Для поиска:
 import debounce from "lodash/debounce";
-//Компонент Breadcrumbs:
+//Компоненты:
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
 //Стили:
 import styles from "./BrandPage.module.scss";

@@ -1,5 +1,8 @@
+//Состояния:
 import { useQuery } from '@tanstack/react-query';
+//API:
 import { $api } from '@/shared/api/api';
+//Компоненты:
 import { MotorcycleCard } from '@/entities/catalog';
 
 export const NewsMotoWidget = ({ motoId }: { motoId: string }) => {

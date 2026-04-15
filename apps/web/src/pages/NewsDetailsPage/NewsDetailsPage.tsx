@@ -1,16 +1,22 @@
-import { useParams } from 'react-router'; // Помним про твой фикс с импортом!
+//Извлечение параметров URL:
+import { useParams } from 'react-router';
+//Состояния:
 import { useQuery } from '@tanstack/react-query';
+//API:
 import { $api } from '@/shared/api/api';
+//Работа с датами:
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+//Компоненты:
 import { NewsMotoWidget } from './NewsMotoWidget';
+//Стили:
 import styles from './NewsDetailsPage.module.scss';
 
 export const NewsDetailsPage = () => {
-    const { slug } = useParams<{ slug: string }>(); //Берем slug из URL
+    const { slug } = useParams<{ slug: string }>();
     console.log('slug: ', slug)
     const { data: article, isLoading } = useQuery({
-        queryKey: ['news-article', slug], //Query зависит от slug
+        queryKey: ['news-article', slug],
         queryFn: () => $api.get(`/content/news/${slug}`).then(res => res.data)
     });
 

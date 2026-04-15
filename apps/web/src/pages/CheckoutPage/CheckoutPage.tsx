@@ -1,16 +1,21 @@
+//Роутинг:
+import { useNavigate } from "react-router";
+//Состояния:
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useLocation } from "react-router";
+import { useOrderStore } from "@/entities/ordering/model/orderStore";
+import { useProfile } from "@/features/auth/model/useProfile";
+//API:
+import { $api } from "@/shared/api/api";
+//Компоненты:
 import { useEffect, useMemo, useState } from "react";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import styles from "./CheckoutPage.module.scss";
-import { DeliveryMapModal } from "@/features/ordering/DeliveryMapModal/DeliveryMapModal";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { $api } from "@/shared/api/api";
-import { useNavigate } from "react-router";
-import { useProfile } from "@/features/auth/model/useProfile";
-import { useOrderStore } from "@/entities/ordering/model/orderStore";
-import { useLocation } from "react-router";
-import toast from "react-hot-toast";
-import { should } from "chai";
 import { PaymentModal } from "@/shared/ui/PaymentModal/PaymentModal";
+import { DeliveryMapModal } from "@/features/ordering/DeliveryMapModal/DeliveryMapModal";
+//Уведомления:
+import toast from "react-hot-toast";
+//Стили:
+import styles from "./CheckoutPage.module.scss";
 
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();

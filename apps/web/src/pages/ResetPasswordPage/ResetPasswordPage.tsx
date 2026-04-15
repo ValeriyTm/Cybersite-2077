@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Схемы валидации Zod:
 import { ResetPasswordSchema, type ResetPasswordInput } from "@repo/validation";
-//Экземпляр axios:
+//API:
 import { $api } from "@/shared/api/api";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
