@@ -1,9 +1,14 @@
+//Состояния:
 import { useQuery } from "@tanstack/react-query";
-import styles from "./MyOrdersPage.module.scss";
+import { useState } from "react";
+//API:
 import { $api } from "@/shared/api/api";
+//Компоненты:
 import { OrderCard } from "@/entities/ordering/ui/OrderCard";
 import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
-import { useState } from "react";
+//Стили:
+import styles from "./MyOrdersPage.module.scss";
+
 
 export const MyOrdersPage = () => {
   const [statusFilter, setStatusFilter] = useState<string | undefined>(
@@ -17,6 +22,7 @@ export const MyOrdersPage = () => {
   } = useQuery({
     queryKey: ["my-orders", statusFilter],
     queryFn: () =>
+      //Получаем список заказов юзера:
       $api
         .get("/orders/my", {
           params: { status: statusFilter },
@@ -41,6 +47,7 @@ export const MyOrdersPage = () => {
     );
   }
 
+  //Опции для фильтра по статусу заказа:
   const statusOptions = [
     { value: "PENDING", label: "Ожидают оплаты" },
     { value: "PAID", label: "Оплачены" },

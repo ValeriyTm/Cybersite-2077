@@ -14,6 +14,8 @@ export const $api = axios.create({
   withCredentials: true, //Заставляем организовать передачу кук, т.к. используем refreshToken
 });
 
+//Использую API_URL для работы с документами, изображениями и сторонними сервисами, а $api - для всех остальных сетевых запросов
+
 //Интерцептор для добавления Access Token к каждому запросу [REQUEST]:
 $api.interceptors.request.use((config) => {
   //Получаем Access токен из клиентского хранилища:

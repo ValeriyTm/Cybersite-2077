@@ -1,28 +1,33 @@
 import React from "react";
+//Работа с параметрами:
 import { useParams } from "react-router";
-import { fetchMotorcycles, MotorcycleCard } from "@/entities/catalog";
-import { RangeFilter } from "@/features/catalog-filter/ui/RangeFilter/RangeFilter";
-import styles from "./MotorcyclesPage.module.scss";
-import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
-import debounce from "lodash/debounce";
-//Компонент Breadcrumbs:
-import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+//Состояния:
 import { useMotorcycleFilters } from "@/entities/catalog/lib/useMotorcycleFilters";
 import { useCatalogStore } from "@/entities/catalog/model/useCatalogStore";
 import { useQuery } from "@tanstack/react-query";
+//API:
+import { $api } from "@/shared/api/api";
+//Дебаунс для поиска:
+import debounce from "lodash/debounce";
+//Компоненты:
+import { fetchMotorcycles, MotorcycleCard } from "@/entities/catalog";
+import { RangeFilter } from "@/features/catalog-filter/ui/RangeFilter/RangeFilter";
+import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
+import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //Для SEO:
 import { Helmet } from "react-helmet-async";
-import { $api } from "@/shared/api/api";
+//Стили:
+import styles from "./MotorcyclesPage.module.scss";
 
 export const MotorcyclesPage = () => {
+  //Извлекаем данные из адресной строки:
   const { brandSlug } = useParams<{ brandSlug: string }>();
-
   const { slug } = useParams<{ slug: string }>();
 
   //Фильтры из URL:
   const { filters, updateFilters } = useMotorcycleFilters();
-  //Получаем UI-настройки из Zustand:
+  //Получаем UI-настройки (какой тип отображения карточек выбран) из Zustand:
   const { viewMode, setViewMode } = useCatalogStore();
 
   //Кэширование и состояние загрузки из react query:
@@ -40,6 +45,7 @@ export const MotorcyclesPage = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  //-------------------------------Опции------------------------------//
   // Опции для категорий:
   const CATEGORY_OPTIONS = [
     { value: "Allround", label: "Универсальный" },
@@ -68,6 +74,8 @@ export const MotorcyclesPage = () => {
     { value: "Cardan", label: "Кардан" },
   ];
 
+  //--------------------------------------------------------------------//
+  //Хлебные крошки (навигация):
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/motorcycles" },
     { label: slug === "all" ? "Поиск по всему каталогу" : slug?.toUpperCase() },
@@ -91,7 +99,7 @@ export const MotorcyclesPage = () => {
     return () => debouncedSearch.cancel();
   }, [debouncedSearch]);
 
-  //-------------SEO:-----------------------//
+  //---------------------------------SEO:-----------------------//
   const seoTitle = `Каталог мотоциклов ${brandSlug?.toUpperCase()}: все модели и поколения | CyberBike`;
   const seoDescription = `Полный список моделей ${slug?.toUpperCase()} с техническими характеристиками, фото и ценами. Найдено моделей: ${data?.total || 0}.`;
 

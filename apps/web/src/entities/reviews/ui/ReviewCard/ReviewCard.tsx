@@ -1,6 +1,12 @@
+//Состояния:
 import { useState } from "react";
+//API:
+import { API_URL } from "@/shared/api/api";
+//Компоненты:
 import { ImageModal } from "@/shared/ui/ImageModal/ImageModal";
+//Стили:
 import styles from "./ReviewCard.module.scss";
+
 
 export const ReviewCard = ({
   review,
@@ -8,21 +14,22 @@ export const ReviewCard = ({
   currentUserId,
   isAdmin,
 }: any) => {
+  //"Раскрыт" текст комментария или нет:
   const [isExpanded, setIsExpanded] = useState(false);
-  const isLongText = review.comment.length > 200;
-
   //Состояние для открытия прикрепленного фото в модалке:
   const [photoIndex, setPhotoIndex] = useState<number | null>(null);
 
-  //Текст для отображения:
+  //Длинный ли текст комментария:
+  const isLongText = review.comment.length > 200;
+
+  //Текст для отображения (обрезаем до 200 символов или показываем весь длинный коммент):
   const displayText =
     isExpanded || !isLongText
       ? review.comment
       : `${review.comment.slice(0, 200)}...`;
 
+  //Может ли юзер удалить отзыв:
   const canDelete = review.userId === currentUserId || isAdmin;
-
-  console.log("review avatar: ", review.userAvatar);
 
   return (
     <div className={styles.card}>
@@ -31,8 +38,8 @@ export const ReviewCard = ({
           <img
             src={
               review.userAvatar
-                ? `http://localhost:3001${review.userAvatar}`
-                : "http://localhost:3001/static/defaults/default-avatar.png"
+                ? `${API_URL}${review.userAvatar}`
+                : `${API_URL}/static/defaults/default-avatar.png`
             }
             alt="avatar"
             className={styles.avatar}
@@ -65,7 +72,7 @@ export const ReviewCard = ({
           {review.images.map((img: string, i: number) => (
             <img
               key={i}
-              src={`http://localhost:3001${img}`}
+              src={`${API_URL}${img}`}
               alt="review-pic"
               onClick={() => setPhotoIndex(i)} //Открываем галерею при клике
               className={styles.clickableImg}
@@ -77,7 +84,7 @@ export const ReviewCard = ({
       {/*Компонент галереи: */}
       {photoIndex !== null && (
         <ImageModal
-          images={review.images.map((img) => `http://localhost:3001${img}`)}
+          images={review.images.map((img) => `${API_URL}${img}`)}
           startIndex={photoIndex}
           onClose={() => setPhotoIndex(null)}
         />

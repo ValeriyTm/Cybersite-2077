@@ -150,9 +150,6 @@ export const useTradingStore = create<TradingState>()(
       set({
         cartItems: items.map((item) => ({
           ...item,
-          //  Берем только то, что прислал сервер.
-          // Если сервер ПРИСЫЛАЕТ selected (как мы договорились через Redis),
-          // то ?? true больше не нужен.
           selected: item.selected,
         })),
       }),

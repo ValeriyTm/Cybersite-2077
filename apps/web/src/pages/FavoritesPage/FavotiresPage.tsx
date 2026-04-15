@@ -1,15 +1,21 @@
+import React from "react";
+//Состояния:
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useFavoritesPage } from "@/entities/trading/api/useFavoritesPage";
-import React from "react";
-import styles from "./FavotiresPage.module.scss";
-import { MotorcycleCard } from "@/entities/catalog";
 import { useState, useEffect } from "react";
+//Компоненты:
+import { MotorcycleCard } from "@/entities/catalog";
+//Иконки:
 import { FaArrowUp } from "react-icons/fa";
+//Стили:
+import styles from "./FavotiresPage.module.scss";
 
 export const FavoritesPage = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useFavoritesPage();
+  //Массив id избранных моделей:
   const { favoriteIds } = useTradingStore();
+  //Показывать кнопку подъема наверх страницы или нет:
   const [showScroll, setShowScroll] = useState(false);
 
   if (favoriteIds.length === 0)
@@ -17,7 +23,8 @@ export const FavoritesPage = () => {
       <div className={styles.empty}>У вас пока нет избранных моделей 🤍</div>
     );
 
-  //Следим за прокруткой:
+  //-----------------------Подъем наверх экрана:--------------------//
+  //Следим за прокруткой экрана, чтобы понять, выводить кнопку подъема или ещё рано:
   useEffect(() => {
     const checkScroll = () => {
       if (!showScroll && window.pageYOffset > 400) {
@@ -27,11 +34,13 @@ export const FavoritesPage = () => {
       }
     };
 
-    window.addEventListener("scroll", checkScroll);
-    return () => window.removeEventListener("scroll", checkScroll);
+    window.addEventListener("scroll", checkScroll); //Браузер начинает «слушать» прокрутку сразу после монтирования компонента
+    //Теперь функция checkScroll вызывается при каждом событии скролла.
+
+    return () => window.removeEventListener("scroll", checkScroll); //Когда пользователь уйдет с этой страницы (компонент размонтируется), мы удаляем слушатель.
   }, [showScroll]);
 
-  // Плавный скролл наверх
+  //Обработчик для плавного скролла экрана наверх:
   const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -51,15 +60,16 @@ export const FavoritesPage = () => {
         ))}
       </div>
 
-      {/* Кнопка "Наверх" */}
+      {/*Кнопка подъема "Наверх":*/}
       <button
         className={`${styles.scrollToTop} ${showScroll ? styles.visible : ''}`}
         onClick={scrollTop}
-        aria-label="Наверх"
+        aria-label="Наверх страницы"
       >
         <FaArrowUp />
       </button>
 
+      {/*Кнопка для загрузки новых карточек мотоциклов:*/}
       {hasNextPage && (
         <button
           className={styles.loadMore}

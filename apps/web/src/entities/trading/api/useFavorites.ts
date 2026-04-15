@@ -1,6 +1,8 @@
+//Состояния:
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTradingStore } from "../model/tradingStore";
-import { $api } from "@/shared/api/api"; //Инстанс axios
+//API:
+import { $api } from "@/shared/api/api";
 
 export const useFavorites = () => {
   const queryClient = useQueryClient();

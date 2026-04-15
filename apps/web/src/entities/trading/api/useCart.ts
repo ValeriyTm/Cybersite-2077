@@ -1,7 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+//Состояния:
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTradingStore } from "../model/tradingStore";
+//API:
 import { $api } from "@/shared/api/api";
-import { useQueryClient } from "@tanstack/react-query";
+//Уведомления:
 import toast from "react-hot-toast";
 
 export const useCart = () => {

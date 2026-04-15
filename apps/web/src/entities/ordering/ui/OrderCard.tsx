@@ -1,60 +1,67 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import styles from "./OrderCard.module.scss";
-import { $api } from "@/shared/api/api";
-import { useOrderStore } from "../model/orderStore";
-import { Link } from "react-router";
+
+//Состояния:
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useOrderStore } from "../model/orderStore"; //Состояние активных заказов
+//Навигация:
+import { Link } from "react-router";
+//API:
+import { $api, API_URL } from "@/shared/api/api";
+//Компоненты:
 import { ReviewModal } from "@/features/reviews/ui/ReviewModal/ReviewModal";
 import { PaymentModal } from "@/shared/ui/PaymentModal/PaymentModal";
+//Стили:
+import styles from "./OrderCard.module.scss";
 
 export const OrderCard = ({ order }: { order: any }) => {
+  //Определяем статус заказа:
   const isDelivered = order.status === "DELIVERED";
   const isCompleted = order.status === "COMPLETED";
   const canCancel = ["PENDING", "PAID", "DELIVERY"].includes(order.status);
-
-  const { fetchActiveCount } = useOrderStore();
-
-  const queryClient = useQueryClient(); //Необходимо для мутаций
-
   //Для реализации открытия модалки отзыва:
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-
   //Состояние для pre-payment модалки:
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const { fetchActiveCount } = useOrderStore(); //Метод для получения кол-ва активных заказов
+
+  const queryClient = useQueryClient(); //Необходимо для мутаций
+
+  //---------------Завершение заказа-------------------------------//
+  //Мутация завершения заказа (подтверждение получения товара):
   const completeMutation = useMutation({
     mutationFn: (orderId: string) =>
       $api.patch(`/orders/${orderId}/complete`).then((res) => res.data),
     onSuccess: () => {
-      //Обновляем список заказов на странице:
+      //Обнуляем старый кэш:
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
       //Обновляем счетчик активных заказов в Хедере:
       fetchActiveCount();
     },
   });
 
+  //Обработчик нажатия на кнопку завершения заказа:
   const handleConfirm = (id: string) => {
     if (window.confirm("Вы получили товар и хотите завершить заказ?")) {
+      //Запускаем отправку данных на сервер:
       completeMutation.mutate(id);
     }
   };
 
+  //---------------Отмена заказа-------------------------------//
   const cancelMutation = useMutation({
     mutationFn: (orderId: string) =>
       $api.patch(`/orders/${orderId}/cancel`).then((res) => res.data),
     onSuccess: () => {
+      //Обнуляем старый кэш:
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+      //Обновляем счетчик активных заказов в Хедере:
       fetchActiveCount();
     },
   });
 
-  //Для реализации модалки отзыва:
-  const handleOpenReview = (item: any) => {
-    setSelectedItem(item);
-    setIsReviewModalOpen(true);
-  };
-
+  //Обработчик нажатия на кнопку отмены заказа:
   const handleCancel = (id: string) => {
     if (
       window.confirm(
@@ -65,27 +72,25 @@ export const OrderCard = ({ order }: { order: any }) => {
     }
   };
 
-  let translatedStatus;
-  switch (order.status) {
-    case "PENDING":
-      translatedStatus = "Ожидает оплаты";
-      break;
-    case "CANCELED":
-      translatedStatus = "Отменен";
-      break;
-    case "PAID":
-      translatedStatus = "Передача в доставку";
-      break;
-    case "DELIVERY":
-      translatedStatus = "Осуществляется доставка";
-      break;
-    case "DELIVERED":
-      translatedStatus = "Можете забирать";
-      break;
-    case "COMPLETED":
-      translatedStatus = "Завершен";
-      break;
-  }
+  //---------------Оставляем отзыв на заказ:-------------------------------//
+  //Для реализации модалки отзыва:
+  const handleOpenReview = (item: any) => {
+    setSelectedItem(item);
+    setIsReviewModalOpen(true);
+  };
+
+  //---------------Прочее:-------------------------------//
+
+  //Маппим статусы с рабочих названий на человекопонятные:
+  const orderStatusTranslations = {
+    PENDING: "Ожидает оплаты",
+    CANCELED: "Отменен",
+    PAID: "Передача в доставку",
+    DELIVERY: "Осуществляется доставка",
+    DELIVERED: "Можете забирать",
+    COMPLETED: "Завершен",
+  };
+  const translatedStatus = orderStatusTranslations[order.status] || "Неизвестный статус";
 
   return (
     <div className={styles.orderCard}>
@@ -114,17 +119,8 @@ export const OrderCard = ({ order }: { order: any }) => {
             </span>
           </div>
 
-          {/*Если заказ ожидает оплаты и есть ссылка на оплату — показываем кнопку */}
+          {/*Если заказ ожидает оплаты и есть ссылка на оплату — показываем кнопку оплаты: */}
           {order.status === "PENDING" && order.paymentUrl && (
-            // <a
-            //   href={order.paymentUrl}
-            //   className={styles.payLink}
-            //   target="_blank"
-            //   rel="noopener noreferrer"
-            // >
-            //   Оплатить заказ
-            // </a>
-
             <button
               className={styles.confirmBtn}
               onClick={() => setIsModalOpen(true)}
@@ -133,7 +129,7 @@ export const OrderCard = ({ order }: { order: any }) => {
             </button>
           )}
 
-          {/*Кнопка подтверждения получения заказа*/}
+          {/*Кнопка подтверждения получения заказа (когда товар доставлен):*/}
           {isDelivered && (
             <button
               className={styles.confirmBtn}
@@ -142,7 +138,7 @@ export const OrderCard = ({ order }: { order: any }) => {
               Подтвердить получение
             </button>
           )}
-          {/*Кнопка отмены заказа*/}
+          {/*Кнопка отмены заказа:*/}
           {canCancel && (
             <button
               className={styles.cancelBtn}
@@ -157,8 +153,8 @@ export const OrderCard = ({ order }: { order: any }) => {
         <div className={styles.itemsList}>
           {order.items.map((item: any) => {
             const imageUrl = item.motorcycle.images?.[0]
-              ? `http://localhost:3001/static/motorcycles/${item.motorcycle.images?.[0]?.url}`
-              : "http://localhost:3001/static/defaults/default-card-icon.jpg";
+              ? `${API_URL}/static/motorcycles/${item.motorcycle.images?.[0]?.url}`
+              : `${API_URL}/static/defaults/default-card-icon.jpg`;
 
             return (
               <div key={item.id} className={styles.productRow}>
