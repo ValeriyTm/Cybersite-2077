@@ -1,8 +1,8 @@
-// @use 'normalize';
+// @use "normalize";
 @use "fonts";
 @use "variables";
-// @use 'utils';
-// @use 'globals';
+@use "utils";
+@use "globals";
 
 :root {
   --text: #6b6375;

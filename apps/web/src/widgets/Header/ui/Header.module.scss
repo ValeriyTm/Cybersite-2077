@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: #0a0a0a;
+  background: var(--bg-color);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -46,7 +46,7 @@
 // ---------------------------------------------------------
 .mainLine {
   padding: 15px 0;
-  background: rgba(10, 10, 10, 0.8);
+  // background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(10px);
 }
 
@@ -405,7 +405,7 @@
 
     &.inactive {
       filter: grayscale(100%);
-      opacity: 0.8;
+      // opacity: 0.8;
     }
 
     &.active {
