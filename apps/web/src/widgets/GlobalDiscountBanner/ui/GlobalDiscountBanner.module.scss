@@ -1,9 +1,8 @@
 .banner {
-  background: linear-gradient(90deg, #e74c3c 0%, #f39c12 100%);
+  background: var(--banner-gradient);
   padding-block: 10px;
   width: 100%;
   z-index: 100;
-
   display: flex;
   justify-content: center;
 
@@ -49,7 +48,7 @@
   -webkit-text-stroke: 1.2px var(--main-bg-color);
 }
 
-//Стилизация таймера:
+//-------------Стилизация таймера:-----------------
 .timer {
   display: flex;
   flex-direction: column;
@@ -75,7 +74,6 @@
     font-size: 0.7rem;
     text-transform: uppercase;
     font-weight: 700;
-    // margin-bottom: 2px;
 
     @include mobile-s {
       margin-right: 10px;

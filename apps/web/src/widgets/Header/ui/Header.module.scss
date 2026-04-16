@@ -1,27 +1,20 @@
-// @use "helpers" as *;
-
 .Header {
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 1000;
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .container {
   width: 100%;
   max-width: var(--container-width);
-  // margin: 0 auto;
-  // padding: 20px;
-
-  // @include tablet {
-  //   padding: 10px;
-  // }
 }
 
 // ---------------------------------------------------------
-// 1.Верхняя секция Header, включающая только служебные ссылки
+// 1.Верхняя секция Header:
 // ---------------------------------------------------------
 .topLine {
   display: flex;
@@ -50,13 +43,11 @@
     }
 
     @include mobile {
-      // padding-right: 10px;
       gap: 10px;
     }
   }
 
   .topNav {
-    // width: 100%;
     display: flex;
     gap: 25px;
 
@@ -81,7 +72,6 @@
 
   .logolinkHidden {
     opacity: 0.9;
-    // width: 30%;
     height: 33px;
 
     @include mobile-above {
@@ -99,13 +89,11 @@
 }
 
 // ---------------------------------------------------------
-// 2.Нижняя часть Header, включающая логотип, кнопку каталога, поиск, профиль и т.п.
+// 2.Нижняя часть Header:
 // ---------------------------------------------------------
 .mainLine {
   display: flex;
   justify-content: center;
-  // padding: 15px 0;
-  // background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(10px);
   padding-block: 30px;
 
@@ -200,10 +188,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  // background: var(--accent-bg-color);
-  // color: var(--color-dark);
   background: var(--main-bg-color);
   color: var(--accent-text-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   padding: 10px 20px;
   border-radius: 8px;
@@ -231,8 +218,6 @@
   flex-shrink: 0;
   min-width: 260px;
   flex: 1;
-  // max-width: 500px;
-  // margin: 0 40px;
   position: relative;
   display: flex;
 
@@ -243,6 +228,7 @@
   input {
     width: 100%;
     background: #151515;
+    /* pxtorem-disable-next-line */
     border: 1px solid #333;
     padding: 12px 20px;
     border-radius: 8px 0 0 8px;
@@ -264,7 +250,7 @@
 
   button {
     background: var(--auxiliary-bg-color-2);
-    border: 1px solid #333;
+    /* pxtorem-disable-next-line */
     border-left: none;
     color: var(--accent-text-color);
     padding: 0 20px;
@@ -278,7 +264,7 @@
   }
 }
 
-//Блок с данными профиля:
+//Блок с данными профиля--------:
 .userActions {
   display: flex;
   align-items: center;
@@ -290,8 +276,6 @@
 }
 
 .profileLink {
-  // flex-shrink: 1;
-  // min-width: 150px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -332,7 +316,7 @@
   }
 }
 
-//Блок с избранным, корзиной и заказами:
+//------------Блок с избранным, корзиной и заказами:
 .userOrders {
   display: flex;
   flex-direction: row;
@@ -363,12 +347,14 @@
       position: absolute;
       top: -7px;
       right: -7px;
-      background: #f39c12;
-      color: #000;
+      background: var(--accent-text-color);
+      color: var(--color-dark);
       font-size: 0.7rem;
       font-weight: 800;
       padding: 2px 6px;
       border-radius: 20px;
+      /* pxtorem-disable-next-line */
+      border: 1px solid var(--color-dark);
       min-width: 18px;
     }
   }
@@ -397,6 +383,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   width: 900px;
   background-color: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
   span {
@@ -416,7 +403,7 @@
 //Левая часть:
 .sideNav {
   width: 220px;
-  // background: #f8f8f8;
+  /* pxtorem-disable-next-line */
   border-right: 1px solid var(--accent-text-color);
   padding: 10px 0;
   // background-color: var(--auxiliary-bg-color-2);
@@ -467,11 +454,6 @@
   &.disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    // span {
-    //   &:hover {
-    //     color: var(--auxiliary-bg-color-2);
-    //   }
-    // }
   }
 
   .arrow {
@@ -497,7 +479,7 @@
 
 .brandsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); // 3 колонки брендов
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px 40px;
 
   @include laptop-s {
@@ -511,7 +493,6 @@
   justify-content: left;
   gap: 12px;
   text-decoration: none;
-  // color: #666;
   font-size: 0.95rem;
   text-align: left;
 
@@ -529,7 +510,6 @@
 
     img {
       max-width: 100%;
-      // filter: grayscale(1);
     }
   }
 
@@ -546,6 +526,7 @@
   position: relative;
 
   button {
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
   }
 }
@@ -556,6 +537,7 @@
   left: 0;
   width: 100%;
   background: var(--auxiliary-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -572,6 +554,7 @@
   padding: 10px 15px;
   text-decoration: none;
   transition: background 0.2s;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid #222;
 
   &:last-child {
@@ -628,12 +611,6 @@
   }
 }
 
-//Счетчик заказов:
-.orderCounter {
-  background-color: #3498db;
-  right: -5px;
-  top: -5px;
-}
 //---------------------------------------------------------
 //Переключатели темы:
 .themeSwitcher {

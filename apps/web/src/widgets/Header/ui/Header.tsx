@@ -1,17 +1,23 @@
+//Состояния:
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 import { useProfile } from "@/features/auth/model/useProfile";
-import { TOP_BRANDS } from "../model/items";
-import debounce from "lodash/debounce";
-import { type MotorcycleShort } from "@/entities/catalog/model/types";
-import axios from "axios";
-import { Avatar } from "@/shared/ui/Avatar";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import styles from "./Header.module.scss";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
 import { useThemeStore } from "@/entities/session/model/themeStore";
-import { BurgerButton } from "@/shared/ui/BurgerButton/BurgerButton";
+//Роутинг:
+import { Link, useNavigate } from "react-router";
+//Типы:
+import { type MotorcycleShort } from "@/entities/catalog/model/types";
+import { TOP_BRANDS } from "../model/items";
+//API:
+import { $api, API_URL } from "@/shared/api/api";
+//Компоненты:
+import { Avatar } from "@/shared/ui/Avatar";
+//Дебаунс для поиска:
+import debounce from "lodash/debounce";
+//Стили:
+import styles from "./Header.module.scss";
 
 type MainCategory = "moto" | "gear" | "parts";
 
@@ -22,7 +28,6 @@ export const Header = () => {
   const [activeMainCat, setActiveMainCat] = useState<MainCategory>("moto");
   //Переключение темы:
   const { theme, setTheme } = useThemeStore();
-
 
   const navigate = useNavigate();
 
@@ -36,9 +41,6 @@ export const Header = () => {
   const { resetOrders } = useOrderStore();
   const { clearTrading, fetchCart, fetchFavoritesIds } = useTradingStore();
 
-
-
-
   //--------Для работы с данными юзера:
   //Технический статус из Zustand:
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -46,7 +48,7 @@ export const Header = () => {
   const { user, isLoading } = useProfile();
   //Формируем путь к аватару:
   const avatarSrc = user?.avatarUrl
-    ? `http://localhost:3001${user.avatarUrl}`
+    ? `${API_URL}${user.avatarUrl}`
     : null; // Передаем null, чтобы сработал дефолт внутри Avatar.tsx
 
   //Дебаунс запроса:
@@ -54,8 +56,8 @@ export const Header = () => {
     () =>
       debounce(async (q: string) => {
         try {
-          const { data } = await axios.get(
-            `http://localhost:3001/api/catalog/search/suggest?q=${q}`,
+          const { data } = await $api.get(
+            `/catalog/search/suggest?q=${q}`,
           );
           setSuggestions(data);
         } catch (e) {
@@ -220,7 +222,7 @@ export const Header = () => {
                           onMouseEnter={() => setActiveMainCat("moto")}
                         >
                           <img
-                            src="http://localhost:3001/static/icons/moto-icon.png"
+                            src={`${API_URL}/static/icons/moto-icon.png`}
                             alt="motorcycle icon"
                           />
                           <span>Мототехника</span>
@@ -229,7 +231,7 @@ export const Header = () => {
 
                         <div className={`${styles.sideItem} ${styles.disabled}`}>
                           <img
-                            src="http://localhost:3001/static/icons/equip-icon.png"
+                            src={`${API_URL}/static/icons/equip-icon.png`}
                             alt="motorcycle equipment icon"
                           />
                           <span>Экипировка</span>
@@ -238,7 +240,7 @@ export const Header = () => {
 
                         <div className={`${styles.sideItem} ${styles.disabled}`}>
                           <img
-                            src="http://localhost:3001/static/icons/gear-icon.png"
+                            src={`${API_URL}/static/icons/gear-icon.png`}
                             alt="gear icon"
                           />
                           <span>Запчасти</span>
@@ -251,7 +253,7 @@ export const Header = () => {
                         {activeMainCat === "moto" ? (
                           <div className={styles.brandsGrid}>
                             {TOP_BRANDS.map((brand) => {
-                              const motoLink = `http://localhost:3001/static/moto_brands/${brand.slug}.png`;
+                              const motoLink = `${API_URL}/static/moto_brands/${brand.slug}.png`;
                               return (
                                 <Link
                                   key={brand.slug}
@@ -281,7 +283,7 @@ export const Header = () => {
                             >
                               <div className={styles.brandIcon}>
                                 <img
-                                  src="http://localhost:3001/static/moto_brands/scooter.png"
+                                  src={`${API_URL}/static/moto_brands/scooter.png`}
                                   alt="default icon"
                                 />
                               </div>
@@ -318,8 +320,8 @@ export const Header = () => {
                   <div className={styles.suggestions}>
                     {suggestions.map((moto) => {
                       const linkToImage = moto.mainImage
-                        ? `http://localhost:3001/static/motorcycles/${moto.mainImage}`
-                        : "http://localhost:3001/static/defaults/default-card-icon.jpg";
+                        ? `${API_URL}/static/motorcycles/${moto.mainImage}`
+                        : `${API_URL}/static/defaults/default-card-icon.jpg`;
                       return (
                         <Link
                           key={moto.id}
@@ -400,7 +402,7 @@ export const Header = () => {
                 <Link to="/orders/my" className={styles.iconBtn} title="Мои заказы">
                   📦
                   {activeOrdersCount > 0 && (
-                    <span className={`${styles.counter} ${styles.orderCounter}`}>
+                    <span className={`${styles.counter}`}>
                       {activeOrdersCount}
                     </span>
                   )}
