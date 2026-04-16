@@ -181,7 +181,7 @@ export const Header = () => {
               ))}
             </div>
 
-            <BurgerButton />
+
           </div>
         </div>
       </div>

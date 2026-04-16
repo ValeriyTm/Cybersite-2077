@@ -1,4 +1,6 @@
+//Состояние:
 import { useLayoutStore } from '@/entities/session/model/layoutStore';
+//Стили:
 import styles from './BurgerButton.module.scss';
 
 export const BurgerButton = () => {

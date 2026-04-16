@@ -5,24 +5,24 @@
   width: 100%;
   height: 100vh;
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px); // Эффект матового стекла
-  z-index: 1150;
+  backdrop-filter: blur(8px);
+  z-index: 1200;
   display: flex;
-  justify-content: flex-end; // Меню выезжает справа
+  justify-content: flex-end; //Меню выезжает справа
   animation: fadeIn 0.3s ease;
 }
 
 p {
-  color: rgb(228, 187, 53);
+  color: var(--color-rating);
 }
 
 .menuContent {
   width: 80%;
   max-width: 300px;
   height: 100%;
-  background: rgb(252, 252, 252);
+  background: var(--main-bg-color);
   border-left: 2px solid var(--accent-color);
-  padding: 80px 30px; // Отступ сверху, чтобы не перекрывать бургер
+  padding: 40px 30px; //Отступ сверху, чтобы не перекрывать бургер
   box-shadow: -10px 0 30px var(--glow-color);
   animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -31,6 +31,14 @@ p {
   display: flex;
   flex-direction: column;
   gap: 25px;
+
+  a {
+    color: var(--auxiliary-text-color);
+
+    &:hover {
+      color: var(--accent-text-color);
+    }
+  }
 }
 
 .placeholder {

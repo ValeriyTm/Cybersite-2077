@@ -1,3 +1,4 @@
+//-------------------Состояние мобильного меню (от бургер-кнопки)---------------------//
 import { create } from "zustand";
 
 export const useLayoutStore = create((set) => ({

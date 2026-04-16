@@ -18,6 +18,7 @@ import { PageLoader } from "@/pages/PageLoader";
 import { CursorTrail } from "@/shared/ui/CursorTrail";
 import { useThemeStore } from "@/entities/session/model/themeStore";
 import { MobileMenu } from "@/widgets/MobileMenu/MobileMenu";
+import { BurgerButton } from "@/shared/ui/BurgerButton/BurgerButton";
 
 export const MainLayout = () => {
   const { isLoading, isError } = useProfile();   //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
@@ -57,6 +58,7 @@ export const MainLayout = () => {
       {/* <CursorTrail /> */}
       <Header />
       <MobileMenu />
+      <BurgerButton />
 
       {/*Основной контент страницы:*/}
       <main className="content-wrapper">

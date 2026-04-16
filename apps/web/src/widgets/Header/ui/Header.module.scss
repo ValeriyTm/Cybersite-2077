@@ -135,8 +135,8 @@
 .logolink {
   width: 20%;
 
-  @include tablet {
-    // display: none;
+  @include mobile {
+    display: none;
   }
 }
 
