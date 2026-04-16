@@ -11,6 +11,7 @@ import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import styles from "./Header.module.scss";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
 import { useThemeStore } from "@/entities/session/model/themeStore";
+import { BurgerButton } from "@/shared/ui/BurgerButton/BurgerButton";
 
 type MainCategory = "moto" | "gear" | "parts";
 
@@ -179,6 +180,8 @@ export const Header = () => {
                 />
               ))}
             </div>
+
+            <BurgerButton />
           </div>
         </div>
       </div>

@@ -52,6 +52,10 @@
       gap: 12px;
     }
 
+    @include mobile {
+      display: none;
+    }
+
     a {
       font-size: 0.8rem;
       color: var(--auxiliary-text-color);
