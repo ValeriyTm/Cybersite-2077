@@ -158,13 +158,14 @@ export const Header = () => {
         <div className={styles.container}>
           {/*1.1)Навбар:*/}
           <nav className={styles.topNav}>
+            <Link to="/">Главная</Link>
             <Link to="/about">О компании</Link>
-            <Link to="/shipping">Доставка и оплата</Link>
+            {/* <Link to="/shipping">Доставка и оплата</Link> */}
             <Link to="/contacts">Контакты</Link>
             <Link to="/news">Новости</Link>
             <Link to="/promos">Промокоды</Link>
             <Link to="/support">Поддержка</Link>
-            {canSee && <Link to="/admin">Администрирование</Link>}
+            {canSee && <Link to="/admin">Управление</Link>}
           </nav>
           {/*1.2)Смена темы:*/}
           <div className={styles.themeSwitcher}>
@@ -183,12 +184,12 @@ export const Header = () => {
       {/*2)Нижняя часть: Основные инструменты */}
       <div className={styles.mainLine}>
         <div className={styles.container}>
-          {/*Логотип*/}
+          {/*2.1)Логотип*/}
           <Link to="/" className={styles.logolink}>
             <img src={logoUrl} alt="Main Logo" className={styles.logo} />
           </Link>
 
-          {/*Кнопка каталога с Hover-меню*/}
+          {/*2.2)Кнопка каталога с Hover-меню*/}
           <div
             className={styles.catalogWrapper}
             onMouseEnter={() => setIsCatalogOpen(true)}
@@ -288,7 +289,7 @@ export const Header = () => {
             )}
           </div>
 
-          {/* Поиск с подсказками (Autocomplete) */}
+          {/*2.3)Поиск с подсказками (Autocomplete) */}
           <form
             className={styles.searchBox}
             onSubmit={handleSearchSubmit}
@@ -337,7 +338,7 @@ export const Header = () => {
             )}
           </form>
 
-          {/* Блок пользователя:*/}
+          {/*2.4)Блок пользователя:*/}
           <div className={styles.userActions}>
             <Link
               to={isAuth ? "/profile" : "/auth"}
@@ -350,14 +351,17 @@ export const Header = () => {
                 isAvatarLoading={isLoading} //Показываем спиннер, пока идет /refresh
               />
 
-              <div className={styles.userInfo}>
+              <div className={styles.userInfo} title={user?.name || ''}>
                 <span className={styles.userName}>
                   {/* Если авторизован и не грузится — имя, иначе "Войти" */}
                   {isAuth && user && !isLoading ? user.name : "Войти"}
                 </span>
               </div>
             </Link>
+          </div>
 
+          {/*2.5)Блок заказов:*/}
+          <div className={styles.userOrders}>
             {/*Кнопка избранного со счетчиком: */}
             <Link
               to="/profile/favorites"

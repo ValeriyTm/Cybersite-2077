@@ -1,49 +1,71 @@
-@use "fonts";
+// @use "fonts";
+@use "helpers" as *;
 
 :root {
-  //Шрифты:
+  //Шрифты отдельно:
   --font-family-base: "Tektur", sans-serif;
   --font-family-accent-eng-basic: "Orbitron", sans-serif;
   --font-family-accent-eng-title: "BlackOpsOne", sans-serif;
-  --font-family-doom-rus: "Rubik Wet Paint", sans-serif;
-  --font-family-doom-eng: "StalinistOne", sans-serif;
+  --font-family-doom-rus: "Rubik Wet Paint", sans-serif; //DOOM
+  --font-family-doom-eng: "StalinistOne", sans-serif; //DOOM
 
   //Цвета:
   --color-light: #ffffff;
-  --color-black-main: #151515;
+  --color-dark: #000000;
   --color-orange: #f39c12;
   --color-danger: #e7110a;
+  --color-rating: #f1c40f;
+  --color-success: #2ecc71;
 
   //Темы:
   body.theme-orange {
-    --accent-color: #f39c12;
-    --bg-color: #0e0c0c;
-    --text-color: #ffffff;
-    --glow-color: rgba(243, 156, 18, 0.4);
+    --main-text-color: var(--color-light);
+    --accent-text-color: var(--color-orange);
+    --auxiliary-text-color: rgba(255, 255, 255, 0.4);
+    --main-bg-color: #111; //Главный цвет фона
+    --accent-bg-color: var(--color-orange);
+    --auxiliary-bg-color: #1a1a1a;
+    --main-text-font: var(--font-family-base);
   }
 
   body.theme-blue {
     --accent-color: #1c4cb3;
     --bg-color: #ecd713;
-    --text-color: #ffffff;
-    --glow-color: rgba(243, 156, 18, 0.4);
   }
 
   body.theme-retrowave {
     --accent-color: #ee31bf;
-    --bg-color: #050505;
-    --text-color: #ffffff;
-    --glow-color: rgba(243, 156, 18, 0.4);
   }
 
   body.theme-doom {
-    --accent-color: #ee2f2f;
-    --bg-color: #050505;
-    --text-color: #ffffff;
-    --glow-color: rgba(243, 156, 18, 0.4);
+    --main-text-font: var(--font-family-doom-rus);
   }
 
-  //Пути к изображениям:
+  //----------------------Контейнер:-----------------------------//
+  --container-width: 1520px;
+
+  //На 1600px и менее:
+  @include desktop {
+    --container-width: 1320px;
+  }
+
+  //На 1441px и менее:
+  @include laptop {
+    --container-width: 1140px;
+  }
+
+  //На 1200px и менее:
+  @include laptop-s {
+    --container-width: 960px;
+  }
+
+  //На 1024px и менее:
+  @include tablet {
+    --container-width: 720px;
+  }
+
+  //На 768px и менее стремимся к контейнеру в width 100% с небольшими отступами (16-24px) по бокам
+  //---------------------------------------------------------------//
 
   //Левое, мб пригодится:
   --transition-duration: 0.2s;
@@ -61,8 +83,4 @@
   //   --border: #{rem(1)} solid var(--color-dark-15);
 
   //   --shadow: 0 0 0 #{rem(3)} #191919;
-
-  //   @include laptop {
-  //     --container-width: #{rem(1280)};
-  //   }
 }

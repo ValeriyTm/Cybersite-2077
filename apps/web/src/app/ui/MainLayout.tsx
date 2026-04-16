@@ -53,7 +53,7 @@ export const MainLayout = () => {
         }}
       />
 
-      <CursorTrail />
+      {/* <CursorTrail /> */}
       <Header />
 
       {/*Основной контент страницы:*/}

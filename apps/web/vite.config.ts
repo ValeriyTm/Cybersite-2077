@@ -14,6 +14,14 @@ export default defineConfig({
       usePolling: true, // Полезно для стабильного HMR при работе с Docker
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/app/styles/helpers/_media.scss" as *;`,
+        // Теперь миксины доступны в любом .module.scss файле без импорта
+      },
+    },
+  },
   //Для работы алиасов:
   resolve: {
     alias: {
