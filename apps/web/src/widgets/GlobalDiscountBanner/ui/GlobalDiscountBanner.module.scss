@@ -1,66 +1,46 @@
 .banner {
   background: linear-gradient(90deg, #e74c3c 0%, #f39c12 100%);
   padding-block: 10px;
-  // box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
-  // color: #000;
   width: 100%;
   z-index: 100;
-}
 
-.content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  max-width: var(--container-width); //Ширина контейнера контента
-  margin: 0 auto;
-}
+  justify-content: center;
 
-.icon {
-  font-size: 32px;
+  @include mobile {
+    padding-block: 6px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--container-width);
+
+    .content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      margin: 0 auto;
+
+      @include mobile {
+        padding-inline: 15px;
+      }
+
+      @include mobile-s {
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+      }
+    }
+  }
 }
 
 .info {
   p {
     color: var(--color-dark);
-  }
-}
-
-.text {
-  flex: 1;
-  h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: #000;
-  }
-  p {
-    margin: 5px 0 0;
-    font-size: 1rem;
-    opacity: 0.9;
-  }
-}
-
-.actionBtn {
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-}
-
-@media (max-width: 768px) {
-  .content {
-    flex-direction: column;
-    text-align: center;
+    -webkit-text-stroke: 0.1px var(--accent-text-color);
   }
 }
 
@@ -74,17 +54,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--accent-text-color);
+  -webkit-text-stroke: 0.25px var(--main-bg-color);
   padding: 8px 15px;
   border-radius: 6px;
   /* pxtorem-disable-next-line */
   border: 1px solid rgba(0, 0, 0, 0.1);
 
+  @include mobile {
+    padding: 6px 6px;
+  }
+
+  @include mobile-s {
+    flex-direction: row;
+    padding: 3px 6px;
+  }
+
   .timerLabel {
     font-size: 0.7rem;
     text-transform: uppercase;
     font-weight: 700;
-    margin-bottom: 2px;
+    // margin-bottom: 2px;
+
+    @include mobile-s {
+      margin-right: 10px;
+    }
   }
 
   .digits {
@@ -92,6 +87,10 @@
     font-size: 1.4rem;
     font-weight: 900;
     letter-spacing: 2px;
+
+    @include mobile {
+      font-size: 1.2rem;
+    }
 
     span {
       display: inline-block;

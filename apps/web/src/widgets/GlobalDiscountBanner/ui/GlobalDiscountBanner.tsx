@@ -31,21 +31,23 @@ export const GlobalDiscountBanner = () => {
 
   return (
     <div className={styles.banner}>
-      <div className={styles.content}>
-        <div className={styles.info}>
-          <h3 className={styles.discountTitle}>🔥 День {discount.year} года!</h3>
-          <p>
-            Скидка <strong>-{discount.percent}%</strong> на все модели этого
-            года
-          </p>
-        </div>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.info}>
+            <h3 className={styles.discountTitle}>🔥 День {discount.year} года!</h3>
+            <p>
+              Скидка <strong>-{discount.percent}%</strong> на все модели этого
+              года
+            </p>
+          </div>
 
-        {/*Таймер обратного отсчёта: */}
-        <div className={styles.timer}>
-          <span className={styles.timerLabel}>До конца акции:</span>
-          <div className={styles.digits}>
-            <span>{timeLeft.hours}</span>:<span>{timeLeft.minutes}</span>:
-            <span>{timeLeft.seconds}</span>
+          {/*Таймер обратного отсчёта: */}
+          <div className={styles.timer}>
+            <span className={styles.timerLabel}>До конца акции:</span>
+            <div className={styles.digits}>
+              <span>{timeLeft.hours}</span>:<span>{timeLeft.minutes}</span>:
+              <span>{timeLeft.seconds}</span>
+            </div>
           </div>
         </div>
       </div>

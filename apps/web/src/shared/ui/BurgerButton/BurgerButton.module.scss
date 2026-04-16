@@ -15,9 +15,13 @@
   padding: 4px;
 
   position: fixed;
-  top: 20px;
+  top: 15px;
   right: 20px;
   z-index: 3000;
+
+  &:hover {
+    opacity: 0.8;
+  }
 
   @include mobile-above {
     display: none;

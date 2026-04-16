@@ -181,7 +181,9 @@ export const Header = () => {
               ))}
             </div>
 
-
+            <Link to="/" className={styles.logolinkHidden}>
+              <img src={logoUrl} alt="Main Logo" className={styles.logo} />
+            </Link>
           </div>
         </div>
       </div>
@@ -404,6 +406,7 @@ export const Header = () => {
                   )}
                 </Link>
               </div>
+
             </div>
           </div>
         </div>
