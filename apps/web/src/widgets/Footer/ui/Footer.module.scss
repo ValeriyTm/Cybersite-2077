@@ -1,5 +1,5 @@
 .footer {
-  background: #0a0a0a;
+  background: var(--main-bg-color);
   color: #fff;
   padding: 60px 20px 20px;
   border-top: 1px solid #222;
@@ -25,19 +25,40 @@
       text-transform: uppercase;
       margin-bottom: 8px;
       color: #fff;
-      border-bottom: 2px solid #f39c12; // Твой акцентный цвет
+      border-bottom: 2px solid var(--accent-text-color);
       width: fit-content;
     }
 
-    a,
-    p {
-      color: #888;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
+    ul {
+      list-style-type: none; //Убираем маркеры
+      margin: 0;
+      padding: 0;
 
-      &:hover {
-        color: #f39c12;
+      a {
+        color: var(--auxiliary-text-color);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+        position: relative;
+
+        &:hover {
+          color: var(--accent-text-color);
+        }
+
+        //Подчеркивание:
+        &::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -2px; // Позиция линии
+          width: 0; //В начале ширина 0
+          height: 2px;
+          background-color: var(--accent-text-color);
+          transition: width 0.3s ease; //Анимация изменения ширины
+        }
+        &:hover::after {
+          width: 100%; //
+        }
       }
     }
   }
@@ -45,20 +66,20 @@
   .supportBtn {
     display: inline-block;
     padding: 10px 20px;
-    border: 2px solid #fff;
-    color: #fff !important;
+    border: 2px solid var(--accent-text-color);
     border-radius: 50px;
     text-align: center;
     font-weight: bold;
     margin-top: 10px;
+    color: var(--accent-text-color);
 
     &:hover {
-      background: #fff;
-      color: #000 !important;
+      background-color: var(--accent-text-color);
+      color: var(--color-dark) !important;
     }
   }
 
-  .socials {
+  .soc1als {
     display: flex;
     justify-content: center;
     gap: 25px;
@@ -72,7 +93,7 @@
         color 0.2s,
         transform 0.2s;
       &:hover {
-        color: #f39c12;
+        color: var(--accent-text-color);
         transform: translateY(-3px);
       }
     }
@@ -110,7 +131,7 @@
   }
 }
 
-//Иконки:
+//-----------------Иконки:-----------------------
 .facebook {
   &:hover {
     color: #1877f2 !important;
