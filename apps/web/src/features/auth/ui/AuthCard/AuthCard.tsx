@@ -117,7 +117,7 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
           type="button"
           onClick={handleGoogleLogin}
         >
-          <FcGoogle />
+          <FcGoogle className={styles.google} />
           <span>
             {mode === "login"
               ? "Войти с Google"

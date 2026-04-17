@@ -132,26 +132,28 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
         )}
       </div>
 
-      {/*Кнопка отправки:*/}
-      <Button
-        type="submit"
-        variant="primary"
-        isLoading={isSubmitting}
-        loadingText="Регистрируемся..."
-      >
-        Зарегистрироваться
-      </Button>
+      <div className={styles.btnGroup}>
+        {/*Кнопка отправки:*/}
+        <Button
+          type="submit"
+          variant="primary"
+          isLoading={isSubmitting}
+          loadingText="Регистрируемся..."
+        >
+          Зарегистрироваться
+        </Button>
 
-      {/* Кнопка сброса формы:*/}
-      <Button
-        type="button"
-        variant="secondary"
-        isLoading={isSubmitting}
-        loadingText="Очищаем..."
-        onClick={() => reset()}
-      >
-        Очистить форму
-      </Button>
+        {/* Кнопка сброса формы:*/}
+        <Button
+          type="button"
+          variant="secondary"
+          isLoading={isSubmitting}
+          loadingText="Очищаем..."
+          onClick={() => reset()}
+        >
+          Очистить форму
+        </Button>
+      </div>
     </form>
   );
 };

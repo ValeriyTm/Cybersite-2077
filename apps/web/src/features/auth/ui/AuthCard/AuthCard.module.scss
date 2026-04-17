@@ -1,15 +1,19 @@
 .container {
   max-width: 450px;
   margin: 50px auto;
-  font-family: sans-serif;
 }
 
 .toggleWrapper {
   display: flex;
-  background: #ccc;
+  background: var(--auxiliary-bg-color-2);
+  border: 1px solid var(--accent-text-color);
   border-radius: 12px;
   padding: 4px;
   margin-bottom: 24px;
+
+  @include mobile {
+    margin-inline: 10px;
+  }
 }
 
 .toggleBtn {
@@ -19,21 +23,29 @@
   border-radius: 10px;
   cursor: pointer;
   background: transparent;
-  color: #666;
+  color: var(--auxiliary-text-color);
   transition: 0.3s;
 
   &.active {
-    background: #000;
-    color: #fff;
+    border: 1px solid var(--accent-text-color);
+    background: var(--basic-gradient);
+    color: var(--main-text-color);
+    -webkit-text-stroke: 0.1px black;
+    font-size: 20px;
   }
 }
 
 .formCard {
-  background: #fff;
+  background: var(--auxiliary-bg-color-2);
+  border: 1px solid var(--accent-text-color);
   padding: 32px;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   text-align: center;
+
+  @include mobile {
+    margin-inline: 10px;
+  }
 
   h2 {
     margin-bottom: 24px;
@@ -48,14 +60,28 @@
   justify-content: center;
   gap: 10px;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--main-bg-color);
+  color: var(--main-text-color);
   border-radius: 30px;
-  background: #fff;
+  background: var(--accent-text-color);
   cursor: pointer;
   margin-bottom: 20px;
+  opacity: 0.85;
 
-  img {
+  &:hover {
+    scale: 1.05;
+  }
+
+  // img {
+  //   width: 20px;
+  // }
+
+  .google {
+    color: rgb(58, 58, 173);
     width: 20px;
+    height: 20px;
+    background-color: #f9f9f9;
+    border-radius: 50%;
   }
 }
 
@@ -63,13 +89,13 @@
   display: flex;
   align-items: center;
   margin: 20px 0;
-  color: #ccc;
+  color: var(--accent-text-color);
   &::before,
   &::after {
     content: "";
     flex: 1;
     height: 1px;
-    background: #eee;
+    background: var(--accent-text-color);
     margin: 0 10px;
   }
 }
@@ -77,28 +103,34 @@
 .field {
   text-align: left;
   margin-bottom: 16px;
+
   label {
     display: block;
     margin-bottom: 6px;
-    color: #666;
+    color: var(--main-text-color);
     font-size: 14px;
   }
   input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #eee;
+    // border: 1px solid #eee;
     border-radius: 10px;
     background: #f9f9f9;
-    box-sizing: border-box;
+    box-sizing: none;
+
+    &:focus {
+      color: var(--accent-text-color);
+      border: 1px solid var(--accent-text-color) !important;
+    }
 
     &.inputError {
-      border-color: #ff4d4f;
+      border-color: var(--color-danger);
     }
   }
 }
 
 .errorText {
-  color: #ff4d4f;
+  color: var(--color-danger);
   font-size: 12px;
   margin-top: 4px;
   display: block;
@@ -130,21 +162,21 @@
   }
 }
 
-.eyeBtn {
-  position: absolute;
-  right: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #999;
-  display: flex;
-  align-items: center;
-  padding: 0;
+// .eyeBtn {
+//   position: absolute;
+//   right: 12px;
+//   background: none;
+//   border: none;
+//   cursor: pointer;
+//   color: #999;
+//   display: flex;
+//   align-items: center;
+//   padding: 0;
 
-  &:hover {
-    color: #000;
-  }
-}
+//   &:hover {
+//     color: #000;
+//   }
+// }
 
 .checkboxField {
   display: flex;
@@ -162,11 +194,11 @@
   label {
     flex: 1;
     font-size: 13px;
-    color: #666;
+    color: var(--main-text-color);
     line-height: 1.4;
 
     a {
-      color: #000;
+      color: var(--accent-text-color);
       text-decoration: underline;
       &:hover {
         text-decoration: none;
@@ -271,4 +303,22 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+}
+
+.btnGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  @include mobile {
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}
+
+span,
+a,
+p {
+  color: var(--main-text-color);
 }

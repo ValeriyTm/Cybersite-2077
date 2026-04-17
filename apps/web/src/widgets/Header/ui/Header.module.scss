@@ -266,10 +266,19 @@
     /* pxtorem-disable-next-line */
     border-left: none;
     color: var(--accent-text-color);
-    padding: 0 20px;
+    padding: 0.75rem 20px;
     border-radius: 0 8px 8px 0;
     cursor: pointer;
     font-weight: 600;
+    // padding-block: 0.75rem;
+
+    @include mobile {
+      padding-block: 0.45rem;
+    }
+
+    @include mobile-s {
+      padding-block: 0.25rem;
+    }
 
     &:hover {
       background: var(--auxiliary-bg-color);

@@ -107,8 +107,13 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
 
+  button {
+    max-width: 300px;
+  }
+
   h2 {
     color: var(--accent-text-color);
+    margin-block: 15px;
 
     @include mobile {
       text-align: center;
@@ -255,15 +260,19 @@
   flex-direction: column;
   // text-align: left;
 
+  button {
+    max-width: 300px;
+  }
+
   @include mobile {
     justify-content: center;
     align-items: center;
   }
 
-  h3 {
+  h2 {
     color: var(--color-danger);
-    font-size: 16px;
-    margin-bottom: 15px;
+    // font-size: 16px;
+    margin-block: 15px;
 
     @include mobile {
       margin-block: 5px;
@@ -301,6 +310,7 @@
 
   h3 {
     color: var(--accent-text-color);
+    margin-block: 15px;
 
     @include mobile {
       margin-block: 5px;
@@ -323,8 +333,12 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
+
+    button {
+      max-width: 300px;
+    }
 
     @include mobile {
       flex-direction: column;
@@ -333,6 +347,7 @@
 
   h3 {
     color: var(--accent-text-color);
+    margin-block: 15px;
 
     @include mobile {
       margin-block: 5px;
@@ -382,6 +397,7 @@
   cursor: pointer;
   font-weight: 500;
   transition: 0.2s;
+  max-width: 300px;
 }
 
 .logoutBtn {
@@ -507,9 +523,9 @@
 // }
 
 .enabled2FA {
-  background: #f0f0f0;
-  color: #888;
-  border: 1px solid #ddd;
+  background: var(--auxiliary-bg-color) !important;
+  color: #888 !important;
+  border: 1px solid var(--auxiliary-text-color) !important;
   padding: 10px 20px;
   border-radius: 10px;
   cursor: default;

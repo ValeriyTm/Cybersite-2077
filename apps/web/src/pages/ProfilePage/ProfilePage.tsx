@@ -425,7 +425,7 @@ export const ProfilePage = () => {
 
         {/*Удаление аккаунта:*/}
         <div className={styles.dangerZone}>
-          <h3>Опасная зона</h3>
+          <h2>Опасная зона</h2>
           <div className={styles.btnGroup}>
             <Button
               type="button"
