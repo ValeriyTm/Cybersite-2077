@@ -120,7 +120,7 @@ export const HomePage = () => {
       <div className={styles.decoration}></div>
 
       <div className={styles.container}>
-        <div className={`${styles.cell1}`}>
+        <div className={styles.cell1}>
           <p className={styles.textMain}>Наша команда:</p>
           <img
             src="/images/banners/team.jpg"
@@ -196,7 +196,7 @@ export const HomePage = () => {
               <p className={styles.textMain}>Ассортимент:</p>
               <p>
                 В нашем интернет-магазине представлено более 35 тысяч единиц
-                товара от 518 брендов мотопроизводителей. Для заказа кастомной
+                товара от 518 брендов производителей. Для заказа кастомной
                 техники обращайтесь в поддержку.
               </p>
             </div>
