@@ -104,15 +104,25 @@
 }
 
 //
-.decoration {
+.decoration-orange {
   width: 100%;
   height: 8px;
-  background-image: url("../../../public/images/decoration/texture.png");
-  background-repeat: repeat; //По умолчанию
-
-  &:hover {
-    opacity: 0.95;
-  }
+  background-image: url("../../../public/images/decoration/texture-orange.png");
+}
+.decoration-blue {
+  width: 100%;
+  height: 8px;
+  background-image: url("../../../public/images/decoration/texture-blue.png");
+}
+.decoration-retro {
+  width: 100%;
+  height: 8px;
+  background-image: url("../../../public/images/decoration/texture-retro.png");
+}
+.decoration-doom {
+  width: 100%;
+  height: 8px;
+  background-image: url("../../../public/images/decoration/texture-doom.png");
 }
 //----------------------------------------------------------
 .container {

@@ -76,6 +76,23 @@ export const HomePage = () => {
   }
 
   const catalogLink = isAuth && user ? '/catalog' : '/auth';
+
+  let texture;
+  switch (theme) {
+    case "theme-orange":
+      texture = `decoration-orange`;
+      break;
+    case "theme-blue":
+      texture = `decoration-blue`;
+      break;
+    case "theme-retrowave":
+      texture = `decoration-retro`;
+      break;
+    case "theme-doom":
+      texture = `decoration-doom`;
+      break;
+  }
+
   ///
   if (isLoading)
     return (
@@ -117,7 +134,7 @@ export const HomePage = () => {
         </div>
       </section>
 
-      <div className={styles.decoration}></div>
+      <div className={styles[texture]}></div>
 
       <div className={styles.container}>
         <div className={styles.cell1}>
@@ -204,12 +221,12 @@ export const HomePage = () => {
         </div>
       </div>
 
-      <div className={styles.decoration}></div>
+      <div className={styles[texture]}></div>
 
       <p className={styles.brands}>Все популярные бренды у нас в наличии:</p>
       <ScrollableImageGallery />
 
-      <div className={styles.decoration}></div>
+      <div className={styles[texture]}></div>
 
       <div className={styles.reviewSection}>
         <p>Отзывы наших постоянных клиентов:</p>
@@ -243,7 +260,7 @@ export const HomePage = () => {
         </div>
       </div>
 
-      <div className={styles.decoration}></div>
+      <div className={styles[texture]}></div>
     </div>
   );
 };
