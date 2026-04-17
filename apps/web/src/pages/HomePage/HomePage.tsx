@@ -213,31 +213,33 @@ export const HomePage = () => {
 
       <div className={styles.reviewSection}>
         <p>Отзывы наших постоянных клиентов:</p>
-        <div className={styles.reviewCardSection}>
-          <ReviewCard
-            name="Алексей Иванов"
-            avatarUrl="/images/reviews/face1.jpg"
-            rating={5}
-            text="Периодически заказываю тут мотоэкипировку - дешевле на 15-20%, чем в других местах. Шлем, купленный тут 10 лет назад, до сих пор целый 👍"
-          />
-          <ReviewCard
-            name="Регина Петрова"
-            avatarUrl="/images/reviews/face2.jpg"
-            rating={4}
-            text="Отличный магазин! Доставили быстро, товар качественный. Оранжевая упаковка просто огонь."
-          />
-          <ReviewCard
-            name="Алихан Ахметов"
-            avatarUrl="/images/reviews/face3.jpg"
-            rating={5}
-            text="Поражает ассортимент мотоциклов! Есть даже модели начала 1900-х годов, вот это да!"
-          />
-          <ReviewCard
-            name="Степан Васильев"
-            avatarUrl="/images/reviews/face4.jpg"
-            rating={5}
-            text="Постоянно тут покупаем детали для нашего мотосервиса. Радуют длительная гарантия и быстрые ответы поддержки"
-          />
+        <div className={styles.reviewContainer}>
+          <section className={styles.reviewCardSection}>
+            <ReviewCard
+              name="Алексей Иванов"
+              avatarUrl="/images/reviews/face1.jpg"
+              rating={5}
+              text="Периодически заказываю тут мотоэкипировку - дешевле на 15-20%, чем в других местах. Шлем, купленный тут 10 лет назад, до сих пор целый 👍"
+            />
+            <ReviewCard
+              name="Регина Петрова"
+              avatarUrl="/images/reviews/face2.jpg"
+              rating={4}
+              text="Отличный магазин! Доставили быстро, товар качественный. Оранжевая упаковка просто огонь."
+            />
+            <ReviewCard
+              name="Алихан Ахметов"
+              avatarUrl="/images/reviews/face3.jpg"
+              rating={5}
+              text="Поражает ассортимент мотоциклов! Есть даже модели начала 1900-х годов, вот это да!"
+            />
+            <ReviewCard
+              name="Степан Васильев"
+              avatarUrl="/images/reviews/face4.jpg"
+              rating={5}
+              text="Постоянно тут покупаем детали для нашего мотосервиса. Радуют длительная гарантия и быстрые ответы поддержки"
+            />
+          </section>
         </div>
       </div>
 

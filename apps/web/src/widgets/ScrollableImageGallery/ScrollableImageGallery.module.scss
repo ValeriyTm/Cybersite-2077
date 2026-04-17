@@ -1,8 +1,12 @@
 .wrapper {
   width: 100%;
   overflow: hidden;
-  background: #1a1a1a;
+  background: var(--auxiliary-bg-color);
   padding: 20px 0;
+
+  @include mobile {
+    padding: 10px 0;
+  }
 }
 
 .scrollContainer {
@@ -11,18 +15,18 @@
   overflow-x: auto;
   padding: 0 20px;
 
-  /* Плавный скролл и "прилипание" */
+  // Плавный скролл и "прилипание"
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin; /* Тонкий скроллбар для Firefox */
+  scrollbar-width: thin; //Тонкий скроллбар для Firefox
 
-  /* --- Для Firefox --- */
-  scrollbar-width: thin; /* Толщина: auto, thin, none */
-  scrollbar-color: #f39c12 #333; /* Цвет ползунка и цвет дорожки */
+  //--- Для Firefox ---
+  scrollbar-width: thin; //Толщина: auto, thin, none
+  scrollbar-color: var(--accent-text-color) var(--auxiliary-bg-color-2); /* Цвет ползунка и цвет дорожки */
 
-  /* --- Для Chrome, Safari, Edge --- */
+  //--- Для Chrome, Safari, Edge ---
   &::-webkit-scrollbar {
-    height: 8px; /* Высота для горизонтального скролла */
-    width: 8px; /* Ширина для вертикального скролла */
+    height: 8px; //Высота для горизонтального скролла
+    width: 8px; //Ширина для вертикального скролла
   }
 
   &::-webkit-scrollbar-track {
@@ -31,22 +35,27 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #f39c12; /* Цвет самого ползунка */
+    background: var(--accent-text-color); //Цвет ползунка
     border-radius: 10px;
-    border: 2px solid #333; /* Отступ вокруг ползунка (имитация gap) */
+    border: 2px solid #333; //Отступ вокруг ползунка (имитация gap)
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: #e67e22; /* Цвет при наведении */
+    background: var(--accent-text-color);
   }
 }
 
 .item {
-  flex: 0 0 300px; /* Жесткая ширина ячейки */
+  flex: 0 0 300px; //Жесткая ширина ячейки
   height: 200px;
-  scroll-snap-align: start; /* Точка фиксации скролла */
+  scroll-snap-align: start; //
   border-radius: 8px;
   overflow: hidden;
+
+  @include mobile {
+    flex: 0 0 200px;
+    height: 133px;
+  }
 
   img {
     width: 100%;

@@ -1,4 +1,6 @@
+//Роутинг:
 import { Link } from "react-router";
+//Стили:
 import styles from "./ScrollableImageGallery.module.scss";
 
 interface ImageItem {
