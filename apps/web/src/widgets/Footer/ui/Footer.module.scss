@@ -1,24 +1,61 @@
 .footer {
   background: var(--main-bg-color);
   color: #fff;
-  padding: 60px 20px 20px;
+  padding-block: 30px;
   border-top: 1px solid #222;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 
-  .top {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 1.5fr 1.5fr 2fr;
-    gap: 40px;
-    margin-bottom: 40px;
+  @include mobile-s {
+    padding-block: 15px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: var(--container-width);
+
+    .top {
+      width: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 40px;
+      justify-items: center; //!
+      align-items: start;
+
+      @include tablet {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      @include mobile {
+        gap: 5px;
+      }
+
+      @include mobile-s {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
   }
 
   .column,
   .supportColumn {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    align-items: center;
+    gap: 15px;
+    // align-items: start;
+    max-width: 200px;
+
+    @include tablet {
+      gap: 5px;
+      // max-width: 300px;
+    }
+
+    @include mobile-s {
+      align-items: center;
+    }
 
     h3 {
       font-size: 1.1rem;
@@ -27,6 +64,10 @@
       color: #fff;
       border-bottom: 2px solid var(--accent-text-color);
       width: fit-content;
+
+      @include mobile-s {
+        margin-top: 8px;
+      }
     }
 
     ul {
@@ -34,6 +75,17 @@
       margin: 0;
       padding: 0;
 
+      @include mobile-s {
+        text-align: center;
+      }
+
+      li {
+        padding-block: 5px;
+
+        @include tablet {
+          padding-block: 2px;
+        }
+      }
       a {
         color: var(--auxiliary-text-color);
         text-decoration: none;
@@ -57,7 +109,7 @@
           transition: width 0.3s ease; //Анимация изменения ширины
         }
         &:hover::after {
-          width: 100%; //
+          width: 100%;
         }
       }
     }
@@ -73,28 +125,57 @@
     margin-top: 10px;
     color: var(--accent-text-color);
 
+    @include mobile {
+      margin-top: 0;
+    }
+
     &:hover {
       background-color: var(--accent-text-color);
       color: var(--color-dark) !important;
     }
   }
 
+  p {
+    @include mobile {
+      margin-bottom: 0;
+    }
+  }
+
   .soc1als {
     display: flex;
     justify-content: center;
+
     gap: 25px;
     font-size: 1.5rem;
     margin-bottom: 30px;
-    color: #444;
+    color: var(--auxiliary-text-color);
+
+    flex-wrap: wrap;
+
+    @include mobile-s {
+      gap: 15px;
+    }
 
     svg {
       cursor: pointer;
+
       transition:
         color 0.2s,
         transform 0.2s;
       &:hover {
         color: var(--accent-text-color);
         transform: translateY(-3px);
+      }
+    }
+  }
+
+  .contacts {
+    a {
+      display: inline-block;
+      padding: 5px;
+
+      &:hover {
+        color: var(--accent-text-color);
       }
     }
   }
@@ -108,7 +189,9 @@
   .bottom {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 20px;
+    padding-inline: 10px;
     color: #444;
     font-size: 0.85rem;
     a {
@@ -121,13 +204,22 @@
   }
 }
 
-.logo {
+.logolink {
+  max-width: 200px;
+  aspect-ratio: 2;
   height: auto;
-  width: 100%;
-  opacity: 0.9;
+  @include laptop-s {
+    display: none;
+  }
 
-  &:hover {
-    opacity: 1;
+  .logo {
+    height: auto;
+    width: 100%;
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
