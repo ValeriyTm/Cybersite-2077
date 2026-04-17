@@ -3,9 +3,9 @@
   color: #ffffff;
   padding: 20px;
   border-radius: 12px;
-  border-left: 4px solid #ff8c00;
-  max-width: 400px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Заменил ; на , */
+  border-left: 4px solid var(--accent-text-color);
+  max-width: 350px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   font-family: sans-serif;
   margin: 20px;
 
@@ -23,6 +23,10 @@
   align-items: center;
   gap: 15px;
   margin-bottom: 15px;
+
+  @media (max-width: 650px) {
+    margin-bottom: 5px;
+  }
 }
 
 .avatar {
@@ -30,7 +34,7 @@
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #ff8c00;
+  border: 2px solid var(--accent-text-color);
 }
 
 .name {
@@ -40,22 +44,27 @@
 }
 
 .stars {
-  color: #ff8c00;
+  color: var(--color-rating);
   font-size: 1.2rem;
   margin-top: 4px;
 }
 
-.staractive {
-  color: #ff8c00;
-}
+// .staractive {
+//   color: var(--color-rating);
+// }
 
 .starEmpty {
-  color: #444;
+  color: var(--auxiliary-text-color);
 }
 
 .text {
   line-height: 1.6;
-  font-size: 0.95rem;
-  color: #cccccc;
+  font-size: 18px;
+  color: var(--main-text-color);
   margin: 0;
+
+  @media (max-width: 650px) {
+    line-height: 1.2;
+    font-size: 16px !important;
+  }
 }
