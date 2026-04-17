@@ -120,7 +120,7 @@ export const HomePage = () => {
       <div className={styles.decoration}></div>
 
       <div className={styles.container}>
-        <div className={styles.cell}>
+        <div className={styles.cell1}>
           <p className={styles.textMain}>Наша команда:</p>
           <img
             src="/images/banners/team.jpg"
@@ -129,7 +129,7 @@ export const HomePage = () => {
           />
         </div>
 
-        <div className={styles.cell}>
+        <div className={styles.cell2}>
           <motion.div
             className={styles.cellContainer}
             initial="stopped"
@@ -162,7 +162,7 @@ export const HomePage = () => {
           <MainCarousel />
         </div>
 
-        <div className={styles.cell}>
+        <div className={styles.cell3}>
           <div className={styles.cont}>
             <div className={styles.delCont}>
               <img
@@ -183,7 +183,7 @@ export const HomePage = () => {
           </div>
         </div>
 
-        <div className={styles.cell}>
+        <div className={styles.cell4}>
           <div className={styles.cont}>
             <div className={styles.delCont}>
               <img

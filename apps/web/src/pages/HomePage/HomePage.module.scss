@@ -114,42 +114,38 @@
     opacity: 0.95;
   }
 }
-//--------------------------------------------
+//----------------------------------------------------------
 .container {
   display: grid;
-  /* Задаем 3 колонки и 2 строки */
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 5px;
+  /* Задаем 3 колонки и 2 строки */
+  // grid-template-columns: repeat(3, minmax(0, 1fr));
+  // grid-template-rows: repeat(2, minmax(0, 1fr));
 
-  // grid-template-areas:
-  //   "cell1 cell2 sidebar"
-  //   "cell3 cell4 sidebar";
-  height: 550px;
+  grid-template-areas:
+    "cell1 cell2 sidebar"
+    "cell3 cell4 sidebar";
+  grid-template-columns: 1fr 1fr 1fr;
+  // height: 550px;
 
   // width: 100%;
   // background: linear-gradient(to bottom right, rgb(32, 6, 94), rgb(7, 7, 156));
   border: 2px solid black;
 
-  .sidebar {
-    // grid-area: sidebar;
-    grid-column: 3; /* Третья колонка */
-    grid-row: 1 / 3;
-
-    width: 100%;
-    height: 100%; /* Должно быть 100%, чтобы занять высоту Grid-area */
-    display: block;
-
+  .cell1 {
+    grid-area: cell1;
+    border: 1px solid black;
     overflow: hidden;
     position: relative;
+    height: 300px;
   }
 
-  .cell {
+  .cell2 {
+    grid-area: cell2;
     border: 1px solid black;
-    overflow: hidden; /* Важно: всё, что больше ячейки, будет обрезано */
+    overflow: hidden;
     position: relative;
-
-    //------------Анимация
+    height: 300px;
 
     .cellContainer {
       position: relative;
@@ -229,6 +225,39 @@
         z-index: 30;
       }
     }
+  }
+
+  .cell3 {
+    grid-area: cell3;
+    border: 1px solid black;
+    overflow: hidden;
+    position: relative;
+    height: 300px;
+  }
+
+  .cell4 {
+    grid-area: cell4;
+    border: 1px solid black;
+    overflow: hidden;
+    position: relative;
+    height: 300px;
+  }
+
+  .sidebar {
+    grid-area: sidebar;
+    grid-column: 3;
+    grid-row: 1 / 3;
+
+    width: 100%;
+    height: 100%; /* Должно быть 100%, чтобы занять высоту Grid-area */
+    display: block;
+
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cell {
+    //------------Анимация
 
     .textMain {
       color: var(--accent-text-color);
