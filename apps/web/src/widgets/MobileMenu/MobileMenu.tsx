@@ -55,18 +55,43 @@ export const MobileMenu = () => {
                     <p>
                         {isAuth && user ? user.name : "Войти"}
                     </p>
-                    <Link to="/">Главная 🏠</Link>
-                    <Link to="/profile">В личный кабинет 👤</Link>
-                    <Link to="/profile/favorites">Моё избранное ❤️</Link>
-                    <Link to="/cart">Моя корзина 🛒</Link>
-                    <Link to="/orders/my">Мои заказы 📦</Link>
-                    <Link to="/about">О компании ℹ️</Link>
-                    {/* <Link to="/shipping">Доставка и оплата</Link> */}
-                    <Link to="/contacts">Контакты 📞</Link>
-                    <Link to="/news">Новости 📰</Link>
-                    <Link to="/promos">Промокоды 🎫</Link>
-                    <Link to="/support">Поддержка 💬</Link>
-                    {canSee && <Link to="/admin">Управление ⚙️</Link>}
+
+                    <ul>
+                        <li>
+                            <Link to="/">Главная 🏠</Link>
+                        </li>
+                        <li>
+                            <Link to="/profile">В личный кабинет 👤</Link>
+                        </li>
+                        <li>
+                            <Link to="/profile/favorites">Моё избранное ❤️</Link>
+                        </li>
+                        <li>
+                            <Link to="/cart">Моя корзина 🛒</Link>
+                        </li>
+                        <li>
+                            <Link to="/orders/my">Мои заказы 📦</Link>
+                        </li>
+                        <li>
+                            <Link to="/about">О компании ℹ️</Link>
+                        </li>
+                        <li>
+                            <Link to="/contacts">Контакты 📞</Link>
+                        </li>
+                        <li>
+                            <Link to="/news">Новости 📰</Link>
+                        </li>
+                        <li>
+                            <Link to="/promos">Промокоды 🎫</Link>
+                        </li>
+                        <li>
+                            <Link to="/support">Поддержка 💬</Link>
+                        </li>
+                        {canSee && <li>
+                            <Link to="/admin">Управление ⚙️</Link>
+                        </li>}
+                    </ul>
+
                 </nav>
 
 

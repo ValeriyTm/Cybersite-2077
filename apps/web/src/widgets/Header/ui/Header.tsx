@@ -162,14 +162,33 @@ export const Header = () => {
           <div className={styles.topWrapper}>
             {/*1.1)Навбар:*/}
             <nav className={styles.topNav}>
-              <Link to="/">Главная</Link>
-              <Link to="/about">О компании</Link>
-              {/* <Link to="/shipping">Доставка и оплата</Link> */}
-              <Link to="/contacts">Контакты</Link>
-              <Link to="/news">Новости</Link>
-              <Link to="/promos">Промокоды</Link>
-              <Link to="/support">Поддержка</Link>
-              {canSee && <Link to="/admin">Управление</Link>}
+              <ul>
+                <li>
+                  <Link to="/">Главная</Link>
+                </li>
+                <li>
+                  <Link to="/about">О компании</Link>
+                </li>
+                <li>
+                  <Link to="/contacts">Контакты</Link>
+                </li>
+                <li>
+                  <Link to="/news">Новости</Link>
+                </li>
+                <li>
+                  <Link to="/promos">Промокоды</Link>
+                </li>
+                <li>
+                  <Link to="/support">Поддержка</Link>
+                </li>
+                {canSee && <li>
+                  <Link to="/admin">Управление</Link>
+                </li>}
+              </ul>
+
+
+
+              {/* {canSee && <Link to="/admin">Управление</Link>} */}
             </nav>
             {/*1.2)Смена темы:*/}
             <div className={styles.themeSwitcher}>

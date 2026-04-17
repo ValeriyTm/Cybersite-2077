@@ -38,6 +38,15 @@ p {
   flex-direction: column;
   gap: 25px;
 
+  ul {
+    list-style-type: none; //Убираем маркеры
+    margin: 0;
+    padding: 0;
+    li {
+      padding-block: 8px;
+    }
+  }
+
   a {
     color: var(--auxiliary-text-color);
 
