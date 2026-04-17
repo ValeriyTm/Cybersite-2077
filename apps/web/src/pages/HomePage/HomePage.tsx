@@ -1,15 +1,18 @@
-//Роутер:
+//Навигация:
 import { Link } from "react-router";
-//Хранилища:
-import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентское
-import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
+//Состояния:
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useProfile } from "@/features/auth/model/useProfile";
+import { useThemeStore } from "@/entities/session/model/themeStore";
+//Компоненты:
 import { GlobalDiscountBanner } from "@/widgets/GlobalDiscountBanner/ui/GlobalDiscountBanner";
-import styles from "./HomePage.module.scss";
+import ReviewCard from "@/shared/ui/ReviewCard/ReviewCard";
 import { MainCarousel } from "@/widgets/MainCarousel/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery/ScrollableImageGallery";
+//Анимация:
 import { motion } from "motion/react";
-import ReviewCard from "@/shared/ui/ReviewCard/ReviewCard";
-import { useThemeStore } from "@/entities/session/model/themeStore";
+//Стили:
+import styles from "./HomePage.module.scss";
 
 export const HomePage = () => {
   //Из Zustand берем статус авторизации пользователя:

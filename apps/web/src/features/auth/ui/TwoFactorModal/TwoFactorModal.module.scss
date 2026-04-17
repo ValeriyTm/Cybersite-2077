@@ -14,7 +14,7 @@
 }
 
 .modal {
-  background: var(--card-bg, #ffffff);
+  background: var(--card-bg, var(--auxiliary-bg-color));
   padding: 2rem;
   border-radius: 16px;
   max-width: 400px;
@@ -66,7 +66,8 @@
   transition: border-color 0.2s;
 
   &:focus {
-    border-color: var(--primary-color, #007bff);
+    border-color: var(--primary-color, var(--accent-text-color));
+    color: var(--accent-text-color);
   }
 
   &::placeholder {

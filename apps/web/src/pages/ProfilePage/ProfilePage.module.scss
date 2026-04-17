@@ -1,19 +1,35 @@
 .container {
-  max-width: 800px;
-  margin: 40px auto;
+  max-width: var(--container-width);
+  margin: 0px auto;
   padding: 0 20px;
 }
 
 .profileHeader {
+  background-color: var(--auxiliary-bg-color);
+  border: 1px solid var(--accent-text-color);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 30px;
   margin-bottom: 40px;
-  background: #fff;
   padding: 30px;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
 
+  @include tablet {
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+  }
+
+  @include mobile-s {
+    gap: 15px;
+  }
+
+  p {
+    color: var(--accent-text-color);
+  }
   .avatarWrapper {
     position: relative;
     width: 120px;
@@ -46,22 +62,77 @@
       cursor: wait; //Меняем курсор на "ожидание"
     }
   }
+
+  .titleSection {
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+      margin: 5px;
+      //Перенос текста:
+      word-wrap: break-word; //Старый стандарт
+      overflow-wrap: break-word; //Современный стандарт
+      word-break: break-all; //Разрывает слово в любом месте (если нужно)
+
+      @include mobile-s {
+        font-size: 20px;
+      }
+    }
+  }
+
+  button {
+    color: var(--accent-text-color);
+    border: 1px solid var(--accent-text-color);
+    background-color: var(--auxiliary-bg-color);
+    max-width: 200px;
+
+    @include mobile {
+      padding: 2px;
+    }
+
+    &:hover {
+      background-color: var(--accent-text-color) !important;
+      color: var(--main-text-color);
+    }
+  }
 }
+//----------------------------
 
 .card {
-  background: #fff;
+  background-color: var(--auxiliary-bg-color);
+  color: var(--main-text-color);
+  border: 1px solid var(--accent-text-color);
   border-radius: 20px;
   padding: 10px 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
+
+  h2 {
+    color: var(--accent-text-color);
+
+    @include mobile {
+      text-align: center;
+      margin-block: 0;
+    }
+  }
 }
 
 .row {
   display: grid;
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 140px 1fr;
   padding: 22px 0;
   border-bottom: 1px solid #f0f0f0;
   align-items: center;
+
+  @include mobile-s {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding: 4px 0;
+    //Перенос текста:
+    word-wrap: break-word; //Старый стандарт
+    overflow-wrap: break-word; //Современный стандарт
+    word-break: break-all; //Разрывает слово в любом месте (если нужно)
+  }
 
   &:last-child {
     border: none;
@@ -72,8 +143,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #8e8e93;
+  color: var(--auxiliary-text-color);
   font-size: 14px;
+  flex-shrink: 2;
+
+  @include mobile-s {
+    gap: 6px;
+  }
 }
 
 .value {
@@ -81,15 +157,15 @@
   input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-light);
     border-radius: 8px;
     outline: none;
     &:focus {
-      border-color: #000;
+      border-color: var(--color-dark);
     }
   }
   .readonly {
-    color: #aaa;
+    color: var(-auxiliary-text-color);
     cursor: not-allowed;
   }
 }
@@ -169,23 +245,134 @@
 }
 
 .dangerZone {
-  margin-top: 40px;
+  margin-top: 30px;
   padding: 20px;
-  border: 1px solid #ffe5e5;
+  margin-bottom: 40px;
   border-radius: 20px;
-  background: #fffafa;
-  text-align: left;
+  background-color: var(--auxiliary-bg-color);
+  border: 1px solid var(--color-danger);
+  display: flex;
+  flex-direction: column;
+  // text-align: left;
+
+  @include mobile {
+    justify-content: center;
+    align-items: center;
+  }
 
   h3 {
-    color: #ff4d4f;
+    color: var(--color-danger);
     font-size: 16px;
     margin-bottom: 15px;
+
+    @include mobile {
+      margin-block: 5px;
+    }
   }
 }
 
-.btnGroup {
+.securityZone {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: var(--auxiliary-bg-color);
+  border: 1px solid var(--accent-text-color);
   display: flex;
-  gap: 15px;
+  flex-direction: column;
+  justify-items: center;
+
+  button {
+    color: var(--accent-text-color);
+    border: 1px solid var(--accent-text-color);
+    background-color: var(--auxiliary-bg-color);
+    width: 200px;
+    padding: 10px 20px;
+    border-radius: 10px;
+
+    @include mobile {
+      margin: 0 auto;
+    }
+
+    &:hover {
+      color: var(--color-light);
+      background-color: var(--accent-text-color);
+    }
+  }
+
+  h3 {
+    color: var(--accent-text-color);
+
+    @include mobile {
+      margin-block: 5px;
+      margin: 0 auto;
+    }
+  }
+}
+
+.sessionZone {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: var(--auxiliary-bg-color);
+  border: 1px solid var(--accent-text-color);
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+
+  .btnGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  h3 {
+    color: var(--accent-text-color);
+
+    @include mobile {
+      margin-block: 5px;
+      margin: 0 auto;
+    }
+  }
+}
+
+.ticketsZone {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: var(--auxiliary-bg-color);
+  border: 1px solid var(--accent-text-color);
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+
+  @include mobile {
+    text-align: center;
+  }
+
+  a {
+    color: var(--main-text-color);
+    border-bottom: 1px solid var(--main-text-color);
+
+    &:hover {
+      color: var(--accent-text-color);
+      border-bottom: 1px solid var(--accent-text-color);
+    }
+  }
+
+  h3 {
+    color: var(--accent-text-color);
+
+    @include mobile {
+      margin-block: 5px;
+      margin: 0 auto;
+    }
+  }
 }
 
 .logoutBtn,
@@ -230,14 +417,14 @@
 
 //Удаление аккаунта:
 .deleteBtn {
-  background: #ff4d4f;
+  background: var(--color-danger);
   color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
   &:hover {
-    background: #d9363e;
+    background: var(--color-danger);
   }
 }
 
@@ -252,7 +439,7 @@
 }
 
 .modal {
-  background: #fff;
+  background: var(--color-light);
   padding: 30px;
   border-radius: 20px;
   max-width: 400px;
@@ -277,8 +464,8 @@
     border: none;
   }
   .confirmDelete {
-    background: #ff4d4f;
-    color: #fff;
+    background: var(--color-danger);
+    color: var(--color-light);
   }
 }
 
@@ -297,7 +484,7 @@
   height: 30px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top-color: #fff; // Цвет "хвостика" спиннера
+  border-top-color: #fff; //Цвет "хвостика" спиннера
   animation: spin 0.8s linear infinite;
 }
 
@@ -307,17 +494,17 @@
   }
 }
 
-.btn2FA {
-  background: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  &:hover {
-    background: #45a049;
-  }
-}
+// .btn2FA {
+//   background: #4caf50;
+//   color: white;
+//   border: none;
+//   padding: 10px 20px;
+//   border-radius: 10px;
+//   cursor: pointer;
+//   &:hover {
+//     background: #45a049;
+//   }
+// }
 
 .enabled2FA {
   background: #f0f0f0;

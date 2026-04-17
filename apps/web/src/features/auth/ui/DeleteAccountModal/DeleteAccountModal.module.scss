@@ -14,17 +14,17 @@
 }
 
 .modal {
-  background: var(--card-bg, #ffffff);
+  background: var(--auxiliary-bg-color-2);
   padding: 2.5rem;
   border-radius: 20px;
   max-width: 450px;
   width: 100%;
   box-shadow: 0 25px 50px -12px rgba(220, 53, 69, 0.2);
   text-align: center;
-  border: 1px solid rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--accent-text-color);
 
   h2 {
-    color: #dc3545;
+    color: var(--color-danger);
     margin-bottom: 1rem;
     font-size: 1.8rem;
     display: flex;
@@ -34,13 +34,13 @@
   }
 
   p {
-    color: var(--text-muted, #555);
+    color: var(--main-text-color);
     font-size: 1rem;
     line-height: 1.6;
     margin-bottom: 2rem;
 
     strong {
-      color: #dc3545;
+      color: var(--color-danger);
       font-weight: 700;
     }
   }
@@ -48,7 +48,7 @@
 
 .warningIcon {
   font-size: 3rem;
-  color: #dc3545;
+  color: var(--color-danger);
   margin-bottom: 1rem;
 }
 

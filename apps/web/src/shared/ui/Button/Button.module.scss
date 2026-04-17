@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   min-width: 120px;
-  padding: 0.75rem 1.5rem;
+  // padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
   border-radius: 8px;
@@ -26,39 +26,45 @@
 
 // Варианты кнопок
 .primary {
-  background-color: var(--primary-color, #007bff);
-  color: white;
+  background-color: var(--accent-text-color);
+  color: var(--main-text-color);
+  padding: 4px;
 
   &:hover:not(:disabled) {
-    background-color: var(--primary-hover, #0056b3);
+    background-color: var(--main-text-color);
+    color: var(--accent-text-color);
+    // border: 1px solid var(--accent-text-color);
   }
 }
 
 .secondary {
-  background-color: #6c757d;
+  background-color: var(--auxiliary-bg-color);
+  border: 1px solid var(--main-text-color);
   color: white;
 
   &:hover:not(:disabled) {
-    background-color: #5a6268;
+    background-color: var(--auxiliary-text-color);
   }
 }
 
 .outline {
-  background-color: transparent;
-  border: 2px solid var(--primary-color, #007bff);
-  color: var(--primary-color, #007bff);
+  background-color: var(--auxiliary-bg-color);
+  border: 1px solid var(--primary-color, var(--accent-text-color));
+  color: var(--primary-color, var(--accent-text-color));
 
   &:hover:not(:disabled) {
-    background-color: var(--primary-color, #007bff);
-    color: white;
+    background-color: var(--accent-text-color) !important;
+    color: var(--main-text-color);
   }
 }
 
 .danger {
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--color-dark);
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
 
   &:hover:not(:disabled) {
-    background-color: #c82333;
+    background-color: var(--color-danger);
+    color: var(--color-light);
   }
 }
