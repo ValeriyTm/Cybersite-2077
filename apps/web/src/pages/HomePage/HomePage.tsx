@@ -9,6 +9,7 @@ import { MainCarousel } from "@/widgets/MainCarousel/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery/ScrollableImageGallery";
 import { motion } from "motion/react";
 import ReviewCard from "@/shared/ui/ReviewCard/ReviewCard";
+import { useThemeStore } from "@/entities/session/model/themeStore";
 
 export const HomePage = () => {
   //Из Zustand берем статус авторизации пользователя:
@@ -17,6 +18,9 @@ export const HomePage = () => {
   //Из React Query берем данные пользователя и состояние загрузки.
   //Используется isLoading, чтобы не показывать "Вы не авторизованы", пока идет запрос.
   const { user, isLoading } = useProfile();
+
+  const { theme } = useThemeStore();
+
 
   ///
   // 1. Создаем правила анимации
@@ -53,6 +57,25 @@ export const HomePage = () => {
       },
     },
   };
+
+  //Путь к логотипу в зависимости от темы:
+  let logoUrl;
+  switch (theme) {
+    case "theme-orange":
+      logoUrl = `/logos/logo-orange.png`;
+      break;
+    case "theme-blue":
+      logoUrl = `/logos/logo-blue.png`;
+      break;
+    case "theme-retrowave":
+      logoUrl = `/logos/logo-retro.png`;
+      break;
+    case "theme-doom":
+      logoUrl = `/logos/logo-doom.png`;
+      break;
+  }
+
+  const catalogLink = isAuth && user ? '/catalog' : '/auth';
   ///
   if (isLoading)
     return (
@@ -60,7 +83,7 @@ export const HomePage = () => {
     );
 
   return (
-    <div style={{ textAlign: "center", fontFamily: "sans-serif" }}>
+    <div className={styles.homePage}>
       <GlobalDiscountBanner></GlobalDiscountBanner>
 
       {/*Hero Section:*/}
@@ -79,25 +102,17 @@ export const HomePage = () => {
         <div className={styles.mainBannerPartRight}>
           <img
             className={styles.bannerImageText}
-            src="images/banners/mainBannerOrangeText.png"
+            src={logoUrl}
             alt="Главный баннер страницы"
           />
-          <div className={styles.mainBannerPartRightCont}>
+          <div className={styles.attentionBlock}>
             <span>Начни покупки с нами</span>
+            <div>
+              <Link to={catalogLink}>
+                <button className={styles.attentionBtn}>Начать →</button>
+              </Link>
+            </div>
 
-            {isAuth && user ? (
-              <div>
-                <Link to="/catalog">
-                  <button className={styles.mainBannerBtn}>Начать →</button>
-                </Link>
-              </div>
-            ) : (
-              <div>
-                <Link to="/auth">
-                  <button className={styles.mainBannerBtn}>Начать →</button>
-                </Link>
-              </div>
-            )}
           </div>
         </div>
       </section>
