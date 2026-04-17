@@ -63,7 +63,9 @@ export const HomePage = () => {
     <div style={{ textAlign: "center", fontFamily: "sans-serif" }}>
       <GlobalDiscountBanner></GlobalDiscountBanner>
 
-      <div className={styles.mainBannerSection}>
+      {/*Hero Section:*/}
+      <section className={styles.mainBannerSection}>
+        {/*Left:*/}
         <div className={styles.mainBannerPartLeft}>
           <img
             src="images/banners/mainBanner.png"
@@ -73,6 +75,7 @@ export const HomePage = () => {
 
           {/* <button className={styles.mainBannerBtn}>Начать →</button> */}
         </div>
+        {/*Right:*/}
         <div className={styles.mainBannerPartRight}>
           <img
             className={styles.bannerImageText}
@@ -97,7 +100,7 @@ export const HomePage = () => {
             )}
           </div>
         </div>
-      </div>
+      </section>
 
       <div className={styles.decoration}></div>
 

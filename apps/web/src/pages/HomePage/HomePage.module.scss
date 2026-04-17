@@ -3,29 +3,41 @@
 }
 
 .mainBannerSection {
-  display: flex;
-  // flex-direction: row;
-  // justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   max-height: 600px;
-  justify-content: space-between;
+
+  @include desktop {
+    height: 530px;
+  }
+
+  @include laptop {
+    height: 460px;
+  }
+
+  @include laptop-s {
+    height: 370px;
+  }
+
+  @include tablet {
+    height: 330px;
+  }
 }
 
 .mainBannerPartLeft {
-  // background: linear-gradient(to bottom right, black, darkblue);
-  height: 600px;
-  width: 55%;
-  display: flex;
-  justify-content: center; /* Центрирует по горизонтали */
-  align-items: center; /* Центрирует по вертикали */
-  // position: relative;
-  .img {
-    display: block;
+  width: 100%;
+  overflow: hidden;
+
+  img {
+    max-width: none;
+    height: 100%;
     width: 100%;
-    height: auto;
+    object-fit: cover;
   }
 }
 
 .mainBannerPartRight {
+  width: 100%;
   background: linear-gradient(to bottom right, black, darkblue);
   flex-grow: 1;
 
@@ -52,10 +64,6 @@
     // position: absolute;
     // top: 100%;
   }
-}
-
-.bannerImage {
-  max-height: 100%;
 }
 
 .bannerImageText {

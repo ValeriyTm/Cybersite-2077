@@ -28,18 +28,7 @@ body,
   Убираем внешние отступы вертикали нужным тегам,
   у которых есть атрибут class
  */
-:where(
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  ul,
-  ol,
-  dl
-):where([class]) {
+:where(h1, h2, h3, h4, h5, h6, p, ul, ol, dl):where([class]) {
   margin-block: 0;
 }
 
@@ -83,7 +72,6 @@ p {
 p:where(:not([class]):not(:last-child)) {
   margin-bottom: var(--paragraphMarginBottom);
 }
-
 
 /**
   Упрощаем работу с изображениями и видео
@@ -156,8 +144,12 @@ label {
 /**
   Приводим к единому цвету svg-элементы
  */
-[fill] { fill: currentColor }
-[stroke] { stroke: currentColor }
+[fill] {
+  fill: currentColor;
+}
+[stroke] {
+  stroke: currentColor;
+}
 
 /**
   Чиним баг задержки смены цвета при взаимодействии с svg-элементами
