@@ -118,34 +118,53 @@
 .container {
   display: grid;
   gap: 5px;
-  /* Задаем 3 колонки и 2 строки */
-  // grid-template-columns: repeat(3, minmax(0, 1fr));
-  // grid-template-rows: repeat(2, minmax(0, 1fr));
-
-  grid-template-areas:
-    "cell1 cell2 sidebar"
-    "cell3 cell4 sidebar";
-  grid-template-columns: 1fr 1fr 1fr;
-  // height: 550px;
-
-  // width: 100%;
-  // background: linear-gradient(to bottom right, rgb(32, 6, 94), rgb(7, 7, 156));
   border: 2px solid black;
 
-  .cell1 {
-    grid-area: cell1;
+  grid-template-areas:
+    "cell-1 cell-2 sidebar-1"
+    "cell-3 cell-4 sidebar-1";
+  grid-template-columns: 1fr 1fr 1fr;
+
+  @include tablet {
+    grid-template-areas:
+      "sidebar-1 sidebar-1"
+      "cell-1 cell-2"
+      "cell-3 cell-4";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto minmax(300px, auto) minmax(300px, auto);
+  }
+
+  @include mobile-s {
+    grid-template-areas:
+      "sidebar-1"
+      "cell-1"
+      "cell-2"
+      "cell-3"
+      "cell-4";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(300px, auto) minmax(300px, auto);
+  }
+
+  /* Общие стили для всех ячеек */
+  .cell1,
+  .cell2,
+  .cell3,
+  .cell4,
+  .sidebar {
     border: 1px solid black;
     overflow: hidden;
     position: relative;
-    height: 300px;
+    /* Используйте min-height вместо height, чтобы ячейки не были пустыми */
+    min-height: 300px;
+    width: 100%;
+  }
+
+  .cell1 {
+    grid-area: cell-1;
   }
 
   .cell2 {
-    grid-area: cell2;
-    border: 1px solid black;
-    overflow: hidden;
-    position: relative;
-    height: 300px;
+    grid-area: cell-2;
 
     .cellContainer {
       position: relative;
@@ -228,59 +247,44 @@
   }
 
   .cell3 {
-    grid-area: cell3;
-    border: 1px solid black;
-    overflow: hidden;
-    position: relative;
-    height: 300px;
+    grid-area: cell-3;
   }
 
   .cell4 {
-    grid-area: cell4;
-    border: 1px solid black;
-    overflow: hidden;
-    position: relative;
-    height: 300px;
+    grid-area: cell-4;
   }
 
   .sidebar {
-    grid-area: sidebar;
-    grid-column: 3;
-    grid-row: 1 / 3;
+    grid-area: sidebar-1;
 
     width: 100%;
     height: 100%; /* Должно быть 100%, чтобы занять высоту Grid-area */
-    display: block;
-
-    overflow: hidden;
-    position: relative;
+    // display: block;
   }
 
-  .cell {
-    //------------Анимация
+  // .cell {
+  //   .textMain {
+  //     color: var(--accent-text-color);
+  //     font-size: 20px;
+  //     padding-top: 10px;
+  //   }
 
-    .textMain {
-      color: var(--accent-text-color);
-      font-size: 20px;
-      padding-top: 10px;
-    }
+  //   .cont {
+  //     display: flex;
+  //     flex-direction: row;
+  //     justify-content: space-between;
+  //   }
 
-    .cont {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-    }
+  //   .delCont {
+  //     overflow: hidden;
+  //     width: 50%;
+  //     text-align: center;
 
-    .delCont {
-      overflow: hidden;
-      width: 50%;
-      text-align: center;
-
-      .delImage {
-        width: 100%;
-      }
-    }
-  }
+  //     .delImage {
+  //       width: 100%;
+  //     }
+  //   }
+  // }
 
   .teamImage {
     width: 100%;

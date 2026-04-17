@@ -120,7 +120,7 @@ export const HomePage = () => {
       <div className={styles.decoration}></div>
 
       <div className={styles.container}>
-        <div className={styles.cell1}>
+        <div className={`${styles.cell1}`}>
           <p className={styles.textMain}>Наша команда:</p>
           <img
             src="/images/banners/team.jpg"
