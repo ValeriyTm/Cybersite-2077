@@ -4,11 +4,19 @@
   padding: 0 20px;
   min-height: 80vh;
 
+  @include mobile {
+    margin-block: 20px;
+  }
+
   .title {
     font-size: 2.2rem;
-    color: #fff;
+    color: var(--accent-text-color);
     margin-bottom: 30px;
     font-weight: 800;
+
+    @include mobile {
+      margin-bottom: 10px;
+    }
   }
 }
 
@@ -28,7 +36,7 @@
   gap: 30px;
   align-items: flex-start;
 
-  @media (max-width: 1024px) {
+  @include tablet {
     grid-template-columns: 1fr;
   }
 }
@@ -43,16 +51,24 @@
   margin-bottom: 25px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 
+  @include mobile {
+    margin-bottom: 15px;
+  }
+
   h3 {
     font-size: 1.3rem;
     color: #fff;
     margin-bottom: 20px;
     border-bottom: 1px solid #333;
     padding-bottom: 15px;
+
+    @include mobile {
+      margin: 0;
+    }
   }
 }
 
-// БЛОК АДРЕСА
+//Блок адреса:
 .addressBox {
   display: flex;
   flex-direction: column;
@@ -60,7 +76,7 @@
 
   .currentAddress {
     font-size: 1.1rem;
-    color: #f39c12;
+    color: var(--accent-text-color);
     font-weight: 600;
     padding: 10px;
     background: rgba(243, 156, 18, 0.1);
@@ -68,7 +84,7 @@
   }
 
   .noAddress {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--auxiliary-text-color);
     font-style: italic;
   }
 
@@ -89,9 +105,9 @@
   }
 
   .changeBtn {
-    background: #615d5d;
-    color: #fff;
-    border: 1px solid #444;
+    background: var(--main-bg-color);
+    color: var(--accent-text-color);
+    border: 1px solid var(--accent-text-color);
     padding: 12px 20px;
     border-radius: 8px;
     cursor: pointer;
@@ -99,8 +115,7 @@
     transition: all 0.2s;
 
     &:hover {
-      background: #333;
-      border-color: #f39c12;
+      scale: 1.05;
     }
   }
 }
@@ -113,13 +128,17 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   color: rgba(255, 255, 255, 0.7);
 
+  @include mobile-s {
+    flex-direction: column;
+  }
+
   &:last-child {
     border-bottom: none;
   }
 
   span:last-child {
     font-weight: 700;
-    color: #fff;
+    color: var(--main-text-color);
   }
 }
 
@@ -134,8 +153,13 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 
   h3 {
-    color: #fff;
+    color: var(--main-text-color);
     margin-bottom: 25px;
+
+    @include mobile {
+      margin-bottom: 10px;
+      margin-top: 0;
+    }
   }
 
   .row {
@@ -144,19 +168,23 @@
     margin-bottom: 15px;
     color: rgba(255, 255, 255, 0.5);
 
-    &.total {
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid #333;
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #fff;
+    @include mobile {
+      padding-block: 5px !important;
     }
+  }
+
+  .total {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--main-text-color);
   }
 
   .payBtn {
     width: 100%;
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
     border: none;
     padding: 18px;
@@ -167,8 +195,14 @@
     margin-top: 20px;
     transition: all 0.2s;
 
+    &:first-of-type {
+      @include mobile {
+        margin-top: 0;
+      }
+    }
+
     &:hover:not(:disabled) {
-      background: #ffae1a;
+      background: var(--accent-text-color);
       transform: translateY(-2px);
     }
 

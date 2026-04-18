@@ -25,7 +25,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 1.1rem;
-    color: #fff;
+    color: var(--main-text-color);
   }
 }
 
@@ -36,8 +36,8 @@
 
   .methodItem {
     padding: 20px;
-    border: 2px solid #f39c12;
-    background: #fff;
+    border: 3px solid var(--accent-text-color);
+    background: var(--main-text-color);
     border-radius: 8px;
     cursor: default;
 
@@ -49,7 +49,7 @@
 }
 
 .details {
-  border-top: 1px solid #222;
+  border-top: 1px solid var(--auxiliary-bg-color);
   padding-top: 20px;
   margin-bottom: 20px;
 
@@ -62,13 +62,13 @@
     text-align: left;
 
     strong {
-      color: #fff;
+      color: var(--main-text-color);
       font-size: 1.1rem;
     }
   }
 
   .timer {
-    color: #e74c3c;
+    color: var(--color-danger);
     font-weight: 700;
     font-family: monospace;
   }
@@ -97,7 +97,7 @@
       justify-content: space-between;
       font-size: 0.9rem;
       margin-bottom: 5px;
-      color: #eee;
+      color: var(--main-text-color);
 
       span {
         color: #888;
@@ -108,7 +108,7 @@
 
 .payBtn {
   width: 100%;
-  background: #f39c12;
+  background: var(--accent-text-color);
   color: #000;
   border: none;
   padding: 15px;
@@ -121,7 +121,7 @@
     background 0.2s;
 
   &:hover {
-    background: #e68a00;
+    background: var(--accent-text-color);
     transform: translateY(-2px);
   }
 
@@ -133,15 +133,15 @@
 .closeBtn {
   width: 100%;
   background: transparent;
-  color: #555;
+  color: var(--auxiliary-text-color);
   border: none;
   margin-top: 10px;
   padding: 5px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   cursor: pointer;
   text-decoration: underline;
 
   &:hover {
-    color: #fff;
+    color: var(--main-text-color);
   }
 }

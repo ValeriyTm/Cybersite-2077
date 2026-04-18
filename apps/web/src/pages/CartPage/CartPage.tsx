@@ -1,8 +1,9 @@
 //Состояния:
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useCart } from "@/entities/trading/api/useCart";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useProfile } from "@/features/auth/model/useProfile";
+import { useQueryClient } from "@tanstack/react-query";
 //Навигация:
 import { useNavigate } from "react-router";
 //Компоненты:
@@ -15,6 +16,8 @@ import toast from "react-hot-toast";
 //Стили:
 import styles from "./CartPage.module.scss";
 
+
+
 export const CartPage = () => {
   const { user } = useProfile(); // Достаем данные профиля
 
@@ -25,6 +28,14 @@ export const CartPage = () => {
     removeSelected,
     selectAll,
   } = useCart();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // Заставляем React Query заново сходить на сервер за корзиной при каждом монтировании
+    queryClient.invalidateQueries({ queryKey: ["cart"] });
+  }, [queryClient]);
+
 
   //Проверяем, выбраны ли все товары сейчас:
   const isAllSelected =

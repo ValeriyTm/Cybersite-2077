@@ -195,6 +195,7 @@ export class OrderService {
     return await client.order.update({
       where: { id: orderId },
       data: { status: newStatus },
+      include: { items: true },
     });
   }
 

@@ -1,0 +1,43 @@
+.modalOverlayStyle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContentStyle {
+  background: var(--auxiliary-bg-color);
+  padding: 20px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 900px;
+  color: var(--main-text-color);
+
+  span {
+    color: var(--accent-text-color);
+  }
+}
+
+.confirmBtnStyle {
+  background: var(--accent-text-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cancelBtnStyle {
+  background: var(--auxiliary-text-color);
+  color: var(--main-text-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}

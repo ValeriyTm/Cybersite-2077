@@ -1,14 +1,22 @@
 .container {
-  max-width: 1000px;
+  max-width: var(--container-width);
   margin: 40px auto;
   padding: 0 20px;
   min-height: 80vh;
 
+  @include mobile-s {
+    margin-block: 20px;
+  }
+
   h1 {
     font-size: 2rem;
-    color: #fff;
+    color: var(--accent-text-color);
     margin-bottom: 30px;
     font-weight: 800;
+
+    @include mobile-s {
+      margin-block: 0px 10px;
+    }
   }
 }
 

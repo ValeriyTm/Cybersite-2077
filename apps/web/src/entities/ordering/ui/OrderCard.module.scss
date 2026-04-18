@@ -7,7 +7,7 @@
   transition: border-color 0.3s ease;
 
   &:hover {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 }
 
@@ -26,6 +26,10 @@
   display: grid;
   grid-template-columns: 220px 1fr;
   min-height: 160px;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
 }
 
 .leftPanel {
@@ -37,10 +41,24 @@
   justify-content: center;
   gap: 16px;
 
+  @include mobile {
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
   .infoGroup {
     display: flex;
     flex-direction: column;
     gap: 4px;
+
+    span {
+      &:not(:first-child) {
+        text-align: center;
+      }
+    }
 
     .label {
       font-size: 0.75rem;
@@ -59,32 +77,32 @@
       font-size: 0.85rem;
       font-weight: 700;
       padding: 4px 8px;
-      border-radius: 4px;
+      border-radius: 8px;
       // width: fit-content;
       text-transform: uppercase;
 
       &.pending {
-        background: rgba(243, 156, 18, 0.1);
-        color: #f39c12;
+        background: var(--main-bg-color);
+        color: var(--color-orange);
       }
       &.canceled {
-        background: rgba(231, 76, 60, 0.1);
-        color: #e74c3c;
+        background: var(--main-bg-color);
+        color: var(--color-danger);
       }
       &.paid {
-        background: rgba(46, 204, 113, 0.1);
-        color: #2ecc71;
+        background: var(--main-bg-color);
+        color: var(--color-success);
       }
       &.delivery {
-        background: rgba(52, 152, 219, 0.1);
+        background: var(--main-bg-color);
         color: #3498db;
       }
       &.delivered {
-        background: #27ae60;
+        background: var(--color-success);
         color: #fff;
       }
       &.completed {
-        background: #333;
+        background: var(--main-bg-color);
         color: #fff;
       }
     }
@@ -101,6 +119,19 @@
   gap: 24px;
   align-items: center;
   border-bottom: 1px solid #222;
+
+  @include mobile {
+    padding: 0 10px;
+    gap: 14px;
+  }
+
+  @include mobile-s {
+    flex-direction: column;
+
+    h4 {
+      margin-top: 0;
+    }
+  }
 
   &:last-child {
     border-bottom: none;
@@ -125,7 +156,7 @@
     position: absolute;
     top: -8px;
     right: -8px;
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
     width: 40px;
     height: 40px;
@@ -222,19 +253,98 @@
   border-radius: 10px;
   min-height: 30px;
   font-weight: 600;
+
+  @include mobile {
+    align-self: end;
+  }
+
   &:hover {
     background: rgba(231, 76, 60, 0.1);
   }
 }
 
 .confirmBtn {
-  background: #2ecc71;
+  background: var(--color-success);
   color: #fff;
   border: none;
   border-radius: 10px;
   min-height: 30px;
   font-weight: 600;
+
+  @include mobile {
+    align-self: end;
+  }
+
   &:hover {
-    background: #27ae60;
+    opacity: 0.8;
+  }
+}
+
+//--------------Модалка отмены заказа:------------//
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+}
+
+.modalContent {
+  background: var(--auxiliary-bg-color);
+  border: 1px solid var(--color-danger);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 30px var(--glow-color);
+}
+
+.modalTitle {
+  color: var(--color-danger);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.modalText {
+  margin-bottom: 30px;
+  span {
+    color: #888;
+    font-family: monospace;
+  }
+}
+
+.modalActions {
+  display: flex;
+  gap: 15px;
+  button {
+    flex: 1;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid var(--accent-color);
+  }
+}
+
+.btnDanger {
+  background: inherit;
+  color: var(--auxiliary-text-color);
+
+  &:hover {
+    color: var(--color-danger);
+  }
+}
+.btnSecondary {
+  background: transparent;
+  color: var(--main-text-color);
+  border-color: #444;
+
+  &:hover {
+    color: var(--accent-text-color);
   }
 }

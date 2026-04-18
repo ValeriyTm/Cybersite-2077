@@ -1,4 +1,5 @@
 
+import { createPortal } from "react-dom";
 //Состояния:
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,6 +24,8 @@ export const OrderCard = ({ order }: { order: any }) => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   //Состояние для pre-payment модалки:
   const [isModalOpen, setIsModalOpen] = useState(false);
+  //Состояние для модалки отмены заказа:
+  const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
 
   const { fetchActiveCount } = useOrderStore(); //Метод для получения кол-ва активных заказов
 
@@ -63,14 +66,18 @@ export const OrderCard = ({ order }: { order: any }) => {
 
   //Обработчик нажатия на кнопку отмены заказа:
   const handleCancel = (id: string) => {
-    if (
-      window.confirm(
-        "Вы уверены, что хотите отменить заказ? Товары вернутся на склад.",
-      )
-    ) {
+    if (confirm('Вы точно хотите отменить заказ?')) {
       cancelMutation.mutate(id);
     }
   };
+
+  const handleConfirmCancel = () => {
+    if (orderToCancel) {
+      cancelMutation.mutate(orderToCancel);
+      setOrderToCancel(null);
+    }
+  };
+
 
   //---------------Оставляем отзыв на заказ:-------------------------------//
   //Для реализации модалки отзыва:
@@ -140,9 +147,16 @@ export const OrderCard = ({ order }: { order: any }) => {
           )}
           {/*Кнопка отмены заказа:*/}
           {canCancel && (
+            // <button
+            //   className={styles.cancelBtn}
+            //   onClick={() => handleCancel(order.id)}
+
+            // >
+            //   Отменить заказ
+            // </button>
             <button
               className={styles.cancelBtn}
-              onClick={() => handleCancel(order.id)}
+              onClick={() => setOrderToCancel(order.id)}
             >
               Отменить заказ
             </button>
@@ -217,6 +231,29 @@ export const OrderCard = ({ order }: { order: any }) => {
         items={order.items}
         createdAt={order.createdAt}
       />
+
+
+      {orderToCancel && createPortal(
+        <div className={styles.modalOverlay} onClick={() => setOrderToCancel(null)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalTitle}>Подтверждение</h3>
+            <p className={styles.modalText}>
+              Вы действительно хотите отменить заказ?
+            </p>
+            <div className={styles.modalActions}>
+              <button className={styles.btnSecondary} onClick={() => setOrderToCancel(null)}>
+                Назад
+              </button>
+              <button className={styles.btnDanger} onClick={handleConfirmCancel}>
+                Да
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.getElementById('modals-root')! //Рендер через портал
+      )}
+
+
     </div>
   );
 };

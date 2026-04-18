@@ -49,6 +49,7 @@ export const CheckoutPage = () => {
     [cartItems],
   );
 
+
   //Создаем стейт для хранения ответа от "/api/warehouse/calculate":
   const [deliveryInfo, setDeliveryInfo] = useState<{
     warehouse: any;
@@ -88,6 +89,7 @@ export const CheckoutPage = () => {
   const { data: warehouses } = useQuery({
     queryKey: ["warehouses"],
     queryFn: () => $api.get("/warehouse").then((res) => res.data),
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
   //Создаем мутацию для расчета доставки:
@@ -98,6 +100,11 @@ export const CheckoutPage = () => {
     onSuccess: (data) => {
       //Сохраняем данные от бэкенда в стейт страницы:
       setDeliveryInfo(data);
+    },
+    onError: (error: any) => {
+      //Берем сообщение, которое прислал бэкенд:
+      const message = error.response?.data?.message || "Ошибка при расчете доставки";
+      toast.error(message);
     },
   });
 
@@ -115,10 +122,10 @@ export const CheckoutPage = () => {
         //Вариант 1: Редирект в ЮKassa (если создание заказа с оплатой):
         // window.location.href = res.data.paymentUrl;
         window.open(res.data.paymentUrl, "_blank");
-        navigate("/orders/my");
+        navigate("/orders/my", { replace: true });
       } else {
         //Вариант 2: Редирект на страницу заказов (если просто создание заказа):
-        navigate("/orders/my");
+        navigate("/orders/my", { replace: true }); //replace:true - чтобы нельзя было вернуться назад
         toast.success("Заказ оформлен!");
       }
     },
@@ -267,7 +274,7 @@ export const CheckoutPage = () => {
                   <span>
                     {item.model} x {item.quantity} шт, {item.year} г
                   </span>
-                  <span>{(item.price * item.quantity).toLocaleString()} ₽</span>
+                  <span>{(item.discountData.finalPrice * item.quantity).toLocaleString()} ₽</span>
                 </div>
               ))}
             </div>

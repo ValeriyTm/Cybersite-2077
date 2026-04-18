@@ -6,6 +6,7 @@ interface ConfirmModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   isLoading?: boolean;
+  data?: string;
 }
 
 export const ConfirmModal = ({
@@ -14,6 +15,7 @@ export const ConfirmModal = ({
   onConfirm,
   onCancel,
   isLoading,
+  data,
 }: ConfirmModalProps) => {
   if (!isOpen) return null;
 

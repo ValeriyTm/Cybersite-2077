@@ -39,7 +39,8 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: #ffae1a;
+    opacity: 0.9;
+    scale: 1.05;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(243, 156, 18, 0.2);
   }

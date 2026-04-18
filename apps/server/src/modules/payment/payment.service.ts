@@ -97,7 +97,7 @@ export class PaymentService {
   //Изменяем статус заказа на PAID и списываем товар со склада (после успешной оплаты):
   async applyChangeAfterPayment(orderId: string) {
     //Выполняем смену статуса и списание остатков за одну транзакцию:
-    await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx) => {
       //Меняем статус заказа в PostgreSQL:
       const order = await orderService.changeStatusOrder(orderId, "PAID", tx);
 
@@ -116,9 +116,8 @@ export class PaymentService {
           },
         });
       }
+      return order;
     });
-
-    return order;
   }
 }
 

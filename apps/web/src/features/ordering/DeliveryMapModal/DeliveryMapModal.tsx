@@ -13,6 +13,8 @@ import { useState } from "react";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
+import styles from './DeliveryMapModal.module.scss';
+
 let DefaultIcon = L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow,
@@ -94,8 +96,14 @@ export const DeliveryMapModal = ({
   };
 
   return (
-    <div className="map-modal-overlay" style={modalOverlayStyle}>
-      <div className="map-modal-content" style={modalContentStyle}>
+    <div
+      className={`"map-modal-overlay" ${styles.modalOverlayStyle}`}
+
+    >
+      <div
+        // className="map-modal-content" 
+        className={`"map-modal-content" ${styles.modalContentStyle}`}
+      >
         <h3>Выберите адрес доставки на карте</h3>
 
         <div
@@ -152,11 +160,11 @@ export const DeliveryMapModal = ({
                 onSelect({ lat: tempCoords.lat, lng: tempCoords.lng }, address)
               }
               disabled={!tempCoords || loading}
-              style={confirmBtnStyle}
+              className={styles.confirmBtnStyle}
             >
               Подтвердить адрес
             </button>
-            <button onClick={onClose} style={cancelBtnStyle}>
+            <button onClick={onClose} className={styles.cancelBtnStyle}>
               Отмена
             </button>
           </div>
@@ -166,40 +174,3 @@ export const DeliveryMapModal = ({
   );
 };
 
-//Инлайн-стили (когда-нибудь вынести в отдельный файл)
-const modalOverlayStyle: React.CSSProperties = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  background: "rgba(0,0,0,0.8)",
-  zIndex: 1000,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-const modalContentStyle: React.CSSProperties = {
-  background: "#1a1a1a",
-  padding: "20px",
-  borderRadius: "16px",
-  width: "90%",
-  maxWidth: "900px",
-  color: "#fff",
-};
-const confirmBtnStyle = {
-  background: "#f39c12",
-  border: "none",
-  padding: "10px 20px",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontWeight: "bold",
-};
-const cancelBtnStyle = {
-  background: "#333",
-  color: "#fff",
-  border: "none",
-  padding: "10px 20px",
-  borderRadius: "8px",
-  cursor: "pointer",
-};
