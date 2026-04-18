@@ -1,12 +1,16 @@
 .Page {
   min-height: 100vh;
-  background: #080808;
-  color: #fff;
-  padding: 60px 20px;
+  // background: #080808;
+  color: var(--main-text-color);
+  padding: 50px 20px;
+
+  @include tablet {
+    padding: 30px 0;
+  }
 }
 
 .container {
-  max-width: 1200px;
+  max-width: var(--container-width);
   margin: 0 auto;
 }
 
@@ -16,8 +20,13 @@
   gap: 60px;
   margin-bottom: 80px;
 
-  @media (max-width: 992px) {
+  @include tablet {
     grid-template-columns: 1fr;
+  }
+
+  @include mobile {
+    gap: 30px;
+    margin-bottom: 40px;
   }
 }
 
@@ -25,6 +34,16 @@
 // h2 {
 //   color: #f39c12 !important;
 // }
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  p {
+    margin-bottom: 4px;
+  }
+}
 
 .title {
   font-size: 3.5rem;
@@ -32,23 +51,31 @@
   text-transform: uppercase;
   margin: 0 0 10px 0;
   line-height: 1;
+
+  @include mobile {
+    font-size: 2.5rem;
+  }
 }
 
 .brandBadge {
   display: inline-block;
   padding: 6px 16px;
-  background: #f39c12;
+  background: var(--accent-text-color);
   color: #000;
   font-weight: 800;
   border-radius: 4px;
   margin-bottom: 24px;
+
+  @include mobile {
+    margin-bottom: 10px;
+  }
 }
 
 .price {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #f39c12;
-  margin-bottom: 30px;
+  color: var(--accent-text-color);
+  margin-bottom: 10px;
 }
 
 //Сетка характеристик:
@@ -58,8 +85,9 @@
   gap: 20px 60px;
   margin-top: 40px;
 
-  @media (max-width: 768px) {
+  @include mobile {
     grid-template-columns: 1fr;
+    padding-inline: 10px;
   }
 }
 
@@ -69,16 +97,21 @@
   align-items: baseline;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  // overflow-wrap: break-word;
+
+  @include mobile-s {
+    gap: 4px;
+  }
 
   span {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--auxiliary-text-color);
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 
   strong {
-    color: #fff;
+    color: var(--main-text-color);
     font-weight: 500;
     text-align: right;
   }
@@ -89,6 +122,10 @@
   border-left: 4px solid #f39c12;
   padding-left: 20px;
   margin-bottom: 40px;
+
+  @include mobile {
+    margin-bottom: 10px;
+  }
 }
 
 //Галерея фото:
@@ -98,6 +135,15 @@
   gap: 16px;
   width: 100%;
   max-width: 500px; //Ограничиваем общую ширину галереи
+
+  @include mobile {
+    align-items: center;
+    max-width: 480px;
+  }
+
+  @include mobile-s {
+    max-width: 360px;
+  }
 }
 
 .mainImageWrapper {
@@ -110,6 +156,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @include mobile {
+    height: 340px;
+    width: 340px;
+  }
+
+  @include mobile-s {
+    height: 300px;
+    width: 300px;
+  }
 }
 
 .mainImg {
@@ -152,12 +208,17 @@
 
 //Рекомендации:
 .relatedSection {
-  margin-top: 100px;
+  // margin-top: 100px;
   padding-top: 60px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+  @include mobile {
+    padding-top: 10px;
+  }
 }
 
 .relatedGrid {
+  padding-inline: 5px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
@@ -191,14 +252,25 @@
 .tabsNav {
   display: flex;
   gap: 30px;
-  margin-top: 50px;
+  margin-top: 40px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 15px;
+
+  @include mobile {
+    padding-inline: 10px;
+    overflow-y: hidden;
+    overflow-x: auto; /* Разрешаем скролл по горизонтали */
+    white-space: nowrap; /* Запрещаем перенос текста на новую строку */
+    scrollbar-color: var(--accent-text-color) var(--auxiliary-text-color);
+    // scrollbar-width: none; /* Скрываем стандартный скроллбар (Firefox) */
+    // -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+    margin-top: 0;
+  }
 
   button {
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--auxiliary-text-color);
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -206,21 +278,23 @@
     position: relative;
 
     &:hover {
-      color: #fff;
+      color: var(--main-text-color);
     }
 
     &.activeTab {
-      color: #f39c12;
+      color: var(--accent-text-color);
 
-      //Линия под активной вкладкой:
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: -16px;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: #f39c12;
+      @include mobile-above {
+        //Линия под активной вкладкой:
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: -16px;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: var(--accent-text-color);
+        }
       }
     }
   }
@@ -229,7 +303,7 @@
 .tabContent {
   // display: inline-flex;
   align-items: center;
-  padding-top: 40px;
+  // padding-top: 40px;
   min-height: 400px; //Чтобы страница не прыгала при переключении
 
   p {
@@ -238,9 +312,13 @@
 }
 
 .staticText {
+  text-align: center;
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
-  // max-width: 1000px;
+
+  @include mobile {
+    padding-inline: 10px;
+  }
 
   h3 {
     color: #fff;
@@ -255,11 +333,11 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  // margin-top: 20px;
   padding: 12px 24px;
   background: #1a1a1a;
   border: 1px solid #333;
-  color: #f39c12;
+  color: var(--accent-text-color);
   text-decoration: none;
   border-radius: 8px;
   transition: all 0.3s;
@@ -301,16 +379,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background: #1a1a1a;
+  background: var(--auxiliary-bg-color);
   padding: 25px;
   border-radius: 15px;
-  margin: 30px 0;
+  margin: 15px 0;
   border: 1px solid #333;
+
+  @include mobile {
+    padding: 10px;
+  }
 }
 
 .buttons {
   display: flex;
   gap: 15px;
+
+  @include mobile {
+    flex-direction: column;
+  }
 }
 
 .cartBtn {
@@ -330,16 +416,19 @@
 }
 
 .favBtn {
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  background: var(--main-bg-color);
+  color: var(--main-text-color);
   border: 1px solid #444;
-  padding: 15px 25px;
+  padding: 8px 24px;
   border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.2s;
+  width: 300px;
+  text-align: center;
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -357,6 +446,10 @@
   padding: 30px 0;
   max-width: 800px;
   margin: 0 auto;
+
+  @include mobile {
+    padding-inline: 15px;
+  }
 }
 
 .noReviews {
@@ -379,4 +472,14 @@
   color: green;
   font-weight: 700;
   font-style: italic;
+}
+
+.docsSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @include mobile {
+    padding-inline: 10px;
+  }
 }

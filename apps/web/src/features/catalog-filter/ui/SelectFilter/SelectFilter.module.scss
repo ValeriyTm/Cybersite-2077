@@ -3,7 +3,7 @@
 }
 
 .label {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--auxiliary-text-color);
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -18,10 +18,10 @@
 .select {
   width: 100%;
   appearance: none; //Убираем стандартную стрелочку
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 10px 16px;
+  background: var(--main-bg-color);
+  border: 1px solid var(--auxiliary-text-color);
+  color: var(--main-text-color);
+  padding: 5px 16px;
   border-radius: 8px;
   font-size: 0.9rem;
   outline: none;
@@ -29,12 +29,12 @@
   transition: all 0.2s ease;
 
   &:focus {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 
   option {
-    background: #111;
-    color: #fff;
+    background: var(--main-bg-color);
+    color: var(--main-text-color);
   }
 }
 
@@ -43,7 +43,7 @@
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #f39c12;
+  color: var(--accent-text-color);
   font-size: 0.7rem;
   pointer-events: none; //Чтобы клик проходил сквозь стрелку в селект
 }

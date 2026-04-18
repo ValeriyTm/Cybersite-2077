@@ -1,5 +1,6 @@
 .Breadcrumbs {
   margin-bottom: 20px;
+  padding-left: 10px;
 }
 
 .list {
@@ -16,15 +17,15 @@
   display: flex;
   align-items: center;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--auxiliary-text-color);
 
   a {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--auxiliary-text-color);
     text-decoration: none;
     transition: color 0.2s;
 
     &:hover {
-      color: #f39c12;
+      color: var(--accent-text-color);
     }
   }
 }
@@ -35,6 +36,6 @@
 }
 
 .current {
-  color: #f39c12;
+  color: var(--accent-text-color);
   font-weight: 500;
 }

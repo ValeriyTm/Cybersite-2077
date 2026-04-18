@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
@@ -29,6 +29,23 @@ export const MotorcyclesPage = () => {
   const { filters, updateFilters } = useMotorcycleFilters();
   //Получаем UI-настройки (какой тип отображения карточек выбран) из Zustand:
   const { viewMode, setViewMode } = useCatalogStore();
+
+  //Для фильтров на мобилке:
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleFilter = () => {
+    setIsOpen(!isOpen);
+  };
+
+  // Блокируем скролл основной страницы, когда фильтры открыты
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     document.body.style.overflow = 'hidden';
+  //   } else {
+  //     document.body.style.overflow = 'unset';
+  //   }
+  // }, [isOpen]);
+
 
   //Загружаем и кэшируем даннеы о моделях мотоциклов с учетом фильтров:
   const { data, isLoading } = useQuery({
@@ -108,8 +125,9 @@ export const MotorcyclesPage = () => {
   return (
     <div className={styles.Page}>
       {/*1) Сайдбар с фильтрами:*/}
-      <aside className={styles.Sidebar}>
+      <aside className={` ${isOpen ? styles.SidebarMobile : styles.Sidebar}`}>
         {/*Тут фильтры:*/}
+        <div className={styles.exitSidebar} onClick={toggleFilter}>x</div>
         <h2 className={styles.sidebarTitle}>Фильтры</h2>
 
         {/*Фильтр по цене:*/}
@@ -175,6 +193,8 @@ export const MotorcyclesPage = () => {
           />
           <span className={styles.checkboxLabel}>Только в наличии</span>
         </label>
+
+        <button className={styles.filterMobileBtn} onClick={toggleFilter} type="button">Применить</button>
       </aside>
 
       {/*2) Карточки и сортировка:*/}
@@ -258,6 +278,13 @@ export const MotorcyclesPage = () => {
             </div>
           </div>
         </header>
+
+        {/*Кнопка фильтров на мобилке:*/}
+        <div>
+          <button className={styles.mobileBtn} type="button" onClick={toggleFilter}>
+            Фильтры 🔍
+          </button>
+        </div>
 
         {/*2.2.Карточки:*/}
         {isLoading && (

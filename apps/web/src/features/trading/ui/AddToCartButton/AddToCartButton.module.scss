@@ -23,10 +23,10 @@
 }
 
 .addBtn {
-  background: #f39c12;
-  color: #000;
+  background: var(--accent-text-color);
+  color: var(--main-text-color);
   border: none;
-  padding: 12px 25px;
+  padding: 8px 8px;
   border-radius: 10px;
   font-weight: 700;
   font-size: 1rem;

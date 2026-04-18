@@ -2,7 +2,7 @@
   background: var(--main-bg-color);
   color: #fff;
   padding-block: 30px;
-  border-top: 1px solid #222;
+  border-top: 1px solid var(--accent-text-color);
   width: 100%;
   display: flex;
   justify-content: center;
@@ -195,11 +195,15 @@
     color: #444;
     font-size: 0.85rem;
     a {
-      color: #444;
+      color: var(--auxiliary-text-color);
       text-decoration: none;
       &:hover {
-        color: #888;
+        color: var(--main-text-color);
       }
+    }
+
+    span {
+      color: var(--accent-text-color);
     }
   }
 }

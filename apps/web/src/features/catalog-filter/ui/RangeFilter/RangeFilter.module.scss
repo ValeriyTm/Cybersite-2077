@@ -3,7 +3,7 @@
 }
 
 .label {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--auxiliary-text-color);
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -18,10 +18,10 @@
 
 .input {
   width: 100%;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 8px 12px;
+  background: var(--main-bg-color);
+  border: 1px solid var(--auxiliary-text-color);
+  color: var(--main-text-color);
+  padding: 4px 12px;
   border-radius: 8px;
   font-size: 0.9rem;
   outline: none;
@@ -32,7 +32,7 @@
   }
 
   &:focus {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 
   //Убираем стрелочки у инпута number:
@@ -44,5 +44,5 @@
 }
 
 .divider {
-  color: #444;
+  color: var(--auxiliary-text-color);
 }

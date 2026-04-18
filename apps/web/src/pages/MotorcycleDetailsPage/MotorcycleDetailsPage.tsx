@@ -424,7 +424,7 @@ export const MotorcycleDetailsPage = () => {
                       : "Добавить в избранное"
                   }
                 >
-                  {isFavorite ? "❤️ Уже в избранном" : "🤍 В избранное"}
+                  {isFavorite ? "❤️ В избранном" : "🤍 В избранное"}
                 </button>
               </div>
             </div>
