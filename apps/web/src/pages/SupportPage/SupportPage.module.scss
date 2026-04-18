@@ -41,12 +41,12 @@
   }
 
   .inputError {
-    border-color: #e74c3c !important;
+    border-color: var(--color-danger) !important;
     background: rgba(231, 76, 60, 0.05) !important;
   }
 
   .errorMessage {
-    color: #e74c3c;
+    color: var(--color-danger);
     font-size: 0.75rem;
     font-weight: 500;
     margin-left: 5px;
@@ -79,7 +79,7 @@
       box-shadow 0.2s;
 
     &:focus {
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
       box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
     }
 
@@ -104,7 +104,7 @@
 }
 
 .error {
-  color: #e74c3c;
+  color: var(--color-danger);
   font-size: 0.85rem;
   margin-top: -15px;
   margin-bottom: 5px;
@@ -119,7 +119,7 @@
   transition: border-color 0.3s;
 
   &:hover {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 
   input[type="file"] {
@@ -159,30 +159,30 @@
   }
 }
 
-.submitBtn {
-  background: #f39c12;
-  color: #000;
-  border: none;
-  padding: 18px;
-  border-radius: 6px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition:
-    transform 0.2s,
-    background 0.2s;
+// .submitBtn {
+//   background: var(--accent-text-color);
+//   color: #000;
+//   border: none;
+//   padding: 18px;
+//   border-radius: 6px;
+//   font-weight: 800;
+//   text-transform: uppercase;
+//   letter-spacing: 1px;
+//   cursor: pointer;
+//   transition:
+//     transform 0.2s,
+//     background 0.2s;
 
-  &:hover:not(:disabled) {
-    background: #e68a00;
-    transform: translateY(-2px);
-  }
+//   &:hover:not(:disabled) {
+//     background-color: red !important;
+//     transform: translateY(-2px);
+//   }
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
+//   &:disabled {
+//     opacity: 0.5;
+//     cursor: not-allowed;
+//   }
+// }
 
 @media (max-width: 600px) {
   .form .row {
@@ -195,11 +195,20 @@
 }
 
 .subBtn {
-  background-color: #e68a00;
+  background-color: var(--accent-text-color);
   border-radius: 20px;
   min-height: 40px;
   font-weight: 800;
   // width: 30%;
+
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .fileLabel {
@@ -215,13 +224,13 @@
   background: #0a0a0a;
 
   &:hover {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
     background: #111;
   }
 
   //Стили при перетаскивании файла:
   &.dragActive {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
     background: rgba(243, 156, 18, 0.1);
     transform: scale(1.02);
   }
@@ -232,7 +241,7 @@
   font-size: 0.85rem;
   color: #888;
   strong {
-    color: #f39c12;
+    color: var(--accent-text-color);
   }
 }
 
@@ -256,11 +265,13 @@
   text-align: center;
 
   .thumb {
-    width: 100%;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 4px;
     margin-bottom: 5px;
+    align-self: center;
+    justify-self: center;
   }
 
   .fileIcon {
@@ -272,19 +283,18 @@
 
   .fileName {
     font-size: 0.7rem;
-    color: #666;
+    color: var(--auxiliary-text-color);
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
+    width: 100px;
   }
 
   .removeBtn {
     position: absolute;
     top: -5px;
     right: -5px;
-    background: #e74c3c;
-    color: #fff;
+    background: var(--color-danger);
+    color: var(--main-text-color);
     border: none;
     width: 20px;
     height: 20px;

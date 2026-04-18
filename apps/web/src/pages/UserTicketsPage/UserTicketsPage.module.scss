@@ -1,3 +1,37 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-self: center;
+  max-width: var(--container-width);
+  width: 100%;
+}
+
+h1 {
+  color: var(--accent-text-color) !important;
+  padding-inline: 20px;
+
+  @include mobile {
+    text-align: center;
+  }
+}
+
+.header {
+  display: flex;
+  gap: 20px;
+}
+
+.question {
+  small {
+    color: var(--accent-text-color);
+  }
+}
+
+.waiting {
+  color: var(--auxiliary-text-color);
+  font-style: italic;
+}
+
 .status {
   padding: 4px 10px;
   border-radius: 4px;
@@ -13,21 +47,26 @@
     color: #fff;
   }
   &.RESOLVED {
-    background: #2ecc71;
+    background: var(--color-success);
     color: #fff;
   }
   &.CLOSED {
-    background: #7f8c8d;
+    background: var(--auxiliary-text-color);
     color: #fff;
   }
 }
 
 .ticketCard {
+  display: flex;
+  flex-direction: column;
   background: #1a1a1a;
   border: 1px solid #333;
   margin-bottom: 20px;
   padding: 20px;
   border-radius: 8px;
+  border: 1px solid var(--accent-text-color);
+  width: 98%;
+  justify-self: center;
 }
 
 .answer {

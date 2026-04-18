@@ -39,7 +39,7 @@ export const UserTicketsPage = () => {
                 {ticket.answer ? (
                   <span> {ticket.answer}</span>
                 ) : (
-                  <p>ждем ответа...</p>
+                  <p className={styles.waiting}>ждем ответа...</p>
                 )}
                 {ticket.answer}
               </p>
