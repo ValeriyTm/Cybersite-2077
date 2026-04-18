@@ -79,7 +79,6 @@ export const MotorcyclesPage = () => {
   //Хлебные крошки (навигация):
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/motorcycles" },
-    { label: slug === "all" ? "Поиск по всему каталогу" : slug?.toUpperCase() },
     {
       label: brandSlug?.toUpperCase(),
       href: `/catalog/motorcycles/${brandSlug}`,
@@ -186,12 +185,13 @@ export const MotorcyclesPage = () => {
         </Helmet>
 
         <Breadcrumbs items={breadcrumbs} />
+
         <h1 className={styles.title}>
           {slug === "all"
             ? `Результаты поиска: ${filters.search}`
             : `Мотоциклы ${brandSlug?.toUpperCase()}`}
         </h1>
-        <h3>Найдено моделей: {data?.total || 0}</h3>
+        <h5>Найдено моделей: {data?.total || 0}</h5>
         {/*2.1.Topbar:*/}
         <header className={styles.topBar}>
           {/*2.1.1.Поиск:*/}
