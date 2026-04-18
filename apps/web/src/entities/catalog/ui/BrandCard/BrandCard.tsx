@@ -20,10 +20,10 @@ export const BrandCard = ({ brand }: BrandCardProps) => {
   return (
     <Link to={`/catalog/motorcycles/${slug}`} className={styles.BrandCard}>
       <div className={styles.content}>
-        <div>
+        <div className={styles.text}>
           <h3 className={styles.name}>{name}</h3>
+          <p className={styles.country}>{country}</p>
           <div className={styles.info}>
-            <p className={styles.country}>{country}</p>
             <p>
               <span className={styles.dot}>•</span>
               <span className={styles.count}>

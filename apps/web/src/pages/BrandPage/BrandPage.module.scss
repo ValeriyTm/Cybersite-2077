@@ -1,10 +1,18 @@
 .BrandsPage {
   min-height: 100vh;
-  background-color: #080808;
+  background-color: var(--main-bg-color);
   padding: 60px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @include tablet {
+    padding-block: 40px;
+  }
+
+  @include mobile {
+    padding-block: 20px;
+  }
 }
 
 .header {
@@ -15,10 +23,14 @@
 .title {
   font-size: 3rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--accent-text-color);
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 12px;
+
+  @include mobile {
+    font-size: 2rem;
+  }
 }
 
 .subtitle {
@@ -33,10 +45,18 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
   margin-bottom: 60px;
+
+  @include mobile {
+    margin-bottom: 30px;
+  }
+
+  @include mobile {
+    margin-bottom: 20px;
+  }
 }
 
 .loader {
-  color: #f39c12;
+  color: var(--accent-text-color);
   font-size: 1.2rem;
   margin: 100px 0;
 }
@@ -56,33 +76,33 @@
 .pageBtn {
   min-width: 40px;
   height: 40px;
-  background: #111;
+  background: var(--main-bg-color);
   border: 1px solid #333;
-  color: #fff;
+  color: var(--main-text-color);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
 
   &:hover:not(.active) {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 
   &.active {
-    background: #f39c12;
-    border-color: #f39c12;
-    color: #000;
+    background: var(--accent-text-color);
+    border-color: var(--accent-text-color);
+    color: var(--color-dark);
     font-weight: 700;
     cursor: default;
   }
 }
 
 .pageInfo {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--auxiliary-text-color);
   font-size: 0.9rem;
 
   strong {
-    color: #fff;
+    color: var(--main-text-color);
   }
 }
 
@@ -90,8 +110,8 @@
   width: 40px;
   height: 40px;
   background: transparent;
-  border: 1px solid #333;
-  color: #f39c12;
+  border: 1px solid var(--auxiliary-bg-color-2);
+  color: var(--accent-text-color);
   font-size: 1.2rem;
   border-radius: 8px;
   cursor: pointer;
@@ -112,21 +132,38 @@
 .searchInput {
   width: 100%;
   padding: 16px 24px;
-  background: #111;
+  background: var(--main-bg-color);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  color: #fff;
+  color: var(--main-text-color);
   font-size: 1.1rem;
   outline: none;
   transition: all 0.3s ease;
 
+  @include mobile {
+    padding-block: 4px;
+  }
+
   &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--auxiliary-text-color);
   }
 
   &:focus {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
     box-shadow: 0 0 20px rgba(243, 156, 18, 0.1);
     background: #151515;
+  }
+}
+
+footer {
+  @include mobile-s {
+    display: flex;
+    flex-wrap: wrap;
+    // align-items: center;
+    // justify-items: center;
+
+    // gap: 90px;
+    justify-content: center;
+    margin-top: 0 !important;
   }
 }

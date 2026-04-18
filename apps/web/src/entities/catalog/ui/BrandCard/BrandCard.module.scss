@@ -2,23 +2,40 @@
   display: flex;
   justify-content: center;
   flex-direction: row;
-  padding: 24px;
+  padding: 18px;
   background: #151515;
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   text-decoration: none;
   transition: all 0.3s ease;
 
+  @include tablet {
+    padding: 18px 5px;
+  }
+
   &:hover {
     background: #1a1a1a;
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
     transform: scale(1.02);
   }
 }
 
+p {
+  @include tablet {
+    margin-bottom: 6px !important;
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
 .name {
   font-size: 1.4rem;
-  color: #fff;
+  color: var(--main-text-color);
   margin: 0 0 8px 0;
 }
 
@@ -32,12 +49,12 @@
 }
 
 .dot {
-  color: #f39c12;
+  color: var(--accent-text-color);
 }
 
 .frame {
   display: flex;
-  justify-content: center; /* Центровка по горизонтали */
+  justify-content: center;
   align-items: center;
   background-color: white;
   width: 50px;
@@ -60,7 +77,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-items: center;
+  // justify-content: space-between;
   gap: 20px;
 }
 
