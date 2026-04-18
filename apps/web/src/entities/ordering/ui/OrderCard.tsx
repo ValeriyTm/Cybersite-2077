@@ -26,6 +26,8 @@ export const OrderCard = ({ order }: { order: any }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   //Состояние для модалки отмены заказа:
   const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
+  //Состояние для модалки подтверждения заказа:
+  const [orderToConfirm, setOrderToConfirm] = useState<string | null>(null);
 
   const { fetchActiveCount } = useOrderStore(); //Метод для получения кол-ва активных заказов
 
@@ -45,10 +47,18 @@ export const OrderCard = ({ order }: { order: any }) => {
   });
 
   //Обработчик нажатия на кнопку завершения заказа:
-  const handleConfirm = (id: string) => {
-    if (window.confirm("Вы получили товар и хотите завершить заказ?")) {
-      //Запускаем отправку данных на сервер:
-      completeMutation.mutate(id);
+  // const handleConfirm = (id: string) => {
+  //   if (window.confirm("Вы получили товар и хотите завершить заказ?")) {
+  //     //Запускаем отправку данных на сервер:
+  //     completeMutation.mutate(id);
+  //   }
+  // };
+
+  //Обработчик нажатия на кнопку получения заказа:
+  const handleConfirmDelivery = () => {
+    if (orderToConfirm) {
+      completeMutation.mutate(orderToConfirm);
+      setOrderToConfirm(null);
     }
   };
 
@@ -65,12 +75,6 @@ export const OrderCard = ({ order }: { order: any }) => {
   });
 
   //Обработчик нажатия на кнопку отмены заказа:
-  const handleCancel = (id: string) => {
-    if (confirm('Вы точно хотите отменить заказ?')) {
-      cancelMutation.mutate(id);
-    }
-  };
-
   const handleConfirmCancel = () => {
     if (orderToCancel) {
       cancelMutation.mutate(orderToCancel);
@@ -140,20 +144,13 @@ export const OrderCard = ({ order }: { order: any }) => {
           {isDelivered && (
             <button
               className={styles.confirmBtn}
-              onClick={() => handleConfirm(order.id)}
+              onClick={() => setOrderToConfirm(order.id)}
             >
               Подтвердить получение
             </button>
           )}
           {/*Кнопка отмены заказа:*/}
           {canCancel && (
-            // <button
-            //   className={styles.cancelBtn}
-            //   onClick={() => handleCancel(order.id)}
-
-            // >
-            //   Отменить заказ
-            // </button>
             <button
               className={styles.cancelBtn}
               onClick={() => setOrderToCancel(order.id)}
@@ -232,7 +229,7 @@ export const OrderCard = ({ order }: { order: any }) => {
         createdAt={order.createdAt}
       />
 
-
+      {/*Модалка отмены заказа:*/}
       {orderToCancel && createPortal(
         <div className={styles.modalOverlay} onClick={() => setOrderToCancel(null)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -245,6 +242,27 @@ export const OrderCard = ({ order }: { order: any }) => {
                 Назад
               </button>
               <button className={styles.btnDanger} onClick={handleConfirmCancel}>
+                Да
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.getElementById('modals-root')! //Рендер через портал
+      )}
+
+      {/*Модалка подтверждения получения заказа:*/}
+      {orderToConfirm && createPortal(
+        <div className={styles.modalOverlay} onClick={() => setOrderToConfirm(null)}>
+          <div className={styles.modalContentSuccess} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalTitleSuccess}>Подтверждение</h3>
+            <p className={styles.modalText}>
+              Вы забрали свой заказ и подтверждаете его завершение?
+            </p>
+            <div className={styles.modalActions}>
+              <button className={styles.btnSecondarySuccess} onClick={() => setOrderToConfirm(null)}>
+                Назад
+              </button>
+              <button className={styles.btnSuccess} onClick={handleConfirmDelivery}>
                 Да
               </button>
             </div>

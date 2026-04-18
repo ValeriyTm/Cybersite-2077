@@ -27,7 +27,7 @@
   grid-template-columns: 220px 1fr;
   min-height: 160px;
 
-  @include mobile {
+  @include tablet {
     grid-template-columns: 1fr;
   }
 }
@@ -41,7 +41,7 @@
   justify-content: center;
   gap: 16px;
 
-  @include mobile {
+  @include tablet {
     flex-direction: row;
     align-items: center;
     justify-items: center;
@@ -91,15 +91,15 @@
       }
       &.paid {
         background: var(--main-bg-color);
-        color: var(--color-success);
+        color: yellow;
       }
       &.delivery {
         background: var(--main-bg-color);
-        color: #3498db;
+        color: #7cb4da;
       }
       &.delivered {
-        background: var(--color-success);
-        color: #fff;
+        background: var(--main-bg-color);
+        color: var(--color-success);
       }
       &.completed {
         background: var(--main-bg-color);
@@ -120,12 +120,12 @@
   align-items: center;
   border-bottom: 1px solid #222;
 
-  @include mobile {
+  @include tablet {
     padding: 0 10px;
     gap: 14px;
   }
 
-  @include mobile-s {
+  @include mobile {
     flex-direction: column;
 
     h4 {
@@ -292,22 +292,37 @@
   z-index: 5000;
 }
 
-.modalContent {
+.modalContent,
+.modalContentSuccess {
   background: var(--auxiliary-bg-color);
-  border: 1px solid var(--color-danger);
   border-radius: 20px;
   padding: 30px;
   max-width: 400px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 0 30px var(--glow-color);
+}
+
+.modalContent {
+  border: 1px solid var(--color-danger);
+}
+
+.modalContentSuccess {
+  border: 1px solid var(--color-success);
+}
+
+.modalTitle,
+.modalTitleSuccess {
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
 }
 
 .modalTitle {
   color: var(--color-danger);
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  letter-spacing: 2px;
+}
+
+.modalTitleSuccess {
+  color: var(--color-success);
 }
 
 .modalText {
@@ -339,6 +354,7 @@
     color: var(--color-danger);
   }
 }
+
 .btnSecondary {
   background: transparent;
   color: var(--main-text-color);
@@ -346,5 +362,23 @@
 
   &:hover {
     color: var(--accent-text-color);
+  }
+}
+
+.btnSuccess {
+  background: inherit;
+  color: var(--main-text-color);
+
+  &:hover {
+    color: var(--color-success);
+  }
+}
+
+.btnSecondarySuccess {
+  background: transparent;
+  color: var(--auxiliary-text-color);
+
+  &:hover {
+    color: var(--main-text-color);
   }
 }
