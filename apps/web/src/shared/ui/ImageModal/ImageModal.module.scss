@@ -31,14 +31,19 @@
   right: -40px;
   background: none;
   border: none;
-  color: #fff;
+  color: var(--color-light);
   font-size: 40px;
   cursor: pointer;
   padding: 10px;
   line-height: 1;
 
+  @include mobile {
+    top: 0;
+    right: 0;
+  }
+
   &:hover {
-    color: #f39c12;
+    color: var(--accent-text-color);
   }
 }
 
@@ -66,8 +71,8 @@
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);
-    border-color: #f39c12; // Твой акцентный цвет
-    color: #f39c12;
+    border-color: var(--accent-text-color);
+    color: var(--accent-text-color);
     transform: translateY(-50%) scale(1.1);
   }
 
@@ -98,8 +103,7 @@
   border-radius: 20px;
 }
 
-//Адаптив: на маленьких экранах прячем кнопки внутрь фото
-@media (max-width: 1024px) {
+@include tablet {
   .prevBtn {
     left: 10px;
   }
