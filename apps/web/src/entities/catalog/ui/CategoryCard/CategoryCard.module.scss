@@ -11,19 +11,35 @@
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: pointer;
 
-  //Эффект при наведении на всю карточку:
+  @include laptop-s {
+    height: 370px;
+  }
+
+  @include tablet {
+    height: 350px;
+  }
+
+  @include mobile {
+    margin-inline: 20px;
+  }
+
+  @include mobile-s {
+    height: 260px;
+    margin-inline: 10px;
+  }
+
   &:hover {
     transform: translateY(-8px);
-    border-color: rgba(243, 156, 18, 0.5); //Оранжевое свечение (акцент)
+    border-color: var(--accent-text-color);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 
     .image {
-      filter: grayscale(0%) brightness(0.7); //Картинка «оживает» цветом
+      filter: grayscale(0%) brightness(0.7);
       transform: scale(1.1);
     }
 
     .title {
-      color: #f39c12;
+      color: var(--accent-text-color);
     }
   }
 }
@@ -82,10 +98,13 @@
   color: rgba(255, 255, 255, 0.5);
   font-weight: 500;
   margin: 0;
+}
 
-  // Если раздел не готов, делаем текст чуть бледнее:
-  &.notReady {
+.notReady {
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+
+  p {
     font-style: italic;
-    color: rgba(255, 255, 255, 0.3);
   }
 }

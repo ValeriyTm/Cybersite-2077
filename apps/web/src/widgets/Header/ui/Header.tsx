@@ -226,7 +226,7 @@ export const Header = () => {
                 onMouseEnter={() => setIsCatalogOpen(true)}
                 onMouseLeave={() => setIsCatalogOpen(false)}
               >
-                <Link to="/catalog/motorcycles" className={styles.catalogBtn}>
+                <Link to="/catalog" className={styles.catalogBtn}>
                   <span className={styles.burger}>☰</span> Каталог
                 </Link>
 

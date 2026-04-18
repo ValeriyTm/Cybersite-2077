@@ -1,14 +1,22 @@
 .CatalogPage {
   min-height: 100vh;
   background-color: #080808;
-  padding: 80px 20px;
+  padding: 60px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @include tablet {
+    padding-block: 40px;
+  }
+
+  @include mobile {
+    padding-block: 20px;
+  }
 }
 
 .header {
-  max-width: 1200px;
+  max-width: var(--container-width);
   width: 100%;
   margin-bottom: 60px;
   text-align: center;
@@ -17,10 +25,19 @@
 .pageTitle {
   font-size: 3.5rem;
   font-weight: 900;
-  color: #a9cc29;
+  color: var(--accent-text-color);
   text-transform: uppercase;
   letter-spacing: 4px;
   margin: 0 0 16px 0;
+  text-align: center;
+
+  @include mobile {
+    font-size: 2.5rem;
+  }
+
+  @include mobile-s {
+    font-size: 2rem;
+  }
 }
 
 .subtitle {

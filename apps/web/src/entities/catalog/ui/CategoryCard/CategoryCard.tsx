@@ -20,6 +20,7 @@ export const CategoryCard = ({ category }: CategoryCardProps) => {
     <Link
       to={`/catalog/${slug}`}
       className={`${styles.CategoryCard} ${!isReady ? styles.notReady : ""}`}
+      onClick={(e) => { !isReady && e.preventDefault() }}
     >
       <div className={styles.imageWrapper}>
         <img src={localImage} alt={name} className={styles.image} />
