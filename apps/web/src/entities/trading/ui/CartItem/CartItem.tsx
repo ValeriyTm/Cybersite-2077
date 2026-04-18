@@ -49,12 +49,18 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
                 key={data.id}
                 className={`${styles.cartItem} ${isError && styles.Error}`}
             >
-                <input
-                    type="checkbox"
-                    checked={data.selected}
-                    onChange={handleCheckboxChange}
-                />
+                {/*Чекбокс:*/}
+                <div className={styles.checkboxWrapper}>
+                    <input
+                        type="checkbox"
+                        checked={data.selected}
+                        onChange={handleCheckboxChange}
 
+                    />
+
+                </div>
+
+                {/*Img:*/}
                 <div className={styles.itemImg}>
                     <img
                         src={
@@ -66,17 +72,22 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
                     />
                 </div>
 
+                {/*Данные:*/}
                 <div className={styles.itemInfo}>
                     <Link
                         to={`/catalog/motorcycles/${data.brandSlug}/${data.slug}`}
                         className={styles.itemName}
                     >
-                        <p>
+                        <span>
                             {data.model}, {data.year} г
-                        </p>
+                        </span>
                     </Link>
+                </div>
 
-                    <div className={styles.actions}>
+                {/*Избранное и удаление с корзины:*/}
+                <div className={styles.actions}>
+                    <div className={styles.btnGroup}>
+
                         <button
                             className={`${styles.favIconBtn} ${favoriteIds.includes(data.id) ? styles.active : ""}`}
                             onClick={() => toggleFavorite(data.id)}
@@ -88,36 +99,44 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
                         >
                             {favoriteIds.includes(data.id) ? "❤️" : "🤍"}
                         </button>
-                        <button onClick={() => handleDeletingId(data.id)}>
+                        <button title='Удалить из корзины' onClick={() => handleDeletingId(data.id)} className={styles.deleteBtn}>
                             Удалить
+                        </button>
+
+                    </div>
+
+                    {/*Количество:*/}
+                    <div className={styles.quantityControl}>
+                        <button
+                            title='Уменьшить количество товара в корзине'
+                            onClick={() =>
+                                updateQuantity({
+                                    id: data.id,
+                                    quantity: data.quantity - 1,
+                                })
+                            }
+                        >
+                            -
+                        </button>
+                        <span>{data.quantity}</span>
+                        <button
+                            title='Увеличить количество товара в корзине'
+                            onClick={() =>
+                                updateQuantity({
+                                    id: data.id,
+                                    quantity: data.quantity + 1,
+                                })
+                            }
+                        >
+                            +
                         </button>
                     </div>
                 </div>
 
-                <div className={styles.quantityControl}>
-                    <button
-                        onClick={() =>
-                            updateQuantity({
-                                id: data.id,
-                                quantity: data.quantity - 1,
-                            })
-                        }
-                    >
-                        -
-                    </button>
-                    <span>{data.quantity}</span>
-                    <button
-                        onClick={() =>
-                            updateQuantity({
-                                id: data.id,
-                                quantity: data.quantity + 1,
-                            })
-                        }
-                    >
-                        +
-                    </button>
-                </div>
 
+
+
+                {/*Цена:*/}
                 <div className={styles.priceBlock}>
                     {hasDiscount ? (
                         <>
