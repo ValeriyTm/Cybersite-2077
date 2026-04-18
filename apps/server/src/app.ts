@@ -107,6 +107,9 @@ app.use(
 //Настройка политики CORS (для разрешения кросс-доменных запросов):
 app.use(cors(corsOptions));
 
+//Доверяем нашему Nginx, который стоит перед сервером:
+app.set("trust proxy", 1);
+
 //Защита всех эндпоинтов от DDoS и brute force (Rate Limiting):
 app.use(commonLimiter);
 //Лимитер отсекает лишние запросы по IP еще до того, как сервер начнет тратить память на парсинг JSON (express.json()) или очистку от XSS.

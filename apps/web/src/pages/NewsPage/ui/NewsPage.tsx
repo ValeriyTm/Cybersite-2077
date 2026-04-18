@@ -1,7 +1,7 @@
 //Состояния:
 import { useQuery } from '@tanstack/react-query';
 //API:
-import { $api } from '@/shared/api/api';
+import { $api, API_URL } from '@/shared/api/api';
 //Роутинг:
 import { Link } from 'react-router';
 //Работа с датами:
@@ -30,7 +30,7 @@ export const NewsPage = () => {
                     <Link key={item._id} to={`/news/${item.slug}`} className={styles.card}>
                         <div className={styles.imageWrapper}>
                             <img
-                                src={item.mainImage ? `http://localhost:3001/static/motorcycles/${item.mainImage}` : '/no-image.jpg'}
+                                src={item.mainImage ? `${API_URL}/static/news/${item.mainImage}` : '/no-image.jpg'}
                                 alt={item.title}
                             />
                             <div className={styles.categoryBadge}>{item.tags?.[0] || 'Новость'}</div>

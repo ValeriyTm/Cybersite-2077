@@ -30,11 +30,13 @@ export const NotFoundPage = () => {
               На главную
             </button>
           </div>
+
           <img
             src="/images/banners/For404.png"
             alt=""
             className={styles.img404}
           />
+
         </div>
       </div>
     </>

@@ -1,17 +1,24 @@
 .container {
-  max-width: 1000px;
+  max-width: var(--container-width);
   margin: 40px auto;
   padding: 0 20px;
+
+  @include mobile {
+    margin-block: 20px;
+  }
 }
 
 .title {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  color: #fff;
 }
 .subtitle {
-  color: #888;
+  color: var(--auxiliary-text-color);
   margin-bottom: 40px;
+
+  @include mobile {
+    text-align: center;
+  }
 }
 
 .grid {
@@ -28,15 +35,23 @@
   text-align: center;
   transition: border-color 0.3s;
 
+  @include mobile {
+    padding: 10px 16px;
+  }
+
   &:hover {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 
   .amount {
     font-size: 2rem;
     font-weight: 900;
-    color: #f39c12;
+    color: var(--accent-text-color);
     margin-bottom: 15px;
+
+    @include mobile-s {
+      margin-bottom: 5px;
+    }
   }
 
   .codeWrap {

@@ -1,0 +1,11 @@
+.motoCard {
+  width: 500px;
+
+  @include mobile {
+    width: 380px;
+  }
+
+  @include mobile-s {
+    width: 300px;
+  }
+}

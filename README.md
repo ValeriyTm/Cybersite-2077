@@ -43,11 +43,11 @@
 #### DevOps
 ![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-Docker-009639?logo=nginx&logoColor=white)
-![Ansible](https://img.shields.io/badge/Ansible-EE0000?logo=ansible&logoColor=white)
 ![Prometheus](https://img.shields.io/badge/Prometheus-Docker-E6522C?logo=prometheus&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-Docker-F46800?logo=grafana&logoColor=white)
 ![Grafana Loki](https://img.shields.io/badge/Loki-Docker-F46800?logo=grafana&logoColor=white)
 ![Grafana Tempo](https://img.shields.io/badge/Tempo-Docker-F46800?logo=grafana&logoColor=white)
+<!-- ![Ansible](https://img.shields.io/badge/Ansible-EE0000?logo=ansible&logoColor=white) -->
 
 
 Read this in other languages:
@@ -185,8 +185,8 @@ Read this in other languages:
 - **Turborepo:** высокопроизводительная система сборки для управления монорепозиторием.
 - **Docker:** контейнеризация приложения для локальной разработки и деплоя. Позволяет упаковать код со всеми его зависимости в изолированный контейнер.
 - **Nginx:** высокопроизводительный веб-сервер и Reverse Proxy.
-- **Ansible:** управление конфигурациями и автоматизация деплоя на серверы.
 - **Git:** распределенная система управления версиями, позволяющая работать с историей изменений.
+<!-- - **Ansible:** управление конфигурациями и автоматизация деплоя на серверы. -->
 
 ## Features (Функционал)
 

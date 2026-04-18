@@ -1,5 +1,6 @@
 .container {
-  max-width: 1200px;
+  max-width: var(--container-width);
+  width: 100%;
   margin: 0 auto;
   padding: 120px 20px 60px; // Отступ сверху для хедера
 }
@@ -9,20 +10,20 @@
   text-transform: uppercase;
   font-weight: 900;
   span {
-    color: #f39c12;
+    color: var(--accent-text-color);
   }
 }
 
 .divider {
   width: 60px;
   height: 4px;
-  background: #f39c12;
+  background: var(--accent-text-color);
   margin: 20px 0 50px;
 }
 
 .newsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 30px;
 }
 
@@ -38,7 +39,7 @@
 
   &:hover {
     transform: translateY(-10px);
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 
     .readMore {
@@ -53,6 +54,14 @@
   position: relative;
   overflow: hidden;
 
+  @include mobile {
+    height: 180px;
+  }
+
+  @include mobile-s {
+    height: 140px;
+  }
+
   img {
     width: 100%;
     height: 100%;
@@ -63,8 +72,8 @@
     position: absolute;
     top: 15px;
     left: 15px;
-    background: #f39c12;
-    color: #000;
+    background: var(--accent-text-color);
+    color: var(--color-dark);
     font-size: 0.7rem;
     font-weight: 800;
     padding: 4px 10px;
@@ -78,26 +87,30 @@
   flex-direction: column;
   gap: 12px;
 
+  @include mobile-s {
+    padding: 10px;
+  }
+
   .date {
     font-size: 0.8rem;
-    color: #555;
+    color: var(--auxiliary-text-color);
     text-transform: uppercase;
   }
   h3 {
-    color: #fff;
+    color: var(--accent-text-color);
     font-size: 1.3rem;
     line-height: 1.2;
     margin: 0;
   }
   p {
-    color: #888;
+    color: var(--main-text-color);
     font-size: 0.95rem;
     line-height: 1.6;
     margin: 0;
   }
   .readMore {
     font-weight: bold;
-    color: #555;
+    color: var(--auxiliary-text-color);
     transition: 0.3s;
   }
 }

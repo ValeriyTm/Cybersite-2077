@@ -218,7 +218,7 @@
   }
 
   &:hover {
-    opacity: 0.8;
+    background-color: var(--auxiliary-bg-color-2);
   }
 
   .burger {
@@ -262,7 +262,7 @@
   }
 
   button {
-    background: var(--auxiliary-bg-color-2);
+    background: var(--main-bg-color);
     /* pxtorem-disable-next-line */
     border-left: none;
     color: var(--accent-text-color);
@@ -281,7 +281,7 @@
     }
 
     &:hover {
-      background: var(--auxiliary-bg-color);
+      background: var(--auxiliary-bg-color-2);
     }
   }
 }

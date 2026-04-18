@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { $api } from '@/shared/api/api';
 //Компоненты:
 import { MotorcycleCard } from '@/entities/catalog';
+//Стили:
+import styles from './NewsMotoWidget.module.scss';
 
 export const NewsMotoWidget = ({ motoId }: { motoId: string }) => {
 
@@ -19,11 +21,12 @@ export const NewsMotoWidget = ({ motoId }: { motoId: string }) => {
 
     return (
         <div style={{ margin: '40px 0' }}>
-            <p style={{ color: '#f39c12', marginBottom: '15px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+            <p style={{ color: '#ffffff', marginBottom: '15px', fontSize: '0.9rem', fontWeight: 'bold' }}>
                 Упомянутая модель:
             </p>
-
-            <MotorcycleCard data={moto} viewMode="grid" />
+            <div className={styles.motoCard}>
+                <MotorcycleCard data={moto} viewMode="grid" />
+            </div>
         </div>
     );
 };

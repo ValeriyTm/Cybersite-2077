@@ -16,7 +16,7 @@ import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
 //Стили:
-import styles from "../ResetPasswordPage/ResetPages.module.scss";
+import styles from "./ForgotPasswordPage.module.scss";
 
 export const ForgotPasswordPage = () => {
   const { handleAuthSubmit } = useAuthSubmit<ForgotPasswordInput>();
@@ -74,7 +74,7 @@ export const ForgotPasswordPage = () => {
           </Button>
         </form>
         <Link title="Go back" to="/auth" className={styles.backLink}>
-          Вернуться к логину
+          Вернуться к форме
         </Link>
       </div>
     </div>
