@@ -7,7 +7,7 @@
   h1 {
     font-size: 2rem;
     margin-bottom: 30px;
-    color: #fff;
+    color: var(--accent-text-color);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 15px;
   }
@@ -25,22 +25,22 @@
   margin: 30px auto;
   padding: 12px 40px;
   background: transparent;
-  border: 1px solid #f39c12;
-  color: #f39c12;
+  border: 1px solid var(--accent-text-color);
+  color: var(--accent-text-color);
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
   }
 
   &:disabled {
     opacity: 0.5;
     border-color: #333;
-    color: #666;
+    color: var(--auxiliary-text-color);
     cursor: not-allowed;
   }
 }
@@ -69,7 +69,7 @@
   right: 40px;
   width: 50px;
   height: 50px;
-  background: #f39c12;
+  background: var(--accent-text-color);
   color: #000;
   border: none;
   border-radius: 50%;

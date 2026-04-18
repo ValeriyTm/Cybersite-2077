@@ -1,12 +1,12 @@
 .CartPage {
-  max-width: 1200px;
+  max-width: var(--container-width);
   margin: 40px auto;
   padding: 0 20px;
   min-height: 80vh;
 
   .title {
     font-size: 2.2rem;
-    color: #fff;
+    color: var(--accent-text-color);
     margin-bottom: 30px;
     font-weight: 800;
   }
@@ -18,7 +18,7 @@
   gap: 30px;
   align-items: flex-start;
 
-  @media (max-width: 1024px) {
+  @include tablet {
     grid-template-columns: 1fr;
   }
 }
@@ -28,7 +28,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgb(151 146 146 / 30%);
+  background: var(--auxiliary-bg-color-2);
   padding: 15px 20px;
   border-radius: 12px;
   margin-bottom: 20px;
@@ -39,20 +39,20 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    color: #f39c12;
+    color: var(--accent-text-color);
     font-weight: 500;
 
     input[type="checkbox"] {
       width: 18px;
       height: 18px;
-      accent-color: #f39c12;
+      accent-color: var(--accent-text-color);
     }
   }
 
   .deleteSelected {
     background: none;
     border: none;
-    color: #c31120;
+    color: var(--color-danger);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -95,7 +95,7 @@
   input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: #f39c12;
+    accent-color: var(--accent-text-color);
   }
 
   .itemImg {
@@ -115,13 +115,13 @@
   .itemInfo {
     .itemName {
       font-size: 1.3rem;
-      color: #fff;
+      color: var(--main-text-color);
       margin-bottom: 10px;
       text-align: left;
       text-decoration: none;
 
       &:hover {
-        color: #f39c12;
+        color: var(--accent-text-color);
       }
     }
 
@@ -133,15 +133,15 @@
         background: none;
         border: none;
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--auxiliary-text-color);
         cursor: pointer;
         padding: 0;
 
         &:hover {
-          color: #f39c12;
+          color: var(--accent-text-color);
         }
         &:last-child:hover {
-          color: #ff4757;
+          color: var(--color-danger);
         }
       }
     }
@@ -200,7 +200,7 @@
     .totalItemPrice {
       font-size: 1.25rem;
       font-weight: 800;
-      color: #f39c12;
+      color: var(--accent-text-color);
     }
 
     .badgeDiscount {
@@ -229,6 +229,10 @@
   top: 120px; // Чтобы не "улетала" при скролле ⚓
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 
+  p {
+    margin-bottom: 5px;
+  }
+
   h3 {
     color: #fff;
     font-size: 1.5rem;
@@ -254,7 +258,7 @@
 
   .checkoutBtn {
     width: 100%;
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
     border: none;
     padding: 18px;
@@ -266,7 +270,7 @@
     transition: all 0.2s;
 
     &:hover:not(:disabled) {
-      background: #ffae1a;
+      opacity: 0.8;
       transform: translateY(-2px);
     }
 
@@ -336,11 +340,18 @@
   background: #111;
   border: 1px solid #222;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
 
   .inputGroup {
     display: flex;
     gap: 10px;
     margin-top: 10px;
+    flex-direction: column;
+
+    @include tablet {
+      flex-direction: row;
+    }
   }
 
   input {
@@ -352,13 +363,13 @@
     border-radius: 4px;
     text-transform: uppercase;
     &:focus {
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
       outline: none;
     }
   }
 
   .applyBtn {
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
     border: none;
     padding: 8px 16px;

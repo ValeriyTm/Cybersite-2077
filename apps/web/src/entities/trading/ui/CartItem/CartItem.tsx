@@ -58,7 +58,7 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
                 <div className={styles.itemImg}>
                     <img
                         src={
-                            (data.images.length !== 0)
+                            (data.images?.length > 0)
                                 ? `${API_URL}/static/motorcycles/${data.images[0].url}`
                                 : `${API_URL}/static/defaults/default-card-icon.jpg`
                         }

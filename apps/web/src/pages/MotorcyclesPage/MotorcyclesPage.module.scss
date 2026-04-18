@@ -13,7 +13,7 @@
   width: 300px;
   flex-shrink: 0; // Сайдбар не должен сжиматься
 
-  @include tablet {
+  @include laptop-s {
     display: none;
   }
 }
@@ -43,7 +43,7 @@
   border-radius: 10px;
   margin-top: 5px;
 
-  @include tablet-above {
+  @include laptop-s-above {
     display: none;
   }
 }
@@ -56,7 +56,7 @@
   letter-spacing: 1px;
   text-align: center;
 
-  @include tablet {
+  @include laptop-s {
     margin-block: 0;
   }
 }
@@ -391,4 +391,8 @@ h5 {
   border-radius: 10px;
   border: 1px solid var(--accent-text-color);
   z-index: 100;
+
+  @include laptop-s-above {
+    display: none;
+  }
 }
