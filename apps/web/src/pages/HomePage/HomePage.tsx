@@ -112,7 +112,7 @@ export const HomePage = () => {
         <div className={styles.mainBannerPartLeft}>
           <img
             decoding="sync"
-            fetchpriority="high"
+            fetchPriority="high"
             src="src/shared/assets/images/banners/mainBanner.png"
             alt="Главный баннер страницы"
             className={styles.bannerImage}
@@ -126,7 +126,7 @@ export const HomePage = () => {
             className={styles.bannerImageText}
             src={logoUrl}
             decoding="sync"
-            fetchpriority="high"
+            fetchPriority="high"
             alt="Главное лого страницы"
           />
           <div className={styles.attentionBlock}>
