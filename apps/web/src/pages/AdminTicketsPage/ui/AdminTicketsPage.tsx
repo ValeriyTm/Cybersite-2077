@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { $api } from '@/shared/api/api';
+import { $api, API_URL } from '@/shared/api/api';
 import { DataTable } from '@/shared/ui/DataTable/DataTable';
 import { getTicketColumns } from '../model/columns';
 import { FaPaperclip, FaTimes } from 'react-icons/fa';
@@ -80,7 +80,7 @@ export const AdminTicketsPage = () => {
     );
 
     const getFileUrl = (rawUrl: string) => {
-        return `http://localhost:3001/static/support/${rawUrl}`;
+        return `${API_URL}/static/support/${rawUrl}`;
     };
 
     //Переводим на русский:

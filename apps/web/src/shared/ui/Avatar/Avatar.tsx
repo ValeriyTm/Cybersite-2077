@@ -27,6 +27,7 @@ export const Avatar = ({
       <img
         src={src || "/default-avatar.png"}
         alt={alt}
+        decoding="async"
         referrerPolicy="no-referrer"
         style={{ opacity: isAvatarLoading ? 0.5 : 1 }}
       />

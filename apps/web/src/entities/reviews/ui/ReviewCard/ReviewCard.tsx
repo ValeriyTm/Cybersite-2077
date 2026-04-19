@@ -35,7 +35,7 @@ export const ReviewCard = ({
     <div className={styles.card}>
       <div className={styles.header}>
         <div className={styles.user}>
-          <img
+          <img decoding="async"
             src={
               review.userAvatar
                 ? `${API_URL}${review.userAvatar}`

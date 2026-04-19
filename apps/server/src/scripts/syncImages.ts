@@ -29,7 +29,10 @@ async function syncImages() {
     const motoFiles = files.filter(
       (file) =>
         file.startsWith(moto.slug) &&
-        (file.endsWith(".jpg") || file.endsWith(".png")),
+        (file.endsWith(".jpg") ||
+          file.endsWith(".png") ||
+          file.endsWith(".avif") ||
+          file.endsWith(".webp")),
     );
 
     if (motoFiles.length > 0) {

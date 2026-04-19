@@ -111,6 +111,8 @@ export const HomePage = () => {
         {/*Left:*/}
         <div className={styles.mainBannerPartLeft}>
           <img
+            decoding="sync"
+            fetchpriority="high"
             src="images/banners/mainBanner.png"
             alt="Главный баннер страницы"
             className={styles.bannerImage}
@@ -123,7 +125,9 @@ export const HomePage = () => {
           <img
             className={styles.bannerImageText}
             src={logoUrl}
-            alt="Главный баннер страницы"
+            decoding="sync"
+            fetchpriority="high"
+            alt="Главное лого страницы"
           />
           <div className={styles.attentionBlock}>
             <span>Начни покупки с нами</span>

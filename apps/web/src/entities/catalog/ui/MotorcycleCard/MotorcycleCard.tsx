@@ -89,6 +89,8 @@ export const MotorcycleCard = ({
           {/*Изображение:*/}
           <img
             src={getImageUrl(data.mainImage)}
+            loading="lazy"
+            decoding="async"
             alt={data.model}
             className={styles.img}
             onError={(e) => {

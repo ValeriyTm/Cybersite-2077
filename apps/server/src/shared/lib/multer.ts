@@ -2,6 +2,7 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import sharp from "sharp";
 import { AppError } from "../utils/app-error.js";
 
 interface MulterOptions {
@@ -11,6 +12,7 @@ interface MulterOptions {
   maxFiles?: number; //Максимум файлов от пользователя
   allowedMimeTypes?: string[]; //Допустимые форматы файлов
   errorMsg?: string; //Сообщение, которое будет выведено юзеру при ошибке
+  width?: number; //Ширина изображения
 }
 
 export const createMulter = ({
@@ -20,38 +22,69 @@ export const createMulter = ({
   maxFiles = 1,
   allowedMimeTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"],
   errorMsg = "Недопустимый тип файла или слишком большой размер",
+  width,
 }: MulterOptions) => {
-  // Автоматическое создание папки, если её нет
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true });
   }
 
-  //Настройки хранилища:
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, dest),
-    filename: (req, file, cb) => {
-      //Генерируем уникальный суффикс для имени файла: "timestamp-случайное_число":
-      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      //Полное имя файла получается из префикса (его указываем параметром) и суффикса ("${prefix}-${suffix}-${оригинальное имя и расширение файла}"):
-      const fileName = prefix ? `${prefix}-${uniqueSuffix}` : uniqueSuffix;
-      cb(null, `${fileName}${path.extname(file.originalname)}`);
+  //Используем RAM для временного хранения:
+  const storage = multer.memoryStorage();
+
+  const upload = multer({
+    storage,
+    limits: { fileSize: maxSizeMb * 1024 * 1024, files: maxFiles },
+    fileFilter: (req, file, cb) => {
+      if (allowedMimeTypes.includes(file.mimetype)) cb(null, true);
+      else cb(new AppError(400, errorMsg) as any);
     },
   });
 
-  return multer({
-    storage,
-    //Передаём дополнительные параметры (ограничения и фильтрация):
-    limits: {
-      fileSize: maxSizeMb * 1024 * 1024,
-      files: maxFiles,
-    },
-    fileFilter: (req, file, cb) => {
-      if (allowedMimeTypes.includes(file.mimetype)) {
-        cb(null, true);
-      } else {
-        //Если формат не подходит, вызывается ошибка 400, которая затем попадет в errorMiddleware:
-        cb(new AppError(400, errorMsg) as any);
-      }
-    },
-  });
+  //Кастомный мидлвар для обработки:
+  const processImages = async (req: any, res: any, next: any) => {
+    if (!req.files && !req.file) return next();
+
+    const files = req.files
+      ? Array.isArray(req.files)
+        ? req.files
+        : Object.values(req.files).flat()
+      : [req.file];
+
+    try {
+      await Promise.all(
+        files.map(async (file: any) => {
+          const uniqueSuffix =
+            Date.now() + "-" + Math.round(Math.random() * 1e9);
+          //Конвертируем всё в .webp для максимальной минификации
+          const fileName = `${prefix ? prefix + "-" : ""}${uniqueSuffix}.webp`;
+          const filePath = path.join(dest, fileName);
+
+          let transform = sharp(file.buffer).webp({ quality: 80 }); // Сжатие 80% без видимой потери качества
+
+          if (width) {
+            transform = transform.resize(width); //Если указана ширина — ресайзим
+          }
+
+          await transform.toFile(filePath);
+
+          //Обновляем данные файла, чтобы контроллер знал новое имя:
+          file.filename = fileName;
+          file.path = filePath;
+        }),
+      );
+      next();
+    } catch (error) {
+      next(new AppError(500, "Ошибка при обработке изображений"));
+    }
+  };
+
+  return {
+    // Теперь возвращаем объект с методами и мидлваром обработки
+    single: (name: string) => [upload.single(name), processImages],
+    array: (name: string, max?: number) => [
+      upload.array(name, max),
+      processImages,
+    ],
+    fields: (fields: any) => [upload.fields(fields), processImages],
+  };
 };

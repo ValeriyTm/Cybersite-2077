@@ -8,7 +8,7 @@ import {
 } from "../model/constants";
 import styles from "./AdminMotorcyclesPage.module.scss";
 import { useState, useEffect } from "react";
-import { $api } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api/api";
 
 
 export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
@@ -238,7 +238,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
                       className={`${styles.imageItem} ${mainImageId === img.id ? styles.main : ""}`}
                     >
                       <img
-                        src={`http://localhost:3001/static/motorcycles/${img.url}`}
+                        src={`${API_URL}/static/motorcycles/${img.url}`}
                         alt="moto"
                       />
 

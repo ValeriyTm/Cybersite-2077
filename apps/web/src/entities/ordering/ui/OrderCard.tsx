@@ -170,7 +170,7 @@ export const OrderCard = ({ order }: { order: any }) => {
             return (
               <div key={item.id} className={styles.productRow}>
                 <div className={styles.imageWrapper}>
-                  <img src={imageUrl} alt={item.motorcycle.model} />
+                  <img src={imageUrl} loading="lazy" decoding="async" alt={item.motorcycle.model} />
                   <span className={styles.quantityBadge}>
                     {item.quantity} шт
                   </span>

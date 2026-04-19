@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AuthCard } from "../AuthCard";
 import { MemoryRouter } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { API_URL } from "@/shared/api/api";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
@@ -37,7 +38,7 @@ describe("Вход/регистрация через Google (OAuth)", () => {
 
     //Проверяем значение в нашей заглушке
     expect(window.location.href).toBe(
-      "http://localhost:3001/api/identity/auth/google",
+      `${API_URL}/api/identity/auth/google`,
     );
   });
 });

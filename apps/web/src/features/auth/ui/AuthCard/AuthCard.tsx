@@ -13,6 +13,7 @@ import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиен�
 import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
 //Стили:
 import styles from "./AuthCard.module.scss";
+import { API_URL } from "@/shared/api/api";
 
 //Для пропсов (нужны для работы Storybook):
 interface AuthCardProps {
@@ -77,7 +78,7 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
 
   //Функция ухода на Google OAuth (Бэкенд-эндпоинт):
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3001/api/identity/auth/google";
+    window.location.href = `${API_URL}/api/identity/auth/google`;
     //Используем window.location.href, так как это переход на другой домен, а не внутренний роут.
   };
 

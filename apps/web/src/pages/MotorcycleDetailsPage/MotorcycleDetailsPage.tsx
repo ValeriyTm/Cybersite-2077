@@ -17,7 +17,7 @@ import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 import { useProfile } from "@/features/auth/model/useProfile";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api/api";
 //Компоненты:
 import { SpecRow } from "@/shared/ui/SpecRow";
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
@@ -27,8 +27,8 @@ import { ReviewCard } from "@/entities/reviews/ui/ReviewCard/ReviewCard";
 //Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
 
-const STATIC_URL = "http://localhost:3001/static/motorcycles";
-const DEFAULT_IMG = `http://localhost:3001/static/defaults/default-card-icon.jpg`;
+const STATIC_URL = `${API_URL}/static/motorcycles`;
+const DEFAULT_IMG = `${API_URL}/static/defaults/default-card-icon.jpg`;
 
 type TabType = "specs" | "description" | "warranty" | "docs" | "reviews";
 
@@ -149,7 +149,7 @@ export const MotorcycleDetailsPage = () => {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${motorcycle.brand.name} ${motorcycle.model}`,
-    image: [`http://localhost:3001/static/motorcycles/${motorcycle.mainImage}`],
+    image: [`${API_URL}static/motorcycles/${motorcycle.mainImage}`],
     description: `Технические характеристики ${motorcycle.model}: ${motorcycle.displacement} см³, ${motorcycle.power} л.с.`,
     brand: {
       "@type": "Brand",
@@ -635,7 +635,7 @@ export const MotorcycleDetailsPage = () => {
                 книжку:
               </p>
               <a
-                href="http://localhost:3001/static/docs/manual.pdf"
+                href={`${API_URL}/static/docs/manual.pdf`}
                 target="_blank"
                 rel="noreferrer"
                 className={styles.downloadBtn}

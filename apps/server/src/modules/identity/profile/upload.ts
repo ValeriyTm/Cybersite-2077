@@ -5,4 +5,5 @@ export const uploadAvatar = createMulter({
   prefix: "avatar",
   maxSizeMb: 2,
   errorMsg: "Только изображения (jpeg, jpg, png, webp) до 2МБ",
+  width: 2000,
 });

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./PaymentModal.module.scss";
+import { API_URL } from "@/shared/api/api";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -51,7 +52,7 @@ export const PaymentModal = ({
         <div className={styles.methodList}>
           <div className={`${styles.methodItem} ${styles.active}`}>
             <img
-              src="http://localhost:3001/static/logos/yookassa_logo.png"
+              src={`${API_URL}/static/logos/yookassa_logo.png`}
               alt="ЮKassa"
             />
           </div>
