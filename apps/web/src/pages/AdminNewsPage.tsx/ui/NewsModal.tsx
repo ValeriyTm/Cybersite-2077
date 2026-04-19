@@ -82,7 +82,7 @@ export const NewsModal = ({ news, onClose, onSubmit }: any) => {
                     </div>
 
                     <div className={styles.modalActions}>
-                        <button type="button" onClick={onClose}>Отмена</button>
+                        <button type="button" className={styles.cancelBtn} onClick={onClose}>Отмена</button>
                         <button type="submit" className={styles.saveBtn}>Опубликовать</button>
                     </div>
                 </form>

@@ -2,6 +2,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { FaEdit, FaTrash, FaBox, FaCopy } from "react-icons/fa";
 import { useNavigate } from 'react-router';
 import toast from "react-hot-toast";
+import styles from './columns.module.scss';
 
 
 export const getMotoColumns = (
@@ -12,6 +13,7 @@ export const getMotoColumns = (
     {
       accessorKey: 'id',
       header: 'ID',
+      meta: { className: styles.hideOnMobile },
       cell: ({ getValue }) => {
         const id = String(getValue());
         return (
@@ -46,10 +48,11 @@ export const getMotoColumns = (
         </div>
       ),
     },
-    { accessorKey: "category", header: "Категория" },
+    { accessorKey: "category", header: "Категория", meta: { className: styles.hideOnMobile }, },
     {
       accessorKey: "price",
       header: "Цена",
+      meta: { className: styles.hideOnMobileS },
       cell: (info) => `${info.getValue()?.toLocaleString()} ₽`,
     },
     { accessorKey: "year", header: "Год" },
@@ -62,10 +65,12 @@ export const getMotoColumns = (
             <FaEdit
               color="#f39c12"
               cursor="pointer"
+              title='Редактировать'
               onClick={() => onEdit(row.original)}
             />}
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
             <FaTrash
+              title='Удалить'
               color="#e74c3c"
               cursor="pointer"
               onClick={() => onDelete(row.original.id)}

@@ -88,3 +88,26 @@
     }
   }
 }
+
+.saveBtn {
+  color: var(--accent-text-color);
+  border: 1px solid var(--accent-text-color);
+  background-color: var(--main-bg-color);
+  border-radius: 10px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.cancelBtn {
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  background-color: var(--main-bg-color);
+  border-radius: 10px;
+  margin-right: 20px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

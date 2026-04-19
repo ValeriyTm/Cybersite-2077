@@ -8,6 +8,7 @@ export const getOrderColumns = (
         {
             accessorKey: 'orderNumber',
             header: '№ Заказа',
+            meta: { className: styles.hideOnMobile },
             cell: (info) => <span style={{ fontWeight: 'bold' }}>#{info.getValue()}</span>,
         },
         {
@@ -34,6 +35,7 @@ export const getOrderColumns = (
         },
         {
             header: 'Оплата / Итого',
+            meta: { className: styles.hideOnMobileS },
             cell: ({ row }) => (
                 <div>
                     <div style={{ color: row.original.paymentStatus === 'succeeded' ? '#2ecc71' : '#e74c3c' }}>
@@ -68,6 +70,7 @@ export const getOrderColumns = (
         },
         {
             header: 'Даты',
+            meta: { className: styles.hideOnMobile },
             cell: ({ row }) => (
                 <div style={{ fontSize: '0.75rem', color: '#888' }}>
                     <div>Создан: {format(new Date(row.original.createdAt), 'dd.MM.yy HH:mm')}</div>

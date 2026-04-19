@@ -1,5 +1,6 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { FaTrash } from 'react-icons/fa';
+import styles from './columns.module.scss';
 
 export const getUserColumns = (
     currentAdminId: string | undefined,
@@ -7,11 +8,12 @@ export const getUserColumns = (
     onDelete: (id: string) => void
 ): ColumnDef<any>[] => [
         { accessorKey: 'email', header: 'Email' },
-        { accessorKey: 'name', header: 'Имя' },
-        { accessorKey: 'phone', header: 'Телефон', cell: (info) => info.getValue() || '—' },
+        { accessorKey: 'name', header: 'Имя', meta: { className: styles.hideOnMobile }, },
+        { accessorKey: 'phone', header: 'Телефон', meta: { className: styles.hideOnMobile }, cell: (info) => info.getValue() || '—' },
         {
             accessorKey: 'isActivated',
             header: 'Статус',
+            meta: { className: styles.hideOnMobile },
             cell: (info) => (
                 <span style={{ color: info.getValue() ? '#2ecc71' : '#e74c3c' }}>
                     {info.getValue() ? 'Подтвержден' : 'Не подтвержден'}
@@ -20,7 +22,7 @@ export const getUserColumns = (
         },
         {
             accessorKey: 'role',
-            header: 'Роль в системе',
+            header: 'Роль',
             cell: ({ row, getValue }) => {
                 const userId = row.original.id;
                 const isSelf = userId === currentAdminId;

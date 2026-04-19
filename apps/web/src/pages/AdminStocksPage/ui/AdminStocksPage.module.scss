@@ -8,7 +8,7 @@
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 1px;
-    border-left: 4px solid #f39c12;
+    border-left: 4px solid var(--accent-text-color);
     padding-left: 15px;
   }
 }
@@ -37,7 +37,7 @@
 
   h4 {
     margin-bottom: 10px;
-    color: #f39c12;
+    color: var(--accent-text-color);
     text-transform: uppercase;
   }
 
@@ -53,14 +53,14 @@
     border: 1px solid #444;
     padding: 15px;
     border-radius: 8px;
-    color: #fff;
+    color: var(--main-text-color);
     font-size: 1.5rem;
     text-align: center;
     outline: none;
     margin-bottom: 25px;
 
     &:focus {
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
       box-shadow: 0 0 10px rgba(243, 156, 18, 0.2);
     }
 
@@ -97,10 +97,10 @@
   }
 
   .saveBtn {
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
     &:hover {
-      background: #e68a00;
+      background: var(--accent-text-color);
       transform: translateY(-1px);
     }
     &:active {
@@ -115,7 +115,7 @@
   font-weight: bold;
 } //Критично (<2):
 .statusWarning {
-  color: #f39c12;
+  color: #e7e41d;
   font-weight: bold;
 } // Мало (<10)
 .statusOk {

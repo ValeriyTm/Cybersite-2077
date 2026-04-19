@@ -1,0 +1,19 @@
+.filterBar {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+
+  @include mobile-s {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  input,
+  select {
+    border: 1px solid var(--accent-text-color);
+    padding: 5px 10px;
+    border-radius: 20px;
+    max-width: 300px;
+  }
+}

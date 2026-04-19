@@ -1,6 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import { format } from 'date-fns';
+import styles from './columns.module.scss';
 
 
 export const newsColumns = (onEdit: (item: any) => void,
@@ -35,6 +36,7 @@ export const newsColumns = (onEdit: (item: any) => void,
         {
             accessorKey: 'createdAt',
             header: 'Дата',
+            meta: { className: styles.hideOnMobile },
             cell: (info) => format(new Date(String(info.getValue())), 'dd.MM.yyyy')
         },
         {

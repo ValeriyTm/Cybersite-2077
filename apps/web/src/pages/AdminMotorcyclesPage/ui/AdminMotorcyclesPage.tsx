@@ -87,7 +87,7 @@ export const AdminMotorcyclesPage = () => {
 
   return (
     <div className={styles.pageWrapper}>
-      <header style={{ display: "flex", justifyContent: "space-between" }}>
+      <header className={styles.header}>
         <h3>Каталог мотоциклов</h3>
         <input
           type="text"
