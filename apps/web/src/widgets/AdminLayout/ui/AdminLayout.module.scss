@@ -3,6 +3,11 @@
   min-height: 100vh;
   background: #0a0a0a;
   color: #eee;
+
+  h2,
+  strong {
+    color: var(--accent-text-color);
+  }
 }
 
 .sidebar,
@@ -20,13 +25,13 @@
     letter-spacing: 2px;
 
     span {
-      color: #fff;
+      color: var(--main-text-color);
       margin-left: 4px;
     }
   }
 
   h4 {
-    color: #555;
+    color: var(--auxiliary-text-color);
     font-size: 0.75rem;
     text-transform: uppercase;
     margin: 25px 0 10px 10px;
@@ -47,6 +52,14 @@
   @include tablet-above {
     display: none;
   }
+
+  @include mobile {
+    top: 253px;
+  }
+
+  @include mobile-s {
+    top: 225px;
+  }
 }
 
 .navLink {
@@ -54,14 +67,14 @@
   align-items: center;
   gap: 12px;
   padding: 12px 15px;
-  color: #aaa;
+  color: var(--auxiliary-text-color);
   text-decoration: none;
   border-radius: 8px;
   transition: all 0.2s;
 
   &:hover {
     background: #1a1a1a;
-    color: #fff;
+    color: var(--main-text-color);
   }
 
   svg {
@@ -97,6 +110,14 @@
 .pageBody {
   padding: 40px;
   overflow-y: auto;
+
+  @include tablet {
+    padding-inline: 20px;
+  }
+
+  @include mobile {
+    padding-inline: 10px;
+  }
 }
 
 .panelBtn {
@@ -111,6 +132,11 @@
 
   @include tablet-above {
     display: none;
+  }
+
+  @include mobile-s {
+    right: 10px;
+    z-index: 300;
   }
 
   &:hover {

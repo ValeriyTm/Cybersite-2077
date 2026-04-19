@@ -1,9 +1,24 @@
+.pageWrapper {
+  width: 100%;
+  max-width: var(--container-width);
+
+  @include mobile {
+    justify-items: center;
+  }
+
+  .card {
+    @include mobile {
+      justify-items: center;
+    }
+  }
+}
+
 .syncBtn {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #e74c3c;
-  color: #fff;
+  background: var(--accent-text-color);
+  color: var(--main-text-color);
   border: none;
   padding: 12px 24px;
   border-radius: 6px;
@@ -11,9 +26,12 @@
   cursor: pointer;
   transition: 0.3s;
 
+  @include mobile {
+    padding: 6px 12px;
+  }
+
   &:hover:not(:disabled) {
-    background: #c0392b;
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+    opacity: 0.8;
   }
 
   &:disabled {
@@ -32,5 +50,12 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+h3 {
+  margin-block: 10px;
+  @include mobile {
+    text-align: center;
   }
 }

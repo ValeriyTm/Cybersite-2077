@@ -1,6 +1,7 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { FaReply, FaPaperclip } from 'react-icons/fa';
-import styles from '../ui/AdminTicketsPage.module.scss';
+// import styles from '../ui/AdminTicketsPage.module.scss';
+import styles from './columns.module.scss';
 
 /**
  * Генерирует колонки для таблицы тикетов.
@@ -16,66 +17,48 @@ const CATEGORY_LABELS: Record<string, string> = {
     OTHER: 'Другое'
 };
 
-
-
 export const getTicketColumns = (
     onStatusChange: (id: string, status: string) => void,
     onReply: (ticket: any) => void
 ): ColumnDef<any>[] => [
         {
+            accessorKey: 'sender',
             header: 'Отправитель',
             cell: ({ row }) => (
-                <div style={{ fontSize: '0.85rem' }}>
-                    <div style={{ fontWeight: 'bold', color: '#fff' }}>
+                <div className={styles.senderCell}>
+                    <div className={styles.userName}>
                         {row.original.firstName} {row.original.lastName}
                     </div>
-                    <div style={{ color: '#666' }}>{row.original.email}</div>
-                    <div style={{ color: '#555', fontSize: '0.8rem' }}>{row.original.phone || '—'}</div>
+                    <div className={styles.userEmail}>{row.original.email}</div>
+                    <div className={`${styles.userPhone} ${styles.hideOnMobile}`}>
+                        {row.original.phone || '—'}
+                    </div>
                 </div>
             )
         },
         {
             accessorKey: 'category',
             header: 'Категория',
-            cell: (info) => {
-                const value = String(info.getValue());
-                // Проверяем, есть ли перевод, иначе выводим исходное значение
-                const label = CATEGORY_LABELS[value] || value;
-
-                return (
-                    <span style={{
-                        fontSize: '0.75rem',
-                        background: '#222',
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        color: '#f39c12',
-                        border: '1px solid #333',
-                        whiteSpace: 'nowrap'
-                    }}>
-                        {label}
-                    </span>
-                );
-            }
+            meta: { className: styles.hideOnMobile }, //Скроем всю колонку на мобилках
+            cell: (info) => (
+                <span className={styles.categoryBadge}>
+                    {CATEGORY_LABELS[String(info.getValue())] || String(info.getValue())}
+                </span>
+            )
         },
         {
             accessorKey: 'description',
             header: 'Сообщение',
+            meta: { className: styles.hideOnMobile },
             cell: ({ row }) => (
-                <div style={{ maxWidth: '250px' }}>
-                    <div style={{
-                        fontSize: '0.85rem',
-                        color: '#ccc',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                    }}>
+                <div className={styles.descriptionWrapper}>
+                    <div className={styles.descriptionText}>
                         {row.original.description}
                     </div>
-                    {/* Иконка вложений, если они есть */}
                     {row.original.attachments?.length > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '4px', color: '#f39c12', fontSize: '0.75rem' }}>
+                        <div className={styles.attachments}>
                             <FaPaperclip size={10} />
-                            <span>{row.original.attachments.length} файл(ов)</span>
+                            <span>{row.original.attachments.length}</span>
                         </div>
                     )}
                 </div>
@@ -86,20 +69,11 @@ export const getTicketColumns = (
             header: 'Статус',
             cell: ({ row, getValue }) => {
                 const status = String(getValue());
-
-                // Цвета для текста статуса
-                const statusColors: Record<string, string> = {
-                    OPEN: '#e74c3c',
-                    IN_PROGRESS: '#3498db',
-                    RESOLVED: '#2ecc71',
-                    CLOSED: '#555'
-                };
-
                 return (
                     <select
                         value={status}
                         className={styles.statusSelect}
-                        style={{ color: statusColors[status] || '#fff' }}
+                        data-status={status}
                         onChange={(e) => onStatusChange(row.original.id, e.target.value)}
                     >
                         <option value="OPEN">Открыт</option>
@@ -114,17 +88,14 @@ export const getTicketColumns = (
             id: 'actions',
             header: '',
             cell: ({ row }) => (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className={styles.actionsCell}>
                     <FaReply
-                        cursor="pointer"
-                        color="#f39c12"
-                        size={18}
-                        title="Ответить на тикет"
+                        className={styles.replyIcon}
+                        data-resolved={row.original.status === 'RESOLVED'}
                         onClick={(e) => {
                             e.stopPropagation();
                             onReply(row.original);
                         }}
-                        style={{ transition: '0.2s', opacity: row.original.status === 'RESOLVED' ? 0.3 : 1 }}
                     />
                 </div>
             )

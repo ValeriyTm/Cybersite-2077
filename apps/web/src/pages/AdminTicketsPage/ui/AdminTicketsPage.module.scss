@@ -1,17 +1,32 @@
 .pageWrapper {
   display: flex;
+  width: 100%;
+  max-width: var(--container-width);
   flex-direction: column;
   gap: 25px;
+  justify-self: center;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
   background: #111;
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid #222;
+  border: 1px solid var(--accent-text-color);
+
+  @include mobile {
+    p {
+      text-align: center;
+    }
+  }
+
+  @include mobile {
+    flex-direction: column;
+  }
 
   .titleBlock {
     h3 {
@@ -39,7 +54,7 @@
   cursor: pointer;
 
   &:focus {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 }
 
@@ -104,7 +119,7 @@
 
   h4 {
     margin: 0;
-    color: #f39c12;
+    color: var(--accent-text-color);
     text-transform: uppercase;
   }
 
@@ -174,7 +189,7 @@
     transition: 0.2s;
 
     &:hover {
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
       color: #fff;
       background: #222;
     }
@@ -197,7 +212,7 @@
     outline: none;
     width: 95%;
     &:focus {
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
     }
   }
 }
@@ -227,14 +242,14 @@
   }
 
   .submitBtn {
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
     &:disabled {
       opacity: 0.4;
       cursor: not-allowed;
     }
     &:hover:not(:disabled) {
-      background: #e68a00;
+      background: var(--accent-text-color);
     }
   }
 }
@@ -243,6 +258,17 @@
   display: flex;
   gap: 15px;
   align-items: center;
+
+  @include tablet {
+    gap: 5px;
+  }
+  @include tablet {
+    gap: 10px;
+  }
+
+  @include mobile-s {
+    flex-direction: column;
+  }
 }
 
 .emailSearch {
@@ -255,8 +281,12 @@
   outline: none;
   transition: 0.2s;
 
+  @include mobile {
+    width: 200px;
+  }
+
   &:focus {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
     width: 300px; //Немного расширяем при вводе
   }
 }

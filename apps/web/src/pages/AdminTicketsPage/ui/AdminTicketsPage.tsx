@@ -138,6 +138,7 @@ export const AdminTicketsPage = () => {
 
 
 
+
             {/*Блок пагинации:*/}
             {data?.meta && data.meta.lastPage > 1 && (
                 <div className={styles.pagination}>

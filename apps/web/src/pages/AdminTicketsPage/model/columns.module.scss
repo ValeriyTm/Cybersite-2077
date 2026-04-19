@@ -1,0 +1,75 @@
+.hideOnMobile {
+  @include mobile {
+    display: none !important;
+  }
+}
+
+.hideOnMobileS {
+  @include mobile-s {
+    display: none !important;
+  }
+}
+
+.senderCell {
+  font-size: 0.85rem;
+  .userName {
+    font-weight: bold;
+    color: var(--main-text-color);
+  }
+  .userEmail {
+    color: #666;
+  }
+  .userPhone {
+    color: #444;
+    font-size: 0.8rem;
+  }
+}
+
+.categoryBadge {
+  font-size: 0.75rem;
+  background: #222;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--accent-text-color);
+  border: 1px solid #333;
+}
+
+.descriptionWrapper {
+  max-width: 200px;
+  .descriptionText {
+    font-size: 0.85rem;
+    color: #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.statusSelect {
+  background: transparent;
+  border: 1px solid #333;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+
+  &[data-status="OPEN"] {
+    color: #e74c3c;
+  }
+  &[data-status="IN_PROGRESS"] {
+    color: #3498db;
+  }
+  &[data-status="RESOLVED"] {
+    color: #2ecc71;
+  }
+}
+
+.replyIcon {
+  cursor: pointer;
+  color: var(--accent-text-color);
+  transition: 0.2s;
+
+  &[data-resolved="true"] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+}
