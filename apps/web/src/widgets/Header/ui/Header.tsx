@@ -241,7 +241,7 @@ export const Header = () => {
                           onMouseEnter={() => setActiveMainCat("moto")}
                         >
                           <img
-                            src={`${API_URL}/static/icons/moto-icon.png`}
+                            src={`src/shared/assets/icons/catalog-icons/moto-icon.png`}
                             alt="motorcycle icon"
                           />
                           <span>Мототехника</span>
@@ -250,7 +250,7 @@ export const Header = () => {
 
                         <div className={`${styles.sideItem} ${styles.disabled}`}>
                           <img
-                            src={`${API_URL}/static/icons/equip-icon.png`}
+                            src={`src/shared/assets/icons/catalog-icons/equip-icon.png`}
                             alt="motorcycle equipment icon"
                           />
                           <span>Экипировка</span>
@@ -259,7 +259,7 @@ export const Header = () => {
 
                         <div className={`${styles.sideItem} ${styles.disabled}`}>
                           <img
-                            src={`${API_URL}/static/icons/gear-icon.png`}
+                            src={`src/shared/assets/icons/catalog-icons/gear-icon.webp`}
                             alt="gear icon"
                           />
                           <span>Запчасти</span>
@@ -272,7 +272,7 @@ export const Header = () => {
                         {activeMainCat === "moto" ? (
                           <div className={styles.brandsGrid}>
                             {TOP_BRANDS.map((brand) => {
-                              const motoLink = `${API_URL}/static/moto_brands/${brand.slug}.png`;
+                              const motoLink = `src/shared/assets/icons/moto_brands/${brand.slug}.png`;
                               return (
                                 <Link
                                   key={brand.slug}
@@ -302,7 +302,7 @@ export const Header = () => {
                             >
                               <div className={styles.brandIcon}>
                                 <img
-                                  src={`${API_URL}/static/moto_brands/scooter.png`}
+                                  src={`src/shared/assets/icons/moto_brands/scooter.png`}
                                   alt="default icon"
                                 />
                               </div>
@@ -340,7 +340,7 @@ export const Header = () => {
                     {suggestions.map((moto) => {
                       const linkToImage = moto.mainImage
                         ? `${API_URL}/static/motorcycles/${moto.mainImage}`
-                        : `${API_URL}/static/defaults/default-card-icon.jpg`;
+                        : `images/default-card-icon.jpg`;
                       return (
                         <Link
                           key={moto.id}

@@ -52,7 +52,7 @@ export const PaymentModal = ({
         <div className={styles.methodList}>
           <div className={`${styles.methodItem} ${styles.active}`}>
             <img
-              src={`${API_URL}/static/logos/yookassa_logo.png`}
+              src={`src/shared/assets/images/logos/yookassa_logo.png`}
               alt="ЮKassa"
             />
           </div>

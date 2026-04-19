@@ -165,7 +165,7 @@ export const OrderCard = ({ order }: { order: any }) => {
           {order.items.map((item: any) => {
             const imageUrl = item.motorcycle.images?.[0]
               ? `${API_URL}/static/motorcycles/${item.motorcycle.images?.[0]?.url}`
-              : `${API_URL}/static/defaults/default-card-icon.jpg`;
+              : `/images/default-card-icon.jpg`;
 
             return (
               <div key={item.id} className={styles.productRow}>

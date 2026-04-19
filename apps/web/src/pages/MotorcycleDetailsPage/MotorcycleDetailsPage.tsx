@@ -28,7 +28,7 @@ import { ReviewCard } from "@/entities/reviews/ui/ReviewCard/ReviewCard";
 import styles from "./MotorcycleDetailsPage.module.scss";
 
 const STATIC_URL = `${API_URL}/static/motorcycles`;
-const DEFAULT_IMG = `${API_URL}/static/defaults/default-card-icon.jpg`;
+const DEFAULT_IMG = '/images/default-card-icon.jpg';
 
 type TabType = "specs" | "description" | "warranty" | "docs" | "reviews";
 
@@ -86,7 +86,7 @@ export const MotorcycleDetailsPage = () => {
       const mainImg =
         motorcycle.images?.find((img: any) => img.isMain)?.url ||
         motorcycle.images?.[0]?.url;
-      setActiveImage(mainImg ? `${STATIC_URL}/${mainImg}` : DEFAULT_IMG);
+      setActiveImage(mainImg ? `${STATIC_URL}/${mainImg}` : '/images/default-card-icon.jpg');
     }
   }, [motorcycle]);
 
@@ -132,7 +132,7 @@ export const MotorcycleDetailsPage = () => {
   //Формируем SEO-строки:
   const seoTitle = `${motorcycle.brand.name} ${motorcycle.model} ${motorcycle.year} г.в. — Характеристики и цены | CyberSite2077`;
   const seoDescription = `Подробные технические характеристики ${motorcycle.brand.name} ${motorcycle.model}: двигатель ${motorcycle.displacement} см³, мощность ${motorcycle.power} л.с. Цвета: ${motorcycle.colors?.join(", ")}. Узнайте всё о модели на CyberSite2077.`;
-  const ogImage = activeImage || `${STATIC_URL}/defaults/default-card-icon.jpg`;
+  const ogImage = activeImage || `/images/default-card-icon.jpg`;
 
   //Breadcrumbs:
   const breadcrumbs = [

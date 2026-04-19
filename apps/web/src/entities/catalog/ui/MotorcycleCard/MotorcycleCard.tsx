@@ -16,7 +16,7 @@ import styles from "./MotorcycleCard.module.scss";
 
 //Пути для изображений карточки:
 const STATIC_URL = `${API_URL}/static`;
-const DEFAULT_IMG = `${STATIC_URL}/defaults/default-card-icon.jpg`;
+const DEFAULT_IMG = `/images/default-card-icon.jpg`;
 
 export interface MotorcycleCardProps {
   data: MotorcycleShort;

@@ -12,7 +12,7 @@
   &:hover {
     transform: translateY(-5px);
     border-color: var(--accent-text-color);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px var(--accent-text-color);
 
     .img {
       transform: scale(1.05);

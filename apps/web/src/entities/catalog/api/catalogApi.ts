@@ -1,5 +1,4 @@
 //-------------Тут описано взаимодействие с API бэкенда----------------//
-import axios from "axios";
 //Типы:
 import {
   type SiteCategory,
