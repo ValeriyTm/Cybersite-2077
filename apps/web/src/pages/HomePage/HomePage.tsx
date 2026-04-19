@@ -131,7 +131,7 @@ export const HomePage = () => {
           />
           <div className={styles.attentionBlock}>
             <span>Начни покупки с нами</span>
-            <div>
+            <div className={styles.attentionWrapper}>
               <Link to={catalogLink}>
                 <button className={styles.attentionBtn}>Начать →</button>
               </Link>

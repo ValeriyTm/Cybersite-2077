@@ -53,6 +53,12 @@
     max-width: 100%; /* Чтобы картинка не вылезала за края, если она большая */
     height: auto;
     opacity: 0.9;
+    position: absolute;
+    top: 20%;
+
+    @include mobile {
+      top: 40%;
+    }
 
     &:hover {
       opacity: 1;
@@ -82,22 +88,34 @@
       }
     }
 
+    .attentionWrapper {
+      background: var(--banner-gradient) !important;
+      height: 46px;
+      width: 146px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 24px;
+
+      &:hover {
+        background: var(--button-gradient) !important;
+      }
+    }
+
     .attentionBtn {
+      margin: 0 auto;
       color: var(--accent-text-color);
       background-color: var(--main-bg-color);
       border-radius: 20px;
       height: 40px;
       width: 140px;
-      border: 2px solid var(--accent-text-color);
+      border: none !important;
       font-weight: 600;
       font-size: 20px;
       -webkit-text-stroke: 0.5px var(--auxiliary-text-color);
 
       &:hover {
-        background-color: var(--main-bg-color);
-        background-color: var(--accent-text-color);
-        color: var(--main-text-color);
-        border: 2px solid var(--main-bg-color);
+        color: var(--reserve-text-color);
       }
     }
   }
@@ -116,7 +134,7 @@
 }
 .decoration-retro {
   width: 100%;
-  height: 8px;
+  height: 40px;
   background-image: url("src/shared/assets/images/decoration/texture-retro.png");
 }
 .decoration-doom {
