@@ -1,13 +1,13 @@
 .dot {
   position: fixed;
-  width: 6px;
-  height: 6px;
-  background-color: #008f11;
+  width: 4px;
+  height: 4px;
+  background-color: var(--accent-text-color);
   pointer-events: none;
   z-index: 9999;
-  border-radius: 1px;
+  border-radius: 50%;
   box-shadow:
-    0 0 8px #003b00,
+    0 0 8px var(--reserve-text-color),
     0 0 15px #0d0208;
 
   // Плавное изменение при обновлении стейта

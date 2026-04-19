@@ -96,14 +96,14 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
       {/* Общий переключатель форм логина-регистрации:*/}
       <div className={styles.toggleWrapper}>
         <button
-          className={`${styles.toggleBtn} ${mode === "register" ? styles.active : ""}`}
+          className={`${styles.toggleButton} ${mode === "register" ? styles.isActive : ""}`}
           onClick={() => setMode("register")}
         >
           Регистрация
         </button>
 
         <button
-          className={`${styles.toggleBtn} ${mode === "login" ? styles.active : ""}`}
+          className={`${styles.toggleButton} ${mode === "login" ? styles.isActive : ""}`}
           onClick={() => setMode("login")}
         >
           Вход

@@ -65,16 +65,16 @@ export const HomePage = () => {
   let logoUrl;
   switch (theme) {
     case "theme-orange":
-      logoUrl = `/logos/logo-orange.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-orange.png`;
       break;
     case "theme-blue":
-      logoUrl = `/logos/logo-blue.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-blue.png`;
       break;
     case "theme-retrowave":
-      logoUrl = `/logos/logo-retro.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-retro.png`;
       break;
     case "theme-doom":
-      logoUrl = `/logos/logo-doom.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-doom.png`;
       break;
   }
 
@@ -113,12 +113,12 @@ export const HomePage = () => {
           <img
             decoding="sync"
             fetchpriority="high"
-            src="images/banners/mainBanner.png"
+            src="src/shared/assets/images/banners/mainBanner.png"
             alt="Главный баннер страницы"
             className={styles.bannerImage}
           />
 
-          {/* <button className={styles.mainBannerBtn}>Начать →</button> */}
+
         </div>
         {/*Right:*/}
         <div className={styles.mainBannerPartRight}>
@@ -147,7 +147,7 @@ export const HomePage = () => {
         <div className={styles.cell1}>
           <p className={styles.textMain}>Наша команда:</p>
           <img
-            src="/images/banners/team.jpg"
+            src="src/shared/assets/images/banners/team.jpg"
             alt=""
             className={styles.teamImage}
           />
@@ -164,17 +164,17 @@ export const HomePage = () => {
               variants={motoVariants} // Мотоцикл вибрирует
             >
               <motion.img
-                src="/animation/back-wheel.png"
+                src="src/shared/assets/images/animation/back-wheel.png"
                 className={styles.backWheel}
                 variants={wheelVariants} // Колесо крутится
               />
               <motion.img
-                src="/animation/front-wheel.png"
+                src="src/shared/assets/images/animation/front-wheel.png"
                 className={styles.frontWheel}
                 variants={wheelVariants} // Колесо крутится
               />
               <motion.img
-                src="/animation/smoke.png"
+                src="src/shared/assets/images/animation/smoke.png"
                 className={styles.smoke}
                 variants={smokeVariants} // Колесо крутится
               />
@@ -190,7 +190,7 @@ export const HomePage = () => {
           <div className={styles.cont}>
             <div className={styles.delCont}>
               <img
-                src="/images/banners/team1.jpg"
+                src="src/shared/assets/images/banners/team1.jpg"
                 alt=""
                 className={styles.delImage}
               />
@@ -211,7 +211,7 @@ export const HomePage = () => {
           <div className={styles.cont}>
             <div className={styles.delCont}>
               <img
-                src="/images/banners/motos.jpg"
+                src="src/shared/assets/images/banners/motos.jpg"
                 alt=""
                 className={styles.delImage}
               />
@@ -241,25 +241,25 @@ export const HomePage = () => {
           <section className={styles.reviewCardSection}>
             <ReviewCard
               name="Алексей Иванов"
-              avatarUrl="/images/reviews/face1.jpg"
+              avatarUrl="src/shared/assets/images/reviews/face1.jpg"
               rating={5}
               text="Периодически заказываю тут мотоэкипировку - дешевле на 15-20%, чем в других местах. Шлем, купленный тут 10 лет назад, до сих пор целый 👍"
             />
             <ReviewCard
               name="Регина Петрова"
-              avatarUrl="/images/reviews/face2.jpg"
+              avatarUrl="src/shared/assets/images/reviews/face2.jpg"
               rating={4}
               text="Отличный магазин! Доставили быстро, товар качественный. Оранжевая упаковка просто огонь."
             />
             <ReviewCard
               name="Алихан Ахметов"
-              avatarUrl="/images/reviews/face3.jpg"
+              avatarUrl="src/shared/assets/images/reviews/face3.jpg"
               rating={5}
               text="Поражает ассортимент мотоциклов! Есть даже модели начала 1900-х годов, вот это да!"
             />
             <ReviewCard
               name="Степан Васильев"
-              avatarUrl="/images/reviews/face4.jpg"
+              avatarUrl="src/shared/assets/images/reviews/face4.jpg"
               rating={5}
               text="Постоянно тут покупаем детали для нашего мотосервиса. Радуют длительная гарантия и быстрые ответы поддержки"
             />

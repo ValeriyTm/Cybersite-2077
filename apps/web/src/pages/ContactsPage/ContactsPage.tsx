@@ -25,7 +25,7 @@ export const ContactsPage = () => {
             <div className={styles.visual}>
                 <p>Центральный вход со стороны парка:</p>
                 <div className={styles.imgContainer}>
-                    <img src="/images/banners/contactsBanner.jpg" alt="Главный вход в салон" />
+                    <img src="src/shared/assets/images/banners/contactsBanner.jpg" alt="Главный вход в салон" />
                 </div>
             </div>
             <div className={styles.contancts}>

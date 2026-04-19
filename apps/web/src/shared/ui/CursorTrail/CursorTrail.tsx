@@ -9,12 +9,12 @@ export const CursorTrail = () => {
             setDots((prev) => {
                 const newDot = { x: e.clientX, y: e.clientY, id: Math.random() };
                 // Ограничиваем количество: берем последние 20 штук + новая
-                const limited = prev.length > 15 ? prev.slice(-15) : prev;
+                const limited = prev.length > 10 ? prev.slice(-10) : prev;
                 return [...limited, newDot];
             });
         };
 
-        // Таймер для удаления по времени (каждые 50мс удаляем первую точку)
+        // Таймер для удаления по времени (каждые 30мс удаляем первую точку)
         const timer = setInterval(() => {
             setDots((prev) => (prev.length > 0 ? prev.slice(1) : prev));
         }, 50);

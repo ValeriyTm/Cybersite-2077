@@ -11,23 +11,23 @@ import styles from "./MainCarousel.module.scss";
 const BANNERS = [
   {
     id: 1,
-    src: "/images/carousel/slide1.jpg",
+    src: "src/shared/assets/images/carousel/slide1.jpg",
     title: "CyberSite: Твой путь к свободе",
   },
-  { id: 2, src: "/images/carousel/slide2.jpg", title: "Новинки сезона 2026" },
+  { id: 2, src: "src/shared/assets/images/carousel/slide2.jpg", title: "Новинки сезона 2026" },
   {
     id: 3,
-    src: "/images/carousel/slide3.jpg",
+    src: "src/shared/assets/images/carousel/slide3.jpg",
     title: "Лучший сервис и поддержка",
   },
   {
     id: 4,
-    src: "/images/carousel/slide4.jpg",
+    src: "src/shared/assets/images/carousel/slide4.jpg",
     title: "Выбор на любой вкус",
   },
   {
     id: 5,
-    src: "/images/carousel/slide5.jpg",
+    src: "src/shared/assets/images/carousel/slide5.jpg",
     title: "Почувствуй себя сильным",
   },
 ];

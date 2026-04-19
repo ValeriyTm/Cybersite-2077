@@ -21,12 +21,13 @@
 //   flex-grow: 1;
 // }
 
-html {
-  // cursor: url("custom-cursor.png"), auto; //Кастомный курсор
-}
+// html {
+//   cursor: var(--cursor-path), auto; //Кастомный курсор
+// }
 
 body {
   background-color: var(--main-bg-color);
+  cursor: var(--cursor-path), auto; //Кастомный курсор
 }
 
 h1,

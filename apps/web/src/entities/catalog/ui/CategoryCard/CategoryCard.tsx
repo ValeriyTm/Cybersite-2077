@@ -14,7 +14,7 @@ export const CategoryCard = ({ category }: CategoryCardProps) => {
 
   const isReady = slug === "motorcycles";
 
-  const localImage = `/public/${slug}.jpg`; //Адрес на фронтенде
+  const localImage = `src/shared/assets/images/catalog/${slug}.jpg`; //Адрес на фронтенде
 
   return (
     <Link

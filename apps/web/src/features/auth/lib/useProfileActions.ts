@@ -74,7 +74,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
     ? user.avatarUrl.startsWith("http")
       ? user.avatarUrl
       : `${API_URL}${user.avatarUrl}`
-    : "/default-avatar.png";
+    : "images/default-avatar.png";
 
   //-----------------Обработчики----------------
   //------Отправка формы для сохранения новых данных профиля:

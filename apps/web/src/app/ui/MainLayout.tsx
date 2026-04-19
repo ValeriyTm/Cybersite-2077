@@ -55,7 +55,7 @@ export const MainLayout = () => {
         }}
       />
 
-      {/* <CursorTrail /> */}
+      <CursorTrail />
       <Header />
       <MobileMenu />
       <BurgerButton />

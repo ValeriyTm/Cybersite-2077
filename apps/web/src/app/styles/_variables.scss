@@ -22,6 +22,7 @@
     --main-text-color: var(--color-light);
     --accent-text-color: var(--color-orange);
     --auxiliary-text-color: rgba(255, 255, 255, 0.4);
+    --reserve-text-color: rgb(236, 176, 45);
     --main-bg-color: #111;
     --accent-bg-color: var(--color-orange);
     --auxiliary-bg-color: #1a1a1a;
@@ -29,12 +30,14 @@
     --main-text-font: var(--font-family-base);
     --banner-gradient: linear-gradient(90deg, #e74c3c 0%, #f39c12 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(245, 94, 7));
+    --cursor-path: url("src/shared/assets/icons/cursors/cursor-orange.png");
   }
 
   body.theme-blue {
     --main-text-color: var(--color-light);
     --accent-text-color: #3263cc;
     --auxiliary-text-color: rgba(255, 255, 255, 0.4);
+    --reserve-text-color: rgb(42, 149, 192);
     --main-bg-color: #111;
     --accent-bg-color: #3263cc;
     --auxiliary-bg-color: #1a1a1a;
@@ -43,24 +46,28 @@
     // --banner-gradient: linear-gradient(90deg, #301283 0%, #2e57ca 100%);
     --banner-gradient: linear-gradient(90deg, #2e57ca 0%, #301283 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(54, 96, 235));
+    --cursor-path: url("src/shared/assets/icons/cursors/cursor-blue.png");
   }
 
   body.theme-retrowave {
     --main-text-color: var(--color-light);
     --accent-text-color: #ee31bf;
     --auxiliary-text-color: rgba(255, 255, 255, 0.4);
+    --reserve-text-color: rgb(119, 6, 211);
     --banner-gradient: linear-gradient(90deg, #5816c2 0%, #ee31bf 100%);
     --basic-gradient: linear-gradient(
       to bottom right,
       rgb(70, 29, 146),
       rgb(192, 34, 82)
     );
+    --cursor-path: url("src/shared/assets/icons/cursors/cursor-retro.png");
   }
 
   body.theme-doom {
     --main-text-color: var(--color-light);
     --accent-text-color: #b90d0d;
     --auxiliary-text-color: rgba(255, 255, 255, 0.4);
+    --reserve-text-color: rgb(97, 46, 46);
     --main-bg-color: var(--color-dark);
     --accent-bg-color: #b90d0d;
     --auxiliary-bg-color: #1a1a1a;
@@ -68,6 +75,7 @@
     --main-text-font: var(--font-family-doom-rus);
     --banner-gradient: linear-gradient(90deg, #eb3e0a 0%, #5f0b0b 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(189, 7, 7));
+    --cursor-path: url("src/shared/assets/icons/cursors/cursor-doom.png");
   }
 
   //----------------------Контейнер:-----------------------------//

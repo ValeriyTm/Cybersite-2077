@@ -39,7 +39,7 @@ export const ReviewCard = ({
             src={
               review.userAvatar
                 ? `${API_URL}${review.userAvatar}`
-                : `${API_URL}/static/defaults/default-avatar.png`
+                : `images/default-avatar.png`
             }
             alt="avatar"
             className={styles.avatar}

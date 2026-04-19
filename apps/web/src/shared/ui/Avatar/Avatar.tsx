@@ -25,7 +25,7 @@ export const Avatar = ({
     >
       {/* Сама картинка */}
       <img
-        src={src || "/default-avatar.png"}
+        src={src || "images/default-avatar.png"}
         alt={alt}
         decoding="async"
         referrerPolicy="no-referrer"

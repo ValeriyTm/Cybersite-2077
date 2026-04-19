@@ -21,16 +21,16 @@ export const Footer = () => {
   let logoUrl;
   switch (theme) {
     case "theme-orange":
-      logoUrl = `/logos/logo-orange.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-orange.png`;
       break;
     case "theme-blue":
-      logoUrl = `/logos/logo-blue.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-blue.png`;
       break;
     case "theme-retrowave":
-      logoUrl = `/logos/logo-retro.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-retro.png`;
       break;
     case "theme-doom":
-      logoUrl = `/logos/logo-doom.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-doom.png`;
       break;
   }
 

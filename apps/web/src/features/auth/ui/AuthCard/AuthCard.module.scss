@@ -16,7 +16,7 @@
   }
 }
 
-.toggleBtn {
+.toggleButton {
   flex: 1;
   padding: 10px;
   border: none;
@@ -26,7 +26,7 @@
   color: var(--auxiliary-text-color);
   transition: 0.3s;
 
-  &.active {
+  .isActive {
     border: 1px solid var(--accent-text-color);
     background: var(--basic-gradient);
     color: var(--main-text-color);

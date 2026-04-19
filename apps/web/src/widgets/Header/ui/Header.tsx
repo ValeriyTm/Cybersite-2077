@@ -69,10 +69,10 @@ export const Header = () => {
 
   //Для иконок смены темы:
   const themes = [
-    { id: 'theme-orange', img: 'theme/theme-icon1.png' },
-    { id: 'theme-blue', img: 'theme/theme-icon4.png' },
-    { id: 'theme-retrowave', img: 'theme/theme-icon2.png' },
-    { id: 'theme-doom', img: 'theme/theme-icon3-alternative.png' },
+    { id: 'theme-orange', img: 'src/shared/assets/images/theme/theme-icon1.png' },
+    { id: 'theme-blue', img: 'src/shared/assets/images/theme/theme-icon4.png' },
+    { id: 'theme-retrowave', img: 'src/shared/assets/images/theme/theme-icon2.png' },
+    { id: 'theme-doom', img: 'src/shared/assets/images/theme/theme-icon3-alternative.png' },
   ];
 
   //При загркузке получаем кол-во активных заказов:
@@ -134,16 +134,16 @@ export const Header = () => {
   let logoUrl;
   switch (theme) {
     case "theme-orange":
-      logoUrl = `/logos/logo-orange.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-orange.png`;
       break;
     case "theme-blue":
-      logoUrl = `/logos/logo-blue.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-blue.png`;
       break;
     case "theme-retrowave":
-      logoUrl = `/logos/logo-retro.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-retro.png`;
       break;
     case "theme-doom":
-      logoUrl = `/logos/logo-doom.png`;
+      logoUrl = `src/shared/assets/images/logos/logo-doom.png`;
       break;
   }
 
