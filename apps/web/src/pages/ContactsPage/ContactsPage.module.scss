@@ -39,24 +39,11 @@
   }
 
   .imgContainer {
-    width: 700px;
-    height: 350px;
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 2 / 1;
     margin-bottom: 20px;
-
-    @include laptop-s {
-      width: 670px;
-      height: 335px;
-    }
-
-    @include mobile {
-      width: 400px;
-      height: 200px;
-    }
-
-    @include mobile-s {
-      width: 300px;
-      height: 150px;
-    }
+    justify-self: center;
 
     img {
       width: 100%;

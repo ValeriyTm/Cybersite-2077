@@ -37,16 +37,6 @@ export const MotorcyclesPage = () => {
     setIsOpen(!isOpen);
   };
 
-  // Блокируем скролл основной страницы, когда фильтры открыты
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     document.body.style.overflow = 'hidden';
-  //   } else {
-  //     document.body.style.overflow = 'unset';
-  //   }
-  // }, [isOpen]);
-
-
   //Загружаем и кэшируем даннеы о моделях мотоциклов с учетом фильтров:
   const { data, isLoading } = useQuery({
     queryKey: ["motorcycles", brandSlug, filters],

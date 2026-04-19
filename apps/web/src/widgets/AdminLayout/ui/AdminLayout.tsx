@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa"; // Используем Font Awesome из react-icons
 import styles from "./AdminLayout.module.scss";
 import { useProfile } from "@/features/auth/model/useProfile";
+import { useState } from "react";
 
 
 
@@ -72,6 +73,12 @@ export const AdminLayout = () => {
   const { user } = useProfile();
   const userRole = user?.role;
 
+  //Для боковой панели на мобилке:
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleFilter = () => {
+    setIsOpen(!isOpen);
+  };
+
   //Фильтруем список полей для меню в зависимости от роли юзера:
   const filteredMenu = ADMIN_MENU
     .map(group => ({
@@ -84,7 +91,7 @@ export const AdminLayout = () => {
 
   return (
     <div className={styles.adminContainer}>
-      <aside className={styles.sidebar}>
+      <aside className={` ${isOpen ? styles.sidebarMobile : styles.sidebar}`}>
         <div className={styles.logo}>
           CYBER<span>ADMIN</span>
         </div>
@@ -110,6 +117,12 @@ export const AdminLayout = () => {
             {/* Сюда можно будет вывести имя залогиненного админа */}
             <span>{userRole} Mode</span>
           </div>
+          <div className={styles.panelBtnWrapper}>
+            <button className={styles.panelBtn} type="button" onClick={toggleFilter}>
+              Открыть панель
+            </button>
+          </div>
+
         </header>
         <section className={styles.pageBody}>
           <Outlet />
