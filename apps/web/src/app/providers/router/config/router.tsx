@@ -42,6 +42,7 @@ import { AdminTicketsPage } from "@/pages/AdminTicketsPage/ui/AdminTicketsPage";
 import { AdminNewsPage } from "@/pages/AdminNewsPage.tsx/ui/AdminNewsPage";
 import { NewsPage } from "@/pages/NewsPage/ui/NewsPage";
 import { NewsDetailsPage } from "@/pages/NewsDetailsPage/NewsDetailsPage";
+import { AboutPage } from "@/pages/AboutPage";
 
 //Публичный маршрут:
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -94,6 +95,10 @@ export const router = createBrowserRouter([
       {
         path: "/profile/favorites",
         element: <FavoritesPage />,
+      },
+      {
+        path: "/about",
+        element: <AboutPage />,
       },
       {
         path: "/catalog/motorcycles/:brandSlug/:slug",

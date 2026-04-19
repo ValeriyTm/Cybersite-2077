@@ -52,10 +52,10 @@ export const Footer = () => {
                 <Link to="/catalog/motorcycles">Бренды</Link>
               </li>
               <li>
-                <Link to="">Мотоэкипировка</Link>
+                <Link to="/catalog">Мотоэкипировка</Link>
               </li>
               <li>
-                <Link to="">Запчасти и расходники на любые модели</Link>
+                <Link to="/catalog">Запчасти и расходники на любые модели</Link>
               </li>
             </ul>
           </div>
