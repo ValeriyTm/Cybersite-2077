@@ -9,10 +9,8 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
-
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
-
 import styles from './DeliveryMapModal.module.scss';
 
 let DefaultIcon = L.icon({
@@ -101,7 +99,6 @@ export const DeliveryMapModal = ({
 
     >
       <div
-        // className="map-modal-content" 
         className={`"map-modal-content" ${styles.modalContentStyle}`}
       >
         <h3>Выберите адрес доставки на карте</h3>

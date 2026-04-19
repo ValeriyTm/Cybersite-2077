@@ -43,6 +43,7 @@ import { AdminNewsPage } from "@/pages/AdminNewsPage.tsx/ui/AdminNewsPage";
 import { NewsPage } from "@/pages/NewsPage/ui/NewsPage";
 import { NewsDetailsPage } from "@/pages/NewsDetailsPage/NewsDetailsPage";
 import { AboutPage } from "@/pages/AboutPage";
+import { ContactsPage } from "@/pages/ContactsPage";
 
 //Публичный маршрут:
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -99,6 +100,10 @@ export const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },
+      {
+        path: "/contacts",
+        element: <ContactsPage />,
       },
       {
         path: "/catalog/motorcycles/:brandSlug/:slug",
