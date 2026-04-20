@@ -426,15 +426,15 @@ export const ProfilePage = () => {
         {/*Удаление аккаунта:*/}
         <div className={styles.dangerZone}>
           <h2>Опасная зона</h2>
-          <div className={styles.btnGroup}>
-            <Button
-              type="button"
-              variant="danger"
-              onClick={() => setShowDeleteModal(true)}
-            >
-              Удалить аккаунт
-            </Button>
-          </div>
+
+          <Button
+            type="button"
+            variant="danger"
+            onClick={() => setShowDeleteModal(true)}
+          >
+            Удалить аккаунт
+          </Button>
+
         </div>
       </div>
     </div>

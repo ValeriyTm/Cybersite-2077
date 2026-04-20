@@ -202,6 +202,11 @@
     padding-inline: 10px;
     color: #444;
     font-size: 0.85rem;
+
+    @include mobile-s {
+      flex-direction: column;
+      gap: 5px;
+    }
     a {
       color: var(--auxiliary-text-color);
       text-decoration: none;

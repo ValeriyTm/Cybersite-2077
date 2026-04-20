@@ -4,7 +4,7 @@
   grid-template-areas:
     "check image top price"
     "check image bot price";
-  grid-template-columns: 1fr 3fr 10fr 100px;
+  grid-template-columns: 1fr 3fr 10fr 120px;
   align-items: center;
   gap: 20px;
   background: var(--auxiliary-bg-color-2);

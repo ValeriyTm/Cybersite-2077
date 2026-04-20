@@ -329,9 +329,11 @@
 
 .modalTitle,
 .modalTitleSuccess {
+  font-size: 1.2rem;
   text-transform: uppercase;
   margin-bottom: 20px;
   letter-spacing: 2px;
+  padding-inline: 5px;
 }
 
 .modalTitle {

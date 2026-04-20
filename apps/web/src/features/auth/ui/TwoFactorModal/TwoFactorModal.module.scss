@@ -17,17 +17,22 @@
   background: var(--card-bg, var(--auxiliary-bg-color));
   padding: 2rem;
   border-radius: 16px;
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   text-align: center;
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
 
   h3 {
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
-    color: var(--text-main, #1a1a1a);
+    color: var(--main-text-color);
   }
 
   p {
@@ -35,6 +40,10 @@
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
     line-height: 1.4;
+  }
+
+  button {
+    min-width: 200px;
   }
 }
 
@@ -80,6 +89,6 @@
 
 .modalActions {
   display: flex;
-  flex-direction: column; //Кнопки друг под другом для мобилок
+  flex-direction: column;
   gap: 10px;
 }

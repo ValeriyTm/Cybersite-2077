@@ -66,6 +66,7 @@ export const NewsModal = ({ news, onClose, onSubmit }: any) => {
                                 )}
                                 {block.type === 'motorcycle' && (
                                     <input
+                                        className={styles.uuid}
                                         value={block.value}
                                         onChange={(e) => updateBlock(index, e.target.value)}
                                         placeholder="ID мотоцикла (UUID)"

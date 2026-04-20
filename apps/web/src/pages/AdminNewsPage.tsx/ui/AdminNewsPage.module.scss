@@ -15,11 +15,11 @@
   margin-bottom: 30px;
   input,
   textarea {
-    background: #1a1a1a;
+    background: var(--color-light);
     /* pxtorem-disable-next-line */
     border: 1px solid #333;
     padding: 12px;
-    color: #fff;
+    color: var(--color-dark);
     border-radius: 6px;
   }
 }
@@ -31,10 +31,14 @@
   /* pxtorem-disable-next-line */
   border: 1px solid #222;
   h5 {
-    color: #f39c12;
+    color: var(--accent-text-color);
     margin-bottom: 15px;
     text-transform: uppercase;
   }
+}
+
+.uuid {
+  background-color: #fff !important;
 }
 
 .blockItem {
@@ -48,7 +52,7 @@
 
   .blockType {
     font-size: 0.7rem;
-    color: #555;
+    color: var(--color-dark);
     text-transform: uppercase;
     width: 80px;
   }
@@ -58,11 +62,11 @@
     background: transparent;
     /* pxtorem-disable-next-line */
     border: 1px solid #222;
-    color: #ccc;
+    color: var(--color-dark);
     padding: 8px;
   }
   button {
-    color: #e74c3c;
+    color: var(--color-danger);
     background: none;
     /* pxtorem-disable-next-line */
     border: none;
@@ -76,8 +80,8 @@
   gap: 10px;
   margin-top: 20px;
   button {
-    background: #222;
-    color: #aaa;
+    background: var(--color-light);
+    color: var(--color-dark);
     /* pxtorem-disable-next-line */
     border: 1px solid #333;
     padding: 8px 15px;
@@ -87,9 +91,9 @@
     gap: 8px;
     cursor: pointer;
     @include hover {
-      background: #f39c12;
+      background: var(--accent-text-color);
       color: #000;
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
     }
   }
 }

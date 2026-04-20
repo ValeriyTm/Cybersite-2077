@@ -14,6 +14,7 @@
   gap: 30px;
   margin-bottom: 40px;
   padding: 30px;
+  margin-top: 10px;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   flex-wrap: wrap;
@@ -70,7 +71,7 @@
     flex-direction: column;
 
     h3 {
-      margin: 5px;
+      margin-block: 5px;
       //Перенос текста:
       word-wrap: break-word; //Старый стандарт
       overflow-wrap: break-word; //Современный стандарт
@@ -133,6 +134,15 @@
   /* pxtorem-disable-next-line */
   border-bottom: 1px solid #f0f0f0;
   align-items: center;
+  gap: 400px;
+
+  @include tablet {
+    gap: 50px;
+  }
+
+  @include mobile {
+    gap: 5px;
+  }
 
   @include mobile-s {
     grid-template-columns: 1fr;
@@ -201,6 +211,10 @@
   justify-content: flex-end;
   gap: 15px;
   margin-top: 20px;
+
+  @include mobile {
+    justify-content: center;
+  }
   .saveBtn {
     background: #000;
     color: #fff;
@@ -481,6 +495,7 @@
   border-radius: 20px;
   max-width: 400px;
   width: 100%;
+
   input {
     width: 100%;
     margin: 15px 0;

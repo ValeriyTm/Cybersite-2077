@@ -130,7 +130,7 @@ export const MotorcycleCard = ({
 
       <div className={styles.info}>
         <div className={styles.mainTitleGroup}>
-          <h3 className={styles.model}>{data.model}</h3>
+          <h3 className={styles.model} title={data.model}>{data.model}</h3>
           {viewMode === "list" && (
             <span className={styles.listBrand}>{brandName}</span>
           )}

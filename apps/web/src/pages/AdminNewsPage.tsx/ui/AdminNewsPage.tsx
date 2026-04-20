@@ -69,7 +69,7 @@ export const AdminNewsPage = () => {
     return (
         <div className={styles.pageWrapper}>
             <header className={styles.header}>
-                <h3>Управление новостями (Mongo)</h3>
+                <h3>Управление новостями</h3>
                 <button className={styles.addBtn} onClick={() => { setEditingNews(null); setIsModalOpen(true); }}>
                     + Создать новость
                 </button>
