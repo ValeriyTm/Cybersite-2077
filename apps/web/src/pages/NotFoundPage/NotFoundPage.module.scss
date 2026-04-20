@@ -51,6 +51,7 @@
   display: flex;
   gap: 20px;
   justify-content: center;
+  padding-bottom: 10px;
 
   @include mobile {
     gap: 10px;

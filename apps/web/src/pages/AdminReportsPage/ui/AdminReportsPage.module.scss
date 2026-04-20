@@ -3,7 +3,7 @@
 }
 
 .subtitle {
-  color: #666;
+  color: var(--main-text-color);
   margin-bottom: 40px;
 }
 
@@ -14,8 +14,8 @@
 }
 
 .reportCard {
-  background: #111;
-  border: 1px solid #222;
+  background: var(--auxiliary-bg-color-2);
+  border: 1px solid var(--accent-text-color);
   border-radius: 12px;
   display: flex;
   overflow: hidden;
@@ -23,7 +23,7 @@
 
   &:hover {
     transform: translateY(-5px);
-    border-color: #f39c12;
+    box-shadow: 0 0 10px var(--accent-text-color);
   }
 }
 
@@ -32,7 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--main-text-color);
 }
 
 .cardInfo {
@@ -41,11 +41,11 @@
 
   h4 {
     margin: 0 0 10px 0;
-    color: #fff;
+    color: var(--main-text-color);
   }
   p {
     font-size: 0.85rem;
-    color: #777;
+    color: var(--auxiliary-text-color);
     margin-bottom: 20px;
     line-height: 1.4;
   }

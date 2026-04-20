@@ -7,28 +7,32 @@
 .filterBar {
   display: flex;
   gap: 15px;
-  background: #111;
+  background: var(--auxiliary-bg-color-2);
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid #222;
+  border: 1px solid var(--accent-text-color);
 
   input,
   select {
-    background: #1a1a1a;
-    border: 1px solid #333;
+    background: var(--main-bg-color);
+    border: 1px solid solid var(--accent-text-color);
     padding: 8px 12px;
     border-radius: 4px;
-    color: #fff;
+    color: var(--main-text-color);
     &:focus {
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
       outline: none;
+    }
+
+    &::placeholder {
+      color: var(--auxiliary-text-color);
     }
   }
 }
 
 .statusSelect {
   background: #1a1a1a;
-  color: #f39c12;
+  color: var(--accent-text-color);
   border: 1px solid #333;
   padding: 5px;
   border-radius: 4px;
@@ -36,7 +40,7 @@
   font-size: 0.8rem;
 
   &:hover {
-    border-color: #f39c12;
+    border-color: var(--accent-text-color);
   }
 }
 
@@ -46,12 +50,12 @@
   align-items: center;
   gap: 20px;
   margin-top: 20px;
-  color: #888;
+  color: var(--auxiliary-text-color);
 
   button {
-    background: #111;
-    border: 1px solid #333;
-    color: #fff;
+    background: var(--auxiliary-bg-color-2);
+    border: 1px solid var(--accent-text-color);
+    color: var(--main-text-color);
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
@@ -60,8 +64,8 @@
       cursor: not-allowed;
     }
     &:hover:not(:disabled) {
-      border-color: #f39c12;
-      color: #f39c12;
+      border-color: var(--accent-text-color);
+      color: var(--accent-text-color);
     }
   }
 }

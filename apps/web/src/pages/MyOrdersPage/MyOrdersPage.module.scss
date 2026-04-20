@@ -18,6 +18,16 @@
       margin-block: 0px 10px;
     }
   }
+
+  h4 {
+    color: var(--main-text-color);
+  }
+
+  select {
+    option {
+      background-color: var(--auxiliary-bg-color-2);
+    }
+  }
 }
 
 .list {

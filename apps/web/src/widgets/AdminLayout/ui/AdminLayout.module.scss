@@ -1,7 +1,7 @@
 .adminContainer {
   display: flex;
   min-height: 100vh;
-  background: #0a0a0a;
+  background: var(--main-bg-color);
   color: #eee;
 
   h2,
@@ -13,7 +13,7 @@
 .sidebar,
 .sidebarMobile {
   width: 280px;
-  background: #111;
+  background: var(--main-bg-color);
   border-right: 1px solid var(--accent-text-color);
   padding: 20px;
 
@@ -49,6 +49,7 @@
   z-index: 100;
   top: 271px;
   border-bottom: 1px solid var(--accent-text-color);
+
   @include tablet-above {
     display: none;
   }
@@ -73,7 +74,7 @@
   transition: all 0.2s;
 
   &:hover {
-    background: #1a1a1a;
+    background: var(--auxiliary-bg-color-2);
     color: var(--main-text-color);
   }
 
@@ -99,7 +100,7 @@
 
 .adminHeader {
   height: 70px;
-  background: #111;
+  background: var(--main-bg-color);
   border-bottom: 1px solid var(--accent-text-color);
   display: flex;
   align-items: center;

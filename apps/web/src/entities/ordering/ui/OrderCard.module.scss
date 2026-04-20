@@ -44,9 +44,6 @@
 
   @include tablet {
     border: none;
-  }
-
-  @include tablet {
     flex-direction: row;
     align-items: center;
     justify-items: center;
@@ -259,7 +256,7 @@
   min-height: 30px;
   font-weight: 600;
 
-  @include mobile {
+  @include tablet {
     align-self: end;
   }
 
@@ -276,7 +273,7 @@
   min-height: 30px;
   font-weight: 600;
 
-  @include mobile {
+  @include tablet {
     align-self: end;
   }
 

@@ -38,14 +38,13 @@
 
 .info {
   p {
-    color: var(--color-dark);
-    -webkit-text-stroke: 0.1px var(--accent-text-color);
+    color: var(--main-text-color);
   }
 }
 
 .discountTitle {
   color: var(--accent-text-color);
-  -webkit-text-stroke: 1.2px var(--main-bg-color);
+  // -webkit-text-stroke: 0.1px var(--main-text-color);
 }
 
 //-------------Стилизация таймера:-----------------
@@ -55,7 +54,6 @@
   align-items: center;
   background: rgba(0, 0, 0, 0.5);
   color: var(--accent-text-color);
-  -webkit-text-stroke: 0.25px var(--main-bg-color);
   padding: 8px 15px;
   border-radius: 6px;
   /* pxtorem-disable-next-line */

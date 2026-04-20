@@ -29,14 +29,14 @@
 
   h3 {
     font-size: 1.5rem;
-    color: #fff;
+    color: var(--main-text-color);
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 }
 
 .addBtn {
-  background: #f39c12;
+  background: var(--accent-text-color);
   color: #000;
   border: none;
   padding: 10px 20px;
@@ -56,6 +56,6 @@
 
 .pagination {
   margin-top: 10px;
-  color: #555;
+  color: var(--auxiliary-text-color);
   font-size: 0.85rem;
 }

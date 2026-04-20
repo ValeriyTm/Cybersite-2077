@@ -7,7 +7,8 @@
 
   .imgContainer {
     display: flex;
-    width: 100%;
+    width: 99vw;
+    overflow-x: hidden;
     aspect-ratio: 2/1;
     background-image:
       linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)),

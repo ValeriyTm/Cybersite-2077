@@ -4,9 +4,8 @@
 :root {
   //Шрифты отдельно:
   --font-family-base: "Tektur", sans-serif;
-  --font-family-accent-eng-basic: "Orbitron", sans-serif;
   --font-family-accent-eng-title: "BlackOpsOne", sans-serif;
-  --font-family-doom-rus: "Rubik Wet Paint", sans-serif; //DOOM
+  --font-family-doom: "Jura", sans-serif; //DOOM
   --font-family-doom-eng: "StalinistOne", sans-serif; //DOOM
   --font-family-retro: "KellySlab", sans-serif; //Retrowave
 
@@ -29,7 +28,7 @@
     --auxiliary-bg-color: #1a1a1a;
     --auxiliary-bg-color-2: #222;
     --main-text-font: var(--font-family-base);
-    --banner-gradient: linear-gradient(90deg, #e74c3c 0%, #f39c12 100%);
+    --banner-gradient: linear-gradient(90deg, #fc331d 0%, #cf7703 100%);
     --button-gradient: linear-gradient(90deg, #df6a0b 0%, #cfc31e 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(245, 94, 7));
     --cursor-path: url("src/shared/assets/icons/cursors/cursor-orange.png");
@@ -45,7 +44,7 @@
     --auxiliary-bg-color: #1a1a1a;
     --auxiliary-bg-color-2: #222;
     --main-text-font: var(--font-family-base);
-    --banner-gradient: linear-gradient(90deg, #5177e0 0%, #5b2be2 100%);
+    --banner-gradient: linear-gradient(90deg, #5177e0 0%, #8c54f3 100%);
     --button-gradient: linear-gradient(90deg, #4f6ab6 0%, #212eaa 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(54, 96, 235));
     --cursor-path: url("src/shared/assets/icons/cursors/cursor-blue.png");
@@ -84,8 +83,8 @@
     --accent-bg-color: #a70b0b;
     --auxiliary-bg-color: #1a1a1a;
     --auxiliary-bg-color-2: #222;
-    --main-text-font: var(--font-family-doom-rus);
-    --banner-gradient: linear-gradient(90deg, #eb3e0a 0%, #741111 100%);
+    --main-text-font: var(--font-family-doom);
+    --banner-gradient: linear-gradient(90deg, #ff3c3c 0%, #b60b0b 100%);
     --button-gradient: linear-gradient(90deg, #ac6a07 0%, #d31717 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(189, 7, 7));
     --cursor-path: url("src/shared/assets/icons/cursors/cursor-doom.png");

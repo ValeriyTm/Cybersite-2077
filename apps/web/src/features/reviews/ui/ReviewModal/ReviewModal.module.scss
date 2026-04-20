@@ -10,12 +10,12 @@
 }
 
 .modal {
-  background: #151515;
+  background: var(--auxiliary-bg-color-2);
   padding: 32px;
   border-radius: 12px;
   width: 100%;
   max-width: 500px;
-  border: 1px solid #333;
+  border: 1px solid var(--accent-text-color);
 
   h3 {
     margin-bottom: 24px;
@@ -34,7 +34,7 @@
   label {
     display: block;
     margin-bottom: 8px;
-    color: #888;
+    color: var(--main-text-color);
     font-size: 0.9rem;
   }
 
@@ -46,8 +46,8 @@
 textarea {
   width: 100%;
   height: 120px;
-  background: #222;
-  border: 1px solid #333;
+  background: var(--main-text-color) !important;
+  border: 1px solid var(--accent-text-color) !important;
   border-radius: 8px;
   padding: 12px;
   color: var(--main-text-color);
@@ -62,8 +62,8 @@ textarea {
 .uploadLabel {
   display: inline-block;
   padding: 12px 20px;
-  background: #222;
-  border: 1px dashed #444;
+  background: var(--main-bg-color);
+  border: 1px dashed var(--auxiliary-text-color);
   border-radius: 8px;
   cursor: pointer;
   color: #ccc;
@@ -71,8 +71,7 @@ textarea {
   text-align: center;
   transition: all 0.2s;
   &:hover {
-    border-color: var(--accent-text-color);
-    background: #2a2a2a;
+    border: 1px solid var(--accent-text-color);
   }
 }
 
@@ -99,7 +98,7 @@ textarea {
       top: -6px;
       right: -6px;
       background: var(--color-danger);
-      color: #fff;
+      color: var(--main-text-color);
       border: none;
       width: 20px;
       height: 20px;
@@ -132,13 +131,22 @@ textarea {
 
   .cancel {
     background: transparent;
-    color: #888;
-    border: 1px solid #333;
+    color: var(--auxiliary-text-color);
+    border: 1px solid var(--auxiliary-text-color);
+
+    &:hover {
+      scale: 1.05;
+    }
   }
   .submit {
     background: var(--accent-text-color);
-    color: #000;
+    color: var(--main-text-color);
     border: none;
+
+    &:hover {
+      box-shadow: 0 0 20px var(--accent-text-color);
+      scale: 1.05;
+    }
   }
 }
 
@@ -154,12 +162,12 @@ textarea {
   textarea {
     width: 100%;
     height: 140px;
-    background: #222;
-    border: 1px solid #333;
+    // background: #222;
+    // border: 1px solid #333;
     border-radius: 8px;
     padding: 12px;
     padding-bottom: 30px;
-    color: #fff;
+    color: var(--color-black);
     resize: none;
     font-family: inherit;
     transition: border-color 0.2s;
@@ -170,7 +178,7 @@ textarea {
     }
 
     &::placeholder {
-      color: #555;
+      color: var(--accent-text-color);
     }
   }
 

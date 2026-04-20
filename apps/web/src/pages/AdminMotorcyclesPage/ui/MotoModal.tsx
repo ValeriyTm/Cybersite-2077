@@ -158,7 +158,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
               {...register("colors")}
               placeholder="black, lightgray, white, pink"
             />
-            <small style={{ color: "#555", marginTop: "4px" }}>
+            <small >
               Введите названия цветов на английском через запятую
             </small>
           </div>

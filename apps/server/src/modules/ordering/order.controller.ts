@@ -54,7 +54,7 @@ export const getActiveOrdersCount = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const userId = req.user.id;
 
-    const count = orderService.getActiveOrdersCount(userId);
+    const count = await orderService.getActiveOrdersCount(userId);
     res.json({ count });
   },
 );

@@ -28,8 +28,8 @@
 }
 
 .promoCard {
-  background: #151515;
-  border: 2px dashed #333; //Эффект купона
+  background: var(--auxiliary-bg-color-2);
+  border: 2px dashed var(--accent-text-color);
   padding: 24px;
   border-radius: 12px;
   text-align: center;
@@ -55,7 +55,7 @@
   }
 
   .codeWrap {
-    background: #222;
+    background: var(--main-bg-color);
     padding: 10px;
     border-radius: 6px;
     display: flex;
@@ -66,25 +66,25 @@
     .code {
       font-family: monospace;
       font-weight: 700;
-      color: #fff;
+      color: var(--main-text-color);
     }
 
     button {
-      background: #333;
-      color: #fff;
+      background: var(--auxiliary-bg-color-2);
+      color: var(--main-text-color);
       border: none;
       padding: 5px 10px;
       font-size: 0.7rem;
       border-radius: 4px;
       cursor: pointer;
       &:hover {
-        background: #444;
+        box-shadow: 0 0 10px var(--accent-text-color);
       }
     }
   }
 
   .expires {
     font-size: 0.8rem;
-    color: #555;
+    color: var(--auxiliary-text-color);
   }
 }

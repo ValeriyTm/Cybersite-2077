@@ -59,7 +59,7 @@ h1 {
 .ticketCard {
   display: flex;
   flex-direction: column;
-  background: #1a1a1a;
+  background: var(--auxiliary-bg-color-2);
   border: 1px solid #333;
   margin-bottom: 20px;
   padding: 20px;
@@ -67,6 +67,10 @@ h1 {
   border: 1px solid var(--accent-text-color);
   width: 98%;
   justify-self: center;
+
+  &:hover {
+    box-shadow: 0 0 10px var(--accent-text-color);
+  }
 }
 
 .answer {
