@@ -10,8 +10,8 @@
 }
 
 .modal {
-  background: #111;
-  border: 1px solid #333;
+  background: var(--auxiliary-bg-color-2);
+  border: 1px solid var(--accent-text-color);
   width: 100%;
   max-width: 450px;
   padding: 30px;
@@ -56,13 +56,13 @@
   p {
     margin: 8px 0;
     font-size: 0.95rem;
-    color: #bbb;
+    color: var(--main-text-color);
     display: flex;
     justify-content: space-between;
     text-align: left;
 
     strong {
-      color: var(--main-text-color);
+      color: var(--accent-text-color);
       font-size: 1.1rem;
     }
   }
@@ -75,14 +75,14 @@
 }
 
 .orderSummary {
-  background: #1a1a1a;
+  background: var(--main-bg-color);
   padding: 15px;
   border-radius: 6px;
   margin-bottom: 25px;
 
   h4 {
     font-size: 0.8rem;
-    color: #555;
+    color: var(--accent-text-color);
     text-transform: uppercase;
     margin-bottom: 10px;
   }
@@ -100,7 +100,7 @@
       color: var(--main-text-color);
 
       span {
-        color: #888;
+        color: var(--auxiliary-text-color);
       }
     }
   }
@@ -109,7 +109,7 @@
 .payBtn {
   width: 100%;
   background: var(--accent-text-color);
-  color: #000;
+  color: var(--main-text-color);
   border: none;
   padding: 15px;
   border-radius: 6px;
@@ -121,8 +121,8 @@
     background 0.2s;
 
   &:hover {
-    background: var(--accent-text-color);
     transform: translateY(-2px);
+    box-shadow: 0 0 20px var(--accent-text-color);
   }
 
   &:active {

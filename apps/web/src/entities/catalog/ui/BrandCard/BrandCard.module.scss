@@ -3,7 +3,7 @@
   justify-content: center;
   flex-direction: row;
   padding: 18px;
-  background: #151515;
+  background: var(--auxiliary-bg-color-2);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   text-decoration: none;
@@ -14,10 +14,14 @@
   }
 
   &:hover {
-    background: #1a1a1a;
+    background: var(--auxiliary-bg-color-2);
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
     transform: scale(1.02);
+  }
+
+  h3 {
+    color: var(--accent-text-color);
   }
 }
 
@@ -62,7 +66,7 @@ p {
   height: 50px;
   border-radius: 20%;
   overflow: hidden;
-  border: 1px solid #f39c12;
+  border: 1px solid var(--accent-text-color);
 }
 
 .logo {

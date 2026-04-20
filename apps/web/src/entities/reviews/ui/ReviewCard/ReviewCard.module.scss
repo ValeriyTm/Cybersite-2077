@@ -1,6 +1,6 @@
 .card {
-  background: #111;
-  border: 1px solid #222;
+  background: var(--auxiliary-bg-color-2);
+  border: 1px solid var(--accent-text-color);
   border-radius: 30px;
   padding: 20px;
   margin-bottom: 20px;
@@ -22,31 +22,31 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid #333;
+    border: 1px solid var(--accent-text-color);
   }
   .name {
     font-weight: 600;
-    color: #fff;
+    color: var(--main-text-color);
   }
 }
 
 .meta {
   text-align: right;
   .date {
-    color: #555;
+    color: var(--auxiliary-text-color);
     font-size: 0.85rem;
     display: block;
     margin-bottom: 4px;
   }
   .rating {
-    color: #f39c12;
+    color: var(--color-rating);
     font-size: 1.1rem;
   }
 }
 
 .body {
   .text {
-    color: #ccc;
+    color: var(--main-text-color);
     line-height: 1.5;
     font-size: 0.95rem;
   }
@@ -69,8 +69,13 @@
     width: 80px;
     height: 80px;
     object-fit: cover;
-    border: 1px solid #333;
+    border: 1px solid var(--auxiliary-text-color);
+    border-radius: 5px;
     cursor: pointer;
+
+    &:hover {
+      scale: 1.1;
+    }
   }
 }
 
@@ -90,6 +95,6 @@
 
   &:hover {
     background: var(--color-danger);
-    color: #fff;
+    color: var(--main-text-color);
   }
 }

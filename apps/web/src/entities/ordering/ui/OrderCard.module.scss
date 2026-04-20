@@ -1,7 +1,7 @@
 .orderCard {
-  background: #1a1a1a;
+  background: var(--auxiliary-bg-color-2);
   border-radius: 12px;
-  border: 1px solid #333;
+  border: 1px solid var(--accent-text-color);
   overflow: hidden;
   margin-bottom: 24px;
   transition: border-color 0.3s ease;
@@ -13,10 +13,10 @@
 }
 
 .topBar {
-  background: #222;
+  background: var(--accent-bg-color);
   padding: 12px 24px;
-  border-bottom: 1px solid #333;
-  color: #888;
+  border-bottom: 1px solid var(--accent-text-color);
+  color: var(--main-text-color);
   font-size: 0.9rem;
   font-weight: 500;
   display: flex;
@@ -35,12 +35,16 @@
 
 .leftPanel {
   padding: 24px;
-  background: #1d1d1d;
-  border-right: 1px solid #333;
+  background: var(--auxiliary-bg-color-2);
+  border-right: 1px solid var(--accent-text-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 16px;
+
+  @include tablet {
+    border: none;
+  }
 
   @include tablet {
     flex-direction: row;
@@ -63,7 +67,7 @@
 
     .label {
       font-size: 0.75rem;
-      color: #666;
+      color: var(--auxiliary-text-color);
       text-transform: uppercase;
       letter-spacing: 1px;
     }

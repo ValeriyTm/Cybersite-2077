@@ -1,7 +1,7 @@
 .wrapper {
   width: 100%;
   overflow: hidden;
-  background: var(--auxiliary-bg-color);
+  background: var(--auxiliary-bg-color-2);
   padding: 20px 0;
 
   @include mobile {
@@ -21,7 +21,7 @@
 
   //--- Для Firefox ---
   scrollbar-width: thin; //Толщина: auto, thin, none
-  scrollbar-color: var(--accent-text-color) var(--auxiliary-bg-color-2); /* Цвет ползунка и цвет дорожки */
+  scrollbar-color: var(--accent-text-color) var(--main-bg-color); /* Цвет ползунка и цвет дорожки */
 
   //--- Для Chrome, Safari, Edge ---
   &::-webkit-scrollbar {

@@ -34,7 +34,7 @@
 }
 
 .subtitle {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--auxiliary-text-color);
   font-size: 1.1rem;
 }
 
@@ -133,7 +133,7 @@
   width: 100%;
   padding: 16px 24px;
   background: var(--main-bg-color);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--auxiliary-text-color);
   border-radius: 12px;
   color: var(--main-text-color);
   font-size: 1.1rem;
@@ -151,7 +151,6 @@
   &:focus {
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px rgba(243, 156, 18, 0.1);
-    background: #151515;
   }
 }
 

@@ -28,7 +28,7 @@
   transition: border-color 0.2s;
 
   &::placeholder {
-    color: #444;
+    color: var(--auxiliary-text-color);
   }
 
   &:focus {

@@ -12,7 +12,7 @@
 }
 
 .modalContentStyle {
-  background: var(--auxiliary-bg-color);
+  background: var(--auxiliary-bg-color-2);
   padding: 20px;
   border-radius: 16px;
   width: 90%;
@@ -26,11 +26,16 @@
 
 .confirmBtnStyle {
   background: var(--accent-text-color);
+  color: var(--main-text-color);
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+
+  &:hover {
+    scale: 1.05;
+  }
 }
 
 .cancelBtnStyle {
@@ -40,4 +45,8 @@
   padding: 10px 20px;
   border-radius: 8px;
   cursor: pointer;
+
+  &:hover {
+    scale: 1.05;
+  }
 }

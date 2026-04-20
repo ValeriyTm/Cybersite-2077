@@ -18,6 +18,10 @@
       transform: scale(1.05);
     }
   }
+
+  h3 {
+    color: var(--accent-text-color);
+  }
 }
 
 .imageBox {
@@ -201,7 +205,7 @@
   padding-right: 25px;
 
   .listBrand {
-    color: var(--accent-text-color);
+    color: var(--color-rating);
   }
 }
 
