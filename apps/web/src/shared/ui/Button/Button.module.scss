@@ -8,6 +8,7 @@
   font-size: 1rem;
   font-weight: 600;
   border-radius: 8px;
+  /* pxtorem-disable-next-line */
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -40,6 +41,7 @@
 
 .secondary {
   background-color: var(--auxiliary-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--main-text-color);
   color: white;
 
@@ -52,6 +54,7 @@
 
 .outline {
   background-color: var(--auxiliary-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--primary-color, var(--accent-text-color));
   color: var(--primary-color, var(--accent-text-color));
 
@@ -65,6 +68,7 @@
 
 .danger {
   background-color: var(--color-dark);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--color-danger);
   color: var(--color-danger);
 

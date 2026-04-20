@@ -6,6 +6,7 @@
   background: var(--auxiliary-bg-color-2);
   padding: 30px;
   border-radius: 12px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
   @include mobile {
@@ -16,6 +17,7 @@
 .magicBtn {
   background: linear-gradient(45deg, #f39c12, #f1c40f);
   color: var(--color-dark);
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 15px 30px;
   border-radius: 8px;
@@ -49,6 +51,7 @@
   background: var(--auxiliary-bg-color-2);
   padding: 20px;
   border-radius: 12px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
   .sectionHeader {
@@ -80,6 +83,7 @@
 
 .miniSearch {
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   padding: 8px 12px;
   border-radius: 6px;

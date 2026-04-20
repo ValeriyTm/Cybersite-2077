@@ -6,6 +6,7 @@
   overflow: hidden;
   cursor: pointer;
   background-color: #f0f0f0;
+  /* pxtorem-disable-next-line */
   border: 2px solid #e2e8f0;
   transition: all 0.3s ease;
 
@@ -43,6 +44,7 @@
 .spinner {
   width: 30px;
   height: 30px;
+  /* pxtorem-disable-next-line */
   border: 3px solid #e2e8f0;
   border-top-color: #3b82f6; //Цвет активной части спиннера
   border-radius: 50%;

@@ -6,6 +6,7 @@
   justify-items: center;
 
   input {
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     border-radius: 15px;
     max-height: 30px;
@@ -15,6 +16,7 @@
   button {
     color: var(--accent-text-color);
     border-radius: 10px;
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     background-color: var(--main-bg-color);
     padding: 5px 10px;
@@ -98,6 +100,7 @@
 
 .sectionDivider {
   grid-column: span 2;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid #222;
   padding-bottom: 5px;
   margin-top: 15px;
@@ -113,6 +116,7 @@
   .searchInput {
     width: 100%;
     background: #1a1a1a;
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--auxiliary-text-color);
     padding: 10px 15px;
     border-radius: 6px;

@@ -96,6 +96,7 @@
   justify-content: space-between;
   align-items: baseline;
   padding-bottom: 8px;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   // overflow-wrap: break-word;
 
@@ -119,6 +120,7 @@
 
 .sectionTitle {
   font-size: 1.8rem;
+  /* pxtorem-disable-next-line */
   border-left: 4px solid #f39c12;
   padding-left: 20px;
   margin-bottom: 40px;
@@ -152,6 +154,7 @@
   border-radius: 12px;
   overflow: hidden;
   background: #1a1a1a;
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: center;
@@ -186,6 +189,7 @@
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
+  /* pxtorem-disable-next-line */
   border: 2px solid transparent;
   background: #111;
   transition: all 0.2s ease;
@@ -210,6 +214,7 @@
 .relatedSection {
   // margin-top: 100px;
   padding-top: 60px;
+  /* pxtorem-disable-next-line */
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 
   @include mobile {
@@ -243,6 +248,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: inline-block;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
@@ -253,6 +259,7 @@
   display: flex;
   gap: 30px;
   margin-top: 40px;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 15px;
 
@@ -269,6 +276,7 @@
 
   button {
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     color: var(--auxiliary-text-color);
     font-size: 1.1rem;
@@ -336,6 +344,7 @@
   // margin-top: 20px;
   padding: 12px 24px;
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   color: var(--accent-text-color);
   text-decoration: none;
@@ -352,6 +361,7 @@
 .addToCartBtn {
   background: var(--accent-text-color);
   color: #000;
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 12px 30px;
   border-radius: 8px;
@@ -383,6 +393,7 @@
   padding: 25px;
   border-radius: 15px;
   margin: 15px 0;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
   @include mobile {
@@ -402,6 +413,7 @@
 .cartBtn {
   background: #f39c12;
   color: #000;
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 15px 35px;
   border-radius: 10px;
@@ -418,6 +430,7 @@
 .favBtn {
   background: var(--main-bg-color);
   color: var(--main-text-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid #444;
   padding: 8px 24px;
   border-radius: 10px;
@@ -456,6 +469,7 @@
   text-align: center;
   padding: 50px;
   color: #666;
+  /* pxtorem-disable-next-line */
   border: 1px dashed #333;
   border-radius: 8px;
 }

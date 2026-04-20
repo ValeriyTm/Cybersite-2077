@@ -31,6 +31,7 @@
   padding: 2px 8px;
   border-radius: 4px;
   color: var(--accent-text-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
 }
 
@@ -47,6 +48,7 @@
 
 .statusSelect {
   background: transparent;
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   padding: 4px;
   border-radius: 4px;

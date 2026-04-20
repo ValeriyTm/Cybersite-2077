@@ -40,6 +40,7 @@
   background: #151515;
   border-radius: 16px;
   padding: 25px;
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: transform 0.2s ease;
 
@@ -54,6 +55,7 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 15px;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid #222;
 
   .date {
@@ -133,6 +135,7 @@
 
     @media (max-width: 768px) {
       text-align: left;
+      /* pxtorem-disable-next-line */
       border-top: 1px solid #222;
       padding-top: 15px;
     }
@@ -163,6 +166,7 @@
     border-radius: 6px;
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
+    /* pxtorem-disable-next-line */
     border: 1px solid #333;
   }
 }

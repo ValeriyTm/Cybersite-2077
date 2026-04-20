@@ -10,11 +10,13 @@
   background: var(--auxiliary-bg-color-2);
   padding: 15px;
   border-radius: 8px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
   input,
   select {
     background: var(--main-bg-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid solid var(--accent-text-color);
     padding: 8px 12px;
     border-radius: 4px;
@@ -33,6 +35,7 @@
 .statusSelect {
   background: #1a1a1a;
   color: var(--accent-text-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   padding: 5px;
   border-radius: 4px;
@@ -54,6 +57,7 @@
 
   button {
     background: var(--auxiliary-bg-color-2);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     color: var(--main-text-color);
     padding: 8px 16px;

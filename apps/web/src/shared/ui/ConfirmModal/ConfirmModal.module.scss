@@ -16,6 +16,7 @@
   background: #1a1a1a;
   padding: 30px;
   border-radius: 16px;
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   max-width: 400px;
   width: 100%;
@@ -38,6 +39,7 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
+    /* pxtorem-disable-next-line */
     border: none;
   }
 }

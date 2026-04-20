@@ -21,6 +21,7 @@ p {
   max-width: 300px;
   height: 100%;
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border-left: 2px solid var(--accent-color);
   padding: 40px 30px; //Отступ сверху, чтобы не перекрывать бургер
   box-shadow: -10px 0 30px var(--glow-color);
@@ -60,6 +61,7 @@ p {
   color: var(--accent-color);
   font-family: monospace;
   font-size: 0.9rem;
+  /* pxtorem-disable-next-line */
   border: 1px dashed var(--accent-color);
   padding: 20px;
   text-align: center;

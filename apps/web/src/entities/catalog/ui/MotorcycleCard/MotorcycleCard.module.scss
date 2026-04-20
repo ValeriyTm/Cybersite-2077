@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   overflow: hidden;
@@ -93,6 +94,7 @@
   align-items: center;
   margin-top: auto;
   padding-top: 12px;
+  /* pxtorem-disable-next-line */
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -157,6 +159,7 @@
     margin: 0;
     justify-content: center;
     gap: 20px;
+    /* pxtorem-disable-next-line */
     border: none;
     padding: 0;
   }
@@ -166,6 +169,7 @@
     margin: 0;
     justify-content: flex-end;
     gap: 20px;
+    /* pxtorem-disable-next-line */
     border: none;
     padding: 0;
 
@@ -185,6 +189,7 @@
     right: auto;
     order: 10; //Ставим в самый конец флекс-контейнера
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     backdrop-filter: none;
     font-size: 1.3rem;
@@ -216,6 +221,7 @@
   right: 10px;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.1);
   width: 32px;
   height: 32px;
@@ -247,6 +253,7 @@
 
 .listFavoriteBtn {
   background: none;
+  /* pxtorem-disable-next-line */
   border: none;
   font-size: 1.2rem;
   cursor: pointer;

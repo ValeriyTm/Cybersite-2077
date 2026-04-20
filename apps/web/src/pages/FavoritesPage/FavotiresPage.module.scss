@@ -8,6 +8,7 @@
     font-size: 2rem;
     margin-bottom: 30px;
     color: var(--accent-text-color);
+    /* pxtorem-disable-next-line */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 15px;
   }
@@ -25,6 +26,7 @@
   margin: 30px auto;
   padding: 12px 40px;
   background: transparent;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   color: var(--accent-text-color);
   border-radius: 8px;
@@ -73,6 +75,7 @@
   height: 50px;
   background: var(--accent-text-color);
   color: #000;
+  /* pxtorem-disable-next-line */
   border: none;
   border-radius: 50%;
   display: flex;

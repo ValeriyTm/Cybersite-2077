@@ -37,6 +37,7 @@
   &::-webkit-scrollbar-thumb {
     background: var(--accent-text-color); //Цвет ползунка
     border-radius: 10px;
+    /* pxtorem-disable-next-line */
     border: 2px solid #333; //Отступ вокруг ползунка (имитация gap)
   }
 

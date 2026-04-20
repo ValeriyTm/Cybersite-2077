@@ -11,6 +11,7 @@
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 15px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   transition:
     transform 0.2s,
@@ -69,6 +70,7 @@
 
     button {
       background: none;
+      /* pxtorem-disable-next-line */
       border: none;
       font-size: 0.85rem;
       color: var(--auxiliary-text-color);
@@ -84,6 +86,7 @@
 
       .favIconBtn {
         background: none;
+        /* pxtorem-disable-next-line */
         border: none;
         font-size: 1.3rem;
         cursor: pointer;
@@ -121,6 +124,7 @@
         width: 30px;
         height: 30px;
         background: var(--auxiliary-bg-color-2);
+        /* pxtorem-disable-next-line */
         border: none;
         color: var(--main-text-color);
         border-radius: 6px;
@@ -142,6 +146,7 @@
 
     .deleteBtn {
       color: var(--color-danger);
+      /* pxtorem-disable-next-line */
       border: 1px solid var(--color-danger);
       padding: 2px 4px;
       border-radius: 6px;
@@ -206,15 +211,18 @@
   }
 
   .Error {
+    /* pxtorem-disable-next-line */
     border: 3px solid var(--color-danger);
 
     @include hover {
+      /* pxtorem-disable-next-line */
       border: 2px solid var(--color-danger);
     }
   }
 
   .deleteTextBtn {
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.7);

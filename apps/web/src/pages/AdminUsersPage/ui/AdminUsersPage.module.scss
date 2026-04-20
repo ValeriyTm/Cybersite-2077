@@ -12,6 +12,7 @@
   input,
   select {
     background-color: var(--main-bg-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     padding: 5px 10px;
     border-radius: 20px;

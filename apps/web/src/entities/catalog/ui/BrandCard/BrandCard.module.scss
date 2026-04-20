@@ -4,6 +4,7 @@
   flex-direction: row;
   padding: 18px;
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   text-decoration: none;
@@ -66,6 +67,7 @@ p {
   height: 50px;
   border-radius: 20%;
   overflow: hidden;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 }
 

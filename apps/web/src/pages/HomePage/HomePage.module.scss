@@ -109,6 +109,7 @@
       border-radius: 20px;
       height: 40px;
       width: 140px;
+      /* pxtorem-disable-next-line */
       border: none !important;
       font-weight: 600;
       font-size: 20px;
@@ -146,6 +147,7 @@
 .container {
   display: grid;
   gap: 5px;
+  /* pxtorem-disable-next-line */
   border: 2px solid black;
 
   grid-template-areas:
@@ -178,6 +180,7 @@
   .cell2,
   .cell3,
   .cell4 {
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     overflow: hidden;
     position: relative;
@@ -317,6 +320,7 @@
 
   .sidebar {
     grid-area: sidebar-1;
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     overflow: hidden;
     position: relative;

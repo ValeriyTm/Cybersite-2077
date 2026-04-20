@@ -15,6 +15,7 @@
 
 .reportCard {
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
   display: flex;
@@ -52,6 +53,7 @@
 
   button {
     background: transparent;
+    /* pxtorem-disable-next-line */
     border: 1px solid #444;
     color: #fff;
     padding: 8px 16px;

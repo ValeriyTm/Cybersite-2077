@@ -17,22 +17,11 @@
     background: var(--accent-text-color);
     height: 15px;
     width: 15px;
+    /* pxtorem-disable-next-line */
     border: 2px solid black;
     display: inline-flex;
-
-    // padding-bottom: 40px;
   }
-
-  //   :global(.swiper-pagination-bullet-active) {
-  //     background: #f39c12;
-  //   }
 }
-
-// .swiper-paginaton-bullet {
-//   // border: 2px solid rgb(36, 156, 160);
-//   // background: var(--accent-text-color);
-//   // height: 20px;
-// }
 
 .slide {
   position: relative;
@@ -45,6 +34,7 @@
   img {
     height: 100%;
     object-fit: cover; // Фото заполнит всё пространство
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
   }
 }

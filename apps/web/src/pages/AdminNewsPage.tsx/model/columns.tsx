@@ -24,6 +24,7 @@ export const newsColumns = (onEdit: (item: any) => void,
                     style={{
                         color: getValue() === 'PUBLISHED' ? '#2ecc71' : '#f39c12',
                         background: 'transparent',
+                        /* pxtorem-disable-next-line */
                         border: '1px solid #333',
                         borderRadius: '4px'
                     }}

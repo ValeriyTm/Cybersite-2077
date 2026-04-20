@@ -27,6 +27,7 @@
 .confirmBtnStyle {
   background: var(--accent-text-color);
   color: var(--main-text-color);
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
@@ -41,6 +42,7 @@
 .cancelBtnStyle {
   background: var(--auxiliary-text-color);
   color: var(--main-text-color);
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 10px 20px;
   border-radius: 8px;

@@ -8,6 +8,7 @@
   button {
     color: var(--accent-text-color);
     background-color: var(--main-bg-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     border-radius: 10px;
     margin-inline: 10px;
@@ -15,6 +16,7 @@
   }
 
   input {
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     border-radius: 10px;
     display: block;
@@ -38,6 +40,7 @@
 .addBtn {
   background: var(--accent-text-color);
   color: #000;
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 10px 20px;
   border-radius: 4px;

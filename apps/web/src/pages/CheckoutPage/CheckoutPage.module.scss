@@ -24,6 +24,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  /* pxtorem-disable-next-line */
   border-top: 1px solid white;
   span {
     color: #fff;
@@ -48,6 +49,7 @@
   background: var(--auxiliary-bg-color-2);
   border-radius: 16px;
   padding: 25px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   margin-bottom: 25px;
 
@@ -59,6 +61,7 @@
     font-size: 1.3rem;
     color: #fff;
     margin-bottom: 20px;
+    /* pxtorem-disable-next-line */
     border-bottom: 1px solid #333;
     padding-bottom: 15px;
 
@@ -91,6 +94,7 @@
   .mapBtn {
     background: var(--main-bg-color);
     color: var(--accent-text-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     padding: 12px 20px;
     border-radius: 8px;
@@ -107,6 +111,7 @@
   .changeBtn {
     background: var(--main-bg-color);
     color: var(--accent-text-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     padding: 12px 20px;
     border-radius: 8px;
@@ -125,6 +130,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   color: rgba(255, 255, 255, 0.7);
 
@@ -133,6 +139,7 @@
   }
 
   &:last-child {
+    /* pxtorem-disable-next-line */
     border-bottom: none;
   }
 
@@ -147,6 +154,7 @@
   background: var(--auxiliary-bg-color-2);
   padding: 30px;
   border-radius: 16px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   position: sticky;
   top: 100px;
@@ -175,6 +183,7 @@
   .total {
     margin-top: 20px;
     padding-top: 20px;
+    /* pxtorem-disable-next-line */
     border-top: 1px solid #333;
     font-size: 1.4rem;
     font-weight: 800;
@@ -185,6 +194,7 @@
     width: 100%;
     background: var(--accent-text-color);
     color: var(--main-text-color);
+    /* pxtorem-disable-next-line */
     border: none;
     padding: 18px;
     border-radius: 12px;

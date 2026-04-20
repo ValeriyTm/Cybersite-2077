@@ -1,6 +1,7 @@
 .orderCard {
   background: var(--auxiliary-bg-color-2);
   border-radius: 12px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   overflow: hidden;
   margin-bottom: 24px;
@@ -15,6 +16,7 @@
 .topBar {
   background: var(--accent-bg-color);
   padding: 12px 24px;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid var(--accent-text-color);
   color: var(--main-text-color);
   font-size: 0.9rem;
@@ -36,6 +38,7 @@
 .leftPanel {
   padding: 24px;
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border-right: 1px solid var(--accent-text-color);
   display: flex;
   flex-direction: column;
@@ -43,6 +46,7 @@
   gap: 16px;
 
   @include tablet {
+    /* pxtorem-disable-next-line */
     border: none;
     flex-direction: row;
     align-items: center;
@@ -120,6 +124,7 @@
   padding: 20px 24px;
   gap: 24px;
   align-items: center;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid #222;
 
   @include tablet {
@@ -136,6 +141,7 @@
   }
 
   &:last-child {
+    /* pxtorem-disable-next-line */
     border-bottom: none;
   }
 }
@@ -151,6 +157,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
+    /* pxtorem-disable-next-line */
     border: 1px solid #333;
   }
 
@@ -168,6 +175,7 @@
     border-radius: 50%;
     font-size: 0.75rem;
     font-weight: 900;
+    /* pxtorem-disable-next-line */
     border: 2px solid #1a1a1a;
   }
 }
@@ -199,6 +207,7 @@
   .address {
     margin-top: 10px;
     padding-top: 10px;
+    /* pxtorem-disable-next-line */
     border-top: 1px dotted #333;
     font-size: 0.8rem;
     line-height: 1.4;
@@ -225,6 +234,7 @@
 .reviewBtn {
   background: #f39c12;
   color: #000;
+  /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
   min-height: 30px;
@@ -237,6 +247,7 @@
 .reviewedBtn {
   background: #222 !important;
   color: #555 !important;
+  /* pxtorem-disable-next-line */
   border: 1px solid #333 !important;
   border-radius: 10px;
   min-height: 25px;
@@ -251,6 +262,7 @@
 .cancelBtn {
   background: transparent;
   color: #e74c3c;
+  /* pxtorem-disable-next-line */
   border: 1px solid #e74c3c;
   border-radius: 10px;
   min-height: 30px;
@@ -268,6 +280,7 @@
 .confirmBtn {
   background: var(--color-success);
   color: #fff;
+  /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
   min-height: 30px;
@@ -305,10 +318,12 @@
 }
 
 .modalContent {
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--color-danger);
 }
 
 .modalContentSuccess {
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--color-success);
 }
 
@@ -344,6 +359,7 @@
     cursor: pointer;
     font-weight: bold;
     text-transform: uppercase;
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-color);
   }
 }

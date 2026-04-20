@@ -4,7 +4,8 @@
   border-radius: 5px;
   color: var(--accent);
   background: var(--accent-bg);
-  border: 2px solid transparent;
+  /* pxtorem-disable-next-line */
+border: 2px solid transparent;
   transition: border-color 0.3s;
   margin-bottom: 24px;
 
@@ -72,7 +73,8 @@
 
 #next-steps {
   display: flex;
-  border-top: 1px solid var(--border);
+  /* pxtorem-disable-next-line */
+border-top: 1px solid var(--border);
   text-align: left;
 
   & > div {
@@ -96,11 +98,14 @@
 }
 
 #docs {
-  border-right: 1px solid var(--border);
+  /* pxtorem-disable-next-line */
+border-right: 1px solid var(--border);
 
   @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
+    /* pxtorem-disable-next-line */
+border-right: none;
+    /* pxtorem-disable-next-line */
+border-bottom: 1px solid var(--border);
   }
 }
 
@@ -155,7 +160,8 @@
 
 #spacer {
   height: 88px;
-  border-top: 1px solid var(--border);
+  /* pxtorem-disable-next-line */
+border-top: 1px solid var(--border);
   @media (max-width: 1024px) {
     height: 48px;
   }
@@ -170,7 +176,8 @@
     content: '';
     position: absolute;
     top: -4.5px;
-    border: 5px solid transparent;
+    /* pxtorem-disable-next-line */
+border: 5px solid transparent;
   }
 
   &::before {

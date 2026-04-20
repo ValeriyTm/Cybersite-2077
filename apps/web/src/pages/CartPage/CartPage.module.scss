@@ -40,6 +40,7 @@
   padding: 15px 20px;
   border-radius: 12px;
   margin-bottom: 20px;
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
 
   @include mobile-s {
@@ -63,6 +64,7 @@
 
   .deleteSelected {
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     color: var(--color-danger);
     font-weight: 600;
@@ -80,9 +82,11 @@
 }
 
 .Error {
+  /* pxtorem-disable-next-line */
   border: 3px solid var(--color-danger);
 
   @include hover {
+    /* pxtorem-disable-next-line */
     border: 2px solid var(--color-danger);
   }
 }
@@ -92,6 +96,7 @@
   background: var(--auxiliary-bg-color-2);
   padding: 30px;
   border-radius: 16px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   position: sticky;
   top: 120px;
@@ -125,6 +130,7 @@
     &.total {
       margin-top: 25px;
       padding-top: 20px;
+      /* pxtorem-disable-next-line */
       border-top: 1px solid #333;
       color: var(--main-text-color);
       font-size: 1.4rem;
@@ -136,6 +142,7 @@
     width: 100%;
     background: var(--accent-text-color);
     color: var(--main-text-color);
+    /* pxtorem-disable-next-line */
     border: none;
     padding: 18px;
     border-radius: 10px;
@@ -178,6 +185,7 @@
 
   .favIconBtn {
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     font-size: 1.3rem;
     cursor: pointer;
@@ -197,6 +205,7 @@
 
   .deleteTextBtn {
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.7);
@@ -220,6 +229,7 @@
   margin: 20px 0;
   padding: 15px;
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--color-dark);
   border-radius: 8px;
   display: flex;
@@ -243,6 +253,7 @@
   input {
     flex: 1;
     background: var(--auxiliary-bg-color-2);
+    /* pxtorem-disable-next-line */
     border: 1px solid #333;
     padding: 8px 12px;
     color: var(--main-text-color);
@@ -257,6 +268,7 @@
   .applyBtn {
     background: var(--accent-text-color);
     color: var(--main-text-color);
+    /* pxtorem-disable-next-line */
     border: none;
     padding: 8px 16px;
     border-radius: 4px;

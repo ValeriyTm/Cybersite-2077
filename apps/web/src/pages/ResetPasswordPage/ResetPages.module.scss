@@ -41,6 +41,7 @@
     padding: 14px;
     background-color: var(--main-bg-color);
     color: var(--accent-text-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     border-radius: 10px;
     font-weight: 600;
@@ -76,6 +77,7 @@
     transform: translateY(-50%); //Центрируем строго по вертикали
 
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     padding: 5px;
     cursor: pointer;

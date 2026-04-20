@@ -3,6 +3,7 @@
   margin: 60px auto;
   padding: 40px;
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -68,6 +69,7 @@
   select,
   textarea {
     background: var(--main-text-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid #333;
     padding: 15px;
     border-radius: 6px;
@@ -112,6 +114,7 @@
 
 .fileUpload {
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px dashed var(--auxiliary-text-color);
   padding: 20px;
   border-radius: 8px;
@@ -159,6 +162,7 @@
       border-radius: 4px;
       font-size: 0.8rem;
       color: #ccc;
+      /* pxtorem-disable-next-line */
       border: 1px solid #333;
     }
   }
@@ -204,6 +208,7 @@
   align-items: center;
   justify-content: center;
   padding: 30px;
+  /* pxtorem-disable-next-line */
   border: 2px dashed #333;
   border-radius: 12px;
   cursor: pointer;
@@ -243,6 +248,7 @@
 .previewItem {
   position: relative;
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid #222;
   border-radius: 8px;
   padding: 10px;
@@ -282,6 +288,7 @@
     right: -5px;
     background: var(--color-danger);
     color: var(--main-text-color);
+    /* pxtorem-disable-next-line */
     border: none;
     width: 20px;
     height: 20px;

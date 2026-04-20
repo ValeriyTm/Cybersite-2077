@@ -15,6 +15,7 @@
   border-radius: 12px;
   width: 100%;
   max-width: 500px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
   h3 {
@@ -47,6 +48,7 @@ textarea {
   width: 100%;
   height: 120px;
   background: var(--main-text-color) !important;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color) !important;
   border-radius: 8px;
   padding: 12px;
@@ -63,6 +65,7 @@ textarea {
   display: inline-block;
   padding: 12px 20px;
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px dashed var(--auxiliary-text-color);
   border-radius: 8px;
   cursor: pointer;
@@ -71,6 +74,7 @@ textarea {
   text-align: center;
   transition: all 0.2s;
   @include hover {
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
   }
 }
@@ -99,6 +103,7 @@ textarea {
       right: -6px;
       background: var(--color-danger);
       color: var(--main-text-color);
+      /* pxtorem-disable-next-line */
       border: none;
       width: 20px;
       height: 20px;
@@ -132,6 +137,7 @@ textarea {
   .cancel {
     background: transparent;
     color: var(--auxiliary-text-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--auxiliary-text-color);
 
     @include hover {
@@ -141,6 +147,7 @@ textarea {
   .submit {
     background: var(--accent-text-color);
     color: var(--main-text-color);
+    /* pxtorem-disable-next-line */
     border: none;
 
     @include hover {
@@ -163,7 +170,8 @@ textarea {
     width: 100%;
     height: 140px;
     // background: #222;
-    // border: 1px solid #333;
+    // /* pxtorem-disable-next-line */
+    border: 1px solid #333;
     border-radius: 8px;
     padding: 12px;
     padding-bottom: 30px;

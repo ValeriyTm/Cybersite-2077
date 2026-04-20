@@ -2,6 +2,7 @@
   background: var(--main-bg-color);
   color: #fff;
   padding-block: 30px;
+  /* pxtorem-disable-next-line */
   border-top: 1px solid var(--accent-text-color);
   width: 100%;
   display: flex;
@@ -62,6 +63,7 @@
       text-transform: uppercase;
       margin-bottom: 8px;
       color: #fff;
+      /* pxtorem-disable-next-line */
       border-bottom: 2px solid var(--accent-text-color);
       width: fit-content;
 
@@ -121,6 +123,7 @@
   .supportBtn {
     display: inline-block;
     padding: 10px 20px;
+    /* pxtorem-disable-next-line */
     border: 2px solid var(--accent-text-color);
     border-radius: 50px;
     text-align: center;
@@ -184,7 +187,9 @@
   }
 
   .divider {
+    /* pxtorem-disable-next-line */
     border: 0;
+    /* pxtorem-disable-next-line */
     border-top: 1px solid #222;
     margin-bottom: 20px;
   }

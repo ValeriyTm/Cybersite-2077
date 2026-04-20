@@ -29,6 +29,7 @@
 
 .promoCard {
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 2px dashed var(--accent-text-color);
   padding: 24px;
   border-radius: 12px;
@@ -72,6 +73,7 @@
     button {
       background: var(--auxiliary-bg-color-2);
       color: var(--main-text-color);
+      /* pxtorem-disable-next-line */
       border: none;
       padding: 5px 10px;
       font-size: 0.7rem;

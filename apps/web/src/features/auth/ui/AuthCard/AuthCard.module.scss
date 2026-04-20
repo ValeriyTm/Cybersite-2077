@@ -6,6 +6,7 @@
 .toggleWrapper {
   display: flex;
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
   padding: 4px;
@@ -19,6 +20,7 @@
 .toggleButton {
   flex: 1;
   padding: 10px;
+  /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -28,6 +30,7 @@
 }
 
 .isActive {
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   background: var(--basic-gradient);
   color: var(--main-text-color);
@@ -37,6 +40,7 @@
 
 .formCard {
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   padding: 32px;
   border-radius: 20px;
@@ -60,6 +64,7 @@
   justify-content: center;
   gap: 10px;
   padding: 12px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--main-bg-color);
   color: var(--main-text-color);
   border-radius: 30px;
@@ -113,13 +118,15 @@
   input {
     width: 100%;
     padding: 12px;
-    // border: 1px solid #eee;
+    // /* pxtorem-disable-next-line */
+    border: 1px solid #eee;
     border-radius: 10px;
     background: #f9f9f9;
     box-sizing: none;
 
     &:focus {
       color: var(--accent-text-color);
+      /* pxtorem-disable-next-line */
       border: 1px solid var(--accent-text-color) !important;
     }
 
@@ -139,6 +146,7 @@
 .submitBtn {
   width: 100%;
   padding: 14px;
+  /* pxtorem-disable-next-line */
   border: none;
   border-radius: 30px;
   background: #ccc;
@@ -161,22 +169,6 @@
     padding-right: 45px; //Место для кнопки
   }
 }
-
-// .eyeBtn {
-//   position: absolute;
-//   right: 12px;
-//   background: none;
-//   border: none;
-//   cursor: pointer;
-//   color: #999;
-//   display: flex;
-//   align-items: center;
-//   padding: 0;
-
-//   @include hover {
-//     color: #000;
-//   }
-// }
 
 .checkboxField {
   display: flex;
@@ -207,16 +199,6 @@
   }
 }
 
-// .labelWithLink {
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   margin-bottom: 6px;
-
-//   label {
-//     margin-bottom: 0;
-//   }
-// }
 .labelWithLink {
   display: flex;
   justify-content: space-between; //Расталкивает текст и ссылку по краям
@@ -270,6 +252,7 @@
 .backBtn {
   margin-top: 10px;
   background: none;
+  /* pxtorem-disable-next-line */
   border: none;
   color: #888;
   cursor: pointer;
@@ -288,6 +271,7 @@
 .resetBtn {
   background: #f0f0f0;
   color: #666;
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 10px 20px;
   border-radius: 8px;

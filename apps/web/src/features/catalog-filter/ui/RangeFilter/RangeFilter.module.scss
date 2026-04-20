@@ -19,6 +19,7 @@
 .input {
   width: 100%;
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-text-color);
   color: var(--main-text-color);
   padding: 4px 12px;

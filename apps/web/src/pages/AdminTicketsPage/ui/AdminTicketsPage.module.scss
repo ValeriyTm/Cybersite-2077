@@ -16,6 +16,7 @@
   background: var(--auxiliary-bg-color-2);
   padding: 20px;
   border-radius: 12px;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
   @include mobile {
@@ -54,6 +55,7 @@
 
 .filterSelect {
   background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   color: var(--main-text-color);
   padding: 8px 12px;
@@ -69,6 +71,7 @@
 //Стили для Select внутри таблицы (используются в columns.tsx)
 .statusSelect {
   background: transparent;
+  /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 4px;
   padding: 4px 8px;
@@ -97,6 +100,7 @@
 
 .modal {
   background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   width: 100%;
   max-width: 650px;
@@ -120,6 +124,7 @@
 
 .modalHeader {
   padding: 20px;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid var(--accent-text-color);
   display: flex;
   justify-content: space-between;
@@ -133,6 +138,7 @@
 
   .closeBtn {
     background: none;
+    /* pxtorem-disable-next-line */
     border: none;
     color: var(--auxiliary-text-color);
     cursor: pointer;
@@ -148,6 +154,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  /* pxtorem-disable-next-line */
   border-bottom: 1px solid #222;
 
   .infoRow {
@@ -163,6 +170,7 @@
     background: var(--main-bg-color);
     padding: 15px;
     border-radius: 8px;
+    /* pxtorem-disable-next-line */
     border: 1px solid #222;
     p {
       margin: 8px 0 0 0;
@@ -185,6 +193,7 @@
 
   .fileLink {
     background: var(--main-bg-color);
+    /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     padding: 6px 12px;
     border-radius: 4px;
@@ -212,7 +221,8 @@
 
   textarea {
     // background: #1a1a1a;
-    // border: 1px solid #333;
+    // /* pxtorem-disable-next-line */
+    border: 1px solid #333;
     border-radius: 6px;
     color: var(--color-dark);
     padding: 15px;
@@ -236,6 +246,7 @@
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
+    /* pxtorem-disable-next-line */
     border: none;
     transition: 0.2s;
   }
@@ -283,6 +294,7 @@
 
 .emailSearch {
   background: #1a1a1a;
+  /* pxtorem-disable-next-line */
   border: 1px solid #333;
   padding: 8px 15px;
   border-radius: 6px;

@@ -25,6 +25,7 @@
 .addBtn {
   background: var(--accent-text-color);
   color: var(--main-text-color);
+  /* pxtorem-disable-next-line */
   border: none;
   padding: 8px 8px;
   border-radius: 10px;
@@ -64,12 +65,14 @@
   padding: 4px;
   justify-content: space-between;
   width: 120px;
+  /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
 
   button {
     width: 32px;
     height: 32px;
     background: var(--auxiliary-bg-color-2);
+    /* pxtorem-disable-next-line */
     border: none;
     color: var(--main-text-color);
     border-radius: 8px;
