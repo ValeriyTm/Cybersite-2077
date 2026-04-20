@@ -45,14 +45,14 @@
 .cancelBtn {
   background: #333;
   color: #fff;
-  &:hover {
+  @include hover {
     background: #444;
   }
 }
 .confirmBtn {
   background: #ff4757;
   color: #fff;
-  &:hover {
+  @include hover {
     background: #ff6b81;
   }
 }

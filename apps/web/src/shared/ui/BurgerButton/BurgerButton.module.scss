@@ -19,7 +19,7 @@
   right: 20px;
   z-index: 3000;
 
-  &:hover {
+  @include hover {
     opacity: 0.8;
   }
 

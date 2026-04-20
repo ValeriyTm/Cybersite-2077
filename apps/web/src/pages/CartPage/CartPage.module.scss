@@ -69,7 +69,7 @@
     cursor: pointer;
     transition: opacity 0.2s;
 
-    &:hover {
+    @include hover {
       opacity: 0.8;
     }
     &:disabled {
@@ -82,7 +82,7 @@
 .Error {
   border: 3px solid var(--color-danger);
 
-  &:hover {
+  @include hover {
     border: 2px solid var(--color-danger);
   }
 }
@@ -96,7 +96,7 @@
   position: sticky;
   top: 120px;
 
-  &:hover {
+  @include hover {
     box-shadow: 0 10px 30px var(--accent-text-color);
   }
 
@@ -149,9 +149,11 @@
       margin-top: 0;
     }
 
-    &:hover:not(:disabled) {
-      opacity: 0.8;
-      transform: translateY(-2px);
+    @include hover {
+      &:not(:disabled) {
+        opacity: 0.8;
+        transform: translateY(-2px);
+      }
     }
 
     &:disabled {
@@ -184,7 +186,7 @@
     display: flex;
     align-items: center;
 
-    &:hover {
+    @include hover {
       transform: scale(1.2);
     }
 
@@ -202,7 +204,7 @@
     text-decoration: underline;
     padding: 0;
 
-    &:hover {
+    @include hover {
       color: var(--color-danger);
     }
   }
@@ -261,7 +263,7 @@
     font-weight: 700;
     cursor: pointer;
 
-    &:hover {
+    @include hover {
       box-shadow: 0 0 30px var(--accent-text-color);
     }
   }
@@ -278,7 +280,7 @@
   background-color: #c0676f;
   border-radius: 50%;
 
-  &:hover {
+  @include hover {
     background-color: var(--color-danger);
   }
 }

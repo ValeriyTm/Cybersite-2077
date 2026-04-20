@@ -39,7 +39,7 @@
   cursor: pointer;
   font-size: 0.8rem;
 
-  &:hover {
+  @include hover {
     border-color: var(--accent-text-color);
   }
 }
@@ -63,9 +63,11 @@
       opacity: 0.3;
       cursor: not-allowed;
     }
-    &:hover:not(:disabled) {
-      border-color: var(--accent-text-color);
-      color: var(--accent-text-color);
+    @include hover {
+      &:not(:disabled) {
+        border-color: var(--accent-text-color);
+        color: var(--accent-text-color);
+      }
     }
   }
 }

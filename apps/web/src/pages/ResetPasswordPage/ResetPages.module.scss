@@ -47,7 +47,7 @@
     cursor: pointer;
     margin-top: 10px;
 
-    &:hover {
+    @include hover {
       background-color: var(--accent-text-color);
       color: var(--main-text-color);
     }
@@ -85,7 +85,7 @@
     justify-content: center;
     z-index: 10;
 
-    &:hover {
+    @include hover {
       color: #000;
     }
 

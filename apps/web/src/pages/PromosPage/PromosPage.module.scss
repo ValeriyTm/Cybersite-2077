@@ -39,7 +39,7 @@
     padding: 10px 16px;
   }
 
-  &:hover {
+  @include hover {
     border-color: var(--accent-text-color);
   }
 
@@ -77,7 +77,7 @@
       font-size: 0.7rem;
       border-radius: 4px;
       cursor: pointer;
-      &:hover {
+      @include hover {
         box-shadow: 0 0 10px var(--accent-text-color);
       }
     }

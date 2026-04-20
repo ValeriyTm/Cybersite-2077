@@ -28,7 +28,7 @@ p {
 }
 
 .logolink {
-  &:hover {
+  @include hover {
     opacity: 0.8;
   }
 }
@@ -50,7 +50,7 @@ p {
   a {
     color: var(--auxiliary-text-color);
 
-    &:hover {
+    @include hover {
       color: var(--accent-text-color);
     }
   }

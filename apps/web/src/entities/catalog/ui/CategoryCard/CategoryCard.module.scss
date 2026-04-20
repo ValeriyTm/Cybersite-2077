@@ -28,7 +28,7 @@
     margin-inline: 10px;
   }
 
-  &:hover {
+  @include hover {
     transform: translateY(-8px);
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);

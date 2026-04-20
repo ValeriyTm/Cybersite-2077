@@ -28,7 +28,7 @@
     gap: 10px;
   }
 
-  &:hover {
+  @include hover {
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
   }
@@ -75,7 +75,7 @@
       cursor: pointer;
       padding: 0;
 
-      &:hover {
+      @include hover {
         color: var(--accent-text-color);
       }
       &:last-child:hover {
@@ -92,7 +92,7 @@
         display: flex;
         align-items: center;
 
-        &:hover {
+        @include hover {
           transform: scale(1.2);
         }
 
@@ -127,7 +127,7 @@
         cursor: pointer;
         font-weight: bold;
 
-        &:hover {
+        @include hover {
           background: var(--auxiliary-text-color);
         }
       }
@@ -146,7 +146,7 @@
       padding: 2px 4px;
       border-radius: 6px;
 
-      &:hover {
+      @include hover {
         scale: 1.1;
         color: var(--color-danger);
       }
@@ -167,7 +167,7 @@
       text-decoration: none;
       margin-bottom: 0;
 
-      &:hover {
+      @include hover {
         color: var(--accent-text-color);
       }
     }
@@ -208,7 +208,7 @@
   .Error {
     border: 3px solid var(--color-danger);
 
-    &:hover {
+    @include hover {
       border: 2px solid var(--color-danger);
     }
   }
@@ -222,7 +222,7 @@
     text-decoration: underline;
     padding: 0;
 
-    &:hover {
+    @include hover {
       color: var(--color-danger);
     }
   }

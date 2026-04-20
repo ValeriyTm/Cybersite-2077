@@ -73,7 +73,7 @@
   border-radius: 8px;
   transition: all 0.2s;
 
-  &:hover {
+  @include hover {
     background: var(--auxiliary-bg-color-2);
     color: var(--main-text-color);
   }
@@ -140,7 +140,7 @@
     z-index: 300;
   }
 
-  &:hover {
+  @include hover {
     background-color: var(--accent-text-color);
     color: var(--main-text-color);
   }

@@ -7,7 +7,7 @@
   span {
     color: var(--auxiliary-text-color);
     transition: color 0.2s;
-    &:hover {
+    @include hover {
       color: var(--color-rating);
     }
   }

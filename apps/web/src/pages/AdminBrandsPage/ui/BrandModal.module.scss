@@ -21,7 +21,7 @@
   h4 {
     margin-bottom: 25px;
     font-size: 1.2rem;
-    color: #f39c12;
+    color: var(--accent-text-color);
     text-transform: uppercase;
   }
 
@@ -62,7 +62,7 @@
     &:first-child {
       background: #222;
       color: #888;
-      &:hover {
+      @include hover {
         background: #333;
         color: #fff;
       }
@@ -70,10 +70,10 @@
   }
 
   .saveBtn {
-    background: #f39c12;
+    background: var(--accent-text-color);
     color: #000;
-    &:hover {
-      background: #e68a00;
+    @include hover {
+      background: var(--accent-text-color);
     }
   }
 }
@@ -99,9 +99,11 @@
       cursor: not-allowed;
     }
 
-    &:hover:not(:disabled) {
-      border-color: #f39c12;
-      color: #f39c12;
+    @include hover {
+      &:not(:disabled) {
+        border-color: var(--accent-text-color);
+        color: var(--accent-text-color);
+      }
     }
   }
 }

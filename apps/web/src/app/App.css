@@ -8,7 +8,7 @@
   transition: border-color 0.3s;
   margin-bottom: 24px;
 
-  &:hover {
+  @include hover {
     border-color: var(--accent-border);
   }
   &:focus-visible {
@@ -127,7 +127,7 @@
     text-decoration: none;
     transition: box-shadow 0.3s;
 
-    &:hover {
+    @include hover {
       box-shadow: var(--shadow);
     }
     .button-icon {

@@ -93,7 +93,7 @@
         transition: color 0.2s;
         position: relative;
 
-        &:hover {
+        @include hover {
           color: var(--accent-text-color);
         }
 
@@ -108,8 +108,11 @@
           background-color: var(--accent-text-color);
           transition: width 0.3s ease; //Анимация изменения ширины
         }
-        &:hover::after {
-          width: 100%;
+
+        @include hover {
+          &::after {
+            width: 100%;
+          }
         }
       }
     }
@@ -129,7 +132,7 @@
       margin-top: 0;
     }
 
-    &:hover {
+    @include hover {
       background-color: var(--accent-text-color);
       color: var(--color-dark) !important;
     }
@@ -162,7 +165,7 @@
       transition:
         color 0.2s,
         transform 0.2s;
-      &:hover {
+      @include hover {
         color: var(--accent-text-color);
         transform: translateY(-3px);
       }
@@ -174,7 +177,7 @@
       display: inline-block;
       padding: 5px;
 
-      &:hover {
+      @include hover {
         color: var(--accent-text-color);
       }
     }
@@ -197,7 +200,7 @@
     a {
       color: var(--auxiliary-text-color);
       text-decoration: none;
-      &:hover {
+      @include hover {
         color: var(--main-text-color);
       }
     }
@@ -221,7 +224,7 @@
     width: 100%;
     opacity: 0.9;
 
-    &:hover {
+    @include hover {
       opacity: 1;
     }
   }
@@ -229,49 +232,49 @@
 
 //-----------------Иконки:-----------------------
 .facebook {
-  &:hover {
+  @include hover {
     color: #1877f2 !important;
   }
 }
 
 .twitter {
-  &:hover {
+  @include hover {
     color: #1da1f2 !important;
   }
 }
 
 .youtube {
-  &:hover {
+  @include hover {
     color: #ff0000 !important;
   }
 }
 
 .whatsapp {
-  &:hover {
+  @include hover {
     color: #25d366 !important;
   }
 }
 
 .viber {
-  &:hover {
+  @include hover {
     color: #7360f2 !important;
   }
 }
 
 .vk {
-  &:hover {
+  @include hover {
     color: #0077ff !important;
   }
 }
 
 .tiktok {
-  &:hover {
+  @include hover {
     color: #69c9d0 !important;
   }
 }
 
 .telegram {
-  &:hover {
+  @include hover {
     color: #24a1de !important;
   }
 }

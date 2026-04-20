@@ -30,8 +30,10 @@
     padding: 6px 12px;
   }
 
-  &:hover:not(:disabled) {
-    opacity: 0.8;
+  @include hover {
+    &:not(:disabled) {
+      opacity: 0.8;
+    }
   }
 
   &:disabled {

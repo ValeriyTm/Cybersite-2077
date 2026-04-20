@@ -31,9 +31,11 @@
     padding: 10px 15px;
   }
 
-  &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 0 30px rgba(243, 156, 18, 0.5);
+  @include hover {
+    &:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px rgba(243, 156, 18, 0.5);
+    }
   }
 }
 

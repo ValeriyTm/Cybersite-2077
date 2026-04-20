@@ -89,7 +89,7 @@
     &:first-child {
       background: #222;
       color: #777;
-      &:hover {
+      @include hover {
         background: #333;
         color: #fff;
       }
@@ -99,7 +99,7 @@
   .saveBtn {
     background: var(--accent-text-color);
     color: #000;
-    &:hover {
+    @include hover {
       background: var(--accent-text-color);
       transform: translateY(-1px);
     }

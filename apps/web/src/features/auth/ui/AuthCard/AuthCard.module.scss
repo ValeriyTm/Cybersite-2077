@@ -68,7 +68,7 @@
   margin-bottom: 20px;
   opacity: 0.85;
 
-  &:hover {
+  @include hover {
     scale: 1.05;
   }
 
@@ -173,7 +173,7 @@
 //   align-items: center;
 //   padding: 0;
 
-//   &:hover {
+//   @include hover {
 //     color: #000;
 //   }
 // }
@@ -200,7 +200,7 @@
     a {
       color: var(--accent-text-color);
       text-decoration: underline;
-      &:hover {
+      @include hover {
         text-decoration: none;
       }
     }
@@ -230,7 +230,7 @@
   color: var(--primary-color);
   text-decoration: none;
 
-  &:hover {
+  @include hover {
     text-decoration: underline;
   }
 }
@@ -274,7 +274,7 @@
   color: #888;
   cursor: pointer;
   font-size: 13px;
-  &:hover {
+  @include hover {
     text-decoration: underline;
   }
 }
@@ -294,7 +294,7 @@
   cursor: pointer;
   transition: background 0.2s;
 
-  &:hover {
+  @include hover {
     background: #e0e0e0;
     color: #333;
   }

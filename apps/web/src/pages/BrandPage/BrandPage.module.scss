@@ -84,8 +84,10 @@
   transition: all 0.2s ease;
   font-weight: 500;
 
-  &:hover:not(.active) {
-    border-color: var(--accent-text-color);
+  @include hover {
+    &:not(.active) {
+      border-color: var(--accent-text-color);
+    }
   }
 
   &.active {

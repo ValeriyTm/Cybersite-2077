@@ -32,9 +32,11 @@
   cursor: pointer;
   transition: all 0.3s ease;
 
-  &:hover:not(:disabled) {
-    background: var(--accent-text-color);
-    color: #000;
+  @include hover {
+    &:not(:disabled) {
+      background: var(--accent-text-color);
+      color: #000;
+    }
   }
 
   &:disabled {
@@ -85,7 +87,7 @@
   transition: all 0.3s ease-in-out;
   box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
 
-  &:hover {
+  @include hover {
     background: #fff;
     transform: scale(1.1);
     box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);

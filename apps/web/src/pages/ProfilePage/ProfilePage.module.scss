@@ -53,9 +53,10 @@
       font-size: 12px;
       opacity: 0;
       transition: 0.2s;
-    }
-    &:hover .avatarOverlay {
-      opacity: 1;
+
+      @include hover {
+        opacity: 1;
+      }
     }
 
     &.loading {
@@ -90,7 +91,7 @@
       padding: 2px;
     }
 
-    &:hover {
+    @include hover {
       background-color: var(--accent-text-color) !important;
       color: var(--main-text-color);
     }
@@ -183,7 +184,7 @@
   border-radius: 10px;
   cursor: pointer;
   transition: 0.2s;
-  &:hover {
+  @include hover {
     background: #e0e0e0;
   }
 }
@@ -302,7 +303,7 @@
       margin: 0 auto;
     }
 
-    &:hover {
+    @include hover {
       color: var(--color-light);
       background-color: var(--accent-text-color);
     }
@@ -374,7 +375,7 @@
     color: var(--main-text-color);
     border-bottom: 1px solid var(--main-text-color);
 
-    &:hover {
+    @include hover {
       color: var(--accent-text-color);
       border-bottom: 1px solid var(--accent-text-color);
     }
@@ -404,7 +405,7 @@
   background: #f5f5f5;
   border: 1px solid #ddd;
   color: #333;
-  &:hover {
+  @include hover {
     background: #eee;
   }
 }
@@ -413,7 +414,7 @@
   background: #fff;
   border: 1px solid #ff4d4f;
   color: #ff4d4f;
-  &:hover {
+  @include hover {
     background: #ff4d4f;
     color: #fff;
   }
@@ -439,7 +440,7 @@
   padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
-  &:hover {
+  @include hover {
     background: var(--color-danger);
   }
 }
@@ -517,7 +518,7 @@
 //   padding: 10px 20px;
 //   border-radius: 10px;
 //   cursor: pointer;
-//   &:hover {
+//   @include hover {
 //     background: #45a049;
 //   }
 // }

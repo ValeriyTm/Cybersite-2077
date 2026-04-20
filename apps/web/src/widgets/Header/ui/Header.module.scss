@@ -77,7 +77,7 @@
       color: var(--auxiliary-text-color);
       transition: color 0.2s;
 
-      &:hover {
+      @include hover {
         color: var(--accent-text-color);
       }
     }
@@ -95,7 +95,7 @@
       display: none;
     }
 
-    &:hover {
+    @include hover {
       opacity: 1;
     }
   }
@@ -217,7 +217,7 @@
     justify-content: center;
   }
 
-  &:hover {
+  @include hover {
     background-color: var(--auxiliary-bg-color-2);
   }
 
@@ -280,7 +280,7 @@
       padding-block: 0.25rem;
     }
 
-    &:hover {
+    @include hover {
       background: var(--auxiliary-bg-color-2);
     }
   }
@@ -333,7 +333,7 @@
 
   overflow: hidden;
 
-  &:hover {
+  @include hover {
     color: var(--accent-text-color);
   }
 }
@@ -361,7 +361,7 @@
     position: relative;
     transition: opacity 0.2s;
 
-    &:hover {
+    @include hover {
       opacity: 0.7;
     }
 
@@ -411,7 +411,7 @@
   span {
     color: var(--main-text-color);
 
-    &:hover {
+    @include hover {
       color: var(--accent-text-color);
     }
 
@@ -433,7 +433,7 @@
   border-bottom-left-radius: 10px;
 
   span {
-    &:hover {
+    @include hover {
       color: var(--color-dark);
     }
   }
@@ -535,7 +535,7 @@
     }
   }
 
-  &:hover {
+  @include hover {
     color: #000;
     .brandIcon img {
       scale: 1.2;
@@ -583,7 +583,7 @@
     border: none;
   }
 
-  &:hover {
+  @include hover {
     background: #252525;
     .suggestModel {
       color: var(--accent-text-color);
@@ -654,7 +654,7 @@
     &.inactive {
       filter: grayscale(100%);
 
-      &:hover {
+      @include hover {
         filter: grayscale(50%);
       }
     }

@@ -46,7 +46,7 @@
   text-transform: uppercase;
   transition: all 0.3s ease;
 
-  &:hover {
+  @include hover {
     background: #f39c12;
     color: #000;
     box-shadow: 0 0 20px rgba(243, 156, 18, 0.4);

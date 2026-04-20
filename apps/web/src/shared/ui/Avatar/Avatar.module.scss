@@ -18,7 +18,7 @@
   }
 
   // Эффект при наведении
-  &:hover {
+  @include hover {
     .avatarOverlay {
       opacity: 1;
     }

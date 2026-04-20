@@ -30,10 +30,11 @@
   background-color: var(--accent-text-color);
   color: var(--main-text-color);
 
-  &:hover:not(:disabled) {
-    background-color: var(--main-text-color);
-    color: var(--accent-text-color);
-    // border: 1px solid var(--accent-text-color);
+  @include hover {
+    &:not(:disabled) {
+      background-color: var(--main-text-color);
+      color: var(--accent-text-color);
+    }
   }
 }
 
@@ -42,8 +43,10 @@
   border: 1px solid var(--main-text-color);
   color: white;
 
-  &:hover:not(:disabled) {
-    background-color: var(--auxiliary-text-color);
+  @include hover {
+    &:not(:disabled) {
+      background-color: var(--auxiliary-text-color);
+    }
   }
 }
 
@@ -52,9 +55,11 @@
   border: 1px solid var(--primary-color, var(--accent-text-color));
   color: var(--primary-color, var(--accent-text-color));
 
-  &:hover:not(:disabled) {
-    background-color: var(--accent-text-color) !important;
-    color: var(--main-text-color);
+  @include hover {
+    &:not(:disabled) {
+      background-color: var(--accent-text-color) !important;
+      color: var(--main-text-color);
+    }
   }
 }
 
@@ -63,8 +68,10 @@
   border: 1px solid var(--color-danger);
   color: var(--color-danger);
 
-  &:hover:not(:disabled) {
-    background-color: var(--color-danger);
-    color: var(--color-light);
+  @include hover {
+    &:not(:disabled) {
+      background-color: var(--color-danger);
+      color: var(--color-light);
+    }
   }
 }

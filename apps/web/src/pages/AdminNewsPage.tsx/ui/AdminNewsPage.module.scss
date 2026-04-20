@@ -81,7 +81,7 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    &:hover {
+    @include hover {
       background: #f39c12;
       color: #000;
       border-color: #f39c12;
@@ -95,7 +95,7 @@
   background-color: var(--main-bg-color);
   border-radius: 10px;
 
-  &:hover {
+  @include hover {
     opacity: 0.8;
   }
 }
@@ -107,7 +107,7 @@
   border-radius: 10px;
   margin-right: 20px;
 
-  &:hover {
+  @include hover {
     opacity: 0.8;
   }
 }

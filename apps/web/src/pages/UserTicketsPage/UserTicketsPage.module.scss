@@ -68,7 +68,7 @@ h1 {
   width: 98%;
   justify-self: center;
 
-  &:hover {
+  @include hover {
     box-shadow: 0 0 10px var(--accent-text-color);
   }
 }

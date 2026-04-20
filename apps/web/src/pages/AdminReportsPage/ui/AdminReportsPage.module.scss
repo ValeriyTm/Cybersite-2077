@@ -21,7 +21,7 @@
   overflow: hidden;
   transition: transform 0.2s;
 
-  &:hover {
+  @include hover {
     transform: translateY(-5px);
     box-shadow: 0 0 10px var(--accent-text-color);
   }
@@ -60,7 +60,7 @@
     font-weight: bold;
     transition: 0.3s;
 
-    &:hover {
+    @include hover {
       background: #f39c12;
       color: #000;
       border-color: #f39c12;

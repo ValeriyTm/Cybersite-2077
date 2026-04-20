@@ -9,7 +9,7 @@
   transition: all 0.3s ease;
   // max-width: 400px;
 
-  &:hover {
+  @include hover {
     transform: translateY(-5px);
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
@@ -194,7 +194,7 @@
       background: none; //Убираем белый фон, который был в сетке
     }
 
-    &:hover {
+    @include hover {
       transform: scale(1.2);
     }
   }
@@ -228,7 +228,7 @@
   transition: all 0.2s ease;
   font-size: 14px;
 
-  &:hover {
+  @include hover {
     transform: scale(1.1);
     background: rgba(0, 0, 0, 0.8);
   }
@@ -255,7 +255,7 @@
   display: flex;
   align-items: center;
 
-  &:hover {
+  @include hover {
     transform: scale(1.2);
   }
 }

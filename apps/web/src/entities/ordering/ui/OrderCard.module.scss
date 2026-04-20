@@ -6,7 +6,7 @@
   margin-bottom: 24px;
   transition: border-color 0.3s ease;
 
-  &:hover {
+  @include hover {
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
   }
@@ -229,7 +229,7 @@
   border-radius: 10px;
   min-height: 30px;
   font-weight: 600;
-  &:hover {
+  @include hover {
     background: #e67e22;
   }
 }
@@ -243,7 +243,7 @@
   cursor: default !important;
   font-weight: 500;
 
-  &:hover {
+  @include hover {
     background: #222 !important;
   }
 }
@@ -260,7 +260,7 @@
     align-self: end;
   }
 
-  &:hover {
+  @include hover {
     background: rgba(231, 76, 60, 0.1);
   }
 }
@@ -277,7 +277,7 @@
     align-self: end;
   }
 
-  &:hover {
+  @include hover {
     opacity: 0.8;
   }
 }
@@ -352,7 +352,7 @@
   background: inherit;
   color: var(--auxiliary-text-color);
 
-  &:hover {
+  @include hover {
     color: var(--color-danger);
   }
 }
@@ -362,7 +362,7 @@
   color: var(--main-text-color);
   border-color: #444;
 
-  &:hover {
+  @include hover {
     color: var(--accent-text-color);
   }
 }
@@ -371,7 +371,7 @@
   background: inherit;
   color: var(--main-text-color);
 
-  &:hover {
+  @include hover {
     color: var(--color-success);
   }
 }
@@ -380,7 +380,7 @@
   background: transparent;
   color: var(--auxiliary-text-color);
 
-  &:hover {
+  @include hover {
     color: var(--main-text-color);
   }
 }

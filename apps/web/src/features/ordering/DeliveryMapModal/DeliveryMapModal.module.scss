@@ -33,7 +33,7 @@
   cursor: pointer;
   font-weight: bold;
 
-  &:hover {
+  @include hover {
     scale: 1.05;
   }
 }
@@ -46,7 +46,7 @@
   border-radius: 8px;
   cursor: pointer;
 
-  &:hover {
+  @include hover {
     scale: 1.05;
   }
 }

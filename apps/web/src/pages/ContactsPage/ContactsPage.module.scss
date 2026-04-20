@@ -61,7 +61,7 @@
   a {
     padding: 5px;
 
-    &:hover {
+    @include hover {
       color: var(--accent-text-color);
     }
   }
@@ -88,7 +88,7 @@
     transition:
       color 0.2s,
       transform 0.2s;
-    &:hover {
+    @include hover {
       color: var(--accent-text-color);
       transform: translateY(-3px);
     }
@@ -96,49 +96,49 @@
 }
 
 .facebook {
-  &:hover {
+  @include hover {
     color: #1877f2 !important;
   }
 }
 
 .twitter {
-  &:hover {
+  @include hover {
     color: #1da1f2 !important;
   }
 }
 
 .youtube {
-  &:hover {
+  @include hover {
     color: #ff0000 !important;
   }
 }
 
 .whatsapp {
-  &:hover {
+  @include hover {
     color: #25d366 !important;
   }
 }
 
 .viber {
-  &:hover {
+  @include hover {
     color: #7360f2 !important;
   }
 }
 
 .vk {
-  &:hover {
+  @include hover {
     color: #0077ff !important;
   }
 }
 
 .tiktok {
-  &:hover {
+  @include hover {
     color: #69c9d0 !important;
   }
 }
 
 .telegram {
-  &:hover {
+  @include hover {
     color: #24a1de !important;
   }
 }
