@@ -40,7 +40,7 @@ export const App = () => {
             <RouterProvider router={router} />
           </ErrorBoundary>
         </HelmetProvider>
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </GoogleReCaptchaProvider>
   );

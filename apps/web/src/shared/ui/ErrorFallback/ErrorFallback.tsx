@@ -1,6 +1,7 @@
 // //Этот компонент будет отображен, если произойдет ошибка внутри любого компонента внутри компонента App.
 import { useEffect } from "react";
 import { useRouteError, isRouteErrorResponse } from "react-router";
+import styles from './ErrorFallback.module.scss';
 
 export const ErrorFallback = () => {
   // Хук для получения ошибки из контекста роутера
@@ -26,10 +27,12 @@ export const ErrorFallback = () => {
   }
 
   return (
-    <div className="error-card">
+    <div className={styles.errorCard}>
       <h2>Упс! Что-то пошло не так 😭</h2>
-      <pre style={{ whiteSpace: "pre-wrap" }}>{errorMessage}</pre>
+      <p>В приложении произошла техническая ошибка</p>
+      <pre>{errorMessage}</pre>
       <button onClick={() => window.location.assign("/")}>На главную</button>
+      <img className={styles.errorImg} src="src/shared/assets/images/banners/errorBanner.png" alt="" />
     </div>
   );
 };

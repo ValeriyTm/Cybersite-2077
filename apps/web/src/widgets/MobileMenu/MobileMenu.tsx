@@ -53,15 +53,15 @@ export const MobileMenu = () => {
                 <nav className={styles.nav}>
 
                     <p>
-                        {isAuth && user ? user.name : "Войти"}
+                        {isAuth && user ? user.name : "Анонимус"}
                     </p>
 
                     <ul>
                         <li>
-                            <Link to="/">Главная 🏠</Link>
+                            <Link to="/profile">{isAuth ? "Личный кабинет" : "Войти"} 👤</Link>
                         </li>
                         <li>
-                            <Link to="/profile">В личный кабинет 👤</Link>
+                            <Link to="/">Главная 🏠</Link>
                         </li>
                         <li>
                             <Link to="/profile/favorites">Моё избранное ❤️</Link>

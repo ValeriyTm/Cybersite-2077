@@ -6,7 +6,7 @@ import { optionalAuth } from "src/shared/middlewares/optionalAuthMiddleware.js";
 
 const router = Router();
 
-//Для получения sitemap.xml (/api/catalog/sitemap.xml):
+//Генерация актуального sitemap.xml (/api/catalog/sitemap.xml):
 router.get("/sitemap.xml", catalogController.getSitemap);
 //Получение главных категорий (/api/catalog/categories):
 router.get("/categories", catalogController.getCategories);

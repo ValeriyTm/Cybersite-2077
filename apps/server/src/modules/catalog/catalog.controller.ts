@@ -178,7 +178,7 @@ export const getMotorcycleById = catchAsync(
 //Получение sitemap для каталога:
 export const getSitemap = catchAsync(async (req: Request, res: Response) => {
   const xml = await sitemapService.generateSitemapXml();
-  res.header("Content-Type", "application/xml");
+  res.header("Content-Type", "application/xml"); //Обязательный заголовок, чтобы поисковик распознал XML
   res.send(xml);
 });
 

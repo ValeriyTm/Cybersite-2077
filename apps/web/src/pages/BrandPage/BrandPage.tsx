@@ -7,6 +7,10 @@ import { useQuery } from "@tanstack/react-query";
 import debounce from "lodash/debounce";
 //Компоненты:
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+//API:
+import { API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from "./BrandPage.module.scss";
 
@@ -51,97 +55,106 @@ export const BrandPage = () => {
     { label: "Каталог", href: "/catalog/motorcycles" }, // Текущая страница
   ];
 
+  //SEO:
+  const canonicalUrl = `${API_URL}/catalog/motorcycles`;
+
   return (
-    <main className={styles.BrandsPage}>
-      {/*Breadcrumbs:*/}
-      <Breadcrumbs items={breadcrumbs} />
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Мотобренды</title>
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
+      <main className={styles.BrandsPage}>
+        {/*Breadcrumbs:*/}
+        <Breadcrumbs items={breadcrumbs} />
 
-      <header className={styles.header}>
-        <h1 className={styles.title}>Мировые бренды</h1>
-        <p className={styles.subtitle}>Более 500 производителей в нашей базе</p>
+        <header className={styles.header}>
+          <h1 className={styles.title}>Мировые бренды</h1>
+          <p className={styles.subtitle}>Более 500 производителей в нашей базе</p>
 
-        {/*Поле поиска */}
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            placeholder="Найти бренд (напр. Honda)..."
-            className={styles.searchInput}
-            defaultValue={search} //Берем из URL при загрузке
-            onChange={(e) => debouncedSearch(e.target.value)}
-          />
-        </div>
-      </header>
-
-      {/* Индикация загрузки */}
-      {isLoading && !data && <div className={styles.loader}>Загрузка...</div>}
-
-      {/* Карточки брендов: */}
-      <div className={styles.grid}>
-        {data?.items.map((brand) => (
-          <BrandCard key={brand.id} brand={brand} />
-        ))}
-      </div>
-
-      {/* Пагинация: */}
-      {totalPages > 1 && (
-        <footer className={styles.pagination}>
-          <button
-            className={styles.navBtn}
-            disabled={currentPage === 1}
-            onClick={() => updateParams({ page: 1 })}
-            title="В начало"
-          >
-            &laquo;&laquo;
-          </button>
-
-          <button
-            className={styles.navBtn}
-            disabled={currentPage === 1}
-            onClick={() => updateParams({ page: currentPage - 1 })}
-          >
-            &laquo;
-          </button>
-
-          <div className={styles.numbers}>
-            {(() => {
-              const pages = [];
-              let start = Math.max(1, currentPage - 2);
-              let end = Math.min(totalPages, start + 4);
-              if (end === totalPages) start = Math.max(1, end - 4);
-
-              for (let i = start; i <= end; i++) {
-                pages.push(
-                  <button
-                    key={i}
-                    onClick={() => updateParams({ page: i })}
-                    className={`${styles.pageBtn} ${currentPage === i ? styles.active : ""}`}
-                  >
-                    {i}
-                  </button>,
-                );
-              }
-              return pages;
-            })()}
+          {/*Поле поиска */}
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              placeholder="Найти бренд (напр. Honda)..."
+              className={styles.searchInput}
+              defaultValue={search} //Берем из URL при загрузке
+              onChange={(e) => debouncedSearch(e.target.value)}
+            />
           </div>
+        </header>
 
-          <button
-            className={styles.navBtn}
-            disabled={currentPage === totalPages}
-            onClick={() => updateParams({ page: currentPage + 1 })}
-          >
-            &raquo;
-          </button>
+        {/* Индикация загрузки */}
+        {isLoading && !data && <div className={styles.loader}>Загрузка...</div>}
 
-          <button
-            className={styles.navBtn}
-            disabled={currentPage === totalPages}
-            onClick={() => updateParams({ page: totalPages })}
-            title="В конец"
-          >
-            &raquo;&raquo;
-          </button>
-        </footer>
-      )}
-    </main>
+        {/* Карточки брендов: */}
+        <div className={styles.grid}>
+          {data?.items.map((brand) => (
+            <BrandCard key={brand.id} brand={brand} />
+          ))}
+        </div>
+
+        {/* Пагинация: */}
+        {totalPages > 1 && (
+          <footer className={styles.pagination}>
+            <button
+              className={styles.navBtn}
+              disabled={currentPage === 1}
+              onClick={() => updateParams({ page: 1 })}
+              title="В начало"
+            >
+              &laquo;&laquo;
+            </button>
+
+            <button
+              className={styles.navBtn}
+              disabled={currentPage === 1}
+              onClick={() => updateParams({ page: currentPage - 1 })}
+            >
+              &laquo;
+            </button>
+
+            <div className={styles.numbers}>
+              {(() => {
+                const pages = [];
+                let start = Math.max(1, currentPage - 2);
+                let end = Math.min(totalPages, start + 4);
+                if (end === totalPages) start = Math.max(1, end - 4);
+
+                for (let i = start; i <= end; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => updateParams({ page: i })}
+                      className={`${styles.pageBtn} ${currentPage === i ? styles.active : ""}`}
+                    >
+                      {i}
+                    </button>,
+                  );
+                }
+                return pages;
+              })()}
+            </div>
+
+            <button
+              className={styles.navBtn}
+              disabled={currentPage === totalPages}
+              onClick={() => updateParams({ page: currentPage + 1 })}
+            >
+              &raquo;
+            </button>
+
+            <button
+              className={styles.navBtn}
+              disabled={currentPage === totalPages}
+              onClick={() => updateParams({ page: totalPages })}
+              title="В конец"
+            >
+              &raquo;&raquo;
+            </button>
+          </footer>
+        )}
+      </main>
+    </>
   );
 };

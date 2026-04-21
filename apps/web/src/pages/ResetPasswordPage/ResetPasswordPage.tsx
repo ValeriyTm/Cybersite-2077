@@ -9,7 +9,9 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Схемы валидации Zod:
 import { ResetPasswordSchema, type ResetPasswordInput } from "@repo/validation";
 //API:
-import { $api } from "@/shared/api/api";
+import { API_URL, $api } from "@/shared/api/api";
+//SEO:
+import { Helmet } from "react-helmet-async";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 //Компоненты:
@@ -59,6 +61,7 @@ export const ResetPasswordPage = () => {
     );
   };
 
+
   if (!token)
     return (
       <div className={styles.container}>
@@ -67,40 +70,46 @@ export const ResetPasswordPage = () => {
     );
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <h1>Новый пароль</h1>
-        <p className={styles.subText}>
-          Придумайте сложный пароль для защиты аккаунта
-        </p>
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Восстановление пароля</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <h1>Новый пароль</h1>
+          <p className={styles.subText}>
+            Придумайте сложный пароль для защиты аккаунта
+          </p>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Используем PasswordField для основного пароля */}
-          <PasswordField
-            label="Новый пароль"
-            // placeholder="Введите новый пароль"
-            registration={register("password")}
-            error={errors.password}
-          />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Используем PasswordField для основного пароля */}
+            <PasswordField
+              label="Новый пароль"
+              // placeholder="Введите новый пароль"
+              registration={register("password")}
+              error={errors.password}
+            />
 
-          {/* Используем PasswordField для подтверждения */}
-          <PasswordField
-            label="Повторите пароль"
-            // placeholder="Повторите новый пароль"
-            registration={register("confirmPassword")}
-            error={errors.confirmPassword}
-          />
+            {/* Используем PasswordField для подтверждения */}
+            <PasswordField
+              label="Повторите пароль"
+              // placeholder="Повторите новый пароль"
+              registration={register("confirmPassword")}
+              error={errors.confirmPassword}
+            />
 
-          <Button
-            type="submit"
-            variant="primary"
-            isLoading={isSubmitting}
-            loadingText="Сохранение..."
-          >
-            Обновить пароль
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              variant="primary"
+              isLoading={isSubmitting}
+              loadingText="Сохранение..."
+            >
+              Обновить пароль
+            </Button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

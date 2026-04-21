@@ -1,5 +1,7 @@
 //Роутинг:
 import { useNavigate } from "react-router";
+//SEO:
+import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from "./NotFoundPage.module.scss";
 
@@ -8,6 +10,9 @@ export const NotFoundPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Ooops, not found</title>
+      </Helmet>
       <div className={styles.wrapper}>
         <div className={styles.content}>
           <h1 className={styles.glitch} data-text="404">

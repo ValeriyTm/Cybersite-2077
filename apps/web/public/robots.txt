@@ -1,0 +1,17 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /profile/
+Disallow: /orders/
+Disallow: /payment/
+Disallow: /checkout/
+Disallow: /catalog/motorcycles/all?search*
+Disallow: *?search*
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /login
+Disallow: /register
+Disallow: /auth
+Disallow: /support/tickets
+
+Sitemap: http://localhost/api/catalog/sitemap.xml

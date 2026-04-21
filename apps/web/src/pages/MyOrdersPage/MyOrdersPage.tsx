@@ -2,7 +2,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { OrderCard } from "@/entities/ordering/ui/OrderCard";
 import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
@@ -58,26 +60,32 @@ export const MyOrdersPage = () => {
   ];
 
   return (
-    <main className={styles.container}>
-      <h1 className={styles.title}>Мои заказы</h1>
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Мои заказы</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <main className={styles.container}>
+        <h1 className={styles.title}>Мои заказы</h1>
 
-      <SelectFilter
-        label="Фильтр по статусу"
-        value={statusFilter}
-        options={statusOptions}
-        onChange={setStatusFilter}
-        placeholder="Все заказы"
-      />
+        <SelectFilter
+          label="Фильтр по статусу"
+          value={statusFilter}
+          options={statusOptions}
+          onChange={setStatusFilter}
+          placeholder="Все заказы"
+        />
 
-      <div className={styles.list}>
-        {orders && orders.length > 0 ? (
-          orders.map((order: any) => <OrderCard key={order.id} order={order} />)
-        ) : (
-          <div className={styles.empty}>
-            <p>У вас пока нет оформленных заказов.</p>
-          </div>
-        )}
-      </div>
-    </main>
+        <div className={styles.list}>
+          {orders && orders.length > 0 ? (
+            orders.map((order: any) => <OrderCard key={order.id} order={order} />)
+          ) : (
+            <div className={styles.empty}>
+              <p>У вас пока нет оформленных заказов.</p>
+            </div>
+          )}
+        </div>
+      </main>
+    </>
   );
 };

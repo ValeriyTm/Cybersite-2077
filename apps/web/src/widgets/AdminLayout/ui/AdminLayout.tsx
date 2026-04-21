@@ -1,4 +1,13 @@
+//Роутинг:
 import { Link, Outlet } from "react-router";
+//Состояния:
+import { useProfile } from "@/features/auth/model/useProfile";
+import { useState } from "react";
+//API:
+import { API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from 'react-helmet-async';
+//Компоненты:
 import {
   FaMotorcycle,
   FaBoxOpen,
@@ -9,10 +18,9 @@ import {
   FaUsersCog,
   FaChartBar,
   FaNewspaper
-} from "react-icons/fa"; // Используем Font Awesome из react-icons
+} from "react-icons/fa";
+//Стили:
 import styles from "./AdminLayout.module.scss";
-import { useProfile } from "@/features/auth/model/useProfile";
-import { useState } from "react";
 
 
 
@@ -90,44 +98,50 @@ export const AdminLayout = () => {
     .filter(group => group.items.length > 0);
 
   return (
-    <div className={styles.adminContainer}>
-      <aside className={` ${isOpen ? styles.sidebarMobile : styles.sidebar}`}>
-        <div className={styles.logo}>
-          CYBER<span>ADMIN</span>
-        </div>
-        <nav className={styles.nav}>
-          {filteredMenu.map((section) => (
-            <div key={section.group} className={styles.section}>
-              <h4 className={styles.sectionTitle}>{section.group}</h4>
-              {section.items.map((item) => (
-                <Link key={item.link} to={item.link} className={styles.navLink}>
-                  <span className={styles.icon}>{item.icon}</span>
-                  <span className={styles.linkText}>{item.name}</span>
-                </Link>
-              ))}
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Админ-панель</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className={styles.adminContainer}>
+        <aside className={` ${isOpen ? styles.sidebarMobile : styles.sidebar}`}>
+          <div className={styles.logo}>
+            CYBER<span>ADMIN</span>
+          </div>
+          <nav className={styles.nav}>
+            {filteredMenu.map((section) => (
+              <div key={section.group} className={styles.section}>
+                <h4 className={styles.sectionTitle}>{section.group}</h4>
+                {section.items.map((item) => (
+                  <Link key={item.link} to={item.link} className={styles.navLink}>
+                    <span className={styles.icon}>{item.icon}</span>
+                    <span className={styles.linkText}>{item.name}</span>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </nav>
+        </aside>
+
+        <main className={styles.content}>
+          <header className={styles.adminHeader}>
+            <h2>Панель управления |&nbsp;</h2>
+            <div className={styles.adminInfo}>
+              {/* Сюда можно будет вывести имя залогиненного админа */}
+              <span><strong>{userRole}</strong> Mode</span>
             </div>
-          ))}
-        </nav>
-      </aside>
+            <div className={styles.panelBtnWrapper}>
+              <button className={styles.panelBtn} type="button" onClick={toggleFilter}>
+                Открыть панель
+              </button>
+            </div>
 
-      <main className={styles.content}>
-        <header className={styles.adminHeader}>
-          <h2>Панель управления |&nbsp;</h2>
-          <div className={styles.adminInfo}>
-            {/* Сюда можно будет вывести имя залогиненного админа */}
-            <span><strong>{userRole}</strong> Mode</span>
-          </div>
-          <div className={styles.panelBtnWrapper}>
-            <button className={styles.panelBtn} type="button" onClick={toggleFilter}>
-              Открыть панель
-            </button>
-          </div>
-
-        </header>
-        <section className={styles.pageBody}>
-          <Outlet />
-        </section>
-      </main>
-    </div>
+          </header>
+          <section className={styles.pageBody}>
+            <Outlet />
+          </section>
+        </main>
+      </div>
+    </>
   );
 };

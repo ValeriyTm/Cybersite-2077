@@ -128,13 +128,13 @@ model Brand {
 //Таблица мотоциклов:
 model Motorcycle {
   id    String @id @default(uuid())
-  model String // "CBR 1000RR Fireblade"
-  slug  String @unique // "cbr-1000rr-fireblade"
+  model String // "CBR 1000RR Fireblade" (Модель мотоцикла)
+  slug  String @unique // "cbr-1000rr-fireblade" 
 
   brandId         String
   brand           Brand        @relation(fields: [brandId], references: [id], onDelete: Cascade)
-  category        MotoCategory // Enum: Sport, Scooter, ...
-  year            Int
+  category        MotoCategory // Enum: Sport, Scooter, ... (Категория мотоцикла)
+  year            Int //Год выпуска мотоцикла
   displacement    Int //Объем двигателя (см3)
   power           Float? //Мощность (л.с.)
   topSpeed        Int? //Макс. скорость (км/ч)

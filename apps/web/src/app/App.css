@@ -177,7 +177,7 @@ border-top: 1px solid var(--border);
     position: absolute;
     top: -4.5px;
     /* pxtorem-disable-next-line */
-border: 5px solid transparent;
+    border: 5px solid transparent;
   }
 
   &::before {

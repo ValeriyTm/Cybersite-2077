@@ -6,7 +6,9 @@ import { useLocation } from "react-router";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
 import { useProfile } from "@/features/auth/model/useProfile";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { useEffect, useMemo, useState } from "react";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
@@ -158,13 +160,6 @@ export const CheckoutPage = () => {
     });
   };
 
-  ////---------------------------Сумма заказа:-------------------////
-  //-----Считаем сумму выбранных товаров без скидок и промокодов:
-  // const subtotalPre = legalSelectedItems.reduce(
-  //   (acc, item) => acc + item.price * item.quantity,
-  //   0,
-  // );
-  // const subtotal = subtotalPre - Number(promoFromCart?.amount || 0);
 
   //Сумма товаров с учетом их индивидуальных скидок:
   const itemsTotal = legalSelectedItems.reduce((acc, item) => {
@@ -208,140 +203,148 @@ export const CheckoutPage = () => {
     handleCreateOrder(true); // Вызываем мутацию с флагом shouldPay
   };
 
-  return (
-    <main className={styles.CheckoutPage}>
-      <h1 className={styles.title}>Оформление заказа</h1>
 
-      <div className={styles.content}>
-        <div className={styles.left}>
-          {/*Блок 1 - адрес:*/}
-          <section className={styles.section}>
-            <h3>1. Адрес доставки</h3>
-            <div className={styles.addressBox}>
-              {address ? (
-                <>
-                  <p className={styles.currentAddress}>📍 {address}</p>
+
+  return (
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Оформление заказа</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <main className={styles.CheckoutPage}>
+        <h1 className={styles.title}>Оформление заказа</h1>
+
+        <div className={styles.content}>
+          <div className={styles.left}>
+            {/*Блок 1 - адрес:*/}
+            <section className={styles.section}>
+              <h3>1. Адрес доставки</h3>
+              <div className={styles.addressBox}>
+                {address ? (
+                  <>
+                    <p className={styles.currentAddress}>📍 {address}</p>
+                    <button
+                      className={styles.changeBtn}
+                      onClick={() => setIsMapOpen(true)}
+                    >
+                      Изменить адрес доставки
+                    </button>
+                  </>
+                ) : (
                   <button
-                    className={styles.changeBtn}
+                    className={styles.mapBtn}
                     onClick={() => setIsMapOpen(true)}
                   >
-                    Изменить адрес доставки
+                    Выбрать адрес на карте
                   </button>
-                </>
-              ) : (
-                <button
-                  className={styles.mapBtn}
-                  onClick={() => setIsMapOpen(true)}
-                >
-                  Выбрать адрес на карте
-                </button>
-              )}
+                )}
+              </div>
+
+              <div className={styles.deliveryInfoStyle}>
+                <span>Расчетная дата доставки:</span>
+                <span>
+                  {deliveryInfo
+                    ? new Date(deliveryInfo.estimatedDate).toLocaleDateString()
+                    : "Укажите адрес доставки"}
+                </span>
+              </div>
+              <div className={styles.deliveryInfoStyle}>
+                <span>Склад отправления:</span>
+                <span>
+                  {deliveryInfo
+                    ? deliveryInfo.warehouse.name
+                    : "Укажите адрес доставки"}
+                </span>
+              </div>
+            </section>
+            {/*Сама модалка с картой:*/}
+            {isMapOpen && (
+              <DeliveryMapModal
+                warehouses={warehouses || []}
+                initialCoords={coords} //Передаем дефолтные координаты адреса доставки для юзера (из БД юзера)
+                onSelect={handleAddressSelect}
+                onClose={() => setIsMapOpen(false)}
+              />
+            )}
+
+            {/*Блок 2 - состав заказа:*/}
+            <section className={styles.section}>
+              <h3>2. Состав заказа</h3>
+              <div className={styles.previewList}>
+                {legalSelectedItems.map((item) => (
+                  <div key={item.id} className={styles.miniItem}>
+                    <span>
+                      {item.model} x {item.quantity} шт, {item.year} г
+                    </span>
+                    <span>{(item.discountData.finalPrice * item.quantity).toLocaleString()} ₽</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/*Правая панель - итого:*/}
+          <aside className={styles.summary}>
+            <h3>Ваш заказ</h3>
+            <div className={styles.row}>
+              <span>Товары ({cartItems.length}):</span>
+              <span>+ {itemsTotal.toLocaleString()} ₽</span>
             </div>
 
-            <div className={styles.deliveryInfoStyle}>
-              <span>Расчетная дата доставки:</span>
+            <div className={styles.row}>
+              <span>Доставка:</span>
               <span>
                 {deliveryInfo
-                  ? new Date(deliveryInfo.estimatedDate).toLocaleDateString()
-                  : "Укажите адрес доставки"}
+                  ? `+ ${deliveryInfo.cost.toLocaleString()} ₽`
+                  : "Выберите адрес"}
               </span>
             </div>
-            <div className={styles.deliveryInfoStyle}>
-              <span>Склад отправления:</span>
-              <span>
-                {deliveryInfo
-                  ? deliveryInfo.warehouse.name
-                  : "Укажите адрес доставки"}
-              </span>
-            </div>
-          </section>
-          {/*Сама модалка с картой:*/}
-          {isMapOpen && (
-            <DeliveryMapModal
-              warehouses={warehouses || []}
-              initialCoords={coords} //Передаем дефолтные координаты адреса доставки для юзера (из БД юзера)
-              onSelect={handleAddressSelect}
-              onClose={() => setIsMapOpen(false)}
-            />
-          )}
 
-          {/*Блок 2 - состав заказа:*/}
-          <section className={styles.section}>
-            <h3>2. Состав заказа</h3>
-            <div className={styles.previewList}>
-              {legalSelectedItems.map((item) => (
-                <div key={item.id} className={styles.miniItem}>
-                  <span>
-                    {item.model} x {item.quantity} шт, {item.year} г
-                  </span>
-                  <span>{(item.discountData.finalPrice * item.quantity).toLocaleString()} ₽</span>
-                </div>
-              ))}
+            <div className={styles.row}>
+              <span>Промокод:</span>
+              <span>
+                {promoFromCart?.amount
+                  ? `- ${promoFromCart?.amount.toLocaleString()} ₽`
+                  : "Не применен"}
+              </span>
             </div>
-          </section>
+
+            <div className={`${styles.row} ${styles.total}`}>
+              <span>К оплате:</span>
+              {/*Считаем итого: товары + доставка:*/}
+              <span>{finalOrderPrice.toLocaleString()} ₽</span>
+            </div>
+
+            <button
+              className={styles.payBtn}
+              disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
+              onClick={() => handleCreateOrder(false)}
+            >
+              {createOrderMutation.isPending
+                ? "Оформление..."
+                : "Создать заказ без оплаты"}
+            </button>
+
+            <button
+              className={styles.payBtn}
+              disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
+              onClick={() => setIsModalOpen(true)}
+            >
+              {createOrderMutation.isPending
+                ? "Оформление..."
+                : "Создать заказ и оплатить"}
+            </button>
+          </aside>
         </div>
 
-        {/*Правая панель - итого:*/}
-        <aside className={styles.summary}>
-          <h3>Ваш заказ</h3>
-          <div className={styles.row}>
-            <span>Товары ({cartItems.length}):</span>
-            <span>+ {itemsTotal.toLocaleString()} ₽</span>
-          </div>
-
-          <div className={styles.row}>
-            <span>Доставка:</span>
-            <span>
-              {deliveryInfo
-                ? `+ ${deliveryInfo.cost.toLocaleString()} ₽`
-                : "Выберите адрес"}
-            </span>
-          </div>
-
-          <div className={styles.row}>
-            <span>Промокод:</span>
-            <span>
-              {promoFromCart?.amount
-                ? `- ${promoFromCart?.amount.toLocaleString()} ₽`
-                : "Не применен"}
-            </span>
-          </div>
-
-          <div className={`${styles.row} ${styles.total}`}>
-            <span>К оплате:</span>
-            {/*Считаем итого: товары + доставка:*/}
-            <span>{finalOrderPrice.toLocaleString()} ₽</span>
-          </div>
-
-          <button
-            className={styles.payBtn}
-            disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
-            onClick={() => handleCreateOrder(false)}
-          >
-            {createOrderMutation.isPending
-              ? "Оформление..."
-              : "Создать заказ без оплаты"}
-          </button>
-
-          <button
-            className={styles.payBtn}
-            disabled={!deliveryInfo || createOrderMutation.isPending} //Кнопка активна только когда доставка посчитана
-            onClick={() => setIsModalOpen(true)}
-          >
-            {createOrderMutation.isPending
-              ? "Оформление..."
-              : "Создать заказ и оплатить"}
-          </button>
-        </aside>
-      </div>
-
-      <PaymentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmPayment}
-        totalPrice={finalOrderPrice}
-        items={legalSelectedItems}
-      />
-    </main>
+        <PaymentModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleConfirmPayment}
+          totalPrice={finalOrderPrice}
+          items={legalSelectedItems}
+        />
+      </main>
+    </>
   );
 };

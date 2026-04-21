@@ -5,7 +5,9 @@ import { useProfile } from "@/features/auth/model/useProfile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTicketSchema } from "@repo/validation";
 //API:
-import { $api } from "@/shared/api/api";
+import { API_URL, $api } from "@/shared/api/api";
+//SEO:
+import { Helmet } from "react-helmet-async";
 //Работа с формами:
 import { Controller, useForm } from "react-hook-form";
 import { IMaskInput } from "react-imask";
@@ -123,169 +125,178 @@ export const SupportPage = () => {
     }
   };
 
+  //----------SEO:-------------//
+  const canonicalUrl = `${API_URL}/support`;
+
   return (
-    <div className={styles.supportWrapper}>
-      <h1>Служба поддержки</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <div className={styles.row}>
-          <div className={styles.inputGroup}>
-            <input
-              {...register("firstName")}
-              placeholder="Имя"
-              className={errors.firstName ? styles.inputError : ""}
-            />
-            {errors.firstName && (
-              <span className={styles.errorMessage}>
-                {errors.firstName.message}
-              </span>
-            )}
-          </div>
-
-          <div className={styles.inputGroup}>
-            <input
-              {...register("lastName")}
-              placeholder="Фамилия"
-              className={errors.lastName ? styles.inputError : ""}
-            />
-            {errors.lastName && (
-              <span className={styles.errorMessage}>
-                {errors.lastName.message}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className={styles.inputGroup}>
-          <input
-            {...register("email")}
-            placeholder="Email"
-            readOnly={!!user} //Запрещаем менять email, если юзер в системе
-            className={errors.email ? styles.inputError : ""}
-          />
-          {errors.email && (
-            <span className={styles.errorMessage}>{errors.email.message}</span>
-          )}
-        </div>
-
-        {/*Номер телефона:*/}
-        <div className={styles.rowMobile}>
-          <div className={styles.label}>
-            <HiOutlinePhone /> Телефон{" "}
-          </div>
-          <div className={styles.value}>
-            <>
-              <Controller
-                control={control}
-                name="phone"
-                render={({ field: { onChange, value } }) => (
-                  <IMaskInput
-                    mask="+{7} (000) 000-00-00"
-                    value={value || ""}
-                    onAccept={(val) => onChange(val)} // Передаем значение в форму
-                    className={
-                      errors.phone ? styles.inputError : styles.maskInput
-                    }
-                  />
-                )}
-              />
-            </>
-            {errors.phone && (
-              <span className={styles.errorMessage}>
-                {errors.phone.message}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <select {...register("category")}>
-          <option value="">Выберите причину</option>
-          <option value="TECHNICAL">Техническая ошибка</option>
-          <option value="ORDER">Вопрос по заказу</option>
-          <option value="COOPERATION">Сотрудничество</option>
-          <option value="COMPLAINT">Жалоба</option>
-          <option value="OTHER">Другое</option>
-        </select>
-        {errors.category && (
-          <span className={styles.errorMessage}>
-            Выберите причину обращения
-          </span>
-        )}
-        <textarea
-          {...register("description")}
-          placeholder="Суть вопроса..."
-          className={errors.description ? styles.inputError : ""}
-        />
-        {errors.description && (
-          <span className={styles.errorMessage}>
-            {errors.description.message}
-          </span>
-        )}
-
-        {/*Кастомный инпут для файлов */}
-        {user ? (
-          <div className={styles.fileUpload}>
-            <label
-              className={`${styles.fileLabel} ${isDragActive ? styles.dragActive : ""}`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Поддержка</title>
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
+      <div className={styles.supportWrapper}>
+        <h1>Служба поддержки</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+          <div className={styles.row}>
+            <div className={styles.inputGroup}>
               <input
-                type="file"
-                multiple
-                onChange={(e) => setFiles(Array.from(e.target.files || []))}
-                accept=".jpg,.png,.pdf,.doc,.docx,.txt"
+                {...register("firstName")}
+                placeholder="Имя"
+                className={errors.firstName ? styles.inputError : ""}
               />
-              <div className={styles.icon}>{isDragActive ? "📥" : "📎"}</div>
-              <span>Нажмите или перетащите файлы сюда</span>
-            </label>
+              {errors.firstName && (
+                <span className={styles.errorMessage}>
+                  {errors.firstName.message}
+                </span>
+              )}
+            </div>
 
-            {/*Блок предпросмотра:*/}
-            {files.length > 0 && (
-              <div className={styles.previewGrid}>
-                {files.map((file, index) => (
-                  <div key={index} className={styles.previewItem}>
-                    <div className={styles.previewContent}>
-                      {file.type.startsWith("image/") ? (
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt="preview"
-                          className={styles.thumb}
-                        />
-                      ) : (
-                        <div className={styles.fileIcon}>📄</div>
-                      )}
-                      <span className={styles.fileName}>{file.name}</span>
-                    </div>
-                    <button
-                      type="button"
-                      className={styles.removeBtn}
-                      onClick={() => removeFile(index)}
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
+            <div className={styles.inputGroup}>
+              <input
+                {...register("lastName")}
+                placeholder="Фамилия"
+                className={errors.lastName ? styles.inputError : ""}
+              />
+              {errors.lastName && (
+                <span className={styles.errorMessage}>
+                  {errors.lastName.message}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className={styles.inputGroup}>
+            <input
+              {...register("email")}
+              placeholder="Email"
+              readOnly={!!user} //Запрещаем менять email, если юзер в системе
+              className={errors.email ? styles.inputError : ""}
+            />
+            {errors.email && (
+              <span className={styles.errorMessage}>{errors.email.message}</span>
             )}
-
-            <p className={styles.fileCount}>
-              Прикреплено файлов: <strong>{files.length}</strong>
-            </p>
           </div>
-        ) : (
-          <div className={styles.fileUploadDisabled}>
-            <p>
-              🔒 <Link to="/auth">Войдите</Link>, чтобы прикрепить документы к
-              обращению
-            </p>
-          </div>
-        )}
 
-        <button type="submit" className={styles.subBtn} disabled={isSubmitting}>
-          {isSubmitting ? "Отправка..." : "Отправить запрос"}
-        </button>
-      </form>
-    </div>
+          {/*Номер телефона:*/}
+          <div className={styles.rowMobile}>
+            <div className={styles.label}>
+              <HiOutlinePhone /> Телефон{" "}
+            </div>
+            <div className={styles.value}>
+              <>
+                <Controller
+                  control={control}
+                  name="phone"
+                  render={({ field: { onChange, value } }) => (
+                    <IMaskInput
+                      mask="+{7} (000) 000-00-00"
+                      value={value || ""}
+                      onAccept={(val) => onChange(val)} // Передаем значение в форму
+                      className={
+                        errors.phone ? styles.inputError : styles.maskInput
+                      }
+                    />
+                  )}
+                />
+              </>
+              {errors.phone && (
+                <span className={styles.errorMessage}>
+                  {errors.phone.message}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <select {...register("category")}>
+            <option value="">Выберите причину</option>
+            <option value="TECHNICAL">Техническая ошибка</option>
+            <option value="ORDER">Вопрос по заказу</option>
+            <option value="COOPERATION">Сотрудничество</option>
+            <option value="COMPLAINT">Жалоба</option>
+            <option value="OTHER">Другое</option>
+          </select>
+          {errors.category && (
+            <span className={styles.errorMessage}>
+              Выберите причину обращения
+            </span>
+          )}
+          <textarea
+            {...register("description")}
+            placeholder="Суть вопроса..."
+            className={errors.description ? styles.inputError : ""}
+          />
+          {errors.description && (
+            <span className={styles.errorMessage}>
+              {errors.description.message}
+            </span>
+          )}
+
+          {/*Кастомный инпут для файлов */}
+          {user ? (
+            <div className={styles.fileUpload}>
+              <label
+                className={`${styles.fileLabel} ${isDragActive ? styles.dragActive : ""}`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+              >
+                <input
+                  type="file"
+                  multiple
+                  onChange={(e) => setFiles(Array.from(e.target.files || []))}
+                  accept=".jpg,.png,.pdf,.doc,.docx,.txt"
+                />
+                <div className={styles.icon}>{isDragActive ? "📥" : "📎"}</div>
+                <span>Нажмите или перетащите файлы сюда</span>
+              </label>
+
+              {/*Блок предпросмотра:*/}
+              {files.length > 0 && (
+                <div className={styles.previewGrid}>
+                  {files.map((file, index) => (
+                    <div key={index} className={styles.previewItem}>
+                      <div className={styles.previewContent}>
+                        {file.type.startsWith("image/") ? (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt="preview"
+                            className={styles.thumb}
+                          />
+                        ) : (
+                          <div className={styles.fileIcon}>📄</div>
+                        )}
+                        <span className={styles.fileName}>{file.name}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.removeBtn}
+                        onClick={() => removeFile(index)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <p className={styles.fileCount}>
+                Прикреплено файлов: <strong>{files.length}</strong>
+              </p>
+            </div>
+          ) : (
+            <div className={styles.fileUploadDisabled}>
+              <p>
+                🔒 <Link to="/auth">Войдите</Link>, чтобы прикрепить документы к
+                обращению
+              </p>
+            </div>
+          )}
+
+          <button type="submit" className={styles.subBtn} disabled={isSubmitting}>
+            {isSubmitting ? "Отправка..." : "Отправить запрос"}
+          </button>
+        </form>
+      </div>
+    </>
   );
 };

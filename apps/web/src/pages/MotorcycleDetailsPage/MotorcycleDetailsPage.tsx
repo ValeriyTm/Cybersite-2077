@@ -6,8 +6,6 @@ import {
 } from "@/entities/catalog";
 //Типы:
 import { type MotorcycleShort } from "@/entities/catalog/model/types";
-//Для SEO:
-import { Helmet } from "react-helmet-async";
 //Состояния:
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +16,8 @@ import { useAuthStore } from "@/features/auth/model/useAuthStore";
 import { useProfile } from "@/features/auth/model/useProfile";
 //API:
 import { $api, API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from "react-helmet-async";
 //Компоненты:
 import { SpecRow } from "@/shared/ui/SpecRow";
 import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
@@ -128,13 +128,7 @@ export const MotorcycleDetailsPage = () => {
 
   if (isMotoLoading || !motorcycle)
     return <div className={styles.loader}>Загрузка...</div>;
-
-  //Формируем SEO-строки:
-  const seoTitle = `${motorcycle.brand.name} ${motorcycle.model} ${motorcycle.year} г.в. — Характеристики и цены | CyberSite2077`;
-  const seoDescription = `Подробные технические характеристики ${motorcycle.brand.name} ${motorcycle.model}: двигатель ${motorcycle.displacement} см³, мощность ${motorcycle.power} л.с. Цвета: ${motorcycle.colors?.join(", ")}. Узнайте всё о модели на CyberSite2077.`;
-  const ogImage = activeImage || `/images/default-card-icon.jpg`;
-
-  //Breadcrumbs:
+  //----------------Breadcrumbs:
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/motorcycles" },
     {
@@ -144,33 +138,94 @@ export const MotorcycleDetailsPage = () => {
     { label: motorcycle.model }, // Текущая страница без ссылки
   ];
 
-  //Объект микроразметки:
+  //----------------------------------SEO:---------------------//
+  //Формируем SEO-строки:
+  const seoTitle = `${motorcycle.brand.name} ${motorcycle.model} ${motorcycle.year} г.в. — Характеристики и цены | CyberSite2077`;
+  const seoDescription = `Подробные технические характеристики ${motorcycle.brand.name} ${motorcycle.model}: двигатель ${motorcycle.displacement} см³, мощность ${motorcycle.power} л.с. Цвета: ${motorcycle.colors?.join(", ")}. Узнайте всё о модели на CyberSite2077.`;
+  const ogImage = activeImage || `/images/default-card-icon.jpg`;
+  const canonicalUrl = `${API_URL}/catalog/motorcycles/${brandSlug}/${slug}`;
+
+  //Объект микроразметки JSON-LD:
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: `${motorcycle.brand.name} ${motorcycle.model}`,
-    image: [`${API_URL}static/motorcycles/${motorcycle.mainImage}`],
+    "name": `${motorcycle.brand.name} ${motorcycle.model}`,
+    "url": `http://localhost/catalog/motorcycles/${brandSlug}/${slug}`,
+    image: [`${API_URL}/static/motorcycles/${motorcycle.mainImage}`],
     description: `Технические характеристики ${motorcycle.model}: ${motorcycle.displacement} см³, ${motorcycle.power} л.с.`,
+    "sku": slug, //Внутренний идентификатор товара в моём магазине
+    "mpn": slug, //Идентификатор товара от производителя
     brand: {
       "@type": "Brand",
       name: motorcycle.brand.name,
     },
+    "category": motorcycle.category,
+
+    "additionalProperty": [
+      {
+        "@type": "PropertyValue",
+        "name": "Год выпуска",
+        "value": motorcycle.year
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Объем двигателя",
+        "value": `${motorcycle.displacement} см³`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Мощность",
+        "value": `${motorcycle.power} л.с.`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Максимальная скорость",
+        "value": `${motorcycle.topSpeed} км/ч`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Расход топлива",
+        "value": `${motorcycle.fuelConsumption} л/100км`
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Тип двигателя",
+        "value": motorcycle.engineType
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Система охлаждения",
+        "value": motorcycle.coolingSystem
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Коробка передач",
+        "value": motorcycle.gearbox
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Привод",
+        "value": motorcycle.transmission
+      }
+    ],
     offers: {
       "@type": "Offer",
-      url: window.location.href,
+      url: `http://localhost/catalog/motorcycles/${brandSlug}/${slug}`, //Ссылка на страницу, где можно купить товар
       priceCurrency: "RUB",
       price: motorcycle.price,
-      itemCondition: "https://schema.orgNewCondition",
-      availability: "https://schema.orgInStock", //Указываем, что в наличии
+      itemCondition: "https://schema.org/NewCondition",
+      availability: "https://schema.org/InStock", //Указываем, что в наличии
     },
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: motorcycle.rating,
+      "bestRating": "5",
+      "worstRating": "0",
       reviewCount: "85", //Пока хардкодим число отзывов
     },
   };
 
-  //Задаю понятные названия:
+  //-------------------Задаю понятные названия:-------------------
   let STARTER;
   switch (motorcycle.starter) {
     case "KICK":
@@ -319,13 +374,12 @@ export const MotorcycleDetailsPage = () => {
   const realRating = Number(motorcycle.rating.toFixed(1));
 
   return (
-    <main className={styles.Page}>
-      {/*SEO:*/}
+    <>
       <Helmet>
-        {/*Мета-теги:*/}
         <title>{seoTitle}</title>
+        <link rel="canonical" href={canonicalUrl} />
         <meta name="description" content={seoDescription} />
-        {/* Соцсети (Open Graph) */}
+        {/*Соцсети (Open Graph):*/}
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDescription} />
         <meta property="og:image" content={ogImage} />
@@ -335,350 +389,352 @@ export const MotorcycleDetailsPage = () => {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      <div className={styles.container}>
-        {/*Breadcrumbs:*/}
-        <Breadcrumbs items={breadcrumbs} />
+      <main className={styles.Page}>
+        <div className={styles.container}>
+          {/*Breadcrumbs:*/}
+          <Breadcrumbs items={breadcrumbs} />
 
-        {/* Фото и главные параметры */}
-        <section className={styles.hero}>
-          <div className={styles.gallerySection}>
-            <div className={styles.mainImageWrapper}>
-              <img
-                src={activeImage}
-                alt={motorcycle.model}
-                className={styles.mainImg}
-              />
-            </div>
-
-            {/* Список миниатюр */}
-            {motorcycle.images?.length > 0 && (
-              <div className={styles.thumbnails}>
-                {motorcycle.images.map((img) => (
-                  <div
-                    key={img.id}
-                    className={`${styles.thumbWrapper} ${activeImage === `${STATIC_URL}/${img.url}` ? styles.activeThumb : ""}`}
-                    onClick={() => setActiveImage(`${STATIC_URL}/${img.url}`)}
-                  >
-                    <img
-                      src={`${STATIC_URL}/${img.url}`}
-                      alt="thumb"
-                      className={styles.thumbImg}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className={styles.mainInfo}>
-            <h1 className={styles.title}>{motorcycle.model}</h1>
-            <div className={styles.brandBadge}>{motorcycle.brand.name}</div>
-
-            <div className={styles.actionRow}>
-              {motorcycle.discountData.discountPercent > 0 ? (
-                <>
-                  <div className={styles.oldPrice}>
-                    {motorcycle.discountData.originalPrice.toLocaleString()} ₽
-                  </div>{" "}
-                  {motorcycle.discountData.isPersonal && (
-                    <span className={styles.personalDiscount}>
-                      Персональная скидка!
-                    </span>
-                  )}
-                  <div className={styles.price}>
-                    {motorcycle.discountData.finalPrice.toLocaleString()} ₽
-                  </div>
-                </>
-              ) : (
-                <div className={styles.price}>
-                  {motorcycle.price.toLocaleString()} ₽
-                </div>
-              )}
-
-              {motorcycle.totalInStock ? (
-                <p>Количество единиц в наличии: {motorcycle.totalInStock}</p>
-              ) : (
-                <p>Нет в наличии</p>
-              )}
-
-              <div className={styles.buttons}>
-                <AddToCartButton
-                  data={{
-                    id: motorcycle.id,
-                    model: motorcycle.model,
-                    price: motorcycle.price,
-                    image: mainImageUrl,
-                    brandSlug: motorcycle.brand.slug,
-                    slug: motorcycle.slug,
-                    totalInStock: motorcycle.totalInStock,
-                  }}
+          {/* Фото и главные параметры */}
+          <section className={styles.hero}>
+            <div className={styles.gallerySection}>
+              <div className={styles.mainImageWrapper}>
+                <img
+                  src={activeImage}
+                  alt={motorcycle.model}
+                  className={styles.mainImg}
                 />
-
-                {/*Кнопка добавления в избранное*/}
-                <button
-                  className={`${styles.favBtn} ${isFavorite ? styles.active : ""}`}
-                  onClick={handleFavoriteClick}
-                  title={
-                    isFavorite
-                      ? "Удалить из избранного"
-                      : "Добавить в избранное"
-                  }
-                >
-                  {isFavorite ? "❤️ В избранном" : "🤍 В избранное"}
-                </button>
               </div>
-            </div>
 
-            <p className={styles.description}>
-              {motorcycle.year} года выпуска. Объем двигателя{" "}
-              {motorcycle.displacement} см³.
-            </p>
-            <p className={styles.description}>Текущий рейтинг: {realRating}</p>
-            <p className={styles.description}>
-              Артикул товара: {motorcycle.slug}
-            </p>
-          </div>
-        </section>
-
-        {/* Таблица характеристик:*/}
-
-        {/* Navbar для табов: */}
-        <nav className={styles.tabsNav}>
-          <button
-            className={activeTab === "specs" ? styles.activeTab : ""}
-            onClick={() => setActiveTab("specs")}
-          >
-            Технические характеристики
-          </button>
-          <button
-            className={activeTab === "description" ? styles.activeTab : ""}
-            onClick={() => setActiveTab("description")}
-          >
-            Описание
-          </button>
-          <button
-            className={activeTab === "reviews" ? styles.activeTab : ""}
-            onClick={() => setActiveTab("reviews")}
-          >
-            Отзывы
-          </button>
-          <button
-            className={activeTab === "warranty" ? styles.activeTab : ""}
-            onClick={() => setActiveTab("warranty")}
-          >
-            Гарантия
-          </button>
-          <button
-            className={activeTab === "docs" ? styles.activeTab : ""}
-            onClick={() => setActiveTab("docs")}
-          >
-            Документы
-          </button>
-        </nav>
-
-        {/* Контент: */}
-        <section className={styles.tabContent}>
-          {/*Контент характеристик:*/}
-          {activeTab === "specs" && (
-            <div className={styles.specsGrid}>
-              <SpecRow label="Категория" value={CATEGORY} />
-              <SpecRow label="Тип двигателя" value={motorcycle.engineType} />
-              <SpecRow label="Мощность" value={motorcycle.power} />
-              <SpecRow
-                label="Максимальная скорость, км/ч"
-                value={motorcycle.topSpeed}
-              />
-              <SpecRow label="Коробка передач" value={GEARBOX} />
-              <SpecRow label="Стартер" value={STARTER} />
-              <SpecRow
-                label="Топливная система"
-                value={motorcycle.fuelSystem}
-              />
-              <SpecRow label="Система охлаждения" value={COOLING} />
-              <SpecRow label="Трансмиссия" value={TRANSMISSION} />
-              <SpecRow label="Заднее колесо" value={motorcycle.rearTyre} />
-              <SpecRow label="Переднее колесо" value={motorcycle.frontTyre} />
-              <SpecRow label="Задние тормоза" value={motorcycle.rearBrakes} />
-              <SpecRow
-                label="Передние тормоза"
-                value={motorcycle.frontBrakes}
-              />
-              <SpecRow
-                label="Расход топлива, л/100км"
-                value={motorcycle.fuelConsumption}
-              />
-              <SpecRow
-                label="Дополнительная информация"
-                value={motorcycle.comments}
-              />
-              {/*Поле с цветами:*/}
-              <div className={styles.specRow}>
-                <span>Доступные цвета</span>
-                <div className={styles.colorsWrapper}>
-                  {motorcycle.colors && motorcycle.colors.length > 0 ? (
-                    motorcycle.colors.map((color, index) => (
-                      <div key={index} className={styles.colorItem}>
-                        {/* Кружок с цветом:*/}
-                        <span
-                          className={styles.colorDot}
-                          style={{ backgroundColor: color.toLowerCase() }}
-                          title={color}
-                        />
-                        {/* Название цвета */}
-                        <strong>{color}</strong>
-                      </div>
-                    ))
-                  ) : (
-                    <strong>Не указано</strong>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/*Контент описания:*/}
-          {activeTab === "description" && (
-            <div className={styles.staticText}>
-              <h3>О модели {motorcycle.model}:</h3>
-              <p>
-                Эта модель создана для тех, кто не привык искать компромиссы
-                между стилем и производительностью.
-              </p>
-              <p>
-                Этот мотоцикл сочетает в себе передовые технологии своего
-                времени. Сочетание выверенной эргономики и инженерных решений
-                делает каждый выезд предсказуемым и захватывающим.
-              </p>
-              <p>Основные преимущества:</p>
-              <ul>
-                <li>
-                  <strong>Надежность:</strong> каждая деталь спроектирована с
-                  учетом высоких нагрузок и длительной эксплуатации.
-                </li>
-                <li>
-                  <strong>Комфорт:</strong> посадка снижает усталость райдера
-                  при длительных поездках.
-                </li>
-                <li>
-                  <strong>Эстетика:</strong> дизайн, который притягивает взгляды
-                  и подчеркивает индивидуальность владельца.
-                </li>
-              </ul>
-              <p>
-                Все модели проходят строгий контроль качества перед поступлением
-                в продажу.
-              </p>
-            </div>
-          )}
-
-          {/*Контент гарантии:*/}
-          {activeTab === "warranty" && (
-            <div className={styles.staticText}>
-              <h3>Гарантийные обязательства</h3>
-              <p>
-                Стандартные условия гарантии на основной ассортимент мототехники
-                устанавливают гарантийный срок эксплуатации 30 (тридцать)
-                календарных дней с момента продажи или 20 (двадцать) моточасов
-                для техники, оборудованной счётчиком моточасов, в зависимости от
-                того, какое из указанных событий наступит раньше. Для ряда
-                моделей и брендов действуют отдельные условия гарантии.
-              </p>
-              <p>
-                Обслуживание производится в авторизованных сервисных центрах по
-                всей стране.
-              </p>
-              <p>
-                Для осуществления гарантийного обслуживания при розничной
-                покупке техники в салоне-магазине Покупателю надо прибыть с
-                СЕРВИСНОЙ КНИЖКОЙ (РУКОВОДСТВОМ ПО ЭКСПЛУАТАЦИИ), с транспортным
-                средством (ТС) к Продавцу, либо в авторизованный сервисный
-                центр, уполномоченный выполнять гарантийное обслуживание
-                приобретенного ТС. Рекомендуется предварительно согласовать с
-                представителем Продавца вопросы по гарантийному обслуживанию
-                (ремонту, замене)
-              </p>
-              <p>
-                Для осуществления гарантийного обслуживания при покупке через
-                интернет-магазин Покупателю надо представить:
-              </p>
-              <ul>
-                <li>
-                  правильно и без помарок и исправлений заполненный ГАРАНТИЙНЫЙ
-                  ТАЛОН, в котором должны быть указаны модель и серийный номер
-                  изделия, дата продажи и печать торгующей организации;
-                </li>
-                <li>документ, подтверждающий покупку (товарная накладная);</li>
-                <li>товар в полной комплектации;</li>
-                <li>
-                  экземпляр Договора купли-продажи, подписанный сторонами,
-                  аналогичный экземпляру Договора купли-продажи, находящемуся у
-                  Продавца.
-                </li>
-              </ul>
-              <p>
-                Обращаем также Ваше внимание на то, что при получении и оплате
-                заказа покупатель в присутствии курьера обязан проверить
-                комплектацию и внешний вид изделия на предмет отсутствия
-                физических дефектов (царапин, трещин, сколов и т.п.) и полноту
-                комплектации. После отъезда курьера, либо доставки транспортной
-                компанией, претензии по этим вопросам не принимаются.
-              </p>
-            </div>
-          )}
-
-          {/*Контент с документацией:*/}
-          {activeTab === "docs" && (
-            <div className={styles.docsSection}>
-              <h3>Документация</h3>
-              <p style={{ textAlign: "center" }}>
-                Вы можете скачать полное руководство пользователя и сервисную
-                книжку:
-              </p>
-              <a
-                href={`${API_URL}/static/docs/manual.pdf`}
-                target="_blank"
-                rel="noreferrer"
-                className={styles.downloadBtn}
-              >
-                📄 Скачать Manual.pdf (2.4 MB)
-              </a>
-            </div>
-          )}
-
-          {/*Контент с отзывами:*/}
-          {activeTab === "reviews" && (
-            <div className={styles.reviewsTab}>
-              {reviews?.length > 0 ? (
-                reviews.map((review: any) => (
-                  <ReviewCard
-                    key={review._id}
-                    review={review}
-                    onDelete={() => handleDelete(review._id)}
-                    currentUserId={user?.id}
-                    isAdmin={user?.role === "ADMIN"}
-                  />
-                ))
-              ) : (
-                <div className={styles.noReviews}>
-                  <p>На эту модель пока нет отзывов. Станьте первым!</p>
+              {/* Список миниатюр */}
+              {motorcycle.images?.length > 0 && (
+                <div className={styles.thumbnails}>
+                  {motorcycle.images.map((img) => (
+                    <div
+                      key={img.id}
+                      className={`${styles.thumbWrapper} ${activeImage === `${STATIC_URL}/${img.url}` ? styles.activeThumb : ""}`}
+                      onClick={() => setActiveImage(`${STATIC_URL}/${img.url}`)}
+                    >
+                      <img
+                        src={`${STATIC_URL}/${img.url}`}
+                        alt="thumb"
+                        className={styles.thumbImg}
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
-          )}
-        </section>
 
-        {/*Рекомендации:*/}
-        {relatedMotorcycles?.length > 0 && (
-          <section className={styles.relatedSection}>
-            <h2 className={styles.sectionTitle}>Похожие модели</h2>
-            <div className={styles.relatedGrid}>
-              {relatedMotorcycles.map((moto) => (
-                <MotorcycleCard key={moto.id} data={moto} />
-              ))}
+            <div className={styles.mainInfo}>
+              <h1 className={styles.title}>{motorcycle.model}</h1>
+              <div className={styles.brandBadge}>{motorcycle.brand.name}</div>
+
+              <div className={styles.actionRow}>
+                {motorcycle.discountData.discountPercent > 0 ? (
+                  <>
+                    <div className={styles.oldPrice}>
+                      {motorcycle.discountData.originalPrice.toLocaleString()} ₽
+                    </div>{" "}
+                    {motorcycle.discountData.isPersonal && (
+                      <span className={styles.personalDiscount}>
+                        Персональная скидка!
+                      </span>
+                    )}
+                    <div className={styles.price}>
+                      {motorcycle.discountData.finalPrice.toLocaleString()} ₽
+                    </div>
+                  </>
+                ) : (
+                  <div className={styles.price}>
+                    {motorcycle.price.toLocaleString()} ₽
+                  </div>
+                )}
+
+                {motorcycle.totalInStock ? (
+                  <p>Количество единиц в наличии: {motorcycle.totalInStock}</p>
+                ) : (
+                  <p>Нет в наличии</p>
+                )}
+
+                <div className={styles.buttons}>
+                  <AddToCartButton
+                    data={{
+                      id: motorcycle.id,
+                      model: motorcycle.model,
+                      price: motorcycle.price,
+                      image: mainImageUrl,
+                      brandSlug: motorcycle.brand.slug,
+                      slug: motorcycle.slug,
+                      totalInStock: motorcycle.totalInStock,
+                    }}
+                  />
+
+                  {/*Кнопка добавления в избранное*/}
+                  <button
+                    className={`${styles.favBtn} ${isFavorite ? styles.active : ""}`}
+                    onClick={handleFavoriteClick}
+                    title={
+                      isFavorite
+                        ? "Удалить из избранного"
+                        : "Добавить в избранное"
+                    }
+                  >
+                    {isFavorite ? "❤️ В избранном" : "🤍 В избранное"}
+                  </button>
+                </div>
+              </div>
+
+              <p className={styles.description}>
+                {motorcycle.year} года выпуска. Объем двигателя{" "}
+                {motorcycle.displacement} см³.
+              </p>
+              <p className={styles.description}>Текущий рейтинг: {realRating}</p>
+              <p className={styles.description}>
+                Артикул товара: {motorcycle.slug}
+              </p>
             </div>
           </section>
-        )}
-      </div>
-    </main>
+
+          {/* Таблица характеристик:*/}
+
+          {/* Navbar для табов: */}
+          <nav className={styles.tabsNav}>
+            <button
+              className={activeTab === "specs" ? styles.activeTab : ""}
+              onClick={() => setActiveTab("specs")}
+            >
+              Технические характеристики
+            </button>
+            <button
+              className={activeTab === "description" ? styles.activeTab : ""}
+              onClick={() => setActiveTab("description")}
+            >
+              Описание
+            </button>
+            <button
+              className={activeTab === "reviews" ? styles.activeTab : ""}
+              onClick={() => setActiveTab("reviews")}
+            >
+              Отзывы
+            </button>
+            <button
+              className={activeTab === "warranty" ? styles.activeTab : ""}
+              onClick={() => setActiveTab("warranty")}
+            >
+              Гарантия
+            </button>
+            <button
+              className={activeTab === "docs" ? styles.activeTab : ""}
+              onClick={() => setActiveTab("docs")}
+            >
+              Документы
+            </button>
+          </nav>
+
+          {/* Контент: */}
+          <section className={styles.tabContent}>
+            {/*Контент характеристик:*/}
+            {activeTab === "specs" && (
+              <div className={styles.specsGrid}>
+                <SpecRow label="Категория" value={CATEGORY} />
+                <SpecRow label="Тип двигателя" value={motorcycle.engineType} />
+                <SpecRow label="Мощность" value={motorcycle.power} />
+                <SpecRow
+                  label="Максимальная скорость, км/ч"
+                  value={motorcycle.topSpeed}
+                />
+                <SpecRow label="Коробка передач" value={GEARBOX} />
+                <SpecRow label="Стартер" value={STARTER} />
+                <SpecRow
+                  label="Топливная система"
+                  value={motorcycle.fuelSystem}
+                />
+                <SpecRow label="Система охлаждения" value={COOLING} />
+                <SpecRow label="Трансмиссия" value={TRANSMISSION} />
+                <SpecRow label="Заднее колесо" value={motorcycle.rearTyre} />
+                <SpecRow label="Переднее колесо" value={motorcycle.frontTyre} />
+                <SpecRow label="Задние тормоза" value={motorcycle.rearBrakes} />
+                <SpecRow
+                  label="Передние тормоза"
+                  value={motorcycle.frontBrakes}
+                />
+                <SpecRow
+                  label="Расход топлива, л/100км"
+                  value={motorcycle.fuelConsumption}
+                />
+                <SpecRow
+                  label="Дополнительная информация"
+                  value={motorcycle.comments}
+                />
+                {/*Поле с цветами:*/}
+                <div className={styles.specRow}>
+                  <span>Доступные цвета</span>
+                  <div className={styles.colorsWrapper}>
+                    {motorcycle.colors && motorcycle.colors.length > 0 ? (
+                      motorcycle.colors.map((color, index) => (
+                        <div key={index} className={styles.colorItem}>
+                          {/* Кружок с цветом:*/}
+                          <span
+                            className={styles.colorDot}
+                            style={{ backgroundColor: color.toLowerCase() }}
+                            title={color}
+                          />
+                          {/* Название цвета */}
+                          <strong>{color}</strong>
+                        </div>
+                      ))
+                    ) : (
+                      <strong>Не указано</strong>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/*Контент описания:*/}
+            {activeTab === "description" && (
+              <div className={styles.staticText}>
+                <h3>О модели {motorcycle.model}:</h3>
+                <p>
+                  Эта модель создана для тех, кто не привык искать компромиссы
+                  между стилем и производительностью.
+                </p>
+                <p>
+                  Этот мотоцикл сочетает в себе передовые технологии своего
+                  времени. Сочетание выверенной эргономики и инженерных решений
+                  делает каждый выезд предсказуемым и захватывающим.
+                </p>
+                <p>Основные преимущества:</p>
+                <ul>
+                  <li>
+                    <strong>Надежность:</strong> каждая деталь спроектирована с
+                    учетом высоких нагрузок и длительной эксплуатации.
+                  </li>
+                  <li>
+                    <strong>Комфорт:</strong> посадка снижает усталость райдера
+                    при длительных поездках.
+                  </li>
+                  <li>
+                    <strong>Эстетика:</strong> дизайн, который притягивает взгляды
+                    и подчеркивает индивидуальность владельца.
+                  </li>
+                </ul>
+                <p>
+                  Все модели проходят строгий контроль качества перед поступлением
+                  в продажу.
+                </p>
+              </div>
+            )}
+
+            {/*Контент гарантии:*/}
+            {activeTab === "warranty" && (
+              <div className={styles.staticText}>
+                <h3>Гарантийные обязательства</h3>
+                <p>
+                  Стандартные условия гарантии на основной ассортимент мототехники
+                  устанавливают гарантийный срок эксплуатации 30 (тридцать)
+                  календарных дней с момента продажи или 20 (двадцать) моточасов
+                  для техники, оборудованной счётчиком моточасов, в зависимости от
+                  того, какое из указанных событий наступит раньше. Для ряда
+                  моделей и брендов действуют отдельные условия гарантии.
+                </p>
+                <p>
+                  Обслуживание производится в авторизованных сервисных центрах по
+                  всей стране.
+                </p>
+                <p>
+                  Для осуществления гарантийного обслуживания при розничной
+                  покупке техники в салоне-магазине Покупателю надо прибыть с
+                  СЕРВИСНОЙ КНИЖКОЙ (РУКОВОДСТВОМ ПО ЭКСПЛУАТАЦИИ), с транспортным
+                  средством (ТС) к Продавцу, либо в авторизованный сервисный
+                  центр, уполномоченный выполнять гарантийное обслуживание
+                  приобретенного ТС. Рекомендуется предварительно согласовать с
+                  представителем Продавца вопросы по гарантийному обслуживанию
+                  (ремонту, замене)
+                </p>
+                <p>
+                  Для осуществления гарантийного обслуживания при покупке через
+                  интернет-магазин Покупателю надо представить:
+                </p>
+                <ul>
+                  <li>
+                    правильно и без помарок и исправлений заполненный ГАРАНТИЙНЫЙ
+                    ТАЛОН, в котором должны быть указаны модель и серийный номер
+                    изделия, дата продажи и печать торгующей организации;
+                  </li>
+                  <li>документ, подтверждающий покупку (товарная накладная);</li>
+                  <li>товар в полной комплектации;</li>
+                  <li>
+                    экземпляр Договора купли-продажи, подписанный сторонами,
+                    аналогичный экземпляру Договора купли-продажи, находящемуся у
+                    Продавца.
+                  </li>
+                </ul>
+                <p>
+                  Обращаем также Ваше внимание на то, что при получении и оплате
+                  заказа покупатель в присутствии курьера обязан проверить
+                  комплектацию и внешний вид изделия на предмет отсутствия
+                  физических дефектов (царапин, трещин, сколов и т.п.) и полноту
+                  комплектации. После отъезда курьера, либо доставки транспортной
+                  компанией, претензии по этим вопросам не принимаются.
+                </p>
+              </div>
+            )}
+
+            {/*Контент с документацией:*/}
+            {activeTab === "docs" && (
+              <div className={styles.docsSection}>
+                <h3>Документация</h3>
+                <p style={{ textAlign: "center" }}>
+                  Вы можете скачать полное руководство пользователя и сервисную
+                  книжку:
+                </p>
+                <a
+                  href={`${API_URL}/static/docs/manual.pdf`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.downloadBtn}
+                >
+                  📄 Скачать Manual.pdf (2.4 MB)
+                </a>
+              </div>
+            )}
+
+            {/*Контент с отзывами:*/}
+            {activeTab === "reviews" && (
+              <div className={styles.reviewsTab}>
+                {reviews?.length > 0 ? (
+                  reviews.map((review: any) => (
+                    <ReviewCard
+                      key={review._id}
+                      review={review}
+                      onDelete={() => handleDelete(review._id)}
+                      currentUserId={user?.id}
+                      isAdmin={user?.role === "ADMIN"}
+                    />
+                  ))
+                ) : (
+                  <div className={styles.noReviews}>
+                    <p>На эту модель пока нет отзывов. Станьте первым!</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
+          {/*Рекомендации:*/}
+          {relatedMotorcycles?.length > 0 && (
+            <section className={styles.relatedSection}>
+              <h2 className={styles.sectionTitle}>Похожие модели</h2>
+              <div className={styles.relatedGrid}>
+                {relatedMotorcycles.map((moto) => (
+                  <MotorcycleCard key={moto.id} data={moto} />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      </main>
+    </>
   );
 };

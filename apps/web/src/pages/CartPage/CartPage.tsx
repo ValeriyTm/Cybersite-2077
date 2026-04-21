@@ -10,7 +10,9 @@ import { useNavigate } from "react-router";
 import { ConfirmModal } from "@/shared/ui/ConfirmModal/ConfirmModal";
 import { CartItem } from "@/entities/trading/ui/CartItem/CartItem";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from 'react-helmet-async';
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
@@ -122,136 +124,144 @@ export const CartPage = () => {
     hasStockErrorInSelected || //Выбран товар, которого нет на складе (или кол-во не соответствует)
     isProfileIncomplete; //Профиль не заполнен
 
+
   ///--------------------------При отсутствии товаров:------------------------//
   if (cartItems.length === 0) {
     return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
   }
 
   return (
-    <main className={styles.CartPage}>
-      {/*1) Модалка для удаления одного товара из корзины*/}
-      <ConfirmModal
-        isOpen={!!deletingId}
-        title="Вы действительно хотите удалить этот товар из корзины?"
-        onConfirm={handleConfirmSingle}
-        onCancel={() => setDeletingId(null)}
-      />
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Моя корзина</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <main className={styles.CartPage}>
+        {/*1) Модалка для удаления одного товара из корзины*/}
+        <ConfirmModal
+          isOpen={!!deletingId}
+          title="Вы действительно хотите удалить этот товар из корзины?"
+          onConfirm={handleConfirmSingle}
+          onCancel={() => setDeletingId(null)}
+        />
 
-      {/*2) Модалка для массового удаления товаров из корзины*/}
-      <ConfirmModal
-        isOpen={isBulkDeleteOpen}
-        title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
-        onConfirm={handleConfirmBulk}
-        onCancel={() => setIsBulkDeleteOpen(false)}
-      />
+        {/*2) Модалка для массового удаления товаров из корзины*/}
+        <ConfirmModal
+          isOpen={isBulkDeleteOpen}
+          title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
+          onConfirm={handleConfirmBulk}
+          onCancel={() => setIsBulkDeleteOpen(false)}
+        />
 
-      <h1 className={styles.title}>Корзина</h1>
+        <h1 className={styles.title}>Корзина</h1>
 
-      <div className={styles.content}>
-        {/*3) Header:*/}
-        <div className={styles.main}>
-          <div className={styles.controls}>
-            <label className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={isAllSelected}
-                onChange={handleToggleAll}
-              />
-              Выбрать все
-            </label>
-            <button
-              className={styles.deleteSelected}
-              onClick={() => setIsBulkDeleteOpen(true)}
-              disabled={selectedItems.length === 0}
-            >
-              Удалить выбранные
-            </button>
-          </div>
-
-          {/*4) Список товаров:*/}
-          <div className={styles.list}>
-            {cartItems.map((item) => {
-              return (
-                <CartItem key={item.id} data={item} handleDeletingId={handleDeletingId} />
-              )
-            })}
-          </div>
-        </div>
-
-        {/*5) Сайдбар с итоговой ценой:*/}
-        <aside className={styles.summary}>
-          {/*5.1.) Окно с ценой и кнопкой оформления заказа:*/}
-          <h3>Условия заказа</h3>
-          <div className={styles.summaryRow}>
-            <span>Выбрано товаров:</span>
-            <span>{selectedItems.length}</span>
-          </div>
-          <div className={`${styles.summaryRow} ${styles.total}`}>
-            <span>Итого:</span>
-            <span>{finalTotal.toLocaleString()} ₽</span>
-          </div>
-
-          {isProfileIncomplete && (
-            <p className={styles.warning}>
-              ⚠️ Заполните телефон и дату рождения в профиле для оформления
-              заказа
-            </p>
-          )}
-
-          {hasStockErrorInSelected && (
-            <p className={styles.warning}>
-              ❌ Исправьте количество товаров (превышен остаток на складах)
-            </p>
-          )}
-
-          <button
-            type="button"
-            className={styles.checkoutBtn}
-            disabled={isCheckoutDisabled}
-            onClick={(e) => {
-              e.stopPropagation(); //Останавливаем "шум" для других компонентов
-              navigate("/checkout", {
-                state: { promo: appliedPromo }, //Передаём промокод в state
-              });
-            }}
-          >
-            Перейти к оформлению
-          </button>
-
-          {/*5.2.) Зона ввода промокода:*/}
-          <div className={styles.promoSection}>
-            <p className={styles.promoLabel}>Промокод на скидку:</p>
-
-            {!appliedPromo ? (
-              <div className={styles.inputGroup}>
+        <div className={styles.content}>
+          {/*3) Header:*/}
+          <div className={styles.main}>
+            <div className={styles.controls}>
+              <label className={styles.checkboxLabel}>
                 <input
-                  type="text"
-                  placeholder="ВВЕДИТЕ СЛОВО"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  type="checkbox"
+                  checked={isAllSelected}
+                  onChange={handleToggleAll}
                 />
-                <button className={styles.applyBtn} onClick={handleApplyPromo}>
-                  Применить
-                </button>
-              </div>
-            ) : (
-              <div className={styles.successMsg}>
-                ✅ Промокод <strong>{appliedPromo.code}</strong> применен:
-                <br></br>
-                <span> -{appliedPromo.amount.toLocaleString()} ₽</span>
-                <br></br>
-                <span>Отменить промокод: </span>
-                <button
-                  className={styles.removeBtn}
-                  onClick={() => setAppliedPromo(null)}
-                >
-                  ✕
-                </button>
-              </div>
-            )}
+                Выбрать все
+              </label>
+              <button
+                className={styles.deleteSelected}
+                onClick={() => setIsBulkDeleteOpen(true)}
+                disabled={selectedItems.length === 0}
+              >
+                Удалить выбранные
+              </button>
+            </div>
+
+            {/*4) Список товаров:*/}
+            <div className={styles.list}>
+              {cartItems.map((item) => {
+                return (
+                  <CartItem key={item.id} data={item} handleDeletingId={handleDeletingId} />
+                )
+              })}
+            </div>
           </div>
-        </aside>
-      </div>
-    </main>
+
+          {/*5) Сайдбар с итоговой ценой:*/}
+          <aside className={styles.summary}>
+            {/*5.1.) Окно с ценой и кнопкой оформления заказа:*/}
+            <h3>Условия заказа</h3>
+            <div className={styles.summaryRow}>
+              <span>Выбрано товаров:</span>
+              <span>{selectedItems.length}</span>
+            </div>
+            <div className={`${styles.summaryRow} ${styles.total}`}>
+              <span>Итого:</span>
+              <span>{finalTotal.toLocaleString()} ₽</span>
+            </div>
+
+            {isProfileIncomplete && (
+              <p className={styles.warning}>
+                ⚠️ Заполните телефон и дату рождения в профиле для оформления
+                заказа
+              </p>
+            )}
+
+            {hasStockErrorInSelected && (
+              <p className={styles.warning}>
+                ❌ Исправьте количество товаров (превышен остаток на складах)
+              </p>
+            )}
+
+            <button
+              type="button"
+              className={styles.checkoutBtn}
+              disabled={isCheckoutDisabled}
+              onClick={(e) => {
+                e.stopPropagation(); //Останавливаем "шум" для других компонентов
+                navigate("/checkout", {
+                  state: { promo: appliedPromo }, //Передаём промокод в state
+                });
+              }}
+            >
+              Перейти к оформлению
+            </button>
+
+            {/*5.2.) Зона ввода промокода:*/}
+            <div className={styles.promoSection}>
+              <p className={styles.promoLabel}>Промокод на скидку:</p>
+
+              {!appliedPromo ? (
+                <div className={styles.inputGroup}>
+                  <input
+                    type="text"
+                    placeholder="ВВЕДИТЕ СЛОВО"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  />
+                  <button className={styles.applyBtn} onClick={handleApplyPromo}>
+                    Применить
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.successMsg}>
+                  ✅ Промокод <strong>{appliedPromo.code}</strong> применен:
+                  <br></br>
+                  <span> -{appliedPromo.amount.toLocaleString()} ₽</span>
+                  <br></br>
+                  <span>Отменить промокод: </span>
+                  <button
+                    className={styles.removeBtn}
+                    onClick={() => setAppliedPromo(null)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
+          </aside>
+        </div>
+      </main>
+    </>
+
   );
 };

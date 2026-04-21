@@ -7,7 +7,9 @@ import {
   type ForgotPasswordInput,
 } from "@repo/validation";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from 'react-helmet-async';
 //Роутинг:
 import { Link } from "react-router";
 //Состояния:
@@ -50,33 +52,41 @@ export const ForgotPasswordPage = () => {
     );
   };
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <h1>Восстановление</h1>
-        <p>Введите Email, указанный при регистрации</p>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            label="Email"
-            type="email"
-            placeholder="mail@example.com"
-            registration={register("email")}
-            error={errors.email}
-          />
 
-          <Button
-            type="submit"
-            variant="primary"
-            isLoading={isSubmitting}
-            loadingText="Отправка..."
-          >
-            Получить ссылку
-          </Button>
-        </form>
-        <Link title="Go back" to="/auth" className={styles.backLink}>
-          Вернуться к форме
-        </Link>
+  return (
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Забыли пароль?</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <h1>Восстановление</h1>
+          <p>Введите Email, указанный при регистрации</p>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Input
+              label="Email"
+              type="email"
+              placeholder="mail@example.com"
+              registration={register("email")}
+              error={errors.email}
+            />
+
+            <Button
+              type="submit"
+              variant="primary"
+              isLoading={isSubmitting}
+              loadingText="Отправка..."
+            >
+              Получить ссылку
+            </Button>
+          </form>
+          <Link title="Go back" to="/auth" className={styles.backLink}>
+            Вернуться к форме
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
+
   );
 };

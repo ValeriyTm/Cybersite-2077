@@ -11,6 +11,9 @@ import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage/ForgotPasswordPag
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage/ResetPasswordPage";
 import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
 import { TermsPage } from "@/pages/Legal/TermsPage";
+import { UserAgreement } from "@/pages/Legal/UserAgreement";
+import { AboutPage } from "@/pages/AboutPage";
+import { ContactsPage } from "@/pages/ContactsPage";
 import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
 import { ProtectedRoute } from "../ui/ProtectedRoute";
 import { CatalogPage } from "@/pages/CatalogPage/CatalogPage";
@@ -22,12 +25,11 @@ import { CartPage } from "@/pages/CartPage/CartPage";
 import { CheckoutPage } from "@/pages/CheckoutPage/CheckoutPage";
 import { MyOrdersPage } from "@/pages/MyOrdersPage/MyOrdersPage";
 import { PromosPage } from "@/pages/PromosPage/PromosPage";
-import { PaymentSuccess } from "@/pages/PaymentStatus/PaymentSuccess";
-import { PaymentFail } from "@/pages/PaymentStatus/PaymentFail";
 import { SupportPage } from "@/pages/SupportPage/SupportPage";
 import { UserTicketsPage } from "@/pages/UserTicketsPage/UserTicketsPage";
 import { NotFoundPage } from "@/pages/NotFoundPage/NotFoundPage";
-import { UserAgreement } from "@/pages/Legal/UserAgreement";
+import { NewsPage } from "@/pages/NewsPage/ui/NewsPage";
+import { NewsDetailsPage } from "@/pages/NewsDetailsPage/NewsDetailsPage";
 import { AdminRoute } from "../ui/AdminRoute";
 import { AdminLayout } from "@/widgets/AdminLayout/ui/AdminLayout";
 import { AdminBrandsPage } from "@/pages/AdminBrandsPage/ui/AdminBrandsPage";
@@ -40,10 +42,6 @@ import { AdminDiscountsPage } from "@/pages/AdminDiscountsPage/ui/AdminDiscounts
 import { AdminReportsPage } from "@/pages/AdminReportsPage/ui/AdminReportsPage";
 import { AdminTicketsPage } from "@/pages/AdminTicketsPage/ui/AdminTicketsPage";
 import { AdminNewsPage } from "@/pages/AdminNewsPage.tsx/ui/AdminNewsPage";
-import { NewsPage } from "@/pages/NewsPage/ui/NewsPage";
-import { NewsDetailsPage } from "@/pages/NewsDetailsPage/NewsDetailsPage";
-import { AboutPage } from "@/pages/AboutPage";
-import { ContactsPage } from "@/pages/ContactsPage";
 
 //Публичный маршрут:
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
@@ -136,14 +134,6 @@ export const router = createBrowserRouter([
       {
         path: "/promos",
         element: <PromosPage />, //Страница с промокодами
-      },
-      {
-        path: "/payment/success",
-        element: <PaymentSuccess />, //Страница успешной оплаты (пока не используется)
-      },
-      {
-        path: "/payment/fail",
-        element: <PaymentFail />, //Страница неудачной оплаты (пока не используется)
       },
       {
         path: "/news",

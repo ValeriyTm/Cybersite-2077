@@ -7,6 +7,10 @@ import { useState, useEffect } from "react";
 import { MotorcycleCard } from "@/entities/catalog";
 //Иконки:
 import { FaArrowUp } from "react-icons/fa";
+//API:
+import { API_URL } from "@/shared/api/api";
+//SEO:
+import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from "./FavotiresPage.module.scss";
 
@@ -46,39 +50,45 @@ export const FavoritesPage = () => {
   };
 
   return (
-    <main className={styles.Page}>
-      <h1>Моё избранное ({favoriteIds.length})</h1>
+    <>
+      <Helmet>
+        <title>Cybersite-2077 | Мои избранные товары</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <main className={styles.Page}>
+        <h1>Моё избранное ({favoriteIds.length})</h1>
 
-      <div className={styles.list}>
-        {data?.pages.map((group, i) => (
-          <React.Fragment key={i}>
-            {group.items.map((moto) => (
-              <MotorcycleCard key={moto.id} data={moto} viewMode="list" />
-            ))}
-          </React.Fragment>
-          //React.Fragment используется как невидимый контейнер для группировки списка элементов внутри метода .map().
-        ))}
-      </div>
+        <div className={styles.list}>
+          {data?.pages.map((group, i) => (
+            <React.Fragment key={i}>
+              {group.items.map((moto) => (
+                <MotorcycleCard key={moto.id} data={moto} viewMode="list" />
+              ))}
+            </React.Fragment>
+            //React.Fragment используется как невидимый контейнер для группировки списка элементов внутри метода .map().
+          ))}
+        </div>
 
-      {/*Кнопка подъема "Наверх":*/}
-      <button
-        className={`${styles.scrollToTop} ${showScroll ? styles.visible : ''}`}
-        onClick={scrollTop}
-        aria-label="Наверх страницы"
-      >
-        <FaArrowUp />
-      </button>
-
-      {/*Кнопка для загрузки новых карточек мотоциклов:*/}
-      {hasNextPage && (
+        {/*Кнопка подъема "Наверх":*/}
         <button
-          className={styles.loadMore}
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
+          className={`${styles.scrollToTop} ${showScroll ? styles.visible : ''}`}
+          onClick={scrollTop}
+          aria-label="Наверх страницы"
         >
-          {isFetchingNextPage ? "Загрузка..." : "Показать еще"}
+          <FaArrowUp />
         </button>
-      )}
-    </main>
+
+        {/*Кнопка для загрузки новых карточек мотоциклов:*/}
+        {hasNextPage && (
+          <button
+            className={styles.loadMore}
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? "Загрузка..." : "Показать еще"}
+          </button>
+        )}
+      </main>
+    </>
   );
 };
