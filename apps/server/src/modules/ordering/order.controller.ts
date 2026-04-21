@@ -76,7 +76,7 @@ export const payOrderTest = catchAsync(
     }
 
     //Транзакция списания остатков (+ удаления зарезервироанного кол-ва) и изменения статуса:
-    await orderService.confirmUserOrder(orderId, order);
+    await orderService.confirmUserOrder(orderId);
 
     //Обновляем данные по остаткам в Elastic:
     try {

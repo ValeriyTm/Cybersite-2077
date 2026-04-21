@@ -231,7 +231,7 @@ export class OrderService {
       // Меняем статус заказа:
       const updated = await tx.order.update({
         where: { id: orderId },
-        data: { status: "CANCELED" },
+        data: { status: "CANCELED", paymentStatus: "canceled" },
       });
 
       //Возвращаем товар в доступные остатки (уменьшаем резерв):
@@ -257,12 +257,13 @@ export class OrderService {
   }
 
   //Убрать товар из зарезервированного и остатков (при оплате заказа) (тестовый эндпоинт), а также сменить статус:
-  async confirmUserOrder(orderId: string, order: any) {
-    await prisma.$transaction(async (tx) => {
+  async confirmUserOrder(orderId: string) {
+    return await prisma.$transaction(async (tx) => {
       //Обновляем статус заказа:
-      await tx.order.update({
+      const order = await tx.order.update({
         where: { id: orderId },
-        data: { status: "PAID" },
+        data: { status: "PAID", paymentStatus: "succeeded" },
+        include: { items: true },
       });
 
       //Списываем со склада:
@@ -275,11 +276,13 @@ export class OrderService {
             },
           },
           data: {
-            quantity: { decrement: item.quantity }, // Физическое списание со склада
-            reserved: { decrement: item.quantity }, // Снятие брони
+            quantity: { decrement: item.quantity }, //Физическое списание со склада
+            reserved: { decrement: item.quantity }, //Снятие брони
           },
         });
       }
+
+      return order;
     });
   }
 }

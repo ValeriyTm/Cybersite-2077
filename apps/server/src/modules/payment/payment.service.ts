@@ -64,6 +64,7 @@ export class PaymentService {
         createPayload,
         idempotenceKey,
       );
+
       return payment;
     } catch (error) {
       console.error("YooKassa Error:", error);
@@ -97,27 +98,7 @@ export class PaymentService {
   //Изменяем статус заказа на PAID и списываем товар со склада (после успешной оплаты):
   async applyChangeAfterPayment(orderId: string) {
     //Выполняем смену статуса и списание остатков за одну транзакцию:
-    return await prisma.$transaction(async (tx) => {
-      //Меняем статус заказа в PostgreSQL:
-      const order = await orderService.changeStatusOrder(orderId, "PAID", tx);
-
-      //Окончательно списываем товар со склада в PostgreSQL:
-      for (const item of order.items) {
-        await tx.stock.update({
-          where: {
-            motorcycleId_warehouseId: {
-              motorcycleId: item.motorcycleId,
-              warehouseId: order.warehouseId,
-            },
-          },
-          data: {
-            reserved: { decrement: item.quantity },
-            quantity: { decrement: item.quantity },
-          },
-        });
-      }
-      return order;
-    });
+    return await orderService.confirmUserOrder(orderId);
   }
 }
 
