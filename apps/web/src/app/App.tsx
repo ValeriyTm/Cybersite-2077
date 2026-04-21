@@ -20,8 +20,8 @@ import "./styles/index.scss";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1, // Если запрос упал, пробуем еще 1 раз
-      refetchOnWindowFocus: false, // Отключим авто-обновление при смене вкладок для разработки
+      retry: 1, //Если запрос упал, пробуем еще 1 раз
+      refetchOnWindowFocus: false, //Отключаем авто-обновление при смене вкладок для разработки
     },
   },
 });
@@ -35,7 +35,7 @@ export const App = () => {
         <HelmetProvider>
           <ErrorBoundary
             FallbackComponent={GlobalErrorFallback}
-            onReset={() => (window.location.href = "/")} // Сброс: уводим на главную
+            onReset={() => (window.location.href = "/")} //Редирект на главную
           >
             <RouterProvider router={router} />
           </ErrorBoundary>

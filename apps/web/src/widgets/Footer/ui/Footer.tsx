@@ -98,17 +98,57 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Иконки соцсетей */}
+        {/* Иконки соцсетей: */}
         <div className={styles.soc1als}>
-          <FaFacebook className={styles.facebook} /> <FaTelegram className={styles.telegram} /> <FaWhatsapp className={styles.whatsapp} /> <FaViber className={styles.viber} />
-          <FaTwitter className={styles.twitter} /> <FaTiktok className={styles.tiktok} /> <FaVk className={styles.vk} /> <FaYoutube className={styles.youtube} />
+          <ul>
+            <li>
+              <a href="/" aria-label="Facebook">
+                <FaFacebook className={styles.facebook} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="Twitter">
+                <FaTwitter className={styles.twitter} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="Tiktok">
+                <FaTiktok className={styles.tiktok} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="Vkontakte">
+                <FaVk className={styles.vk} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="Youtube">
+                <FaYoutube className={styles.youtube} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="Telegram">
+                <FaTelegram className={styles.telegram} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="Whatsapp">
+                <FaWhatsapp className={styles.whatsapp} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="Viber">
+                <FaViber className={styles.viber} aria-hidden="true" focusable="false" />
+              </a>
+            </li>
+          </ul>
         </div>
 
         <hr className={styles.divider} />
 
-        {/* Нижняя часть */}
+        {/* Нижняя часть: */}
         <div className={styles.bottom}>
-          <span>©{currentYear} Cybersite-2077 &nbsp;&nbsp;&nbsp;&nbsp;|</span>
+          <span>©<time datetime={currentYear}>{currentYear}</time> Cybersite-2077 &nbsp;&nbsp;&nbsp;&nbsp;|</span>
           <Link to="/agreement">Пользовательское соглашение</Link>
         </div>
       </div>

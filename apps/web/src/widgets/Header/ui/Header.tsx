@@ -203,7 +203,7 @@ export const Header = () => {
             </div>
 
             <Link to="/" className={styles.logolinkHidden}>
-              <img src={logoUrl} alt="Main Logo" className={styles.logo} />
+              <img src={logoUrl} alt="Main Logo" className={styles.logo} width="140" height="45" />
             </Link>
           </div>
         </div>

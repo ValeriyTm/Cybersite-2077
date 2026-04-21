@@ -114,6 +114,7 @@ export const HomePage = () => {
         <title>Cybersite-2077</title>
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
+
       <div className={styles.homePage}>
         <GlobalDiscountBanner></GlobalDiscountBanner>
 
@@ -160,6 +161,7 @@ export const HomePage = () => {
             <img
               src="src/shared/assets/images/banners/team.jpg"
               alt=""
+              loading="lazy"
               className={styles.teamImage}
             />
           </div>
@@ -203,6 +205,7 @@ export const HomePage = () => {
                 <img
                   src="src/shared/assets/images/banners/team1.jpg"
                   alt=""
+                  loading="lazy"
                   className={styles.delImage}
                 />
               </div>
@@ -224,6 +227,7 @@ export const HomePage = () => {
                 <img
                   src="src/shared/assets/images/banners/motos.jpg"
                   alt=""
+                  loading="lazy"
                   className={styles.delImage}
                 />
               </div>

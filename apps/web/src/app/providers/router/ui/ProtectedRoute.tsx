@@ -1,6 +1,6 @@
 //Роутинг:
 import { Navigate } from "react-router";
-//Данные пользователя:
+//Состояния:
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {

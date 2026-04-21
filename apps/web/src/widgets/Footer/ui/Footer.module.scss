@@ -148,18 +148,20 @@
   }
 
   .soc1als {
-    display: flex;
-    justify-content: center;
+    ul {
+      display: flex;
+      justify-content: center;
 
-    gap: 25px;
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    color: var(--auxiliary-text-color);
+      gap: 25px;
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      color: var(--auxiliary-text-color);
 
-    flex-wrap: wrap;
+      flex-wrap: wrap;
 
-    @include mobile-s {
-      gap: 15px;
+      @include mobile-s {
+        gap: 15px;
+      }
     }
 
     svg {

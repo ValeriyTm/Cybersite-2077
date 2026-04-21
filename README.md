@@ -1,8 +1,7 @@
 # Cybersite-2077
-![Логотип приложения](MainLogo.png)
+![Логотип приложения](/assets/MainLogo.png)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![GitHub release](https://img.shields.io/github/v/release/ValeriyTm/Cybersite-2077)
-<!-- ![Version](https://img.shields.io/badge/version-1.9.1-6E9F18) -->
 <!-- ![Lines](https://img.shields.io/badge/lines-число-blue) -->
 
 #### Frontend
@@ -75,7 +74,7 @@ Read this in other languages:
 
 ## Demo
 
-![Демо всего проекта](Project.gif)
+![Демо всего проекта](/assets/Project.gif)
 
 ## Release notes (Список изменений)
 

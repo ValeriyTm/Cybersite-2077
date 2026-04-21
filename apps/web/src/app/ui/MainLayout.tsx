@@ -1,28 +1,25 @@
 import { useEffect } from "react";
-//Библиотека всплывающих уведомлений:
-import { Toaster } from "react-hot-toast";
 //Роутер:
 import { Outlet } from "react-router";
-//Данные пользователя:
+//Состояния:
 import { useProfile } from "@/features/auth/model/useProfile";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
-//Работа с избранным:
 import { useFavorites } from "@/entities/trading/api/useFavorites";
-//Работа с корзиной:
 import { useCart } from "@/entities/trading/api/useCart";
-//Виджеты:
+//Компоненты:
 import { Header } from "@/widgets/Header/ui/Header";
 import { Footer } from "@/widgets/Footer/ui/Footer";
-//Прочие компоненты:
 import { PageLoader } from "@/pages/PageLoader";
 import { CursorTrail } from "@/shared/ui/CursorTrail";
 import { useThemeStore } from "@/entities/session/model/themeStore";
 import { MobileMenu } from "@/widgets/MobileMenu/MobileMenu";
 import { BurgerButton } from "@/shared/ui/BurgerButton/BurgerButton";
+//Уведомления:
+import { Toaster } from "react-hot-toast";
 
 export const MainLayout = () => {
-  const { isLoading, isError } = useProfile();   //Хук useProfile сам инициирует запрос и вернет актуальный статус загрузки:
-  const isAuth = useAuthStore((state) => state.isAuth);   //Статус авторизации
+  const { isLoading, isError } = useProfile();
+  const isAuth = useAuthStore((state) => state.isAuth);
 
   const theme = useThemeStore((state) => state.theme); //Получаем текущую тему
 
@@ -43,6 +40,7 @@ export const MainLayout = () => {
 
   return (
     <>
+      {/*Настройки всплывающих уведомлений от react-hot-toast:*/}
       <Toaster
         position="top-center" //Позиционируем всплывающее уведомление
         reverseOrder={false} //Определяем порядок появления (при false новые уведомления будут появляться поверх старых)
