@@ -18,33 +18,40 @@
     background: var(--main-bg-color);
     /* pxtorem-disable-next-line */
     border: 1px solid solid var(--accent-text-color);
-    padding: 8px 12px;
+    padding-inline: 12px;
+    height: 44px;
     border-radius: 4px;
     color: var(--main-text-color);
     &:focus {
-      border-color: var(--accent-text-color);
+      /* pxtorem-disable-next-line */
+      border: 1px solid var(--accent-text-color) !important;
       outline: none;
     }
 
     &::placeholder {
       color: var(--auxiliary-text-color);
     }
+
+    //Увеличиваем область клика
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 48px;
+      height: 48px;
+      transform: translate(-50%, -50%);
+    }
   }
 }
 
 .statusSelect {
-  background: #1a1a1a;
+  background: var(--auxiliary-bg-color-2);
   color: var(--accent-text-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid #333;
   padding: 5px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.8rem;
-
-  @include hover {
-    border-color: var(--accent-text-color);
-  }
 }
 
 .pagination {

@@ -1,5 +1,10 @@
+
+//Типы:
 import { type ColumnDef } from '@tanstack/react-table';
+//Иконки:
 import { FaEdit } from 'react-icons/fa';
+//Стили:
+import styles from './columns.module.scss';
 
 export const stockColumns = (onEdit: (stock: any) => void): ColumnDef<any>[] => [
     {
@@ -38,12 +43,16 @@ export const stockColumns = (onEdit: (stock: any) => void): ColumnDef<any>[] => 
         id: 'actions',
         header: '',
         cell: ({ row }) => (
-            <FaEdit
+            <button
+                type="button"
                 cursor="pointer"
-                color="#f39c12"
+                title={`Редактировать остатки для ${row.original.motorcycle?.model}`}
+                className={`${styles.editBtn}`}
                 onClick={() => onEdit(row.original)}
-                title="Изменить количество"
-            />
+            >
+                <FaEdit />
+            </button>
+
         )
     }
 ];

@@ -48,24 +48,25 @@ export const getUserColumns = (
             header: 'Действия',
             cell: ({ row }) => {
                 const isSelf = row.original.id === currentAdminId;
-
                 return (
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         {!isSelf && (
-                            <FaTrash
+                            <button
+                                type="button"
                                 cursor="pointer"
-                                color="#e74c3c"
-                                title="Удалить пользователя"
+                                title={`Удалить пользователя ${row.original.email}`}
+                                className={`${styles.deleteBtn}`}
                                 onClick={() => {
                                     if (window.confirm(`Вы уверены, что хотите удалить пользователя ${row.original.email}? Это действие необратимо.`)) {
                                         onDelete(row.original.id);
                                     }
                                 }}
-                            />
+                            >
+                                <FaTrash />
+                            </button>
                         )}
                     </div>
                 );
             }
         }
-
     ];

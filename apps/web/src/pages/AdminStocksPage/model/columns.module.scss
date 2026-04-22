@@ -1,17 +1,4 @@
-.hideOnMobile {
-  @include mobile {
-    display: none !important;
-  }
-}
-
-.hideOnMobileS {
-  @include mobile-s {
-    display: none !important;
-  }
-}
-
-.editBtn,
-.deleteBtn {
+.editBtn {
   border: none !important;
   height: 44px;
   width: 44px;
@@ -23,20 +10,10 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-}
 
-.editBtn {
   @include hover {
     color: var(--accent-text-color) !important;
     border: 0.5px solid var(--accent-text-color) !important;
-    border-radius: 50%;
-  }
-}
-
-.deleteBtn {
-  @include hover {
-    color: var(--color-danger) !important;
-    border: 0.5px solid var(--color-danger) !important;
     border-radius: 50%;
   }
 }

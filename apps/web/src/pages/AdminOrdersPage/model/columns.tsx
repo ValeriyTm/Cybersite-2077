@@ -51,19 +51,21 @@ export const getOrderColumns = (
             cell: ({ row, getValue }) => {
                 const isRestricted = userRole === 'CONTENT_EDITOR' || userRole === 'USER' || userRole === 'MANAGER';
                 return (
-                    <select
-                        value={String(getValue())}
-                        className={styles.statusSelect}
-                        disabled={isRestricted}
-                        onChange={(e) => onStatusChange(row.original.id, e.target.value)}
-                    >
-                        <option value="PENDING">PENDING</option>
-                        <option value="PAID">PAID</option>
-                        <option value="CANCELED">CANCELED</option>
-                        <option value="DELIVERY">DELIVERY</option>
-                        <option value="DELIVERED">DELIVERED</option>
-                        <option value="COMPLETED">COMPLETED</option>
-                    </select>
+                    <label className={styles.selectWrapper}>
+                        <select
+                            value={String(getValue())}
+                            className={styles.statusSelect}
+                            disabled={isRestricted}
+                            onChange={(e) => onStatusChange(row.original.id, e.target.value)}
+                        >
+                            <option value="PENDING">PENDING</option>
+                            <option value="PAID">PAID</option>
+                            <option value="CANCELED">CANCELED</option>
+                            <option value="DELIVERY">DELIVERY</option>
+                            <option value="DELIVERED">DELIVERED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
+                    </label>
 
                 )
             }

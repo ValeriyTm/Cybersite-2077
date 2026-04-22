@@ -83,8 +83,8 @@ export const getColumns = (
           <div className={styles.actionsContainer}>
             <button
               type="button"
-              title={`Редактировать ${brandName}`}
-              className={`${styles.actionButton} ${styles.edit}`}
+              title={`Редактировать бренд ${brandName}`}
+              className={`${styles.actionButton} ${styles.editBtn}`}
               onClick={() => onEdit(row.original)}
             >
               <FaEdit />
@@ -92,7 +92,7 @@ export const getColumns = (
 
             <button
               type="button"
-              className={`${styles.actionButton} ${styles.delete}`}
+              className={`${styles.actionButton} ${styles.deleteBtn}`}
               onClick={() => {
                 if (window.confirm(`Удалить бренд ${brandName}? Это удалит все его мотоциклы.`)) {
                   onDelete(row.original.id);

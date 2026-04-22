@@ -134,16 +134,23 @@ export const SupportPage = () => {
         <title>Cybersite-2077 | Поддержка</title>
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
+
       <div className={styles.supportWrapper}>
         <h1>Служба поддержки</h1>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div className={styles.row}>
             <div className={styles.inputGroup}>
-              <input
-                {...register("firstName")}
-                placeholder="Имя"
-                className={errors.firstName ? styles.inputError : ""}
-              />
+              <label htmlFor="firstNameInput" className={styles.nameLabel}>
+                <input
+                  {...register("firstName")}
+                  placeholder="Имя"
+                  id='firstNameInput'
+                  className={`${errors.firstName ? styles.inputError : ""} ${styles.nameInput}`}
+                />
+
+              </label>
+
+
               {errors.firstName && (
                 <span className={styles.errorMessage}>
                   {errors.firstName.message}
@@ -296,7 +303,20 @@ export const SupportPage = () => {
             {isSubmitting ? "Отправка..." : "Отправить запрос"}
           </button>
         </form>
+
+        <div className={styles.testContainer}>
+
+          {/*Удалить:*/}
+          {/* <label htmlFor="my-input-id" className={styles.testLabel} >
+            <input type="text" className={styles.testInput} id='my-input-id' />
+          </label> */}
+
+        </div>
+
+
       </div>
+
+
     </>
   );
 };

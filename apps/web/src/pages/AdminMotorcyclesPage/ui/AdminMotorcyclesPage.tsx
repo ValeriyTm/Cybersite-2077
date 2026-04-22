@@ -98,7 +98,7 @@ export const AdminMotorcyclesPage = () => {
         />
         {(userRole == 'ADMIN' || userRole == 'SUPERADMIN' || userRole == 'MANAGER') &&
           <button
-            className={styles.addBtn}
+            className={`${styles.addBtn} ${styles.basicButton}`}
             onClick={() => {
               setEditingMoto(null);
               setIsModalOpen(true);

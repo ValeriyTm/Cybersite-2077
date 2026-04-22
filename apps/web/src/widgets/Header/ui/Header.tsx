@@ -194,9 +194,6 @@ export const Header = () => {
                 </li>}
               </ul>
 
-
-
-              {/* {canSee && <Link to="/admin">Управление</Link>} */}
             </nav>
             {/*1.2)Смена темы:*/}
             <div className={styles.themeSwitcher}>
@@ -283,7 +280,7 @@ export const Header = () => {
                         </div>
                       </aside>
 
-                      {/*Правая часть ыпаадающего меню: бренды*/}
+                      {/*Правая часть выпадающего меню: бренды*/}
                       <section className={styles.mainPanel}>
                         {activeMainCat === "moto" ? (
                           <div className={styles.brandsGrid}>

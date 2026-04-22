@@ -14,24 +14,24 @@ export const getMotoColumns = (
       accessorKey: 'id',
       header: 'ID',
       meta: { className: styles.hideOnMobile },
-      cell: ({ getValue }) => {
+      cell: ({ getValue, row }) => {
         const id = String(getValue());
         return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <code style={{ color: '#666', fontSize: '0.75rem' }}>{id.slice(0, 8)}...</code>
-            <FaCopy
+          <div className={styles.idWrapper}>
+            <code className={styles.code}>{id.slice(0, 8)}...</code>
+            <button
+              type="button"
+              title={`Скопировать id товара для модели ${row.original.model}`}
               cursor="pointer"
-              color="#555"
-              size={12}
-              title="Копировать полный ID"
+              className={styles.copyBtn}
               onClick={(e) => {
                 e.stopPropagation();
                 navigator.clipboard.writeText(id);
                 toast.success('ID скопирован в буфер!');
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#f39c12'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#555'}
-            />
+            >
+              <FaEdit size={12} />
+            </button>
           </div>
         );
       }
@@ -60,21 +60,28 @@ export const getMotoColumns = (
       id: "actions",
       header: "Действия",
       cell: ({ row }) => (
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div className={styles.actionsWrapper}>
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
-            <FaEdit
-              color="#f39c12"
+            <button
+              type="button"
               cursor="pointer"
-              title='Редактировать'
+              title={`Редактировать модель ${row.original.model}`}
+              className={`${styles.editBtn}`}
               onClick={() => onEdit(row.original)}
-            />}
+            >
+              <FaEdit />
+            </button>}
+
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
-            <FaTrash
-              title='Удалить'
-              color="#e74c3c"
+            <button
+              type="button"
               cursor="pointer"
+              title={`Удалить модель ${row.original.model}`}
+              className={`${styles.deleteBtn}`}
               onClick={() => onDelete(row.original.id)}
-            />}
+            >
+              <FaTrash />
+            </button>}
         </div>
       ),
     },
@@ -86,12 +93,17 @@ export const getMotoColumns = (
         return (
           <>
             {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
-              <FaBox
+              <button
+                type="button"
                 cursor="pointer"
-                color="#3498db"
-                title="Управление запасами"
+                title={`Редактировать остатки для модели ${row.original.model}`}
+                className={`${styles.stockBtn}`}
                 onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)}
-              />}
+              >
+                <FaBox />
+              </button>
+
+            }
           </>
         );
       }

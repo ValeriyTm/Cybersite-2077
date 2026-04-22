@@ -45,11 +45,29 @@ export const newsColumns = (onEdit: (item: any) => void,
             header: 'Действия',
             cell: ({ row }) => (
                 <div style={{ display: 'flex', gap: '15px', color: '#f39c12' }}>
-                    <FaEdit cursor="pointer" onClick={() => onEdit(row.original)} title="Редактировать" />
-                    <FaTrash cursor="pointer" color="#e74c3c" onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(row.original._id);
-                    }} title="Удалить" />
+                    <button
+                        type="button"
+                        cursor="pointer"
+                        title={`Редактировать новость ${row.original.title}`}
+                        className={`${styles.editBtn}`}
+                        onClick={() => onEdit(row.original)}
+                    >
+                        <FaEdit />
+                    </button>
+
+                    <button
+                        type="button"
+                        cursor="pointer"
+                        title={`Удалить новость ${row.original.title}`}
+                        className={`${styles.deleteBtn}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(row.original._id);
+                        }}
+                    >
+                        <FaTrash />
+                    </button>
+
                 </div>
             )
         }

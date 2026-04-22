@@ -9,3 +9,38 @@
     display: none !important;
   }
 }
+
+.selectWrapper {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%; /* Ширина 100px */
+    height: 44px; /* Целевая высота клика */
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    pointer-events: none;
+  }
+
+  .statusSelect {
+    width: 100%;
+    display: block;
+    position: relative;
+    height: 44px;
+    z-index: 2;
+    background-color: var(--auxiliary-bg-color-2);
+    color: var(--main-text-color);
+    border: 1px solid var(-main-text-color);
+    border-radius: 10px;
+
+    option {
+      text-align: center;
+      background-color: var(--auxiliary-bg-color-2);
+    }
+  }
+}

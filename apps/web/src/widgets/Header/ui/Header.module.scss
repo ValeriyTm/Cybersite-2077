@@ -73,13 +73,30 @@
       display: none;
     }
 
-    a {
-      font-size: 0.8rem;
-      color: var(--auxiliary-text-color);
-      transition: color 0.2s;
+    li {
+      position: relative;
 
-      @include hover {
-        color: var(--accent-text-color);
+      a {
+        font-size: 0.8rem;
+        color: var(--auxiliary-text-color);
+        transition: color 0.2s;
+
+        @include hover {
+          color: var(--accent-text-color);
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          height: 44px;
+          //Растягиваем по ширине на всю ширину основного элемента:
+          left: 0;
+          right: 0;
+          height: 44px;
+          //Центрируем по вертикали:
+          top: 50%;
+          transform: translateY(-50%);
+        }
       }
     }
   }

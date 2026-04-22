@@ -42,7 +42,7 @@ export const AdminOrdersPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <select onChange={(e) => setStatus(e.target.value)}>
+                <select onChange={(e) => setStatus(e.target.value)} className={styles.statusSelect}>
                     <option value="">Все статусы</option>
                     <option value="PENDING">PENDING</option>
                     <option value="PAID">PAID</option>
