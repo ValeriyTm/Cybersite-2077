@@ -1,14 +1,26 @@
 .stars {
   display: flex;
-  gap: 8px;
+  gap: 14px;
   font-size: 28px;
   cursor: pointer;
 
   span {
     color: var(--auxiliary-text-color);
     transition: color 0.2s;
+    position: relative;
+
     @include hover {
       color: var(--color-rating);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
     }
   }
 

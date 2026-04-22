@@ -182,27 +182,27 @@
     font-size: 1.1rem;
   }
 
-  .favoriteBtn {
-    //Сбрасываем абсолютное позиционирование и переносим в конец строки:
-    position: relative;
-    top: auto;
-    right: auto;
-    order: 10; //Ставим в самый конец флекс-контейнера
-    background: none;
-    /* pxtorem-disable-next-line */
-    border: none;
-    backdrop-filter: none;
-    font-size: 1.3rem;
-    margin-left: 20px;
+  // .favoriteBtn {
+  //   //Сбрасываем абсолютное позиционирование и переносим в конец строки:
+  //   position: relative;
+  //   top: auto;
+  //   right: auto;
+  //   order: 10; //Ставим в самый конец флекс-контейнера
+  //   background: none;
+  //   /* pxtorem-disable-next-line */
+  //   border: none;
+  //   backdrop-filter: none;
+  //   font-size: 1.3rem;
+  //   margin-left: 20px;
 
-    &.active {
-      background: none; //Убираем белый фон, который был в сетке
-    }
+  //      &.active {
+  //     background: none;
+  //   }
 
-    @include hover {
-      transform: scale(1.2);
-    }
-  }
+  //   @include hover {
+  //     transform: scale(1.2);
+  //   }
+  // }
 
   //Настройка контейнера для выравнивания
   display: flex;
@@ -234,6 +234,16 @@
   transition: all 0.2s ease;
   font-size: 14px;
 
+  &::after {
+    content: "";
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
+
   @include hover {
     transform: scale(1.1);
     background: rgba(0, 0, 0, 0.8);
@@ -261,6 +271,17 @@
   transition: transform 0.2s;
   display: flex;
   align-items: center;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
 
   @include hover {
     transform: scale(1.2);

@@ -117,6 +117,9 @@
 
 .itemsList {
   padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .productRow {
@@ -239,6 +242,7 @@
   border-radius: 10px;
   min-height: 30px;
   font-weight: 600;
+  height: 44px;
   @include hover {
     background: #e67e22;
   }
@@ -253,6 +257,7 @@
   min-height: 25px;
   cursor: default !important;
   font-weight: 500;
+  height: 44px;
 
   @include hover {
     background: #222 !important;
@@ -267,6 +272,7 @@
   border-radius: 10px;
   min-height: 30px;
   font-weight: 600;
+  height: 44px;
 
   @include tablet {
     align-self: end;
@@ -283,6 +289,7 @@
   /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
+  min-height: 44px;
   min-height: 30px;
   font-weight: 600;
 

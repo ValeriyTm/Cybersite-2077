@@ -42,6 +42,7 @@
   margin-bottom: 20px;
   /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
 
   @include mobile-s {
     line-height: 1;
@@ -54,6 +55,17 @@
     cursor: pointer;
     color: var(--accent-text-color);
     font-weight: 500;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 44px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 
     input[type="checkbox"] {
       width: 18px;
@@ -71,9 +83,12 @@
     cursor: pointer;
     transition: opacity 0.2s;
 
+    padding-block: 10px;
+
     @include hover {
       opacity: 0.8;
     }
+
     &:disabled {
       opacity: 0.3;
       cursor: not-allowed;
@@ -255,7 +270,7 @@
     background: var(--auxiliary-bg-color-2);
     /* pxtorem-disable-next-line */
     border: 1px solid #333;
-    padding: 8px 12px;
+    padding: 9px 12px;
     color: var(--main-text-color);
     border-radius: 4px;
     text-transform: uppercase;
@@ -270,7 +285,7 @@
     color: var(--main-text-color);
     /* pxtorem-disable-next-line */
     border: none;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-radius: 4px;
     font-weight: 700;
     cursor: pointer;

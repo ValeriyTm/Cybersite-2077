@@ -44,6 +44,20 @@
     grid-area: check;
     align-self: center;
     justify-self: center;
+
+    input {
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+      }
+    }
   }
 
   .itemImg {
@@ -76,6 +90,7 @@
       color: var(--auxiliary-text-color);
       cursor: pointer;
       padding: 0;
+      position: relative;
 
       @include hover {
         color: var(--accent-text-color);
@@ -83,31 +98,41 @@
       &:last-child:hover {
         color: var(--color-danger);
       }
+    }
 
-      .favIconBtn {
-        background: none;
-        /* pxtorem-disable-next-line */
-        border: none;
-        font-size: 1.3rem;
-        cursor: pointer;
-        padding: 0;
-        transition: transform 0.2s ease;
-        display: flex;
-        align-items: center;
+    .favIconBtn {
+      background: none;
+      /* pxtorem-disable-next-line */
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      position: relative;
 
-        @include hover {
-          transform: scale(1.2);
-        }
+      &::after {
+        content: "";
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+      }
 
-        &.active {
-          filter: drop-shadow(0 0 5px rgba(156, 21, 32, 0.7));
-        }
+      @include hover {
+        transform: scale(1.2);
+      }
+
+      &.active {
+        filter: drop-shadow(0 0 5px rgba(156, 21, 32, 0.7));
       }
     }
 
     .btnGroup {
       display: flex;
-      gap: 10px;
+      gap: 20px;
     }
 
     //Управление количеством:
@@ -119,6 +144,20 @@
       padding: 5px;
       justify-content: space-between;
       width: 110px;
+
+      .quantityBtn {
+        position: relative;
+
+        &::after {
+          content: "";
+          position: absolute;
+          width: 44px;
+          height: 44px;
+          top: 50%;
+          left: 50%;
+          translate: -50% -50%;
+        }
+      }
 
       button {
         width: 30px;
@@ -150,6 +189,17 @@
       border: 1px solid var(--color-danger);
       padding: 2px 4px;
       border-radius: 6px;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        height: 44px;
+        top: 50%;
+        left: -2px;
+        right: -2px;
+        transform: translateY(-50%);
+      }
 
       @include hover {
         scale: 1.1;

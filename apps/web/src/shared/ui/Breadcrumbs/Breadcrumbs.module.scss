@@ -18,6 +18,7 @@
   align-items: center;
   font-size: 0.85rem;
   color: var(--auxiliary-text-color);
+  position: relative;
 
   a {
     color: var(--auxiliary-text-color);
@@ -26,6 +27,16 @@
 
     @include hover {
       color: var(--accent-text-color);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 44px;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }

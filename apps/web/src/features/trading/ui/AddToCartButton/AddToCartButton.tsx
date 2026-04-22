@@ -60,6 +60,7 @@ export const AddToCartButton = ({
               }
             })
           }
+          className={styles.quantityBtn}
         >
           -
         </button>
@@ -74,6 +75,7 @@ export const AddToCartButton = ({
               updateQuantity({ id: data.id, quantity: cartItem.quantity + 1 }),
             )
           }
+          className={styles.quantityBtn}
         >
           +
         </button>

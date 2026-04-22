@@ -262,14 +262,14 @@ export const MotorcyclesPage = () => {
               {/*Переключатель вида Grid/List: */}
               <div className={styles.viewSwitch}>
                 <button
-                  className={viewMode === "grid" ? styles.active : ""}
+                  className={`${viewMode === "grid" ? styles.active : ""} ${styles.viewStyle}`}
                   onClick={() => setViewMode("grid")}
                   title="Плиткой"
                 >
                   <LuLayoutGrid />
                 </button>
                 <button
-                  className={viewMode === "list" ? styles.active : ""}
+                  className={`${viewMode === "list" ? styles.active : ""} ${styles.viewStyle}`}
                   onClick={() => setViewMode("list")}
                   title="Списком"
                 >

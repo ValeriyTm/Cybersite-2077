@@ -19,6 +19,8 @@
   border-radius: 12px;
   box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
   position: relative;
+  display: flex;
+  flex-direction: column;
 
   h3 {
     text-align: center;
@@ -135,7 +137,8 @@
 }
 
 .closeBtn {
-  width: 100%;
+  width: 120px;
+  height: 44px;
   background: transparent;
   color: var(--auxiliary-text-color);
   /* pxtorem-disable-next-line */

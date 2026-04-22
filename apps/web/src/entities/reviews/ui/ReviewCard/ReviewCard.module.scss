@@ -97,6 +97,7 @@
   cursor: pointer;
   transition: all 0.2s;
   z-index: 100;
+  height: 44px;
 
   @include hover {
     background: var(--color-danger);

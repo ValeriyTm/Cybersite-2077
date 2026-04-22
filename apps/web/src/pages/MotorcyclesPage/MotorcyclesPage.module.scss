@@ -34,6 +34,10 @@
   border-radius: 20px;
   /* pxtorem-disable-next-line */
   border: 2px solid var(--accent-text-color);
+
+  @include laptop-s-above {
+    display: none;
+  }
 }
 
 .filterMobileBtn {
@@ -141,6 +145,7 @@ h5 {
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 0.9rem;
+  height: 44px;
   outline: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -297,7 +302,7 @@ h5 {
 .displayControls {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 20px;
 }
 
 .list {
@@ -351,7 +356,7 @@ h5 {
 .viewSwitch {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 15px;
 }
 
 .active {
@@ -367,6 +372,21 @@ h5 {
   padding: 8px 0;
   color: var(--main-text-color);
   transition: color 0.2s;
+  position: relative;
+
+  @include hover {
+    scale: 1.05;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    height: 44px;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
   input[type="checkbox"] {
     width: 18px;
@@ -382,10 +402,6 @@ h5 {
   letter-spacing: 1px;
   margin-block: 0;
   padding-block: 0;
-
-  @include hover {
-    color: var(--accent-text-color);
-  }
 }
 
 ///--------------
@@ -405,5 +421,34 @@ h5 {
 
   @include laptop-s-above {
     display: none;
+  }
+}
+
+//----
+.limitBtn {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
+}
+
+.viewStyle {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
   }
 }

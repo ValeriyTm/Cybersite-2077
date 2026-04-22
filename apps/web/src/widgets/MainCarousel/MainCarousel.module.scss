@@ -14,12 +14,23 @@
 
   //Точки пагинации:
   :global(.swiper-pagination-bullet) {
+    position: relative; /* Обязательно для работы ::before */
     background: var(--accent-text-color);
-    height: 15px;
-    width: 15px;
+    height: 20px;
+    width: 20px;
     /* pxtorem-disable-next-line */
     border: 2px solid black;
     display: inline-flex;
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+    }
   }
 }
 

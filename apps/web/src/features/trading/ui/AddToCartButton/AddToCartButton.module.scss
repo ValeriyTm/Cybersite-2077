@@ -27,7 +27,7 @@
   color: var(--main-text-color);
   /* pxtorem-disable-next-line */
   border: none;
-  padding: 8px 8px;
+  padding: 10px 8px;
   border-radius: 10px;
   font-weight: 700;
   font-size: 1rem;
@@ -54,6 +54,20 @@
     background-color: var(--auxiliary-text-color);
     color: #666;
     cursor: not-allowed;
+  }
+}
+
+.quantityBtn {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
   }
 }
 
@@ -86,12 +100,12 @@
 
     @include hover {
       background: #444;
-      color: #f39c12;
+      color: var(--accent-text-color);
     }
   }
 
   .count {
-    color: #fff;
+    color: var(--main-text-color);
     font-weight: 700;
     font-size: 1rem;
     min-width: 30px;

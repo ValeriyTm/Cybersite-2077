@@ -115,6 +115,7 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
                                     quantity: data.quantity - 1,
                                 })
                             }
+                            className={styles.quantityBtn}
                         >
                             -
                         </button>
@@ -127,6 +128,7 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
                                     quantity: data.quantity + 1,
                                 })
                             }
+                            className={styles.quantityBtn}
                         >
                             +
                         </button>

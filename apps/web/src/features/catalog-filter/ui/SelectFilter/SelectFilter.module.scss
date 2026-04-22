@@ -28,6 +28,7 @@
   outline: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  height: 44px;
 
   &:focus {
     border-color: var(--accent-text-color);

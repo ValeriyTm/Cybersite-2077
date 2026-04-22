@@ -50,10 +50,55 @@ export const ContactsPage = () => {
                         <a href="tel:+79830000000">+7(000) 000 00-00</a>
                         <a href="mailto:info@cybersite2077.com">info@cybersite2077.com</a>
                     </div>
+
+
+                    {/* Иконки соцсетей: */}
                     <div className={styles.soc1als}>
-                        <FaFacebook className={styles.facebook} /> <FaTelegram className={styles.telegram} /> <FaWhatsapp className={styles.whatsapp} /> <FaViber className={styles.viber} />
-                        <FaTwitter className={styles.twitter} /> <FaTiktok className={styles.tiktok} /> <FaVk className={styles.vk} /> <FaYoutube className={styles.youtube} />
+                        <ul>
+                            <li>
+                                <a href="/" aria-label="Facebook" className={styles.facebook}>
+                                    <FaFacebook aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/" aria-label="Twitter" className={styles.twitter}>
+                                    <FaTwitter aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/" aria-label="Tiktok" className={styles.tiktok}>
+                                    <FaTiktok aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/" aria-label="Vkontakte" className={styles.vk}>
+                                    <FaVk aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/" aria-label="Youtube" className={styles.youtube}>
+                                    <FaYoutube aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/" aria-label="Telegram" className={styles.telegram}>
+                                    <FaTelegram aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/" aria-label="Whatsapp" className={styles.whatsapp}>
+                                    <FaWhatsapp aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/" aria-label="Viber" className={styles.viber}>
+                                    <FaViber aria-hidden="true" focusable="false" />
+                                </a>
+                            </li>
+                        </ul>
                     </div>
+
+
                 </div>
             </div>
         </>
