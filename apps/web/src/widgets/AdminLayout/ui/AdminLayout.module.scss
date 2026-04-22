@@ -2,7 +2,7 @@
   display: flex;
   min-height: 100vh;
   background: var(--main-bg-color);
-  color: #eee;
+  color: var(--main-text-color);
 
   h2,
   strong {
@@ -89,7 +89,7 @@
     align-items: center;
     justify-content: center;
     width: 20px;
-    font-size: 1.1rem; // Управляем размером иконок через font-size
+    font-size: 1.1rem;
     color: var(--accent-text-color);
   }
 }

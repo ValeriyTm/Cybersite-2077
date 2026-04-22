@@ -43,7 +43,7 @@ export const MobileMenu = () => {
     if (!isMenuOpen) return null;
 
     return (
-        <div className={styles.overlay} onClick={closeMenu}>
+        <div className={styles.overlay} onClick={closeMenu} hidden={!isMenuOpen} id="mobile-menu">
             <div className={styles.menuContent} onClick={(e) => e.stopPropagation()}>
                 {/*Логотип*/}
                 <Link to="/" className={styles.logolink}>

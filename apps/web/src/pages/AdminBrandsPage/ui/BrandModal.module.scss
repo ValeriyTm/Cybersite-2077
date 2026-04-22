@@ -92,8 +92,8 @@
   button {
     background: #1a1a1a;
     /* pxtorem-disable-next-line */
-    border: 1px solid #333;
-    color: #fff;
+    border: 1px solid var(--auxiliary-text-color);
+    color: var(--main-text-color);
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;

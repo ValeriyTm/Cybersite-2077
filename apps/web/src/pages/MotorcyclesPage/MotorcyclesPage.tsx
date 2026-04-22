@@ -87,7 +87,8 @@ export const MotorcyclesPage = () => {
   //--------------------------------------------------------------------//
   //Хлебные крошки (навигация):
   const breadcrumbs = [
-    { label: "Каталог", href: "/catalog/motorcycles" },
+    { label: "Каталог", href: "/catalog" },
+    { label: "Бренды", href: "/catalog/motorcycles" },
     {
       label: brandSlug?.toUpperCase(),
       href: `/catalog/motorcycles/${brandSlug}`,
@@ -212,8 +213,10 @@ export const MotorcyclesPage = () => {
           <header className={styles.topBar}>
             {/*2.1.1.Поиск:*/}
             <div className={styles.searchWrapper}>
+              <label htmlFor="moto-search" className="visually-hidden">Поиск по модели</label>
               <input
-                type="text"
+                type="search"
+                id='moto-search'
                 placeholder="Поиск по модели (напр. CBR 1000)..."
                 className={styles.searchInput}
                 defaultValue={filters.search}
@@ -224,10 +227,11 @@ export const MotorcyclesPage = () => {
 
             {/*2.1.2.Сортировка*/}
             <div className={styles.sorting}>
-              <span className={styles.sortLabel}>Сортировать:</span>
+              <label className={styles.sortLabel} htmlFor="sorting-select">Сортировать:</label>
               <select
                 className={styles.sortSelect}
                 value={filters.sortBy}
+                id='sorting-select'
                 onChange={(e) => updateFilters({ sortBy: e.target.value })}
               >
                 <option value="name_asc">По алфавиту (А-Я)</option>

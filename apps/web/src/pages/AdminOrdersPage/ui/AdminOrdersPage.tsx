@@ -37,6 +37,7 @@ export const AdminOrdersPage = () => {
         <div className={styles.pageWrapper}>
             <header className={styles.filterBar}>
                 <input
+                    type='search'
                     placeholder="Поиск по Email..."
                     onChange={(e) => setEmail(e.target.value)}
                 />

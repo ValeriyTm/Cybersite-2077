@@ -232,25 +232,28 @@
 
     .cellContainer {
       position: relative;
-      // display: inline-block;
       height: 100%;
       width: 100%;
       overflow: hidden;
 
       background-image: url("src/shared/assets/images/animation/frame1.png");
-      // background-size: cover;
       background-size: 100% 100%;
-      background-position: center; /* чтобы центрировать картинку */
+      background-position: center;
       background-repeat: no-repeat;
 
       @include hover {
         background-image: url("src/shared/assets/images/animation/background.gif");
+
+        @media (prefers-reduced-motion: reduce) {
+          background-image: url("src/shared/assets/images/animation/frame1.png");
+          //Делаем статичное изображение, если у пользователя предпочтительно отключение анимации
+        }
       }
 
       .motorcycleFrame {
         position: absolute;
-        width: 240px; /* Размер всей рамы */
-        aspect-ratio: 16 / 9; /* Укажите пропорции вашей картинки img1 */
+        width: 240px;
+        aspect-ratio: 16 / 9;
         bottom: -2%;
         left: 10%;
 
@@ -272,14 +275,14 @@
         &::after {
           content: "";
           position: absolute;
-          bottom: 5%; /* Поднимаем/опускаем тень под колеса */
-          left: 5%; /* Центрируем тень по горизонтали под рамой */
-          width: 90%; /* Длина тени */
-          height: 10px; /* Толщина тени */
-          background: rgba(211, 36, 202, 0.4); /* Полупрозрачный черный */
-          border-radius: 50%; /* Делаем овал */
-          filter: blur(5px); /* Размываем края */
-          z-index: 0; /* Самый нижний слой внутри рамы */
+          bottom: 5%;
+          left: 5%;
+          width: 90%;
+          height: 10px;
+          background: rgba(211, 36, 202, 0.4);
+          border-radius: 50%;
+          filter: blur(5px);
+          z-index: 0;
         }
       }
 

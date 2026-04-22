@@ -10,6 +10,8 @@ export const BurgerButton = () => {
         <button
             className={`${styles.burger} ${isMenuOpen ? styles.active : ''}`}
             onClick={toggleMenu}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
             aria-label="Menu"
         >
             <span></span>

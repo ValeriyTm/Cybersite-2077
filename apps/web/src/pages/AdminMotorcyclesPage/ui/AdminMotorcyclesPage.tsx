@@ -90,8 +90,8 @@ export const AdminMotorcyclesPage = () => {
       <header className={styles.header}>
         <h3>Каталог мотоциклов</h3>
         <input
-          type="text"
-          placeholder="🔍 Быстрый поиск (Elasticsearch)..."
+          type="search"
+          placeholder="🔍 Быстрый поиск..."
           value={searchValue}
           onChange={handleSearchChange}
           className={styles.searchInput}

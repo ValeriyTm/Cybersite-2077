@@ -52,7 +52,8 @@ export const BrandPage = () => {
 
   //Хлебные крошки:
   const breadcrumbs = [
-    { label: "Каталог", href: "/catalog/motorcycles" }, // Текущая страница
+    { label: "Каталог", href: "/catalog" },
+    { label: "Бренды", href: "/catalog/motorcycles" }, // Текущая страница
   ];
 
   //SEO:
@@ -75,7 +76,7 @@ export const BrandPage = () => {
           {/*Поле поиска */}
           <div className={styles.searchContainer}>
             <input
-              type="text"
+              type="search"
               placeholder="Найти бренд (напр. Honda)..."
               className={styles.searchInput}
               defaultValue={search} //Берем из URL при загрузке

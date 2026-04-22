@@ -42,7 +42,7 @@ export const GlobalDiscountBanner = () => {
           </div>
 
           {/*Таймер обратного отсчёта: */}
-          <div className={styles.timer}>
+          <div className={styles.timer} role='time'>
             <span className={styles.timerLabel}>До конца акции:</span>
             <div className={styles.digits}>
               <span>{timeLeft.hours}</span>:<span>{timeLeft.minutes}</span>:

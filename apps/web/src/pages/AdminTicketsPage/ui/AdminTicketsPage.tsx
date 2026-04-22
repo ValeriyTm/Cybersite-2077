@@ -106,7 +106,7 @@ export const AdminTicketsPage = () => {
                 <div className={styles.filters}>
                     {/*Поиск по email:*/}
                     <input
-                        type="text"
+                        type="search"
                         placeholder="🔍 Поиск по email..."
                         className={styles.emailSearch}
                         value={emailValue}

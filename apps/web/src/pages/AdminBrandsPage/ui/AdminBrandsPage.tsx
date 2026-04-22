@@ -1,11 +1,16 @@
+//Состояния:
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+//API:
 import { $api } from "@/shared/api/api";
+//Компоненты:
+import { BrandModal } from "./BrandModal";
 import { DataTable } from "@/shared/ui/DataTable/DataTable";
 import { getColumns } from "../model/columns";
+//Уведомления:
 import { toast } from "react-hot-toast";
+//Стили:
 import styles from "./AdminBrandsPage.module.scss";
-import { BrandModal } from "./BrandModal";
-import { useState } from "react";
 
 export const AdminBrandsPage = () => {
   const [page, setPage] = useState(1);

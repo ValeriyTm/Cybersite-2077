@@ -22,7 +22,7 @@ import styles from "./Header.module.scss";
 type MainCategory = "moto" | "gear" | "parts";
 
 export const Header = () => {
-  //Состояние открытости каталога:
+  //Состояние открытости выпадающего каталога:
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   //Состояние выбранной категории:
   const [activeMainCat, setActiveMainCat] = useState<MainCategory>("moto");
@@ -69,10 +69,10 @@ export const Header = () => {
 
   //Для иконок смены темы:
   const themes = [
-    { id: 'theme-orange', img: 'src/shared/assets/images/theme/theme-icon1.png' },
-    { id: 'theme-blue', img: 'src/shared/assets/images/theme/theme-icon4.png' },
-    { id: 'theme-retrowave', img: 'src/shared/assets/images/theme/theme-icon2.png' },
-    { id: 'theme-doom', img: 'src/shared/assets/images/theme/theme-icon3-alternative.png' },
+    { id: 'theme-orange', img: 'src/shared/assets/images/theme/theme-icon1.png', title: 'Тема Orange' },
+    { id: 'theme-blue', img: 'src/shared/assets/images/theme/theme-icon4.png', title: 'Тема Blue' },
+    { id: 'theme-retrowave', img: 'src/shared/assets/images/theme/theme-icon2.png', title: 'Тема Retrowave' },
+    { id: 'theme-doom', img: 'src/shared/assets/images/theme/theme-icon3-alternative.png', title: 'Тема DOOM' },
   ];
 
   //При загркузке получаем кол-во активных заказов:
@@ -146,6 +146,14 @@ export const Header = () => {
       logoUrl = `src/shared/assets/images/logos/logo-doom.png`;
       break;
   }
+  //-----------
+  //Включение темы с клавиатуры:
+  const handleKeyDown = (event: React.KeyboardEvent, themeId: any) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault(); // Чтобы страница не скроллилась при нажатии пробела
+      setTheme(themeId);
+    }
+  };
 
   //----------
   //Показывать ссылку на страницу администраторов или нет:
@@ -196,8 +204,14 @@ export const Header = () => {
                 <img
                   key={t.id}
                   src={t.img}
+                  title={t.title}
+                  alt={t.title}
+                  tabIndex='0'
                   onClick={() => setTheme(t.id as any)}
+                  onKeyDown={(e) => handleKeyDown(e, t.id)} //Для включения темы с клавиатуры
                   className={theme === t.id ? styles.active : styles.inactive}
+                  role="button"
+                  aria-pressed={theme === t.id}
                 />
               ))}
             </div>
@@ -225,6 +239,8 @@ export const Header = () => {
                 className={styles.catalogWrapper}
                 onMouseEnter={() => setIsCatalogOpen(true)}
                 onMouseLeave={() => setIsCatalogOpen(false)}
+                aria-expanded={isCatalogOpen}
+                aria-controls="catalog-preview"
               >
                 <Link to="/catalog" className={styles.catalogBtn}>
                   <span className={styles.burger}>☰</span> Каталог
@@ -232,7 +248,7 @@ export const Header = () => {
 
                 {/*Статическое выпадающее меню */}
                 {isCatalogOpen && (
-                  <div className={styles.dropdown}>
+                  <div className={styles.dropdown} id='catalog-preview' hidden={!isCatalogOpen}>
                     <div className={styles.dropdownContent}>
                       {/*Левая часть выпадающего меню: Группы товаров*/}
                       <aside className={styles.sideNav}>
@@ -327,11 +343,12 @@ export const Header = () => {
                 ref={searchRef}
               >
                 <input
-                  type="text"
+                  type="search"
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
                   placeholder="Поиск по каталогу"
+
                 />
                 <button type="submit">Найти</button>
 
@@ -409,7 +426,7 @@ export const Header = () => {
 
                 {/*Кнопка корзины со счетчиком:*/}
                 <Link to="/cart" title="Корзина">
-                  <button className={styles.iconBtn} title="Корзина">
+                  <button className={styles.iconBtn} title="Корзина" tabindex="-1">
                     🛒{" "}
                     {cartCount > 0 && (
                       <span className={styles.counter}>{cartCount}</span>

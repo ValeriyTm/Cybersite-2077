@@ -130,7 +130,8 @@ export const MotorcycleDetailsPage = () => {
     return <div className={styles.loader}>Загрузка...</div>;
   //----------------Breadcrumbs:
   const breadcrumbs = [
-    { label: "Каталог", href: "/catalog/motorcycles" },
+    { label: "Каталог", href: "/catalog/" },
+    { label: "Бренды", href: "/catalog/motorcycles" },
     {
       label: motorcycle.brand.name,
       href: `/catalog/motorcycles/${motorcycle.brand.slug}`,
@@ -498,34 +499,59 @@ export const MotorcycleDetailsPage = () => {
           {/* Таблица характеристик:*/}
 
           {/* Navbar для табов: */}
-          <nav className={styles.tabsNav}>
+          <nav className={styles.tabsNav} role='tablist'>
             <button
               className={activeTab === "specs" ? styles.activeTab : ""}
               onClick={() => setActiveTab("specs")}
+              role='tab'
+              aria-selected={activeTab === "specs"}
+              tabIndex={activeTab === "specs" ? 0 : -1}
+              aria-controls="specs-panel"
+              id="specs-tab"
             >
               Технические характеристики
             </button>
             <button
               className={activeTab === "description" ? styles.activeTab : ""}
               onClick={() => setActiveTab("description")}
+              role='tab'
+              aria-selected={activeTab === "description"}
+              tabIndex={activeTab === "description" ? 0 : -1}
+              aria-controls="description-panel"
+              id="description-tab"
             >
               Описание
             </button>
             <button
               className={activeTab === "reviews" ? styles.activeTab : ""}
               onClick={() => setActiveTab("reviews")}
+              role='tab'
+              aria-selected={activeTab === "reviews"}
+              tabIndex={activeTab === "reviews" ? 0 : -1}
+              aria-controls="reviews-panel"
+              id="reviews-tab"
             >
               Отзывы
             </button>
             <button
               className={activeTab === "warranty" ? styles.activeTab : ""}
               onClick={() => setActiveTab("warranty")}
+              role='tab'
+              aria-selected={activeTab === "warranty"}
+              tabIndex={activeTab === "warranty" ? 0 : -1}
+              aria-controls="warranty-panel"
+              id="warranty-tab"
             >
               Гарантия
             </button>
             <button
               className={activeTab === "docs" ? styles.activeTab : ""}
               onClick={() => setActiveTab("docs")}
+              role='tab'
+              aria-selected={activeTab === "docs"}
+              tabIndex={activeTab === "docs" ? 0 : -1}
+              aria-controls="docs-panel"
+              id="docs-tab"
             >
               Документы
             </button>
@@ -535,7 +561,7 @@ export const MotorcycleDetailsPage = () => {
           <section className={styles.tabContent}>
             {/*Контент характеристик:*/}
             {activeTab === "specs" && (
-              <div className={styles.specsGrid}>
+              <div className={styles.specsGrid} role="tabpanel">
                 <SpecRow label="Категория" value={CATEGORY} />
                 <SpecRow label="Тип двигателя" value={motorcycle.engineType} />
                 <SpecRow label="Мощность" value={motorcycle.power} />
@@ -593,7 +619,7 @@ export const MotorcycleDetailsPage = () => {
 
             {/*Контент описания:*/}
             {activeTab === "description" && (
-              <div className={styles.staticText}>
+              <div className={styles.staticText} role="tabpanel">
                 <h3>О модели {motorcycle.model}:</h3>
                 <p>
                   Эта модель создана для тех, кто не привык искать компромиссы
@@ -628,7 +654,7 @@ export const MotorcycleDetailsPage = () => {
 
             {/*Контент гарантии:*/}
             {activeTab === "warranty" && (
-              <div className={styles.staticText}>
+              <div className={styles.staticText} role="tabpanel">
                 <h3>Гарантийные обязательства</h3>
                 <p>
                   Стандартные условия гарантии на основной ассортимент мототехники
@@ -683,7 +709,7 @@ export const MotorcycleDetailsPage = () => {
 
             {/*Контент с документацией:*/}
             {activeTab === "docs" && (
-              <div className={styles.docsSection}>
+              <div className={styles.docsSection} role="tabpanel">
                 <h3>Документация</h3>
                 <p style={{ textAlign: "center" }}>
                   Вы можете скачать полное руководство пользователя и сервисную
@@ -702,7 +728,7 @@ export const MotorcycleDetailsPage = () => {
 
             {/*Контент с отзывами:*/}
             {activeTab === "reviews" && (
-              <div className={styles.reviewsTab}>
+              <div className={styles.reviewsTab} role="tabpanel">
                 {reviews?.length > 0 ? (
                   reviews.map((review: any) => (
                     <ReviewCard

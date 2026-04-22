@@ -10,7 +10,7 @@ import ReviewCard from "@/shared/ui/ReviewCard/ReviewCard";
 import { MainCarousel } from "@/widgets/MainCarousel/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery/ScrollableImageGallery";
 //Анимация:
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 //API:
 import { API_URL } from "@/shared/api/api";
 //SEO:
@@ -25,9 +25,8 @@ export const HomePage = () => {
   //Из React Query берем данные пользователя и состояние загрузки.
   //Используется isLoading, чтобы не показывать "Вы не авторизованы", пока идет запрос.
   const { user, isLoading } = useProfile();
-
   const { theme } = useThemeStore();
-
+  const shouldReduceMotion = useReducedMotion();
 
   ///
   // 1. Создаем правила анимации
@@ -99,6 +98,10 @@ export const HomePage = () => {
       texture = `decoration-doom`;
       break;
   }
+  //----Анимация:----//
+  const hoverAnimation = shouldReduceMotion ? undefined : "moving";
+  //Если у пользователя включено ограничение анимации, то она просто не запустится
+
 
   //----SEO:-----//
   const canonicalUrl = `${API_URL}/`;
@@ -166,36 +169,36 @@ export const HomePage = () => {
             />
           </div>
 
-          <div className={styles.cell2}>
+          <div className={styles.cell2} aria-hidden='true'>
             <motion.div
               className={styles.cellContainer}
               initial="stopped"
-              whileHover="moving" // Запускает анимацию у всех motion-детей
+              whileHover={hoverAnimation}
             >
               <motion.div
                 className={styles.motorcycleFrame}
-                variants={motoVariants} // Мотоцикл вибрирует
+                variants={shouldReduceMotion ? {} : motoVariants}
               >
                 <motion.img
                   src="src/shared/assets/images/animation/back-wheel.png"
                   className={styles.backWheel}
-                  variants={wheelVariants} // Колесо крутится
+                  variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src="src/shared/assets/images/animation/front-wheel.png"
                   className={styles.frontWheel}
-                  variants={wheelVariants} // Колесо крутится
+                  variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src="src/shared/assets/images/animation/smoke.png"
                   className={styles.smoke}
-                  variants={smokeVariants} // Колесо крутится
+                  variants={shouldReduceMotion ? {} : smokeVariants}
                 />
               </motion.div>
             </motion.div>
           </div>
 
-          <div className={styles.sidebar}>
+          <div className={styles.sidebar} aria-hidden='true'>
             <MainCarousel />
           </div>
 
