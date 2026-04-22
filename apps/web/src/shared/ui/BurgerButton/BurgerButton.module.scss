@@ -8,8 +8,6 @@
   /* pxtorem-disable-next-line */
   border: none;
   cursor: pointer;
-  // padding: 4px;
-  //   position: relative;
   z-index: 1400;
 
   box-sizing: content-box;
@@ -19,6 +17,16 @@
   top: 15px;
   right: 20px;
   z-index: 3000;
+
+  &::after {
+    content: "";
+    position: absolute;
+    height: 44px;
+    width: 44px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
 
   @include hover {
     opacity: 0.8;

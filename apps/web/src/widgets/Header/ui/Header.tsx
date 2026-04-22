@@ -195,21 +195,17 @@ export const Header = () => {
               </ul>
 
             </nav>
+
             {/*1.2)Смена темы:*/}
             <div className={styles.themeSwitcher}>
               {themes.map((t) => (
-                <img
-                  key={t.id}
-                  src={t.img}
-                  title={t.title}
-                  alt={t.title}
-                  tabIndex='0'
-                  onClick={() => setTheme(t.id as any)}
-                  onKeyDown={(e) => handleKeyDown(e, t.id)} //Для включения темы с клавиатуры
-                  className={theme === t.id ? styles.active : styles.inactive}
-                  role="button"
-                  aria-pressed={theme === t.id}
-                />
+                <button type='button' key={t.id} className={styles.themeWrapper} onClick={() => setTheme(t.id as any)} title={t.title}>
+                  <img
+                    src={t.img}
+                    alt={t.title}
+                    className={theme === t.id ? styles.active : styles.inactive}
+                  />
+                </button>
               ))}
             </div>
 
@@ -422,13 +418,13 @@ export const Header = () => {
                 </Link>
 
                 {/*Кнопка корзины со счетчиком:*/}
-                <Link to="/cart" title="Корзина">
-                  <button className={styles.iconBtn} title="Корзина" tabindex="-1">
-                    🛒{" "}
-                    {cartCount > 0 && (
-                      <span className={styles.counter}>{cartCount}</span>
-                    )}
-                  </button>
+                <Link to="/cart" title="Корзина" className={styles.iconBtn}>
+
+                  🛒{" "}
+                  {cartCount > 0 && (
+                    <span className={styles.counter}>{cartCount}</span>
+                  )}
+
                 </Link>
 
                 {/*Кнопка заказов со счетчиком:*/}

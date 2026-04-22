@@ -85,6 +85,7 @@
           color: var(--accent-text-color);
         }
 
+        //Увеличение зоны клика:
         &::after {
           content: "";
           position: absolute;
@@ -97,6 +98,25 @@
           top: 50%;
           transform: translateY(-50%);
         }
+
+        //Подчеркивание:----------------
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -2px; // Позиция линии
+          width: 0; //В начале ширина 0
+          height: 2px;
+          background-color: var(--accent-text-color);
+          transition: width 0.3s ease; //Анимация изменения ширины
+        }
+
+        @include hover {
+          &::before {
+            width: 100%;
+          }
+        }
+        //-----------------------------
       }
     }
   }
@@ -322,6 +342,7 @@
   align-items: center;
   gap: 12px;
   font-weight: 500;
+  height: 44px;
 
   .userName {
     display: inline-block;
@@ -363,7 +384,31 @@
 .userOrders {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 20px;
+  position: relative;
+
+  a {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px; // Позиция линии
+      width: 0; //В начале ширина 0
+      height: 2px;
+      background-color: var(--accent-text-color);
+      transition: width 0.3s ease; //Анимация изменения ширины
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+    }
+  }
 
   @include tablet {
     gap: 12px;
@@ -664,7 +709,14 @@
   gap: 10px;
 
   @include tablet {
-    gap: 3px;
+    gap: 5px;
+  }
+
+  .themeWrapper {
+    background-color: transparent;
+    border: none;
+    height: 44px;
+    width: 44px;
   }
 
   img {

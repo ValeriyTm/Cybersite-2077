@@ -26,6 +26,23 @@
       justify-items: center; //!
       align-items: start;
 
+      li {
+        position: relative;
+      }
+
+      // a {
+      //   &::before {
+      //     content: "";
+      //     position: absolute;
+      //     height: 44px;
+      //     left: 0;
+      //     right: 0;
+      //     top: 50%;
+      //     transform: translateY(-50%);
+      //     background-color: transparent !important;
+      //   }
+      // }
+
       @include tablet {
         grid-template-columns: 1fr 1fr;
       }
@@ -45,7 +62,7 @@
   .supportColumn {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    // gap: 15px;
     // align-items: start;
     max-width: 200px;
 
@@ -82,11 +99,7 @@
       }
 
       li {
-        padding-block: 5px;
-
-        @include tablet {
-          padding-block: 2px;
-        }
+        line-height: 1.3;
       }
       a {
         color: var(--auxiliary-text-color);
@@ -94,27 +107,11 @@
         font-size: 0.9rem;
         transition: color 0.2s;
         position: relative;
+        display: block;
+        padding-block: 13.5px;
 
         @include hover {
           color: var(--accent-text-color);
-        }
-
-        //Подчеркивание:
-        &::after {
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: -2px; // Позиция линии
-          width: 0; //В начале ширина 0
-          height: 2px;
-          background-color: var(--accent-text-color);
-          transition: width 0.3s ease; //Анимация изменения ширины
-        }
-
-        @include hover {
-          &::after {
-            width: 100%;
-          }
         }
       }
     }
@@ -160,7 +157,33 @@
       flex-wrap: wrap;
 
       @include mobile-s {
+        padding-inline: 10px;
         gap: 15px;
+      }
+
+      li {
+        position: relative;
+
+        @include mobile-s {
+          flex: 0 0 calc((100% - 45px) / 4);
+          display: flex;
+          justify-content: center;
+          // align-content: center;
+          // align-items: center;
+          // justify-items: center;
+        }
+      }
+
+      a {
+        &::after {
+          content: "";
+          position: absolute;
+          width: 44px;
+          height: 44px;
+          top: 50%;
+          left: 50%;
+          translate: -50% -50%;
+        }
       }
     }
 
@@ -170,17 +193,13 @@
       transition:
         color 0.2s,
         transform 0.2s;
-      @include hover {
-        color: var(--accent-text-color);
-        transform: translateY(-3px);
-      }
     }
   }
 
   .contacts {
     a {
-      display: inline-block;
-      padding: 5px;
+      display: block;
+      padding-block: 10px;
 
       @include hover {
         color: var(--accent-text-color);

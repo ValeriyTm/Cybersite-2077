@@ -102,43 +102,43 @@ export const Footer = () => {
         <div className={styles.soc1als}>
           <ul>
             <li>
-              <a href="/" aria-label="Facebook">
-                <FaFacebook className={styles.facebook} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Facebook" className={styles.facebook}>
+                <FaFacebook aria-hidden="true" focusable="false" />
               </a>
             </li>
             <li>
-              <a href="/" aria-label="Twitter">
-                <FaTwitter className={styles.twitter} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Twitter" className={styles.twitter}>
+                <FaTwitter aria-hidden="true" focusable="false" />
               </a>
             </li>
             <li>
-              <a href="/" aria-label="Tiktok">
-                <FaTiktok className={styles.tiktok} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Tiktok" className={styles.tiktok}>
+                <FaTiktok aria-hidden="true" focusable="false" />
               </a>
             </li>
             <li>
-              <a href="/" aria-label="Vkontakte">
-                <FaVk className={styles.vk} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Vkontakte" className={styles.vk}>
+                <FaVk aria-hidden="true" focusable="false" />
               </a>
             </li>
             <li>
-              <a href="/" aria-label="Youtube">
-                <FaYoutube className={styles.youtube} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Youtube" className={styles.youtube}>
+                <FaYoutube aria-hidden="true" focusable="false" />
               </a>
             </li>
             <li>
-              <a href="/" aria-label="Telegram">
-                <FaTelegram className={styles.telegram} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Telegram" className={styles.telegram}>
+                <FaTelegram aria-hidden="true" focusable="false" />
               </a>
             </li>
             <li>
-              <a href="/" aria-label="Whatsapp">
-                <FaWhatsapp className={styles.whatsapp} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Whatsapp" className={styles.whatsapp}>
+                <FaWhatsapp aria-hidden="true" focusable="false" />
               </a>
             </li>
             <li>
-              <a href="/" aria-label="Viber">
-                <FaViber className={styles.viber} aria-hidden="true" focusable="false" />
+              <a href="/" aria-label="Viber" className={styles.viber}>
+                <FaViber aria-hidden="true" focusable="false" />
               </a>
             </li>
           </ul>

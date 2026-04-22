@@ -44,12 +44,15 @@ p {
     margin: 0;
     padding: 0;
     li {
-      padding-block: 8px;
+      padding-block: 2px;
+      // position: relative;
     }
   }
 
   a {
     color: var(--auxiliary-text-color);
+    display: block;
+    padding-block: 10px;
 
     @include hover {
       color: var(--accent-text-color);
