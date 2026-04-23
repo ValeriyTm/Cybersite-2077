@@ -7,16 +7,15 @@ import {
   type ForgotPasswordInput,
 } from "@repo/validation";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Роутинг:
 import { Link } from "react-router";
 //Состояния:
-import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
+import { useAuthSubmit } from "@/features/auth";
 //Компоненты:
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
+import { Button, Input } from "@/shared/ui";
 //Стили:
 import styles from "./ForgotPasswordPage.module.scss";
 

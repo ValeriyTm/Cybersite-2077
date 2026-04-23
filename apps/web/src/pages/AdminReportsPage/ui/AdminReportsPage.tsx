@@ -1,5 +1,5 @@
 //API:
-import { $api } from '@/shared/api/api';
+import { $api } from '@/shared/api';
 //Иконки:
 import { FaFilePdf, FaFileExcel, FaChartLine } from 'react-icons/fa';
 //Уведомления

@@ -1,6 +1,6 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { FaReply, FaPaperclip } from 'react-icons/fa';
-// import styles from '../ui/AdminTicketsPage.module.scss';
+//Стили:
 import styles from './columns.module.scss';
 
 /**

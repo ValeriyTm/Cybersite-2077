@@ -9,16 +9,16 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Схемы валидации Zod:
 import { ResetPasswordSchema, type ResetPasswordInput } from "@repo/validation";
 //API:
-import { API_URL, $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 //Компоненты:
-import { PasswordField } from "@/shared/ui/PasswordField";
+import { PasswordField } from "@/shared/ui/";
 import { Button } from "@/shared/ui/Button";
 //Состояния:
-import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
+import { useAuthSubmit } from "@/features/auth";
 //Стили:
 import styles from "./ResetPages.module.scss";
 

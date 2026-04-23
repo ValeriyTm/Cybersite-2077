@@ -1,11 +1,11 @@
 //Состояния:
 import { useEffect, useState } from "react";
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useProfile } from "@/features/auth";
 //Валидация:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTicketSchema } from "@repo/validation";
 //API:
-import { API_URL, $api } from "@/shared/api/api";
+import { API_URL, $api } from "@/shared/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Работа с формами:

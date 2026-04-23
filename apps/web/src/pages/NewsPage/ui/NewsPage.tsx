@@ -1,7 +1,7 @@
 //Состояния:
 import { useQuery } from '@tanstack/react-query';
 //API:
-import { $api, API_URL } from '@/shared/api/api';
+import { $api, API_URL } from '@/shared/api';
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Роутинг:

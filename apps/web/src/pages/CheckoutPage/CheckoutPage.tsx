@@ -3,17 +3,17 @@ import { useNavigate } from "react-router";
 //Состояния:
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router";
-import { useOrderStore } from "@/entities/ordering/model/orderStore";
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useOrderStore } from "@/entities/ordering";
+import { useProfile } from "@/features/auth";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { useEffect, useMemo, useState } from "react";
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { PaymentModal } from "@/shared/ui/PaymentModal/PaymentModal";
-import { DeliveryMapModal } from "@/features/ordering/DeliveryMapModal/DeliveryMapModal";
+import { useTradingStore } from "@/entities/trading";
+import { PaymentModal } from "@/shared/ui";
+import { DeliveryMapModal } from "@/features/ordering";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:

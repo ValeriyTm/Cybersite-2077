@@ -2,12 +2,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
-import { OrderCard } from "@/entities/ordering/ui/OrderCard";
-import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
+import { OrderCard } from "@/entities/ordering";
+import { SelectFilter } from "@/features/catalog-filter";
 //Стили:
 import styles from "./MyOrdersPage.module.scss";
 

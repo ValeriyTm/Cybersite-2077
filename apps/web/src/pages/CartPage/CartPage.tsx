@@ -1,16 +1,15 @@
 //Состояния:
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useCart } from "@/entities/trading/api/useCart";
+import { useTradingStore, useCart } from "@/entities/trading";
 import { useMemo, useState, useEffect } from "react";
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useProfile } from "@/features/auth";
 import { useQueryClient } from "@tanstack/react-query";
 //Навигация:
 import { useNavigate } from "react-router";
 //Компоненты:
-import { ConfirmModal } from "@/shared/ui/ConfirmModal/ConfirmModal";
-import { CartItem } from "@/entities/trading/ui/CartItem/CartItem";
+import { ConfirmModal } from "@/shared/ui";
+import { CartItem } from "@/entities/trading";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Уведомления:

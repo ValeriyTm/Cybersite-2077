@@ -1,14 +1,11 @@
 import React from "react";
 //Состояния:
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useFavoritesPage } from "@/entities/trading/api/useFavoritesPage";
+import { useTradingStore, useFavoritesPage } from "@/entities/trading";
 import { useState, useEffect } from "react";
 //Компоненты:
 import { MotorcycleCard } from "@/entities/catalog";
 //Иконки:
 import { FaArrowUp } from "react-icons/fa";
-//API:
-import { API_URL } from "@/shared/api/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:

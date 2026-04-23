@@ -3,7 +3,7 @@ import { Navigate, useParams } from 'react-router';
 //Состояния:
 import { useQuery } from '@tanstack/react-query';
 //API:
-import { $api, API_URL } from '@/shared/api/api';
+import { $api, API_URL } from '@/shared/api';
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Работа с датами:

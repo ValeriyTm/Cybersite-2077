@@ -2,21 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
-import { useMotorcycleFilters } from "@/entities/catalog/lib/useMotorcycleFilters";
-import { useCatalogStore } from "@/entities/catalog/model/useCatalogStore";
+import { useMotorcycleFilters, useCatalogStore } from "@/entities/catalog";
 import { useQuery } from "@tanstack/react-query";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Дебаунс для поиска:
 import debounce from "lodash/debounce";
 //Компоненты:
-import { fetchMotorcycles, MotorcycleCard } from "@/entities/catalog";
-import { RangeFilter } from "@/features/catalog-filter/ui/RangeFilter/RangeFilter";
-import { SelectFilter } from "@/features/catalog-filter/ui/SelectFilter/SelectFilter";
-import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+import { MotorcycleCard } from "@/entities/catalog";
+import { RangeFilter, SelectFilter } from "@/features/catalog-filter";
+import { Breadcrumbs } from "@/shared/ui";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //API:
-import { API_URL } from "@/shared/api/api";
+import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Стили:

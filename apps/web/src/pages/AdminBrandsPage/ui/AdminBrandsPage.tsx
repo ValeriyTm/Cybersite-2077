@@ -2,10 +2,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Компоненты:
 import { BrandModal } from "./BrandModal";
-import { DataTable } from "@/shared/ui/DataTable/DataTable";
+import { DataTable } from "@/shared/ui";
 import { getColumns } from "../model/columns";
 //Уведомления:
 import { toast } from "react-hot-toast";

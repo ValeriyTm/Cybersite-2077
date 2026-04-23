@@ -6,11 +6,11 @@ import {
 //Состояния:
 import { useEffect, useState } from "react";
 //API:
-import { API_URL } from "@/shared/api/api";
+import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
-import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+import { Breadcrumbs } from "@/shared/ui";
 //Стили:
 import styles from "./CatalogPage.module.scss";
 

@@ -3,7 +3,7 @@ import axios from "axios";
 //Библиотека axios-auth-refresh для того, чтобы ставить в очередь кучу одновременных refresh-запросов к серверу:
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 //Данные о пользователе и токене:
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useAuthStore } from "@/features/auth";
 
 //Адрес сервера:
 export const API_URL = "http://localhost"; //Заменяю порт 3001 на 80-й для Nginx

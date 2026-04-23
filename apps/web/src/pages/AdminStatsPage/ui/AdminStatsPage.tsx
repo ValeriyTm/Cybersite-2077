@@ -1,7 +1,7 @@
 //Состояния:
 import { useMutation } from '@tanstack/react-query';
 //API:
-import { $api } from '@/shared/api/api';
+import { $api } from '@/shared/api';
 //Иконки:
 import { FaSync } from 'react-icons/fa';
 //Уведомления:

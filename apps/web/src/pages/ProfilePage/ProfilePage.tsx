@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 import { Navigate } from "react-router";
 import { Link } from "react-router";
 //Состояния:
-import { useProfile, useProfileActions } from "@/features/auth/";
+import { useProfile, useProfileActions } from "@/features/auth";
 //Иконки:
 import {
   HiOutlineUser,
@@ -17,12 +17,8 @@ import {
 import { IMaskInput } from "react-imask";
 import IMask from "imask";
 //Компоненты:
-import { PasswordField } from "@/shared/ui/PasswordField";
-import { Button } from "@/shared/ui/Button";
-import { TwoFactorModal } from "@/features/auth/ui/TwoFactorModal";
-import { DeleteAccountModal } from "@/features/auth/ui/DeleteAccountModal";
-import { Avatar } from "@/shared/ui/Avatar";
-import { Input } from "@/shared/ui/Input";
+import { TwoFactorModal, DeleteAccountModal } from "@/features/auth";
+import { Avatar, Input, Button, PasswordField } from "@/shared/ui";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:

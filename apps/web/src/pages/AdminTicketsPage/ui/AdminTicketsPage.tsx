@@ -2,9 +2,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 //API:
-import { $api, API_URL } from '@/shared/api/api';
+import { $api, API_URL } from '@/shared/api';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui/DataTable/DataTable';
+import { DataTable } from '@/shared/ui';
 import { getTicketColumns } from '../model/columns';
 //Иконки:
 import { FaPaperclip, FaTimes } from 'react-icons/fa';

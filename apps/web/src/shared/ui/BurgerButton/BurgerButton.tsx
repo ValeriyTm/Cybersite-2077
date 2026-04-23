@@ -1,5 +1,5 @@
 //Состояние:
-import { useLayoutStore } from '@/entities/session/model/layoutStore';
+import { useLayoutStore } from '@/entities/session';
 //Стили:
 import styles from './BurgerButton.module.scss';
 

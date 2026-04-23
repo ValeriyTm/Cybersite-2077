@@ -1,25 +1,21 @@
 //Извлечение параметров из URL и роутинг:
 import { Navigate, useParams } from "react-router";
 //Типы:
-import { type MotorcycleShort } from "@/entities/catalog/model/types";
+import { type MotorcycleShort } from "@/entities/catalog";
 //Состояния:
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCart } from "@/entities/trading/api/useCart";
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useFavorites } from "@/entities/trading/api/useFavorites";
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useCart, useFavorites, useTradingStore } from "@/entities/trading";
+import { useAuthStore, useProfile } from "@/features/auth";
 //API:
 import { $api, API_URL } from "@/shared/api/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Компоненты:
-import { SpecRow } from "@/shared/ui/SpecRow";
-import { Breadcrumbs } from "@/shared/ui/Breadcrumbs";
+import { SpecRow, Breadcrumbs } from "@/shared/ui";
 import { MotorcycleCard } from "@/entities/catalog";
-import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
-import { ReviewCard } from "@/entities/reviews/ui/ReviewCard/ReviewCard";
+import { AddToCartButton } from "@/features/trading";
+import { ReviewCard } from "@/entities/reviews";
 //Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
 

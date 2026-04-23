@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui/DataTable/DataTable';
+import { DataTable } from '@/shared/ui';
 import { newsColumns } from '../model/columns';
 //API:
-import { $api } from '@/shared/api/api';
+import { $api } from '@/shared/api';
 //Компоненты:
 import { NewsModal } from './NewsModal';
 //Уведомления:

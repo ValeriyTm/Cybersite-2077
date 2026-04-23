@@ -4,9 +4,9 @@ import { useSearchParams } from 'react-router';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 //API:
-import { $api } from '@/shared/api/api';
+import { $api } from '@/shared/api';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui/DataTable/DataTable';
+import { DataTable } from '@/shared/ui';
 import { stockColumns } from '../model/columns';
 //Уведомления:
 import toast from 'react-hot-toast';

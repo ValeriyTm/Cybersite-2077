@@ -11,7 +11,7 @@ import {
   STARTER_TYPES,
 } from "../model/constants";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api";
 //Стили:
 import styles from "./AdminMotorcyclesPage.module.scss";
 

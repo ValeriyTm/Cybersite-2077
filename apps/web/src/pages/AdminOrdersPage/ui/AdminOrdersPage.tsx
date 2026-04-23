@@ -1,12 +1,12 @@
 //Состояния:
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { useProfile } from '@/features/auth/model/useProfile';
+import { useProfile } from '@/features/auth';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui/DataTable/DataTable';
+import { DataTable } from '@/shared/ui';
 import { getOrderColumns } from '../model/columns';
 //API:
-import { $api } from '@/shared/api/api';
+import { $api } from '@/shared/api';
 //Уведомления:
 import toast from 'react-hot-toast';
 //Стили:

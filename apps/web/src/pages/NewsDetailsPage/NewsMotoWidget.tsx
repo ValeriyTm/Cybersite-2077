@@ -1,7 +1,7 @@
 //Состояния:
 import { useQuery } from '@tanstack/react-query';
 //API:
-import { $api } from '@/shared/api/api';
+import { $api } from '@/shared/api';
 //Компоненты:
 import { MotorcycleCard } from '@/entities/catalog';
 //Стили:

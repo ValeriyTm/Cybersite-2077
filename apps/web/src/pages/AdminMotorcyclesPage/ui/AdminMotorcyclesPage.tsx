@@ -1,11 +1,11 @@
 //Состояния:
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useProfile } from "@/features/auth";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Формирование таблицы:
-import { DataTable } from "@/shared/ui/DataTable/DataTable";
+import { DataTable } from "@/shared/ui";
 import { getMotoColumns } from "../model/columns";
 //Компоненты:
 import { MotoModal } from "./MotoModal";

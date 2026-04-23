@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-//API:
-import { API_URL } from "@/shared/api/api";
 //Стили:
 import styles from "./PaymentModal.module.scss";
 

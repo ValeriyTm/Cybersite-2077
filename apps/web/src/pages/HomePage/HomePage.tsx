@@ -1,14 +1,13 @@
 //Навигация:
 import { Link } from "react-router";
 //Состояния:
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
-import { useProfile } from "@/features/auth/model/useProfile";
-import { useThemeStore } from "@/entities/session/model/themeStore";
+import { useAuthStore, useProfile } from "@/features/auth";
+import { useThemeStore } from "@/entities/session";
 //Компоненты:
-import { GlobalDiscountBanner } from "@/widgets/GlobalDiscountBanner/ui/GlobalDiscountBanner";
+import { GlobalDiscountBanner } from "@/widgets/GlobalDiscountBanner";
 import { ReviewCard } from "@/shared/ui";
-import { MainCarousel } from "@/widgets/MainCarousel/MainCarousel";
-import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery/ScrollableImageGallery";
+import { MainCarousel } from "@/widgets/MainCarousel";
+import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery";
 //Анимация:
 import { motion, useReducedMotion } from "motion/react";
 //API:

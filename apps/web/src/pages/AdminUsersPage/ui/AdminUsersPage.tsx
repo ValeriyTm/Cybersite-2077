@@ -1,12 +1,12 @@
 //Состояния:
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useProfile } from "@/features/auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 //Формирование таблицы:
 import { getUserColumns } from "../model/columns";
-import { DataTable } from "@/shared/ui/DataTable/DataTable";
+import { DataTable } from "@/shared/ui";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:

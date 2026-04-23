@@ -1,12 +1,12 @@
 //Состояния:
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { useProfile } from '@/features/auth/model/useProfile';
+import { useProfile } from '@/features/auth';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui/DataTable/DataTable';
+import { DataTable } from '@/shared/ui';
 import { promoColumns, personalColumns } from '../model/columns';
 //API:
-import { $api } from '@/shared/api/api';
+import { $api } from '@/shared/api';
 //Дебаунс поиска:
 import { debounce } from 'lodash';
 //Иконки:
