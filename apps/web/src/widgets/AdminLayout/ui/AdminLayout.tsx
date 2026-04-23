@@ -1,7 +1,7 @@
 //Роутинг:
 import { Link, Outlet } from "react-router";
 //Состояния:
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useProfile } from "@/features/auth";
 import { useState } from "react";
 //SEO:
 import { Helmet } from 'react-helmet-async';

@@ -1,9 +1,9 @@
 //Роутинг:
 import { Link } from "react-router";
 //Типы:
-import { type Brand } from "../../model/types";
+import { type Brand } from "@/entities/catalog/model";
 //API:
-import { API_URL } from "@/shared/api/api";
+import { API_URL } from "@/shared/api";
 //Стили:
 import styles from "./BrandCard.module.scss";
 interface BrandCardProps {

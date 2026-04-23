@@ -17,9 +17,9 @@ import {
 } from "@repo/validation";
 //Состояния:
 import { useState } from "react";
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useProfile } from "@/features/auth";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api";
 //Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 

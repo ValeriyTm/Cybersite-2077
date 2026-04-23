@@ -1,5 +1,5 @@
 //Компоненты:
-import { Button } from "@/shared/ui/Button/Button";
+import { Button } from "@/shared/ui";
 //Стили:
 import styles from "./TwoFactorModal.module.scss";
 

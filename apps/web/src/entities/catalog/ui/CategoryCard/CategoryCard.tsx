@@ -1,7 +1,7 @@
 //Роутинг:
 import { Link } from "react-router";
 //Типы:
-import { type SiteCategory } from "../../model/types";
+import { type SiteCategory } from "@/entities/catalog/model";
 //Стили:
 import styles from "./CategoryCard.module.scss";
 

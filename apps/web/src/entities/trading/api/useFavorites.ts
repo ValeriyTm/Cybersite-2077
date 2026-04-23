@@ -1,8 +1,8 @@
 //Состояния:
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTradingStore } from "../model/tradingStore";
+import { useTradingStore } from "@/entities/trading/model";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 
 export const useFavorites = () => {
   const queryClient = useQueryClient();

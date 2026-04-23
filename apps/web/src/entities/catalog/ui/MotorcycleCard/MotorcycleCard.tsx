@@ -1,15 +1,14 @@
 //Роутинг:
 import { Link } from "react-router";
 //API:
-import { API_URL } from "@/shared/api/api";
+import { API_URL } from "@/shared/api";
 //Типы:
-import { type MotorcycleShort } from "../../model/types";
+import { type MotorcycleShort } from "@/entities/catalog/model";
 //Состояния:
-import { useTradingStore } from "@/entities/trading/model/tradingStore"; //Состояние корзины
-import { useFavorites } from "@/entities/trading/api/useFavorites"; //Состояние избранного
-import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Состояние авторизации
+import { useTradingStore, useFavorites } from "@/entities/trading";
+import { useAuthStore } from "@/features/auth"; //Состояние авторизации
 //Компоненты:
-import { AddToCartButton } from "@/features/trading/ui/AddToCartButton/AddToCartButton";
+import { AddToCartButton } from "@/features/trading";
 //Стили:
 import styles from "./MotorcycleCard.module.scss";
 
@@ -84,117 +83,116 @@ export const MotorcycleCard = ({
       to={`/catalog/motorcycles/${data.brandSlug}/${data.slug}`}
       className={cardClassName}
     >
-      <article>
-        {viewMode === "grid" && (
-          <div className={styles.imageBox}>
-            {/*Изображение:*/}
-            <img
-              src={getImageUrl(data.mainImage)}
-              loading="lazy"
-              decoding="async"
-              alt={data.model}
-              className={styles.img}
-              onError={(e) => {
-                //Реализуем защитный механизм: если даже по очищенному пути получаем ошибку 404
-                const target = e.target as HTMLImageElement;
-                target.onerror = null;
-                target.src = DEFAULT_IMG;
-              }}
-              width='425'
-              height='180'
-            />
-            {/*Бадж скидки */}
-            {hasDiscount && (
-              <div
-                className={`${styles.badgeDiscount} ${isPersonalDiscount ? styles.personal : ""}`}
-              >
-                {isPersonalDiscount ? "ДЛЯ ВАС " : ""}-
-                {data.discountData.discountPercent}%
-              </div>
-            )}
-
-            {/*Кнопка добавления в избранное:*/}
-            <button
-              className={`${styles.favoriteBtn} ${isFavorite ? styles.active : ""}`}
-              onClick={handleFavoriteClick}
-              title={isFavorite ? "Удалить из избранного" : "В избранное"}
+      {viewMode === "grid" && (
+        <div className={styles.imageBox}>
+          {/*Изображение:*/}
+          <img
+            src={getImageUrl(data.mainImage)}
+            loading="lazy"
+            decoding="async"
+            alt={data.model}
+            className={styles.img}
+            onError={(e) => {
+              //Реализуем защитный механизм: если даже по очищенному пути получаем ошибку 404
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = DEFAULT_IMG;
+            }}
+            width='425'
+            height='180'
+          />
+          {/*Бадж скидки */}
+          {hasDiscount && (
+            <div
+              className={`${styles.badgeDiscount} ${isPersonalDiscount ? styles.personal : ""}`}
             >
-              {isFavorite ? "❤️" : "🤍"}
-            </button>
+              {isPersonalDiscount ? "ДЛЯ ВАС " : ""}-
+              {data.discountData.discountPercent}%
+            </div>
+          )}
 
-            {/*Бадж высокого рейтинга:*/}
-            {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
+          {/*Кнопка добавления в избранное:*/}
+          <button
+            className={`${styles.favoriteBtn} ${isFavorite ? styles.active : ""}`}
+            onClick={handleFavoriteClick}
+            title={isFavorite ? "Удалить из избранного" : "В избранное"}
+          >
+            {isFavorite ? "❤️" : "🤍"}
+          </button>
 
-            {data.totalInStock && (
-              <span className={styles.presence}>В наличии</span>
-            )}
-          </div>
-        )}
+          {/*Бадж высокого рейтинга:*/}
+          {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
 
-        <div className={styles.info}>
-          <div className={styles.mainTitleGroup}>
-            <h3 className={styles.model} title={data.model}>{data.model}</h3>
-            {viewMode === "list" && (
-              <span className={styles.listBrand}>{brandName}</span>
-            )}
-          </div>
+          {data.totalInStock && (
+            <span className={styles.presence}>В наличии</span>
+          )}
+        </div>
+      )}
 
-          <div className={styles.specs}>
-            <span>{data.year} г.</span>
-            {Number(data.displacement) > 0 && <span>{data.displacement} см³</span>}
-            <span>{data.power !== 0 ? `${data.power} л.с.` : ""}</span>
-            <span className={styles.rating}>{data.rating.toFixed(1)} ★</span>
-          </div>
+      <div className={styles.info}>
+        <div className={styles.mainTitleGroup}>
+          <h3 className={styles.model} title={data.model}>{data.model}</h3>
+          {viewMode === "list" && (
+            <span className={styles.listBrand}>{brandName}</span>
+          )}
+        </div>
 
-          <div className={styles.footer}>
-            <div className={styles.priceBlock}>
-              {hasDiscount ? (
-                <>
-                  {/*Старая цена:*/}
-                  <span className={styles.oldPrice}>
-                    {data.price.toLocaleString()} ₽
-                  </span>
-                  {/*Актуальная цена с учетом скидки:*/}
-                  <span className={styles.newPrice}>
-                    {currentPrice.toLocaleString()} ₽
-                  </span>
-                </>
-              ) : (
-                //Просто цена (без скидки):
-                <span className={styles.price}>
+        <div className={styles.specs}>
+          <span>{data.year} г.</span>
+          {Number(data.displacement) > 0 && <span>{data.displacement} см³</span>}
+          <span>{data.power !== 0 ? `${data.power} л.с.` : ""}</span>
+          <span className={styles.rating}>{data.rating.toFixed(1)} ★</span>
+        </div>
+
+        <div className={styles.footer}>
+          <div className={styles.priceBlock}>
+            {hasDiscount ? (
+              <>
+                {/*Старая цена:*/}
+                <span className={styles.oldPrice}>
                   {data.price.toLocaleString()} ₽
                 </span>
-              )}
-            </div>
+                {/*Актуальная цена с учетом скидки:*/}
+                <span className={styles.newPrice}>
+                  {currentPrice.toLocaleString()} ₽
+                </span>
+              </>
+            ) : (
+              //Просто цена (без скидки):
+              <span className={styles.price}>
+                {data.price.toLocaleString()} ₽
+              </span>
+            )}
+          </div>
 
-            <div className={styles.ratingAndAction}>
-              {viewMode === "list" && (
-                <button
-                  className={`${styles.listFavoriteBtn} ${isFavorite ? styles.active : ""}`}
-                  onClick={handleFavoriteClick}
-                  title={isFavorite ? "Удалить из избранного" : "В избранное"}
-                >
-                  {isFavorite ? "❤️" : "🤍"}
-                </button>
-              )}
+          <div className={styles.ratingAndAction}>
+            {viewMode === "list" && (
+              <button
+                className={`${styles.listFavoriteBtn} ${isFavorite ? styles.active : ""}`}
+                onClick={handleFavoriteClick}
+                title={isFavorite ? "Удалить из избранного" : "В избранное"}
+              >
+                {isFavorite ? "❤️" : "🤍"}
+              </button>
+            )}
 
-              <AddToCartButton
-                variant="card"
-                data={{
-                  id: data.id,
-                  model: data.model,
-                  price: data.price,
-                  image: getImageUrlCart(data.mainImage),
-                  brandSlug: data.brandSlug,
-                  slug: data.slug,
-                  totalInStock: data.totalInStock,
-                  year: data.year,
-                }}
-              />
-            </div>
+            <AddToCartButton
+              variant="card"
+              data={{
+                id: data.id,
+                model: data.model,
+                price: data.price,
+                image: getImageUrlCart(data.mainImage),
+                brandSlug: data.brandSlug,
+                slug: data.slug,
+                totalInStock: data.totalInStock,
+                year: data.year,
+              }}
+            />
           </div>
         </div>
-      </article>
+      </div>
+
     </Link>
   );
 };

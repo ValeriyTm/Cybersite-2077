@@ -1,6 +1,5 @@
 //Состояния:
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useCart } from "@/entities/trading/api/useCart";
+import { useTradingStore, useCart } from "@/entities/trading/";
 //Стили:
 import styles from "./AddToCartButton.module.scss";
 

@@ -9,6 +9,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   min-width: 320px;
+  width: 100%;
   // max-width: 400px;
 
   @include hover {
@@ -118,26 +119,26 @@
   transform: none !important; //В списке анимация поднятия не нужна
 
   .info {
+    width: 100%;
+    gap: 40px;
+
     display: flex;
     flex-direction: row;
+    // display: grid;
+    // grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
+    justify-content: space-between !important;
     padding: 0;
-
-    // @include mobile {
-    //   flex-direction: column;
-    //   padding-top: 10px;
-    // }
 
     @media (width <= 900px) {
       flex-direction: column;
+      // grid-template-columns: 1fr;
       padding-top: 10px;
     }
   }
 
   .mainTitleGroup {
-    flex: 2; //Модель занимает больше места
+    flex: 2;
     display: flex;
     gap: 15px;
     align-items: center;

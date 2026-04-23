@@ -1,6 +1,5 @@
 //Состояния:
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
-import { useProfile } from "@/features/auth/model/useProfile";
+import { useAuthStore, useProfile } from "@/features/auth";
 import { useState, useEffect } from "react";
 //Роутинг:
 import { useNavigate, useSearchParams, useLocation } from "react-router";
@@ -9,7 +8,7 @@ import { toast } from "react-hot-toast";
 //Иконки:
 import { FcGoogle } from "react-icons/fc";
 //API:
-import { API_URL } from "@/shared/api/api";
+import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:

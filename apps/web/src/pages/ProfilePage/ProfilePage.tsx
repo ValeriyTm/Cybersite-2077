@@ -5,8 +5,7 @@ import { Controller } from "react-hook-form";
 import { Navigate } from "react-router";
 import { Link } from "react-router";
 //Состояния:
-import { useProfile } from "@/features/auth/model/useProfile";
-import { useProfileActions } from "@/features/auth/lib/useProfileActions";
+import { useProfile, useProfileActions } from "@/features/auth/";
 //Иконки:
 import {
   HiOutlineUser,

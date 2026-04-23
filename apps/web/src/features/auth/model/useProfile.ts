@@ -1,10 +1,10 @@
 //----------------------Хранилище данных о пользователе--------------------//
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Состояния:
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useOrderStore } from "@/entities/ordering/model/orderStore";
+import { useTradingStore } from "@/entities/trading";
+import { useOrderStore } from "@/entities/ordering";
 import { useAuthStore } from "./useAuthStore";
 //Тип данных (информация о пользователе), приходящий от сервера:
 import { type IUser } from "@repo/types";

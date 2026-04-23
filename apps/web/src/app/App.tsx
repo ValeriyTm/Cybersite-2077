@@ -12,7 +12,7 @@ import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 //React Helmet для SEO:
 import { HelmetProvider } from "react-helmet-async";
 //Компонент, который отобразится при глобальной ошибке:
-import { GlobalErrorFallback } from "@/shared/ui/GlobalErrorFallback/index";
+import { GlobalErrorFallback } from "@/shared/ui";
 //Глобальные стили:
 import "./styles/index.scss";
 

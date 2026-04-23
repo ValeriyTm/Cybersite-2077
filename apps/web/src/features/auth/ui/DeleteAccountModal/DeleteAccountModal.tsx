@@ -1,6 +1,5 @@
 //Компоненты:
-import { PasswordField } from "@/shared/ui/PasswordField";
-import { Button } from "@/shared/ui/Button/Button";
+import { PasswordField, Button } from "@/shared/ui";
 //Типы:
 import { type UseFormRegisterReturn, type FieldError } from "react-hook-form";
 //Стили:

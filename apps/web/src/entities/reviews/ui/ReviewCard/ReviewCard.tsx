@@ -1,9 +1,9 @@
 //Состояния:
 import { useState } from "react";
 //API:
-import { API_URL } from "@/shared/api/api";
+import { API_URL } from "@/shared/api";
 //Компоненты:
-import { ImageModal } from "@/shared/ui/ImageModal/ImageModal";
+import { ImageModal } from "@/shared/ui";
 //Стили:
 import styles from "./ReviewCard.module.scss";
 

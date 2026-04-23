@@ -10,15 +10,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginInput } from "@repo/validation";
 //Состояния:
 import { useState } from "react";
-import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useOrderStore } from "@/entities/ordering/model/orderStore";
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useAuthSubmit, useAuthStore } from "@/features/auth";
+import { useTradingStore } from "@/entities/trading";
+import { useOrderStore } from "@/entities/ordering";
 //API:
 import { $api } from "@/shared/api/api";
 //Компоненты:
-import { PasswordField } from "@/shared/ui/PasswordField";
-import { Button } from "@/shared/ui/Button";
+import { PasswordField } from "@/shared/ui";
+import { Button } from "@/shared/ui";
 import { TwoFactorVerifyForm } from "../TwoFactorVerifyForm";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";

@@ -1,8 +1,7 @@
 //Роутинг:
 import { Navigate, Outlet } from "react-router";
 //Состояния:
-import { useProfile } from "@/features/auth/model/useProfile";
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useProfile, useAuthStore } from "@/features/auth";
 
 export const AdminRoute = () => {
   const { user } = useProfile(); //Данные юзера

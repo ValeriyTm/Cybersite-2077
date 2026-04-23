@@ -1,19 +1,18 @@
 //Состояния:
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
-import { useProfile } from "@/features/auth/model/useProfile";
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useOrderStore } from "@/entities/ordering/model/orderStore";
-import { useThemeStore } from "@/entities/session/model/themeStore";
+import { useAuthStore, useProfile } from "@/features/auth";
+import { useTradingStore } from "@/entities/trading";
+import { useOrderStore } from "@/entities/ordering";
+import { useThemeStore } from "@/entities/session";
 //Роутинг:
 import { Link, useNavigate } from "react-router";
 //Типы:
-import { type MotorcycleShort } from "@/entities/catalog/model/types";
+import { type MotorcycleShort } from "@/entities/catalog";
 import { TOP_BRANDS } from "../model/items";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api";
 //Компоненты:
-import { Avatar } from "@/shared/ui/Avatar";
+import { Avatar } from "@/shared/ui";
 //Дебаунс для поиска:
 import debounce from "lodash/debounce";
 //Стили:

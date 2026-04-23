@@ -2,17 +2,15 @@ import { useEffect, Suspense } from "react";
 //Роутер:
 import { Outlet } from "react-router";
 //Состояния:
-import { useProfile } from "@/features/auth/model/useProfile";
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
-import { useFavorites } from "@/entities/trading/api/useFavorites";
-import { useCart } from "@/entities/trading/api/useCart";
-import { useThemeStore } from "@/entities/session/model/themeStore";
+import { useProfile, useAuthStore } from "@/features/auth";
+import { useFavorites, useCart } from "@/entities/trading";
+import { useThemeStore } from "@/entities/session";
 //Компоненты:
 import { PageLoader } from "@/pages/PageLoader";
 import { Header } from "@/widgets/Header";
 import { MobileMenu } from "@/widgets/MobileMenu";
 import { Footer } from "@/widgets/Footer";
-import { CursorTrail, BurgerButton } from "@/shared/ui/";
+import { CursorTrail, BurgerButton } from "@/shared/ui";
 
 //Уведомления:
 import { Toaster } from "react-hot-toast";

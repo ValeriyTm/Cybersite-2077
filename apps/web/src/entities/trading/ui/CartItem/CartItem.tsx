@@ -1,13 +1,13 @@
 //Состояние:
-import { useCart } from '../../api/useCart';
-import { useTradingStore } from '../../model/tradingStore';
-import { useFavorites } from '../../api/useFavorites';
+import { useCart } from '@/entities/trading/api';
+import { useTradingStore } from '@/entities/trading/model';
+import { useFavorites } from '@/entities/trading/api';
 //Роутинг:
 import { Link } from "react-router";
 //API:
-import { API_URL } from '@/shared/api/api'
+import { API_URL } from '@/shared/api'
 //Типы:
-import { type MotorcycleCart } from "../../../catalog/model/types";
+import { type MotorcycleCart } from "@/entities/catalog";
 //Стили:
 import styles from './CartItem.module.scss'
 

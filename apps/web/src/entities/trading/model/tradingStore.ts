@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 
 interface CartItem {
   id: string;

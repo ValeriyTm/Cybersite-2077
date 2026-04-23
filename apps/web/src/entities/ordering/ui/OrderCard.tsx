@@ -3,14 +3,14 @@ import { createPortal } from "react-dom";
 //Состояния:
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useOrderStore } from "../model/orderStore"; //Состояние активных заказов
+import { useOrderStore } from "@/entities/ordering/model"; //Состояние активных заказов
 //Навигация:
 import { Link } from "react-router";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { $api, API_URL } from "@/shared/api";
 //Компоненты:
-import { ReviewModal } from "@/features/reviews/ui/ReviewModal/ReviewModal";
-import { PaymentModal } from "@/shared/ui/PaymentModal/PaymentModal";
+import { ReviewModal } from "@/features/reviews";
+import { PaymentModal } from "@/shared/ui";
 //Стили:
 import styles from "./OrderCard.module.scss";
 

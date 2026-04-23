@@ -5,15 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Схемы валидации Zod:
 import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 //Компоненты:
-import { PasswordField } from "@/shared/ui/PasswordField";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
+import { Button, Input, PasswordField } from "@/shared/ui";
 //Состояния:
-import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
+import { useAuthSubmit } from "@/features/auth";
 import { useState } from "react";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";

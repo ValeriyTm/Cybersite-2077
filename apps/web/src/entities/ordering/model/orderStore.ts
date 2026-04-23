@@ -1,7 +1,7 @@
 ////------------------Хранилище данных о количестве активных заказов (для отображения в Header)-------------////
 import { create } from "zustand";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 
 export const useOrderStore = create((set) => ({
   activeOrdersCount: 0, //Счетчик активных заказов на фронте

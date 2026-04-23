@@ -4,12 +4,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 //Состояния:
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useAuthStore } from "@/features/auth";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Компоненты:
-import { Button } from "@/shared/ui/Button/Button";
-import { Input } from "@/shared/ui/Input/Input";
+import { Button, Input } from "@/shared/ui";
 //Уведомления:
 import { toast } from "react-hot-toast";
 //Стили:

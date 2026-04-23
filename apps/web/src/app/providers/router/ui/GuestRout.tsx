@@ -1,5 +1,5 @@
 //Состояние:
-import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useAuthStore } from "@/features/auth";
 //Роутинг:
 import { Navigate } from "react-router";
 

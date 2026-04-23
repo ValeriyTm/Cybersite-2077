@@ -1,8 +1,8 @@
 //Состояния:
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTradingStore } from "../model/tradingStore";
+import { useTradingStore } from "@/entities/trading/model";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Уведомления:
 import toast from "react-hot-toast";
 

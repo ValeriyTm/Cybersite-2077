@@ -1,6 +1,6 @@
 //Состояния:
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useTradingStore } from "../model/tradingStore";
+import { useTradingStore } from "@/entities/trading/model";
 //API:
 import { $api } from "@/shared/api";
 

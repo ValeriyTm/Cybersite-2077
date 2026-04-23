@@ -1,10 +1,10 @@
 //Состояния:
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Компоненты:
-import { RatingInput } from "@/shared/ui/RatingInput/RatingInput";
+import { RatingInput } from "@/shared/ui";
 //Работа с фокусом:
 import { FocusTrap } from 'focus-trap-react';
 //Порталы для модалки:

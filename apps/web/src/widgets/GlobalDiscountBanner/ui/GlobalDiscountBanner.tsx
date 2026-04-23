@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 //Компоненты:
-import { getTimeToMidnight } from "@/shared/lib/utils/timeToMidnight";
+import { getTimeToMidnight } from "@/shared/lib";
 //Стили
 import styles from "./GlobalDiscountBanner.module.scss";
 

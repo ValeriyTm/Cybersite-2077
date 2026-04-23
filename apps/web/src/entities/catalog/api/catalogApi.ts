@@ -9,7 +9,7 @@ import {
   type MotorcycleFull,
 } from "../model/types";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 
 //Получить категории каталога (мотоциклы, мотоэкип, запчасти):
 export const fetchSiteCategories = async (): Promise<SiteCategory[]> => {

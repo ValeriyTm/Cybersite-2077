@@ -1,7 +1,7 @@
 //Роутинг:
 import { Link } from "react-router";
 //Состояния:
-import { useThemeStore } from "@/entities/session/model/themeStore";
+import { useThemeStore } from "@/entities/session";
 //Иконки:
 import {
   FaFacebook,
