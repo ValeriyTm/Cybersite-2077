@@ -25,6 +25,7 @@
     "@types/leaflet": "^1.9.21",
     "axios": "^1.13.6",
     "axios-auth-refresh": "^5.0.2",
+    "focus-trap-react": "^12.0.0",
     "imask": "^7.6.1",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",

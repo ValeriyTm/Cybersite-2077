@@ -1,17 +1,39 @@
-.stars {
-  display: flex;
-  gap: 14px;
-  font-size: 28px;
-  cursor: pointer;
+.ratingGroup {
+  display: inline-flex;
+  gap: 10px;
+  flex-direction: row-reverse; //Разворачиваем, чтобы работал селектор "~"
+  justify-content: flex-end;
 
-  span {
-    color: var(--auxiliary-text-color);
-    transition: color 0.2s;
-    position: relative;
+  .radioInput {
+    //Скрываем инпут, сохраняя доступность:
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 
-    @include hover {
+    &:checked,
+    &:checked ~ .starLabel {
       color: var(--color-rating);
     }
+
+    // Фокус для доступности (чтобы при Tab было видно, где мы)
+    &:focus-visible ~ .starLabel {
+      outline: 2px solid var(--accent-color, var(--accent-text-color));
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+  }
+
+  .starLabel {
+    cursor: pointer;
+    font-size: 30px;
+    color: var(--color-light);
+    transition: color 0.2s;
+    position: relative;
 
     &::after {
       content: "";
@@ -22,9 +44,11 @@
       left: 50%;
       translate: -50% -50%;
     }
-  }
 
-  .active {
-    color: var(--color-rating);
+    // Эффект при наведении (на саму звезду и все визуально "левее")
+    &:hover,
+    &:hover ~ .starLabel {
+      color: var(--accent-text-color);
+    }
   }
 }

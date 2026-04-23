@@ -1,5 +1,5 @@
-//Извлечение параметров URL:
-import { useParams } from 'react-router';
+//Извлечение параметров URL и роутинг:
+import { Navigate, useParams } from 'react-router';
 //Состояния:
 import { useQuery } from '@tanstack/react-query';
 //API:
@@ -17,7 +17,7 @@ import styles from './NewsDetailsPage.module.scss';
 export const NewsDetailsPage = () => {
     const { slug } = useParams<{ slug: string }>();
     console.log('slug: ', slug)
-    const { data: article, isLoading } = useQuery({
+    const { data: article, isLoading, isError } = useQuery({
         queryKey: ['news-article', slug],
         queryFn: () => $api.get(`/content/news/${slug}`).then(res => res.data)
     });
@@ -26,8 +26,14 @@ export const NewsDetailsPage = () => {
     const canonicalUrl = `${API_URL}/content/news/${slug}`;
     const seoTitle = `Cybersite-2077 | Новость ${slug}`
 
+    //------Проблемные случаи:----------//
+    //Лоадер:
     if (isLoading) return <div className={styles.loader}>Дешифровка данных...</div>;
-    if (!article) return <div className={styles.error}>Объект не найден в системе</div>;
+    //Проблема загрузки:
+    // if (!article) return <div className={styles.error}>Объект не найден в системе</div>;
+    if (isError || !article) {
+        return <Navigate to="/404" replace />;
+    }
 
     return (
         <>

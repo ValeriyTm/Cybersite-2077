@@ -1,18 +1,28 @@
+//Состояния:
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+//API:
 import { $api } from "@/shared/api/api";
+//Компоненты:
 import { RatingInput } from "@/shared/ui/RatingInput/RatingInput";
+//Работа с фокусом:
+import { FocusTrap } from 'focus-trap-react';
+//Уведомления:
 import toast from "react-hot-toast";
+//Стил:
 import styles from "./ReviewModal.module.scss";
+import { createPortal } from "react-dom";
 
 export const ReviewModal = ({
   orderId,
   item,
   onClose,
+  isReviewModalOpen,
 }: {
   orderId: string;
   item: any;
   onClose: () => void;
+  isReviewModalOpen: boolean;
 }) => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
@@ -81,67 +91,74 @@ export const ReviewModal = ({
     });
   };
 
-  return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <h3>Оставить отзыв на {item.motorcycle.model}</h3>
+  if (!isReviewModalOpen) return null;
 
-        <div className={styles.section}>
-          <label>Ваша оценка:</label>
-          <RatingInput value={rating} onChange={setRating} />
-        </div>
 
-        <div className={styles.textareaWrapper}>
-          <textarea
-            maxLength={2000}
-            placeholder="Напишите ваш отзыв..."
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-          <span className={styles.charCount}>{comment.length} / 2000</span>
-        </div>
 
-        <div className={styles.photoSection}>
-          <label className={styles.uploadLabel}>
-            <span>📷 Добавить фото (до 5 шт)</span>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleFileChange}
-              hidden
+  return createPortal(
+    <FocusTrap active={isReviewModalOpen} focusTrapOptions={{ onDeactivate: onClose }}>
+      <div className={styles.overlay}>
+        <div className={styles.modal}>
+          <h3>Оставить отзыв на {item.motorcycle.model}</h3>
+
+          <div className={styles.section}>
+            <label>Ваша оценка:</label>
+            <RatingInput value={rating} onChange={setRating} />
+          </div>
+
+          <div className={styles.textareaWrapper}>
+            <textarea
+              maxLength={2000}
+              placeholder="Напишите ваш отзыв..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
-          </label>
+            <span className={styles.charCount}>{comment.length} / 2000</span>
+          </div>
 
-          <div className={styles.previews}>
-            {previews.map((src, i) => (
-              <div key={i} className={styles.previewItem}>
-                <img src={src} alt="preview for user review's image" width='70' height='70' />
-                <button
-                  type="button"
-                  className={styles.removeIcon}
-                  onClick={() => removePhoto(i)}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+          <div className={styles.photoSection}>
+            <label className={styles.uploadLabel}>
+              <span>📷 Добавить фото (до 5 шт)</span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileChange}
+                hidden
+              />
+            </label>
+
+            <div className={styles.previews}>
+              {previews.map((src, i) => (
+                <div key={i} className={styles.previewItem}>
+                  <img src={src} alt="preview for user review's image" width='70' height='70' />
+                  <button
+                    type="button"
+                    className={styles.removeIcon}
+                    onClick={() => removePhoto(i)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.actions}>
+            <button onClick={onClose} className={styles.cancel}>
+              Отмена
+            </button>
+            <button
+              onClick={handleSubmit}
+              className={styles.submit}
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Отправка..." : "Опубликовать"}
+            </button>
           </div>
         </div>
-
-        <div className={styles.actions}>
-          <button onClick={onClose} className={styles.cancel}>
-            Отмена
-          </button>
-          <button
-            onClick={handleSubmit}
-            className={styles.submit}
-            disabled={mutation.isPending}
-          >
-            {mutation.isPending ? "Отправка..." : "Опубликовать"}
-          </button>
-        </div>
       </div>
-    </div>
+    </FocusTrap>,
+    document.getElementById('modals-root')!
   );
 };

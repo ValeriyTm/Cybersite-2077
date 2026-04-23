@@ -1,5 +1,5 @@
-//Извлечение параметров из URL:
-import { useParams } from "react-router";
+//Извлечение параметров из URL и роутинг:
+import { Navigate, useParams } from "react-router";
 import {
   fetchMotorcycleBySlug,
   type MotorcycleFull,
@@ -50,13 +50,15 @@ export const MotorcycleDetailsPage = () => {
 
   const queryClient = useQueryClient();
 
+
+
   //Подключаем избранное и корзину
   const { toggleFavorite } = useFavorites();
   const { addToCart } = useCart();
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
 
   //Получаем данные по мотоциклу от сервера:
-  const { data: motorcycle, isLoading: isMotoLoading } = useQuery({
+  const { data: motorcycle, isLoading: isMotoLoading, isError: isMotoError } = useQuery({
     queryKey: ["motorcycle", slug],
     queryFn: () =>
       $api
@@ -124,11 +126,17 @@ export const MotorcycleDetailsPage = () => {
     if (motorcycle) toggleFavorite(motorcycle.id);
   };
 
-  ///--------------
+  //--------------------Проблемные случаи:-------------------//
 
-  if (isMotoLoading || !motorcycle)
+  //Лоадер:
+  if (isMotoLoading)
     return <div className={styles.loader}>Загрузка...</div>;
-  //----------------Breadcrumbs:
+
+  //Если произошла ошибка запроса:
+  if (isMotoError || !motorcycle) {
+    return <Navigate to="/404" replace />;
+  }
+  //----------------Breadcrumbs:------//
   const breadcrumbs = [
     { label: "Каталог", href: "/catalog/" },
     { label: "Бренды", href: "/catalog/motorcycles" },

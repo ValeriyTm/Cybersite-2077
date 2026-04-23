@@ -209,6 +209,7 @@ export const OrderCard = ({ order }: { order: any }) => {
                   <ReviewModal
                     orderId={order.id}
                     item={selectedItem}
+                    isReviewModalOpen={isReviewModalOpen}
                     onClose={() => setIsReviewModalOpen(false)}
                   />
                 )}

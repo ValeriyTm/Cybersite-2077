@@ -59,7 +59,7 @@ export const MainLayout = () => {
       <BurgerButton />
 
       {/*Основной контент страницы:*/}
-      <main className="content-wrapper">
+      <main className="content-wrapper" style={{ minHeight: '60vh' }}>
         <Outlet />
       </main>
 
