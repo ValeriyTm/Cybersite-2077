@@ -148,7 +148,7 @@ export const Footer = () => {
 
         {/* Нижняя часть: */}
         <div className={styles.bottom}>
-          <span>©<time datetime={currentYear}>{currentYear}</time> Cybersite-2077 &nbsp;&nbsp;&nbsp;&nbsp;|</span>
+          <span>©<time dateTime={String(currentYear)}>{currentYear}</time> Cybersite-2077 &nbsp;&nbsp;&nbsp;&nbsp;|</span>
           <Link to="/agreement">Пользовательское соглашение</Link>
         </div>
       </div>

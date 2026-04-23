@@ -41,9 +41,11 @@
     gap: 20px;
     @include tablet {
       gap: 10px;
+      flex-direction: column-reverse;
     }
 
     @include mobile {
+      flex-direction: row;
       gap: 10px;
     }
   }
@@ -78,7 +80,6 @@
       text-align: center;
 
       a {
-        font-size: 0.8rem;
         color: var(--auxiliary-text-color);
         transition: color 0.2s;
 

@@ -1,16 +1,9 @@
 @use "sass:math";
 
-// @function rem($pixel) {
-//   @if math.is-unitless($pixel) {
-//     @return math.div($pixel, 16) + rem;
-//   } @else {
-//     @error 'Не используйте единицы измерения при работе с функцией rem()! Передавайте аргументом только числа.'
-//   }
-// }
-
+//Функция для динамической подстройки шрифта в зависимости от экрана:
 @function fluid($max: 100, $min: 10) {
-  $maxViewportWidth: 1520;
-  $minViewportWidth: 360;
+  $maxViewportWidth: 1520; //Максимальная ширина текстового блока (max-ширина контейнера самого широкого breakpoint)
+  $minViewportWidth: 360; //Минимальная ширина текстового блока
 
   $maxSize: math.div($max, 16);
   $minSize: math.div($min, 16);
@@ -26,3 +19,12 @@
     #{$maxSize * 1rem}
   );
 }
+
+//Функция для преобразования px в rem (не требуется с плагином pxtorem для PostCSS).
+// @function rem($pixel) {
+//   @if math.is-unitless($pixel) {
+//     @return math.div($pixel, 16) + rem;
+//   } @else {
+//     @error 'Не используйте единицы измерения при работе с функцией rem()! Передавайте аргументом только числа.'
+//   }
+// }

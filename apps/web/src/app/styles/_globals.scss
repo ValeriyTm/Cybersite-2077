@@ -1,33 +1,19 @@
 @use "helpers" as *;
 
-// html {
-//   &.is-lock {
-//     overflow: hidden;
-//   }
-// }
-
-// body {
-//   @include fluid-text(18, 14);
-
-//   display: flex;
-//   flex-direction: column;
-//   font-family: var(--font-family-base);
-//   letter-spacing: -0.03em;
-//   color: var(--color-gray-50);
-//   background-color: var(--color-dark);
-// }
-
-// main {
-//   flex-grow: 1;
-// }
-
-// html {
-//   cursor: var(--cursor-path), auto; //Кастомный курсор
-// }
-
 body {
+  @include fluid-text(18, 14);
   background-color: var(--main-bg-color);
   cursor: var(--cursor-path), auto; //Кастомный курсор
+
+  input,
+  textarea,
+  select {
+    @include fluid-text(18, 16); //Борьба с зумом на iPhone
+  }
+
+  input::placeholder {
+    @include fluid-text(18, 16);
+  }
 }
 
 h1,
@@ -69,19 +55,6 @@ a {
   text-decoration: none;
 }
 
-// h1, .h1,
-// h2, .h2,
-// h3, .h3 {
-//   font-family: var(--font-family-accent);
-//   font-weight: 500;
-// }
-
-// h4, .h4,
-// h5, .h5,
-// h6, .h6 {
-//   font-weight: 600;
-// }
-
 h1,
 .h1 {
   @include fluid-text(60, 25);
@@ -116,48 +89,17 @@ h6,
   @include fluid-text(20, 16);
 }
 
-// p {
-//   --paragraphMarginBottom: #{rem(24)};
-// }
-
-// a,
-// button,
-// label,
-// input,
-// textarea,
-// select,
-// svg * {
-//   transition-duration: var(--transition-duration);
-// }
-
-// a {
-//   color: inherit;
-
-//   @include hover {
-//     color: var(--color-accent);
-//   }
-
-//   &[class] {
-//     text-decoration: none;
-//   }
-// }
-
-// :focus-visible {
-//   outline: rem(2) dashed var(--color-light);
-//   outline-offset: rem(4);
-//   transition-duration: 0s !important;
-// }
-
-// a,
-// button {
-//   &[aria-label] {
-//     position: relative;
-
-//     &::before {
-//       @include abs-center;
-//       @include square(rem(44));
-
-//       content: '';
-//     }
-//   }
-// }
+//Отключаем анимацию, если пользователь в настройках операционной системы режим «Уменьшение движения»:
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}

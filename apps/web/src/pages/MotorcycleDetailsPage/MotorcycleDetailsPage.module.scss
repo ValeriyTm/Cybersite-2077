@@ -391,6 +391,7 @@
   justify-content: space-between;
   background: var(--auxiliary-bg-color-2);
   padding: 25px;
+  width: 95%;
   border-radius: 15px;
   margin: 15px 0;
   /* pxtorem-disable-next-line */
@@ -398,6 +399,7 @@
 
   @include mobile {
     padding: 10px;
+    margin-inline: 20px;
   }
 }
 
@@ -411,7 +413,7 @@
 }
 
 .cartBtn {
-  background: #f39c12;
+  background: var(--accent-text-color);
   color: #000;
   /* pxtorem-disable-next-line */
   border: none;
@@ -440,8 +442,8 @@
   justify-content: center;
   gap: 8px;
   transition: all 0.2s;
-  width: 300px;
-  height: 44px;
+  width: 400px;
+  min-height: 44px;
   text-align: center;
 
   @include hover {

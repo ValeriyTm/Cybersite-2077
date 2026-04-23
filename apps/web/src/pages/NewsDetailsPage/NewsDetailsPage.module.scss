@@ -25,6 +25,7 @@
     line-height: 1.1;
     margin-bottom: 30px;
     text-align: center;
+    color: var(--auxiliary-text-color);
 
     @include mobile {
       font-size: 2rem;
