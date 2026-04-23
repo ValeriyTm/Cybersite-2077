@@ -29,10 +29,10 @@
 
 ol,
 ul {
-  padding-left: 0; /* Убирает внутренний отступ слева */
-  margin-left: 0; /* Убирает внешний отступ слева */
-  list-style-position: inside; /* Номер/маркер будет внутри текстового блока */
-  text-align: left; /* Явное выравнивание текста по левому краю */
+  padding-left: 0;
+  margin-left: 0;
+  list-style-position: inside;
+  text-align: left;
 }
 
 footer {

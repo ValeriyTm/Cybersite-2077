@@ -1,13 +1,17 @@
+//Состояния:
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+//API:
 import { $api } from "@/shared/api/api";
+//Компоненты:
 import { getTimeToMidnight } from "@/shared/lib/utils/timeToMidnight";
+//Стили
 import styles from "./GlobalDiscountBanner.module.scss";
 
 export const GlobalDiscountBanner = () => {
   const [timeLeft, setTimeLeft] = useState(getTimeToMidnight());
 
-  // Запускаем тиканье таймера
+  //Запускаем отсчет таймера:
   useEffect(() => {
     const timer = setInterval(() => {
       const newTime = getTimeToMidnight();
@@ -15,7 +19,7 @@ export const GlobalDiscountBanner = () => {
 
       // Если время вышло, можно обновить данные (рефетч)
       if (newTime.totalMs <= 0) {
-        window.location.reload(); // Или queryClient.invalidateQueries
+        window.location.reload();
       }
     }, 1000);
 

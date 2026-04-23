@@ -163,10 +163,6 @@ footer {
   @include mobile-s {
     display: flex;
     flex-wrap: wrap;
-    // align-items: center;
-    // justify-items: center;
-
-    // gap: 90px;
     justify-content: center;
     margin-top: 0 !important;
   }

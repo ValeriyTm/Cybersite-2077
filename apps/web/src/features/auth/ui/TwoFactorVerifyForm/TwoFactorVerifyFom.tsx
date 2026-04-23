@@ -1,11 +1,18 @@
+//Работа с формам:
 import { useForm } from "react-hook-form";
+//Валидация:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+//Состояния:
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
+//API:
 import { $api } from "@/shared/api/api";
+//Компоненты:
 import { Button } from "@/shared/ui/Button/Button";
 import { Input } from "@/shared/ui/Input/Input";
+//Уведомления:
 import { toast } from "react-hot-toast";
+//Стили:
 import styles from "./TwoFactorVerifyFom.module.scss";
 
 // 1. Схема валидации только для кода

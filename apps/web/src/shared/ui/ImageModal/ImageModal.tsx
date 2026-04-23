@@ -1,6 +1,8 @@
 import ReactDOM from "react-dom";
-import styles from "./ImageModal.module.scss";
 import { useState, useEffect, useCallback } from "react";
+//Стили:
+import styles from "./ImageModal.module.scss";
+
 interface ImageModalProps {
   src: string;
   onClose: () => void;
@@ -22,7 +24,7 @@ export const ImageModal = ({
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   }, [images.length]);
 
-  // Слушаем клавиатуру ⌨️
+  //Слушаем клавиатуру:
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") next();

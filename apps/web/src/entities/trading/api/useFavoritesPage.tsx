@@ -2,7 +2,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useTradingStore } from "../model/tradingStore";
 //API:
-import { $api } from "@/shared/api/api";
+import { $api } from "@/shared/api";
 
 export const useFavoritesPage = () => {
   const { favoriteIds } = useTradingStore();

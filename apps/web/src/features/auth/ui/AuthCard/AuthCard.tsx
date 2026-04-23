@@ -1,9 +1,12 @@
+//Состояния:
+import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентское
+import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
 import { useState, useEffect } from "react";
-//Роутер:
+//Роутинг:
 import { useNavigate, useSearchParams, useLocation } from "react-router";
 //Библиотека для показа всплывающих уведомлений:
 import { toast } from "react-hot-toast";
-//Иконка:
+//Иконки:
 import { FcGoogle } from "react-icons/fc";
 //API:
 import { API_URL } from "@/shared/api/api";
@@ -12,9 +15,6 @@ import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { LoginForm } from "../LoginForm";
 import { RegisterForm } from "../RegisterForm";
-//Хранилища:
-import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентское
-import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
 //Стили:
 import styles from "./AuthCard.module.scss";
 

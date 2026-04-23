@@ -4,6 +4,7 @@ import {
   flexRender,
   type ColumnDef,
 } from "@tanstack/react-table";
+//Стили:
 import styles from "./DataTable.module.scss";
 
 interface DataTableProps<TData> {

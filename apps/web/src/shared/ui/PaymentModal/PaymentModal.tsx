@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import styles from "./PaymentModal.module.scss";
+//API:
 import { API_URL } from "@/shared/api/api";
+//Стили:
+import styles from "./PaymentModal.module.scss";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -47,6 +49,7 @@ export const PaymentModal = ({
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <h2 className="visually-hidden">Оплата заказа</h2>
         <h3>Выбор способа оплаты</h3>
 
         <div className={styles.methodList}>

@@ -1,7 +1,11 @@
-import { FaFilePdf, FaFileExcel, FaChartLine } from 'react-icons/fa';
-import styles from './AdminReportsPage.module.scss';
+//API:
 import { $api } from '@/shared/api/api';
+//Иконки:
+import { FaFilePdf, FaFileExcel, FaChartLine } from 'react-icons/fa';
+//Уведомления
 import toast from 'react-hot-toast';
+//Стили:
+import styles from './AdminReportsPage.module.scss';
 
 export const AdminReportsPage = () => {
 
@@ -9,7 +13,7 @@ export const AdminReportsPage = () => {
         try {
             toast.loading('Подготовка отчета...', { id: 'report' });
 
-            //1) Делаем запрос через наш инстанс axios ($api); указываем responseType: 'blob', чтобы axios не пытался парсить файл как JSON
+            //1) Делаем запрос axios ($api); указываем responseType: 'blob', чтобы axios не пытался парсить файл как JSON
             const response = await $api.get('/admin/reports/download', {
                 params: { format },
                 responseType: 'blob',

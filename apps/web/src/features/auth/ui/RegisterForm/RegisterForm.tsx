@@ -1,11 +1,10 @@
-import { useState } from "react";
 //React Hook Form:
 import { useForm } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
-//Экземпляр axios:
+//API:
 import { $api } from "@/shared/api/api";
 //Схемы валидации Zod:
 import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
@@ -13,8 +12,9 @@ import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
-//Кастомные хуки:
+//Состояния:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
+import { useState } from "react";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
 

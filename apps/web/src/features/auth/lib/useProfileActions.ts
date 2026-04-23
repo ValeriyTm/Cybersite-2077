@@ -1,4 +1,3 @@
-import { useState } from "react";
 //React Hook Form:
 import { useForm } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
@@ -16,9 +15,10 @@ import {
   type ChangePasswordInput,
   type DeleteAccountInput,
 } from "@repo/validation";
-//Серверное хранилище:
+//Состояния:
+import { useState } from "react";
 import { useProfile } from "@/features/auth/model/useProfile";
-//Экземпляр axios и URL сервера:
+//API:
 import { $api, API_URL } from "@/shared/api/api";
 //Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";

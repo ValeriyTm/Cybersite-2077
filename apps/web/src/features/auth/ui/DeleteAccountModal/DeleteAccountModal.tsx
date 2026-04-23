@@ -1,6 +1,9 @@
+//Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button/Button";
+//Типы:
 import { type UseFormRegisterReturn, type FieldError } from "react-hook-form";
+//Стили:
 import styles from "./DeleteAccountModal.module.scss";
 
 interface DeleteAccountModalProps {

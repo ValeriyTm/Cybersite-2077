@@ -10,14 +10,14 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  color: #ccc;
+  color: var(--auxiliary-text-color);
   font-size: 0.9rem;
 
   th {
     text-align: left;
     padding: 15px;
     background: #1a1a1a;
-    color: #f39c12;
+    color: var(--accent-text-color);
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 1px;

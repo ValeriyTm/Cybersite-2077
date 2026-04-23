@@ -8,6 +8,7 @@
   overflow: hidden;
   text-decoration: none;
   transition: all 0.3s ease;
+  min-width: 320px;
   // max-width: 400px;
 
   @include hover {
@@ -179,28 +180,6 @@
   .price {
     font-size: 1.1rem;
   }
-
-  // .favoriteBtn {
-  //   //Сбрасываем абсолютное позиционирование и переносим в конец строки:
-  //   position: relative;
-  //   top: auto;
-  //   right: auto;
-  //   order: 10; //Ставим в самый конец флекс-контейнера
-  //   background: none;
-  //   /* pxtorem-disable-next-line */
-  //   border: none;
-  //   backdrop-filter: none;
-  //   font-size: 1.3rem;
-  //   margin-left: 20px;
-
-  //      &.active {
-  //     background: none;
-  //   }
-
-  //   @include hover {
-  //     transform: scale(1.2);
-  //   }
-  // }
 
   //Настройка контейнера для выравнивания
   display: flex;

@@ -41,11 +41,10 @@ export const Header = () => {
   const { resetOrders } = useOrderStore();
   const { clearTrading, fetchCart, fetchFavoritesIds } = useTradingStore();
 
-  //--------Для работы с данными юзера:
-  //Технический статус из Zustand:
+
   const isAuth = useAuthStore((state) => state.isAuth);
-  //Реальные данные и статус загрузки из React Query:
   const { user, isLoading } = useProfile();
+
   //Формируем путь к аватару:
   const avatarSrc = user?.avatarUrl
     ? `${API_URL}${user.avatarUrl}`
@@ -67,13 +66,6 @@ export const Header = () => {
     [],
   );
 
-  //Для иконок смены темы:
-  const themes = [
-    { id: 'theme-orange', img: 'src/shared/assets/images/theme/theme-icon1.png', title: 'Тема Orange' },
-    { id: 'theme-blue', img: 'src/shared/assets/images/theme/theme-icon4.png', title: 'Тема Blue' },
-    { id: 'theme-retrowave', img: 'src/shared/assets/images/theme/theme-icon2.png', title: 'Тема Retrowave' },
-    { id: 'theme-doom', img: 'src/shared/assets/images/theme/theme-icon3-alternative.png', title: 'Тема DOOM' },
-  ];
 
   //При загркузке получаем кол-во активных заказов:
   useEffect(() => {
@@ -122,13 +114,20 @@ export const Header = () => {
   };
 
   //Количество избранных товаров:
-  // const favoritesCount = useTradingStore((state) => state.favoriteIds.length);
   const { favoritesCount } = useTradingStore();
 
   //Количество товаров в корзине:
   const cartCount = useTradingStore((state) =>
     state.cartItems.reduce((acc, item) => acc + item.quantity, 0),
   );
+
+  //Для иконок смены темы:
+  const themes = [
+    { id: 'theme-orange', img: 'src/shared/assets/images/theme/theme-icon1.png', title: 'Тема Orange' },
+    { id: 'theme-blue', img: 'src/shared/assets/images/theme/theme-icon4.png', title: 'Тема Blue' },
+    { id: 'theme-retrowave', img: 'src/shared/assets/images/theme/theme-icon2.png', title: 'Тема Retrowave' },
+    { id: 'theme-doom', img: 'src/shared/assets/images/theme/theme-icon3-alternative.png', title: 'Тема DOOM' },
+  ];
   //-----------
   //Путь к логотипу в зависимости от темы:
   let logoUrl;

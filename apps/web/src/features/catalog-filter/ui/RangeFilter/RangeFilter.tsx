@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
+//Дебаунс для поиска:
 import { debounce } from "lodash";
+//Стили:
 import styles from "./RangeFilter.module.scss";
 
 interface RangeFilterProps {

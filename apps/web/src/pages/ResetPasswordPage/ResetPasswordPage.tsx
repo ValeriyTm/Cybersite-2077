@@ -17,7 +17,7 @@ import { toast } from "react-hot-toast";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
-//Кастомные хуки:
+//Состояния:
 import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
 import styles from "./ResetPages.module.scss";

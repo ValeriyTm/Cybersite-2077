@@ -19,7 +19,7 @@ export const BrandCard = ({ brand }: BrandCardProps) => {
 
   return (
     <Link to={`/catalog/motorcycles/${slug}`} className={styles.BrandCard}>
-      <div className={styles.content}>
+      <article className={styles.content}>
         <div className={styles.text}>
           <h3 className={styles.name}>{name}</h3>
           <p className={styles.country}>{country}</p>
@@ -38,7 +38,7 @@ export const BrandCard = ({ brand }: BrandCardProps) => {
               height='48' />
           </div>
         )}
-      </div>
+      </article>
     </Link>
   );
 };

@@ -7,7 +7,6 @@ import { ImageModal } from "@/shared/ui/ImageModal/ImageModal";
 //Стили:
 import styles from "./ReviewCard.module.scss";
 
-
 export const ReviewCard = ({
   review,
   onDelete,
@@ -32,7 +31,7 @@ export const ReviewCard = ({
   const canDelete = review.userId === currentUserId || isAdmin;
 
   return (
-    <div className={styles.card}>
+    <article className={styles.card}>
       <div className={styles.header}>
         <div className={styles.вuser}>
           <img decoding="async"
@@ -100,6 +99,6 @@ export const ReviewCard = ({
           Удалить отзыв
         </button>
       )}
-    </div>
+    </article>
   );
 };

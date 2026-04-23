@@ -51,7 +51,6 @@ export const TermsPage = () => {
             <p>&copy; 2026 Cybersite-2077. Сделано в учебных целях.</p>
           </footer>
         </section>
-        {/* Тут пара стандартных секций */}
       </div>
     </>
   )

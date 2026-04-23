@@ -1,6 +1,5 @@
 .Page {
   min-height: 100vh;
-  // background: #080808;
   color: var(--main-text-color);
   padding: 50px 20px;
 
@@ -16,7 +15,7 @@
 
 .hero {
   display: grid;
-  grid-template-columns: 1.2fr 1fr; //Фото показываем шире, а инфо уже
+  grid-template-columns: 1.2fr 1fr;
   gap: 60px;
   margin-bottom: 80px;
 
@@ -30,10 +29,6 @@
   }
 }
 
-// h1,
-// h2 {
-//   color: #f39c12 !important;
-// }
 .mainInfo {
   display: flex;
   flex-direction: column;
@@ -98,7 +93,6 @@
   padding-bottom: 8px;
   /* pxtorem-disable-next-line */
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  // overflow-wrap: break-word;
 
   @include mobile-s {
     gap: 4px;
@@ -136,7 +130,7 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: 500px; //Ограничиваем общую ширину галереи
+  max-width: 500px;
 
   @include mobile {
     align-items: center;
@@ -150,7 +144,7 @@
 
 .mainImageWrapper {
   width: 100%;
-  height: 350px; //Фиксируем высоту главного окна
+  height: 350px;
   border-radius: 12px;
   overflow: hidden;
   background: var(--auxiliary-bg-color-2);
@@ -212,7 +206,6 @@
 
 //Рекомендации:
 .relatedSection {
-  // margin-top: 100px;
   padding-top: 60px;
   /* pxtorem-disable-next-line */
   border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -266,11 +259,9 @@
   @include mobile {
     padding-inline: 10px;
     overflow-y: hidden;
-    overflow-x: auto; /* Разрешаем скролл по горизонтали */
-    white-space: nowrap; /* Запрещаем перенос текста на новую строку */
+    overflow-x: auto;
+    white-space: nowrap;
     scrollbar-color: var(--accent-text-color) var(--auxiliary-text-color);
-    // scrollbar-width: none; /* Скрываем стандартный скроллбар (Firefox) */
-    // -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
     margin-top: 0;
   }
 
@@ -309,9 +300,7 @@
 }
 
 .tabContent {
-  // display: inline-flex;
   align-items: center;
-  // padding-top: 40px;
   min-height: 400px; //Чтобы страница не прыгала при переключении
 
   p {
@@ -341,7 +330,6 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  // margin-top: 20px;
   padding: 12px 24px;
   background: var(--main-bg-color);
   /* pxtorem-disable-next-line */

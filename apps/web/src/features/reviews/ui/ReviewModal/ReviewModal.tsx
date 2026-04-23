@@ -7,11 +7,12 @@ import { $api } from "@/shared/api/api";
 import { RatingInput } from "@/shared/ui/RatingInput/RatingInput";
 //Работа с фокусом:
 import { FocusTrap } from 'focus-trap-react';
+//Порталы для модалки:
+import { createPortal } from "react-dom";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стил:
 import styles from "./ReviewModal.module.scss";
-import { createPortal } from "react-dom";
 
 export const ReviewModal = ({
   orderId,
@@ -51,7 +52,6 @@ export const ReviewModal = ({
     mutationFn: (formData: FormData) => $api.post("/reviews", formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-      // alert("Отзыв успешно отправлен!");
       toast.success("Отзыв успешно опубликован!");
       onClose();
     },

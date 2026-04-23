@@ -1,6 +1,9 @@
 import { useState, type ReactNode } from "react";
+//Работа с формами:
 import { type UseFormRegisterReturn, type FieldError } from "react-hook-form";
+//Иконки:
 import { HiEye, HiEyeOff } from "react-icons/hi";
+//Стили:
 import styles from "./PasswordField.module.scss";
 
 //Типы для пропсов:

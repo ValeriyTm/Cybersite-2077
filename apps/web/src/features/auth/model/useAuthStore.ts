@@ -1,19 +1,14 @@
-//-----------------------Клиентское хранилище
-//--Оно управляет состоянием авторизации во всем приложении и сохраняет данные в браузере, чтобы после перезагрузки страницы пользователь не «вылетал» из аккаунта.
+//-----------------------Хранилище данных об авторизации юзера (авторизован ли он и его access-токен)--------//
 import { create } from "zustand";
-//Persist - для сохранения состояния в localStorage; devtools - создаёт интерфейс в браузере.
 import { persist, devtools } from "zustand/middleware";
 
-//Типизируем состояние, которое хранится в этом хранилище:
 interface AuthState {
-  //Наш access token:
   accessToken: string | null;
   //Авторизован ли пользователь:
   isAuth: boolean;
   //Поля для 2FA:
   tempUserId: string | null;
   setTempUserId: (id: string | null) => void;
-  //Методы (actions):
   setAuth: (token: string | null) => void;
   clearAuth: () => void;
 }

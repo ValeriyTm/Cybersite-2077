@@ -1,4 +1,8 @@
+//Роутинг:
 import { Link } from "react-router";
+//Состояния:
+import { useThemeStore } from "@/entities/session/model/themeStore";
+//Иконки:
 import {
   FaFacebook,
   FaTelegram,
@@ -9,8 +13,8 @@ import {
   FaVk,
   FaYoutube,
 } from "react-icons/fa";
+//Стили:
 import styles from "./Footer.module.scss";
-import { useThemeStore } from "@/entities/session/model/themeStore";
 
 export const Footer = () => {
   const { theme } = useThemeStore();

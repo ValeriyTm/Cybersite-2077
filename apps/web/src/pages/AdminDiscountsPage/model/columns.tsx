@@ -1,5 +1,8 @@
+//Типы:
 import { type ColumnDef } from '@tanstack/react-table';
+//Работа с датами:
 import { format } from 'date-fns';
+//Стили:
 import styles from './columns.module.scss';
 
 export const promoColumns: ColumnDef<any>[] = [

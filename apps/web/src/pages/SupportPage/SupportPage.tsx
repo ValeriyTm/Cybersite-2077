@@ -317,16 +317,9 @@ export const SupportPage = () => {
             {isSubmitting ? "Отправка..." : "Отправить запрос"}
           </button>
         </form>
-
         <div className={styles.testContainer}>
-
-
         </div>
-
-
       </div>
-
-
     </>
   );
 };

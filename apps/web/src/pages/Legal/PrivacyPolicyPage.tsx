@@ -61,7 +61,6 @@ export const PrivacyPolicyPage = () => {
           </footer>
         </section>
       </div>
-
     </>
 
   )

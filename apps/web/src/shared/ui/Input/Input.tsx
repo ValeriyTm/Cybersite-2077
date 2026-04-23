@@ -1,5 +1,6 @@
 import { type InputHTMLAttributes, type ReactNode } from "react";
 import { type UseFormRegisterReturn, type FieldError } from "react-hook-form";
+//Стили:
 import styles from "./Input.module.scss";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

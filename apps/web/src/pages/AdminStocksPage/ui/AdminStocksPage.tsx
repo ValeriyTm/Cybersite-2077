@@ -1,10 +1,16 @@
-import { useState } from 'react';
+//Извлечение параметров:
 import { useSearchParams } from 'react-router';
+//Состояния:
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+//API:
 import { $api } from '@/shared/api/api';
+//Формирование таблицы:
 import { DataTable } from '@/shared/ui/DataTable/DataTable';
 import { stockColumns } from '../model/columns';
+//Уведомления:
 import toast from 'react-hot-toast';
+//Стили:
 import styles from './AdminStocksPage.module.scss';
 
 export const AdminStocksPage = () => {

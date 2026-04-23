@@ -42,7 +42,6 @@
 
 .mainBannerPartRight {
   width: 100%;
-  // background: linear-gradient(to bottom right, black, darkblue);
   flex-grow: 1;
   position: relative;
   display: flex;
@@ -50,7 +49,7 @@
   align-items: center;
 
   .bannerImageText {
-    max-width: 100%; /* Чтобы картинка не вылезала за края, если она большая */
+    max-width: 100%;
     height: auto;
     opacity: 0.9;
     position: absolute;
@@ -175,7 +174,6 @@
     grid-template-rows: auto minmax(300px, auto) minmax(300px, auto);
   }
 
-  /* Общие стили для всех ячеек */
   .cell1,
   .cell2,
   .cell3,
@@ -217,9 +215,6 @@
     }
 
     .teamImage {
-      // width: 100%;
-      // object-fit: cover;
-      // display: block;
       max-width: none;
       width: 100%;
       height: 100%;
@@ -327,7 +322,6 @@
     border: 1px solid var(--accent-text-color);
     overflow: hidden;
     position: relative;
-    // max-height: 400px;
     width: 100%;
 
     @include tablet {
@@ -349,8 +343,6 @@
     display: flex;
     height: 100%;
     width: 100%;
-    // flex-direction: row;
-    // justify-content: space-between;
   }
 
   .delCont {
@@ -358,7 +350,6 @@
     width: 50%;
     text-align: center;
     padding: 3px;
-    // height: 100%;
 
     @include laptop {
       p {

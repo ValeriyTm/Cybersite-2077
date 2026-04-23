@@ -90,43 +90,20 @@ export const useCart = () => {
     onSuccess: (data) => setCart(data),
   });
 
-  //5) Массовое удаление товаров из корзины:
-  // const { mutate: removeSelected } = useMutation({
-  //   mutationFn: async (ids: string[]) => {
-  //     //Отправляем изменения на сервер:
-  //     const { data } = await $api.post("/trading/cart/remove-selected", {
-  //       ids,
-  //     });
-  //     //Сервер возвращает актуальный состав корзины:
-  //     return data;
-  //   },
-  //   onSuccess: (data) => {
-  //     //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
-  //     setCart(data);
-  //     removeSelectedLocally(); //Сбрасываем локальные чекбоксы
-  //   },
-  // });
   const { cartItems } = useTradingStore();
 
   const { mutate: removeSelected } = useMutation({
     mutationFn: async (ids: string[]) => {
-      // // 1. Собираем ID всех товаров, у которых selected: true
-      // const selectedIds = cartItems
-      //   .filter((item) => item.selected)
-      //   .map((item) => item.id);
-
-      // if (selectedIds.length === 0) return;
-
-      // 2. Отправляем запрос на массовое удаление
+      //Отправляем запрос на массовое удаление
       const { data } = await $api.post("/trading/cart/remove-selected", {
         ids,
       });
       return data;
     },
     onSuccess: (data) => {
-      // 3. Синхронизируем корзину с сервером
+      //Синхронизируем корзину с сервером
       setCart(data);
-      // 4. Очищаем локальное состояние чекбоксов
+      //Очищаем локальное состояние чекбоксов
       removeSelectedLocally();
       toast.success("Выбранные товары удалены");
     },

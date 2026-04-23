@@ -24,8 +24,6 @@ import { TwoFactorModal } from "@/features/auth/ui/TwoFactorModal";
 import { DeleteAccountModal } from "@/features/auth/ui/DeleteAccountModal";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Input } from "@/shared/ui/Input";
-//API:
-import { API_URL } from "@/shared/api/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:

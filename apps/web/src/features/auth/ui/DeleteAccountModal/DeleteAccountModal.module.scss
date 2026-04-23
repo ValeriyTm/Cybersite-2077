@@ -55,12 +55,12 @@
 
 .modalActions {
   display: grid;
-  grid-template-columns: 1fr 1fr; //Кнопки в ряд 50/50
+  grid-template-columns: 1fr 1fr;
   gap: 15px;
   margin-top: 2rem;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr; //На мобилках друг под другом
+  @include mobile-s {
+    grid-template-columns: 1fr;
   }
 }
 

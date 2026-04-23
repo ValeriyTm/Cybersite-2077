@@ -1,3 +1,5 @@
+import { useState } from "react";
+//Работа с картой:
 import {
   MapContainer,
   TileLayer,
@@ -8,9 +10,9 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useState } from "react";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+//Стили:
 import styles from './DeliveryMapModal.module.scss';
 
 let DefaultIcon = L.icon({

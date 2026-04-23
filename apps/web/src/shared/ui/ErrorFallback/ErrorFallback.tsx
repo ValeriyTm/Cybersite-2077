@@ -1,6 +1,8 @@
 // //Этот компонент будет отображен, если произойдет ошибка внутри любого компонента внутри компонента App.
 import { useEffect } from "react";
+//Роутинг:
 import { useRouteError, isRouteErrorResponse } from "react-router";
+//Стили:
 import styles from './ErrorFallback.module.scss';
 
 export const ErrorFallback = () => {
@@ -15,10 +17,10 @@ export const ErrorFallback = () => {
   let errorMessage: string;
 
   if (isRouteErrorResponse(error)) {
-    // Ошибки типа 404, 500 и т.д.
+    //Ошибки типа 404, 500 и т.д.
     errorMessage = `${error.status} ${error.statusText}`;
   } else if (error instanceof Error) {
-    // Обычные JS ошибки
+    //Обычные JS ошибки
     errorMessage = error.message;
   } else if (typeof error === "string") {
     errorMessage = error;

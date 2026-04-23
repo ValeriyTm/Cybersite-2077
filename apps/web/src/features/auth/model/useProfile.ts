@@ -1,14 +1,13 @@
-//----------------------Серверное хранилище
-//React Query:
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-//Экземпляр axios:
+//----------------------Хранилище данных о пользователе--------------------//
+//API:
 import { $api } from "@/shared/api/api";
-//Клиентское хранилище:
-import { useAuthStore } from "./useAuthStore";
-//Тип данных (информация о пользователи), приходящих от сервера:
-import { type IUser } from "@repo/types";
+//Состояния:
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTradingStore } from "@/entities/trading/model/tradingStore";
 import { useOrderStore } from "@/entities/ordering/model/orderStore";
+import { useAuthStore } from "./useAuthStore";
+//Тип данных (информация о пользователе), приходящий от сервера:
+import { type IUser } from "@repo/types";
 
 export const useProfile = () => {
   //Извлекаем состояние авторизации и функции управления из Zustand:

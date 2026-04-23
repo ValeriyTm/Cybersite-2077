@@ -77,10 +77,6 @@
     scale: 1.05;
   }
 
-  // img {
-  //   width: 20px;
-  // }
-
   .google {
     color: rgb(58, 58, 173);
     width: 20px;
@@ -201,10 +197,10 @@
 
 .labelWithLink {
   display: flex;
-  justify-content: space-between; //Расталкивает текст и ссылку по краям
-  align-items: center; //Выравнивает их по вертикали
-  width: 100%; //Чтобы контейнер занял всю ширину метки
-  gap: 10px; //Небольшой отступ, если экран будет очень узким
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
 }
 
 .forgotLink {
@@ -275,7 +271,7 @@
 
 .actions {
   display: flex;
-  gap: 12px; //Расстояние между кнопками
+  gap: 12px;
   margin-top: 20px;
 }
 

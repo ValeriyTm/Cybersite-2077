@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+//Стили:
 import styles from "./Button.module.scss";
 
 //Типизируем пропсы:

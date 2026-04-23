@@ -1,13 +1,11 @@
 .wrapper {
   margin-top: 40px;
-  // height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--main-text-color);
   text-align: center;
   position: relative;
-  // overflow: hidden;
 
   @include tablet {
     margin-top: 20px;
@@ -35,7 +33,7 @@
   h2 {
     font-size: 1.5rem;
     text-transform: uppercase;
-    margin-top: 0; /* Обнуляем верхний отступ, так как мы задали его в h1 */
+    margin-top: 0;
     margin-bottom: 15px;
     letter-spacing: 4px;
     color: var(--accent-text-color);
@@ -43,7 +41,6 @@
   p {
     color: var(--auxiliary-text-color);
     margin-bottom: 40px;
-    // max-width: 400px;
   }
 }
 

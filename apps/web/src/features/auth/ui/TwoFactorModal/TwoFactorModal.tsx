@@ -1,5 +1,7 @@
+//Компоненты:
 import { Button } from "@/shared/ui/Button/Button";
-import styles from "./TwoFactorModal.module.scss"; // Или вынеси в TwoFactorModal.module.scss
+//Стили:
+import styles from "./TwoFactorModal.module.scss";
 
 interface TwoFactorModalProps {
   qrCode: string;

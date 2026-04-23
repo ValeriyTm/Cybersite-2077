@@ -1,4 +1,3 @@
-import { useState } from "react";
 //React Hook Form:
 import { useForm, type SubmitHandler } from "react-hook-form";
 //Роутер:
@@ -9,20 +8,20 @@ import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 //Схемы валидации Zod:
 import { LoginSchema, type LoginInput } from "@repo/validation";
-//Экземпляр axios:
-import { $api } from "@/shared/api/api";
-//Клиентское хранилище:
+//Состояния:
+import { useState } from "react";
+import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
+import { useTradingStore } from "@/entities/trading/model/tradingStore";
+import { useOrderStore } from "@/entities/ordering/model/orderStore";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
+//API:
+import { $api } from "@/shared/api/api";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/PasswordField";
 import { Button } from "@/shared/ui/Button";
 import { TwoFactorVerifyForm } from "../TwoFactorVerifyForm";
-//Кастомные хуки:
-import { useAuthSubmit } from "@/features/auth/lib/useAuthSubmit";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
-import { useTradingStore } from "@/entities/trading/model/tradingStore";
-import { useOrderStore } from "@/entities/ordering/model/orderStore";
 
 interface Props {
   onSuccess: () => void;

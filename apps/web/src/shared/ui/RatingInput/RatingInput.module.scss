@@ -5,7 +5,7 @@
   justify-content: flex-end;
 
   .radioInput {
-    //Скрываем инпут, сохраняя доступность:
+    //Скрываем инпут:
     position: absolute;
     width: 1px;
     height: 1px;
@@ -45,7 +45,7 @@
       translate: -50% -50%;
     }
 
-    // Эффект при наведении (на саму звезду и все визуально "левее")
+    // Эффект при наведении (на саму звезду и все визуально "левее")^
     &:hover,
     &:hover ~ .starLabel {
       color: var(--accent-text-color);

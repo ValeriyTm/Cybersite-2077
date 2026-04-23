@@ -7,9 +7,9 @@ interface ReviewProps {
   text: string;
 }
 
-const ReviewCard = ({ name, avatarUrl, rating, text }: ReviewProps) => {
+export const ReviewCard = ({ name, avatarUrl, rating, text }: ReviewProps) => {
   return (
-    <div className={styles.card}>
+    <article className={styles.card}>
       <div className={styles.header}>
         <img src={avatarUrl} alt={name} className={styles.avatar} width='80' height='80' />
         <div>
@@ -27,8 +27,7 @@ const ReviewCard = ({ name, avatarUrl, rating, text }: ReviewProps) => {
         </div>
       </div>
       <p className={styles.text}>{text}</p>
-    </div>
+    </article>
   );
 };
 
-export default ReviewCard;

@@ -1,4 +1,6 @@
+//Иконки:
 import { HiUser } from "react-icons/hi";
+//Стили:
 import styles from "./Avatar.module.scss";
 
 interface AvatarProps {

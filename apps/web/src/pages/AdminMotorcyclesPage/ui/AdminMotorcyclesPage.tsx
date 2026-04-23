@@ -1,13 +1,20 @@
+//Состояния:
 import { useState, useMemo, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useProfile } from "@/features/auth/model/useProfile";
+//API:
 import { $api } from "@/shared/api/api";
+//Формирование таблицы:
 import { DataTable } from "@/shared/ui/DataTable/DataTable";
 import { getMotoColumns } from "../model/columns";
+//Компоненты:
 import { MotoModal } from "./MotoModal";
+//Уведомления:
 import { toast } from "react-hot-toast";
+//Дебанус поиска:
 import { debounce } from "lodash";
+//Стили:
 import styles from "./AdminMotorcyclesPage.module.scss";
-import { useProfile } from "@/features/auth/model/useProfile";
 
 export const AdminMotorcyclesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

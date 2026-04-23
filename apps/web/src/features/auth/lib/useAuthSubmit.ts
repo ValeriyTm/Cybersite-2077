@@ -1,4 +1,4 @@
-//Роутер:
+//Роутинг:
 import { useNavigate } from "react-router";
 //Google reCAPTCHA v3:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";

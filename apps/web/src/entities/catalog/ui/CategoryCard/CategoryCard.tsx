@@ -22,17 +22,19 @@ export const CategoryCard = ({ category }: CategoryCardProps) => {
       className={`${styles.CategoryCard} ${!isReady ? styles.notReady : ""}`}
       onClick={(e) => { !isReady && e.preventDefault() }}
     >
-      <div className={styles.imageWrapper}>
-        <img src={localImage} alt={name} className={styles.image} width='370'
-          height='418' />
-      </div>
+      <article>
+        <div className={styles.imageWrapper}>
+          <img src={localImage} alt={name} className={styles.image} width='370'
+            height='418' />
+        </div>
 
-      <div className={styles.content}>
-        <h2 className={styles.title}>{name}</h2>
-        <p className={styles.status}>
-          {isReady ? `${motorcyclesCount} моделей` : "Раздел в разработке"}
-        </p>
-      </div>
+        <div className={styles.content}>
+          <h2 className={styles.title}>{name}</h2>
+          <p className={styles.status}>
+            {isReady ? `${motorcyclesCount} моделей` : "Раздел в разработке"}
+          </p>
+        </div>
+      </article>
     </Link>
   );
 };

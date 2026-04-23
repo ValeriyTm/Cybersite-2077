@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+//Стили:
 import styles from "./Breadcrumbs.module.scss";
 
 interface BreadcrumbItem {

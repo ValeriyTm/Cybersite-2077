@@ -1,3 +1,4 @@
+//------------------Состояние темы приложения-----------------------//
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -17,7 +18,6 @@ export const useThemeStore = create<ThemeStore>()(
     (set) => ({
       theme: "theme-orange",
       setTheme: (theme) => {
-        // Убираем старые классы и добавляем новый на body
         document.body.classList.remove(
           "theme-orange",
           "theme-blue",

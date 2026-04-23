@@ -63,9 +63,9 @@
     transition: 0.3s;
 
     @include hover {
-      background: #f39c12;
+      background: var(--accent-text-color);
       color: #000;
-      border-color: #f39c12;
+      border-color: var(--accent-text-color);
     }
   }
 }

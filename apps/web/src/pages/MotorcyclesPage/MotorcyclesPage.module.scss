@@ -6,12 +6,12 @@
   margin: 0 auto;
   padding: 40px 20px;
   gap: 40px;
-  box-sizing: border-box; // Чтобы паддинги не раздували ширину
+  box-sizing: border-box; //Чтобы паддинги не раздували ширину
 }
 
 .Sidebar {
   width: 300px;
-  flex-shrink: 0; // Сайдбар не должен сжиматься
+  flex-shrink: 0; //Сайдбар не должен сжиматься
 
   @include laptop-s {
     display: none;
@@ -108,7 +108,7 @@ h5 {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
   width: 100%;
 }
@@ -279,7 +279,6 @@ h5 {
   transition: all 0.3s ease;
 
   &:focus {
-    // border-color: var(--reserve-text-color);
     box-shadow: 0 0 15px var(--accent-text-color);
     outline: none;
   }

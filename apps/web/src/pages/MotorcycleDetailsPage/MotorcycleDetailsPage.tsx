@@ -1,9 +1,5 @@
 //Извлечение параметров из URL и роутинг:
 import { Navigate, useParams } from "react-router";
-import {
-  fetchMotorcycleBySlug,
-  type MotorcycleFull,
-} from "@/entities/catalog";
 //Типы:
 import { type MotorcycleShort } from "@/entities/catalog/model/types";
 //Состояния:
@@ -36,7 +32,6 @@ export const MotorcycleDetailsPage = () => {
   //Извлекаем бренд и модель из адресной строки:
   const { brandSlug, slug } = useParams<{ brandSlug: string; slug: string }>();
 
-  // const [data, setData] = useState<MotorcycleFull | null>(null);
   //Стейт для активного фото:
   const [activeImage, setActiveImage] = useState<string>("");
   //Стейт для рекомендаций:
@@ -49,8 +44,6 @@ export const MotorcycleDetailsPage = () => {
   const { user } = useProfile();
 
   const queryClient = useQueryClient();
-
-
 
   //Подключаем избранное и корзину
   const { toggleFavorite } = useFavorites();
@@ -113,7 +106,7 @@ export const MotorcycleDetailsPage = () => {
     }
   };
   //-----
-  // 1. Подключаем логику избранного
+  //Подключаем логику избранного
 
   //Проверяем, в избранном ли текущий байк (data?.id сработает корректно, когда данные подгрузятся):
   const isFavorite = motorcycle ? favoriteIds.includes(motorcycle.id) : false;
@@ -509,8 +502,6 @@ export const MotorcycleDetailsPage = () => {
           </section>
 
           {/* Таблица характеристик:*/}
-
-          {/* Navbar для табов: */}
           <nav className={styles.tabsNav} role='tablist'>
             <button
               className={activeTab === "specs" ? styles.activeTab : ""}
@@ -569,7 +560,7 @@ export const MotorcycleDetailsPage = () => {
             </button>
           </nav>
 
-          {/* Контент: */}
+
           <section className={styles.tabContent}>
             {/*Контент характеристик:*/}
             {activeTab === "specs" && (

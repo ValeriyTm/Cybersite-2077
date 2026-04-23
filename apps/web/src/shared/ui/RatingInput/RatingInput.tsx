@@ -1,4 +1,5 @@
 import React from "react";
+//Стили:
 import styles from "./RatingInput.module.scss";
 
 interface RatingInputProps {
@@ -10,7 +11,7 @@ interface RatingInputProps {
 export const RatingInput = ({ value, onChange, name = "rating" }: RatingInputProps) => {
   return (
     <div className={styles.ratingGroup}>
-      {[5, 4, 3, 2, 1].map((star) => ( // Массив часто разворачивают для удобства CSS-селекторов
+      {[5, 4, 3, 2, 1].map((star) => (
         <React.Fragment key={star}>
           <input
             type="radio"

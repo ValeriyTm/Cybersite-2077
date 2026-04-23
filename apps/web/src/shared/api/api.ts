@@ -2,7 +2,7 @@
 import axios from "axios";
 //Библиотека axios-auth-refresh для того, чтобы ставить в очередь кучу одновременных refresh-запросов к серверу:
 import createAuthRefreshInterceptor from "axios-auth-refresh";
-//Клиентское хранилище с данными о пользователе и токене:
+//Данные о пользователе и токене:
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 
 //Адрес сервера:

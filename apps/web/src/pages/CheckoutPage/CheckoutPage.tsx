@@ -51,8 +51,7 @@ export const CheckoutPage = () => {
     [cartItems],
   );
 
-
-  //Создаем стейт для хранения ответа от "/api/warehouse/calculate":
+  //Стейт для хранения ответа от "/api/warehouse/calculate":
   const [deliveryInfo, setDeliveryInfo] = useState<{
     warehouse: any;
     cost: number;
@@ -202,8 +201,6 @@ export const CheckoutPage = () => {
     setIsModalOpen(false);
     handleCreateOrder(true); // Вызываем мутацию с флагом shouldPay
   };
-
-
 
   return (
     <>

@@ -1,4 +1,6 @@
+//Работа с формами:
 import { useForm } from "react-hook-form";
+//Стили:
 import styles from "./AdminBrandsPage.module.scss";
 
 export const BrandModal = ({ brand, onClose, onSubmit }: any) => {

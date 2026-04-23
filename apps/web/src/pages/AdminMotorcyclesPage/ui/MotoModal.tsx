@@ -1,4 +1,8 @@
+//Состояния:
+import { useState, useEffect } from "react";
+//Работа с формами:
 import { useForm } from "react-hook-form";
+//Типы:
 import {
   MOTO_CATEGORIES,
   COOLING_TYPES,
@@ -6,9 +10,10 @@ import {
   TRANSMISSION_TYPES,
   STARTER_TYPES,
 } from "../model/constants";
-import styles from "./AdminMotorcyclesPage.module.scss";
-import { useState, useEffect } from "react";
+//API:
 import { $api, API_URL } from "@/shared/api/api";
+//Стили:
+import styles from "./AdminMotorcyclesPage.module.scss";
 
 
 export const MotoModal = ({ moto, onClose, onSubmit }: any) => {

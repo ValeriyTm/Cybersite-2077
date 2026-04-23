@@ -1,4 +1,6 @@
+//Состояния:
 import { useEffect, useState } from "react";
+//Стили:
 import styles from "./CursorTrail.module.scss";
 
 export const CursorTrail = () => {
@@ -8,13 +10,13 @@ export const CursorTrail = () => {
         const handleMouseMove = (e: MouseEvent) => {
             setDots((prev) => {
                 const newDot = { x: e.clientX, y: e.clientY, id: Math.random() };
-                // Ограничиваем количество: берем последние 20 штук + новая
+                //Ограничиваем количество: берем последние 10 штук + новая
                 const limited = prev.length > 10 ? prev.slice(-10) : prev;
                 return [...limited, newDot];
             });
         };
 
-        // Таймер для удаления по времени (каждые 30мс удаляем первую точку)
+        //Таймер для удаления по времени (каждые 50мс удаляем первую точку)
         const timer = setInterval(() => {
             setDots((prev) => (prev.length > 0 ? prev.slice(1) : prev));
         }, 50);
@@ -35,7 +37,7 @@ export const CursorTrail = () => {
                     style={{
                         left: dot.x,
                         top: dot.y,
-                        // Масштаб и прозрачность зависят от позиции в очереди
+                        //Масштаб и прозрачность зависят от позиции в очереди:
                         opacity: index / dots.length,
                         transform: `scale(${index / dots.length})`,
                     }}

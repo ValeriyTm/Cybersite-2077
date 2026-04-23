@@ -10,7 +10,7 @@
     0 0 8px var(--reserve-text-color),
     0 0 15px #0d0208;
 
-  // Плавное изменение при обновлении стейта
+  // Плавное изменение при обновлении стейта:
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, opacity, left, top;
 }

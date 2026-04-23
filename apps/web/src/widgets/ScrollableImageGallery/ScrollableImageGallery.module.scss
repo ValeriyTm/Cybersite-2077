@@ -15,8 +15,7 @@
   overflow-x: auto;
   padding: 0 20px;
 
-  // Плавный скролл и "прилипание"
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x mandatory; //Плавный скролл и "прилипание"
   scrollbar-width: thin; //Тонкий скроллбар для Firefox
 
   //--- Для Firefox ---

@@ -33,7 +33,7 @@
 
 .content {
   display: grid;
-  grid-template-columns: 1fr 400px; //Основная часть и боковая панель
+  grid-template-columns: 1fr 400px;
   gap: 30px;
   align-items: flex-start;
 

@@ -6,7 +6,7 @@ import { useProfile } from "@/features/auth/model/useProfile";
 import { useThemeStore } from "@/entities/session/model/themeStore";
 //Компоненты:
 import { GlobalDiscountBanner } from "@/widgets/GlobalDiscountBanner/ui/GlobalDiscountBanner";
-import ReviewCard from "@/shared/ui/ReviewCard/ReviewCard";
+import { ReviewCard } from "@/shared/ui";
 import { MainCarousel } from "@/widgets/MainCarousel/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery/ScrollableImageGallery";
 //Анимация:
@@ -19,17 +19,13 @@ import { Helmet } from 'react-helmet-async';
 import styles from "./HomePage.module.scss";
 
 export const HomePage = () => {
-  //Из Zustand берем статус авторизации пользователя:
   const isAuth = useAuthStore((state) => state.isAuth);
-
-  //Из React Query берем данные пользователя и состояние загрузки.
-  //Используется isLoading, чтобы не показывать "Вы не авторизованы", пока идет запрос.
   const { user, isLoading } = useProfile();
   const { theme } = useThemeStore();
   const shouldReduceMotion = useReducedMotion();
 
-  ///
-  // 1. Создаем правила анимации
+
+  //Создаем правила анимации
   const wheelVariants = {
     moving: {
       rotate: 360,
@@ -57,7 +53,7 @@ export const HomePage = () => {
       scale: [0.8, 1.2], // Немного увеличивается в размере
       y: -20, // Улетает вверх на 20px
       transition: {
-        duration: 1.5, // Скорость одного "пшика" дыма
+        duration: 1.5, // Скорость одного выхлопа газов
         repeat: Infinity, // Повторять бесконечно
         ease: "easeOut",
       },

@@ -46,13 +46,6 @@ export const OrderCard = ({ order }: { order: any }) => {
     },
   });
 
-  //Обработчик нажатия на кнопку завершения заказа:
-  // const handleConfirm = (id: string) => {
-  //   if (window.confirm("Вы получили товар и хотите завершить заказ?")) {
-  //     //Запускаем отправку данных на сервер:
-  //     completeMutation.mutate(id);
-  //   }
-  // };
 
   //Обработчик нажатия на кнопку получения заказа:
   const handleConfirmDelivery = () => {
@@ -104,7 +97,7 @@ export const OrderCard = ({ order }: { order: any }) => {
   const translatedStatus = orderStatusTranslations[order.status] || "Неизвестный статус";
 
   return (
-    <div className={styles.orderCard}>
+    <article className={styles.orderCard}>
       {/*Хэдер*/}
       <div className={styles.topBar}>
         Заказ №{String(order.orderNumber).padStart(6, "0")} от{" "}
@@ -274,6 +267,6 @@ export const OrderCard = ({ order }: { order: any }) => {
       )}
 
 
-    </div>
+    </article>
   );
 };

@@ -136,6 +136,7 @@ export const CartPage = () => {
         <title>Cybersite-2077 | Моя корзина</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
+
       <main className={styles.CartPage}>
         {/*1) Модалка для удаления одного товара из корзины*/}
         <ConfirmModal

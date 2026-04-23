@@ -1,7 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
-
-// Импорт стилей Swiper
+//Стили Swiper:
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";

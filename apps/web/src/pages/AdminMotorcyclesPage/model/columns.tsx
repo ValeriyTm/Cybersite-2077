@@ -1,7 +1,12 @@
-import { type ColumnDef } from "@tanstack/react-table";
-import { FaEdit, FaTrash, FaBox, FaCopy } from "react-icons/fa";
+//Роутинг:
 import { useNavigate } from 'react-router';
+//Типы:
+import { type ColumnDef } from "@tanstack/react-table";
+//Иконки:
+import { FaEdit, FaTrash, FaBox, FaCopy } from "react-icons/fa";
+//Уведомления:
 import toast from "react-hot-toast";
+//Стили:
 import styles from './columns.module.scss';
 
 

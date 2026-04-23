@@ -1,4 +1,5 @@
 import React from "react";
+//Стили:
 import styles from "./SelectFilter.module.scss";
 
 interface Option {
