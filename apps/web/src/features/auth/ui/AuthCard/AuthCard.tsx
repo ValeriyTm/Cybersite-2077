@@ -1,6 +1,6 @@
 //Состояния:
-import { useAuthStore } from "@/features/auth/model/useAuthStore"; //Клиентское
-import { useProfile } from "@/features/auth/model/useProfile"; //Серверное
+import { useAuthStore } from "@/features/auth/model/useAuthStore";
+import { useProfile } from "@/features/auth/model/useProfile";
 import { useState, useEffect } from "react";
 //Роутинг:
 import { useNavigate, useSearchParams, useLocation } from "react-router";

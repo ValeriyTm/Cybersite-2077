@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useLayoutStore } from '@/entities/session/model/layoutStore';
 import { useThemeStore } from '@/entities/session/model/themeStore';
 import { useProfile } from '@/features/auth/model/useProfile';
-import { useAuthStore } from '@/features/auth/model/useAuthStore'; \
+import { useAuthStore } from '@/features/auth/model/useAuthStore';
 //Стили:
 import styles from './MobileMenu.module.scss';
 

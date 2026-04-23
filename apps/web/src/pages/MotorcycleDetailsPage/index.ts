@@ -1,0 +1,1 @@
+export { MotorcycleDetailsPage } from "./MotorcycleDetailsPage";

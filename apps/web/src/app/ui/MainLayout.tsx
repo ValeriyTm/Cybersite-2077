@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 //Роутер:
 import { Outlet } from "react-router";
 //Состояния:
@@ -6,14 +6,14 @@ import { useProfile } from "@/features/auth/model/useProfile";
 import { useAuthStore } from "@/features/auth/model/useAuthStore";
 import { useFavorites } from "@/entities/trading/api/useFavorites";
 import { useCart } from "@/entities/trading/api/useCart";
-//Компоненты:
-import { Header } from "@/widgets/Header/ui/Header";
-import { Footer } from "@/widgets/Footer/ui/Footer";
-import { PageLoader } from "@/pages/PageLoader";
-import { CursorTrail } from "@/shared/ui/CursorTrail";
 import { useThemeStore } from "@/entities/session/model/themeStore";
-import { MobileMenu } from "@/widgets/MobileMenu/MobileMenu";
-import { BurgerButton } from "@/shared/ui/BurgerButton/BurgerButton";
+//Компоненты:
+import { PageLoader } from "@/pages/PageLoader";
+import { Header } from "@/widgets/Header";
+import { MobileMenu } from "@/widgets/MobileMenu";
+import { Footer } from "@/widgets/Footer";
+import { CursorTrail, BurgerButton } from "@/shared/ui/";
+
 //Уведомления:
 import { Toaster } from "react-hot-toast";
 
@@ -60,7 +60,9 @@ export const MainLayout = () => {
 
       {/*Основной контент страницы:*/}
       <main className="content-wrapper" style={{ minHeight: '60vh' }}>
-        <Outlet />
+        <Suspense fallback={<PageLoader />}>
+          <Outlet />
+        </Suspense>
       </main>
 
       <Footer />
