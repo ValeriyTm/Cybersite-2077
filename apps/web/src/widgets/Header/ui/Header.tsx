@@ -335,12 +335,14 @@ export const Header = () => {
                 onSubmit={handleSearchSubmit}
                 ref={searchRef}
               >
+                <label htmlFor="main-search" className="visually-hidden">Поиск по каталогу</label>
                 <input
                   type="search"
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
                   placeholder="Поиск по каталогу"
+                  id='main-search'
 
                 />
                 <button type="submit">Найти</button>

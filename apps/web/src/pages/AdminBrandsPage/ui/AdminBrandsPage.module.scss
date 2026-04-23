@@ -13,6 +13,7 @@
     border-radius: 10px;
     margin-inline: 10px;
     margin-block: 5px;
+    min-height: 44px;
 
     @include hover {
       box-shadow: 0 0 10px var(--accent-text-color);

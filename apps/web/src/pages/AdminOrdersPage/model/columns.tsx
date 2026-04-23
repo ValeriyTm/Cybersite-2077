@@ -52,6 +52,7 @@ export const getOrderColumns = (
                 const isRestricted = userRole === 'CONTENT_EDITOR' || userRole === 'USER' || userRole === 'MANAGER';
                 return (
                     <label className={styles.selectWrapper}>
+                        <span className='visually-hidden'>Изменение статуса заказа</span>
                         <select
                             value={String(getValue())}
                             className={styles.statusSelect}

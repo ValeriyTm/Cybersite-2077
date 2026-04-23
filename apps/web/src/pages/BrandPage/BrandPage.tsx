@@ -75,10 +75,12 @@ export const BrandPage = () => {
 
           {/*Поле поиска */}
           <div className={styles.searchContainer}>
+            <label htmlFor="brand-search" className="visually-hidden">Поиск бренда</label>
             <input
               type="search"
               placeholder="Найти бренд (напр. Honda)..."
               className={styles.searchInput}
+              id='brand-search'
               defaultValue={search} //Берем из URL при загрузке
               onChange={(e) => debouncedSearch(e.target.value)}
             />

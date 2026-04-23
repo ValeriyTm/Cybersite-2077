@@ -140,14 +140,13 @@ export const SupportPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div className={styles.row}>
             <div className={styles.inputGroup}>
-              <label htmlFor="firstNameInput" className={styles.nameLabel}>
+              <label className={styles.nameLabel}>
+                <span className="visually-hidden">Ваше имя</span>
                 <input
                   {...register("firstName")}
                   placeholder="Имя"
-                  id='firstNameInput'
                   className={`${errors.firstName ? styles.inputError : ""} ${styles.nameInput}`}
                 />
-
               </label>
 
 
@@ -159,11 +158,14 @@ export const SupportPage = () => {
             </div>
 
             <div className={styles.inputGroup}>
-              <input
-                {...register("lastName")}
-                placeholder="Фамилия"
-                className={errors.lastName ? styles.inputError : ""}
-              />
+              <label className={styles.nameLabel}>
+                <span className="visually-hidden">Ваша фамилия</span>
+                <input
+                  {...register("lastName")}
+                  placeholder="Фамилия"
+                  className={errors.lastName ? styles.inputError : ""}
+                />
+              </label>
               {errors.lastName && (
                 <span className={styles.errorMessage}>
                   {errors.lastName.message}
@@ -172,12 +174,15 @@ export const SupportPage = () => {
             </div>
           </div>
           <div className={styles.inputGroup}>
-            <input
-              {...register("email")}
-              placeholder="Email"
-              readOnly={!!user} //Запрещаем менять email, если юзер в системе
-              className={errors.email ? styles.inputError : ""}
-            />
+            <label className={styles.nameLabel}>
+              <span className="visually-hidden">Ваш email</span>
+              <input
+                {...register("email")}
+                placeholder="Email"
+                readOnly={!!user} //Запрещаем менять email, если юзер в системе
+                className={errors.email ? styles.inputError : ""}
+              />
+            </label>
             {errors.email && (
               <span className={styles.errorMessage}>{errors.email.message}</span>
             )}
@@ -186,7 +191,9 @@ export const SupportPage = () => {
           {/*Номер телефона:*/}
           <div className={styles.rowMobile}>
             <div className={styles.label}>
-              <HiOutlinePhone /> Телефон{" "}
+              <label htmlFor="phone">
+                <HiOutlinePhone /> Телефон{" "}
+              </label>
             </div>
             <div className={styles.value}>
               <>
@@ -195,6 +202,7 @@ export const SupportPage = () => {
                   name="phone"
                   render={({ field: { onChange, value } }) => (
                     <IMaskInput
+                      id='phone'
                       mask="+{7} (000) 000-00-00"
                       value={value || ""}
                       onAccept={(val) => onChange(val)} // Передаем значение в форму
@@ -213,7 +221,8 @@ export const SupportPage = () => {
             </div>
           </div>
 
-          <select {...register("category")}>
+          <label htmlFor="reason" className="visually-hidden">Выберите причину обращения</label>
+          <select {...register("category")} id='reason'>
             <option value="">Выберите причину</option>
             <option value="TECHNICAL">Техническая ошибка</option>
             <option value="ORDER">Вопрос по заказу</option>
@@ -226,10 +235,13 @@ export const SupportPage = () => {
               Выберите причину обращения
             </span>
           )}
+
+          <label htmlFor="question" className="visually-hidden">Введите ваш вопрос</label>
           <textarea
             {...register("description")}
             placeholder="Суть вопроса..."
             className={errors.description ? styles.inputError : ""}
+            id="question"
           />
           {errors.description && (
             <span className={styles.errorMessage}>
@@ -306,10 +318,6 @@ export const SupportPage = () => {
 
         <div className={styles.testContainer}>
 
-          {/*Удалить:*/}
-          {/* <label htmlFor="my-input-id" className={styles.testLabel} >
-            <input type="text" className={styles.testInput} id='my-input-id' />
-          </label> */}
 
         </div>
 

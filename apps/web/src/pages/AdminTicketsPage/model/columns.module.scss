@@ -53,6 +53,7 @@
   padding: 4px;
   border-radius: 4px;
   font-size: 0.8rem;
+  min-height: 44px;
 
   &[data-status="OPEN"] {
     color: #e74c3c;
@@ -65,10 +66,35 @@
   }
 }
 
-.replyIcon {
-  cursor: pointer;
-  color: var(--accent-text-color);
-  transition: 0.2s;
+// .replyIcon {
+//   cursor: pointer;
+//   color: var(--accent-text-color);
+//   transition: 0.2s;
+
+// &[data-resolved="true"] {
+//   opacity: 0.3;
+//   pointer-events: none;
+// }
+// }
+
+.replyBtn {
+  border: none !important;
+  height: 44px;
+  width: 44px;
+  margin: 0 !important;
+  border-radius: 50%;
+  color: var(--auxiliary-text-color) !important;
+  background-color: transparent !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  @include hover {
+    color: var(--accent-text-color) !important;
+    border: 0.5px solid var(--accent-text-color) !important;
+    border-radius: 50%;
+  }
 
   &[data-resolved="true"] {
     opacity: 0.3;

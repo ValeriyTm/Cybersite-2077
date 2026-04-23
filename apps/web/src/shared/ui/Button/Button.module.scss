@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   min-width: 120px;
+  max-width: 300px;
   // padding: 0.75rem 1.5rem;
   padding: 4px;
   font-size: 1rem;
@@ -15,6 +16,7 @@
   width: 70%;
   gap: 8px;
   overflow: hidden; //Чтобы лоадер не вылезал за края
+  min-height: 44px;
 
   &:disabled {
     opacity: 0.6;

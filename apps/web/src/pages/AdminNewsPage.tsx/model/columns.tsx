@@ -18,20 +18,24 @@ export const newsColumns = (onEdit: (item: any) => void,
             accessorKey: 'status',
             header: 'Статус',
             cell: ({ row, getValue }) => (
-                <select
-                    value={String(getValue())}
-                    onChange={(e) => onStatusUpdate(row.original._id, e.target.value)}
-                    style={{
-                        color: getValue() === 'PUBLISHED' ? '#2ecc71' : '#f39c12',
-                        background: 'transparent',
-                        /* pxtorem-disable-next-line */
-                        border: '1px solid #333',
-                        borderRadius: '4px'
-                    }}
-                >
-                    <option value="DRAFT">DRAFT</option>
-                    <option value="PUBLISHED">PUBLISHED</option>
-                </select>
+                <>
+                    <label htmlFor="news-status" className='visually-hidden'>Выбор статуса для новости</label>
+                    <select
+                        id='news-status'
+                        value={String(getValue())}
+                        onChange={(e) => onStatusUpdate(row.original._id, e.target.value)}
+                        style={{
+                            color: getValue() === 'PUBLISHED' ? '#2ecc71' : '#f39c12',
+                            background: 'transparent',
+                            /* pxtorem-disable-next-line */
+                            border: '1px solid #333',
+                            borderRadius: '4px'
+                        }}
+                    >
+                        <option value="DRAFT">DRAFT</option>
+                        <option value="PUBLISHED">PUBLISHED</option>
+                    </select>
+                </>
             )
         },
         {

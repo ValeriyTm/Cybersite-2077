@@ -89,7 +89,9 @@ export const AdminMotorcyclesPage = () => {
     <div className={styles.pageWrapper}>
       <header className={styles.header}>
         <h3>Каталог мотоциклов</h3>
+        <label htmlFor="moto-search" className="visually-hidden">Поиск по модели мотоцикла</label>
         <input
+          id='moto-search'
           type="search"
           placeholder="🔍 Быстрый поиск..."
           value={searchValue}

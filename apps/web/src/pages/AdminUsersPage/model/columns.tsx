@@ -28,18 +28,23 @@ export const getUserColumns = (
                 const isSelf = userId === currentAdminId;
 
                 return (
-                    <select
-                        value={String(getValue())}
-                        disabled={isSelf} //Блокируем выбор для себя
-                        style={{ opacity: isSelf ? 0.5 : 1 }}
-                        onChange={(e) => onRoleChange(userId, e.target.value)}
-                    >
-                        <option value="USER">USER</option>
-                        <option value="MANAGER">MANAGER</option>
-                        <option value="CONTENT_EDITOR">CONTENT_EDITOR</option>
-                        <option value="ADMIN">ADMIN</option>
-                        <option value="SUPERADMIN">SUPERADMIN</option>
-                    </select>
+                    <>
+                        <label htmlFor="user-status" className='visually-hidden'>Указание роли пользователю</label>
+                        <select
+                            id='user-status'
+                            value={String(getValue())}
+                            disabled={isSelf} //Блокируем выбор для себя
+                            style={{ opacity: isSelf ? 0.5 : 1 }}
+                            onChange={(e) => onRoleChange(userId, e.target.value)}
+                            className={styles.statusSelect}
+                        >
+                            <option value="USER">USER</option>
+                            <option value="MANAGER">MANAGER</option>
+                            <option value="CONTENT_EDITOR">CONTENT_EDITOR</option>
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="SUPERADMIN">SUPERADMIN</option>
+                        </select>
+                    </>
                 );
             }
         },

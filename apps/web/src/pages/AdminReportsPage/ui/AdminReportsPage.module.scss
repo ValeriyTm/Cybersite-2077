@@ -54,9 +54,9 @@
   button {
     background: transparent;
     /* pxtorem-disable-next-line */
-    border: 1px solid #444;
-    color: #fff;
-    padding: 8px 16px;
+    border: 1px solid var(--auxiliary-text-color);
+    color: var(--main-text-color);
+    padding: 10px 16px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;

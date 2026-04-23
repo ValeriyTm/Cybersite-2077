@@ -36,13 +36,16 @@ export const AdminOrdersPage = () => {
     return (
         <div className={styles.pageWrapper}>
             <header className={styles.filterBar}>
+                <label htmlFor="order-search" className='visually-hidden'>Поиск заказа по email</label>
                 <input
+                    id='order-search'
                     type='search'
                     placeholder="Поиск по Email..."
                     onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <select onChange={(e) => setStatus(e.target.value)} className={styles.statusSelect}>
+                <label htmlFor="order-status" className='visually-hidden'>Фильтрация заказа по статусу</label>
+                <select onChange={(e) => setStatus(e.target.value)} className={styles.statusSelect} id='order-status'>
                     <option value="">Все статусы</option>
                     <option value="PENDING">PENDING</option>
                     <option value="PAID">PAID</option>

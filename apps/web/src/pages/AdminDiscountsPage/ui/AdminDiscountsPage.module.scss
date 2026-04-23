@@ -54,6 +54,10 @@
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
 
+  input {
+    min-height: 44px;
+  }
+
   .sectionHeader {
     display: flex;
     align-items: center;

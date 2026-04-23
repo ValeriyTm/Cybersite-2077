@@ -240,9 +240,11 @@
   /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
-  min-height: 30px;
+  padding-block: 10px;
+  min-height: 44px;
+  padding-block: 10px;
   font-weight: 600;
-  height: 44px;
+
   @include hover {
     background: #e67e22;
   }
@@ -254,10 +256,10 @@
   /* pxtorem-disable-next-line */
   border: 1px solid #333 !important;
   border-radius: 10px;
-  min-height: 25px;
+  min-height: 44px;
+  padding-block: 10px;
   cursor: default !important;
   font-weight: 500;
-  height: 44px;
 
   @include hover {
     background: #222 !important;
@@ -270,9 +272,9 @@
   /* pxtorem-disable-next-line */
   border: 1px solid #e74c3c;
   border-radius: 10px;
-  min-height: 30px;
+  min-height: 44px;
   font-weight: 600;
-  height: 44px;
+  padding-block: 10px;
 
   @include tablet {
     align-self: end;
@@ -289,8 +291,8 @@
   /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
+  padding-block: 10px;
   min-height: 44px;
-  min-height: 30px;
   font-weight: 600;
 
   @include tablet {

@@ -8,6 +8,19 @@
   max-width: 800px !important;
 }
 
+.addBtn {
+  color: var(--accent-text-color);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  background-color: var(--main-bg-color);
+  padding: 10px;
+  border-radius: 10px;
+
+  @include hover {
+    box-shadow: 0 0 10px var(--accent-text-color);
+  }
+}
+
 .mainFields {
   display: flex;
   flex-direction: column;

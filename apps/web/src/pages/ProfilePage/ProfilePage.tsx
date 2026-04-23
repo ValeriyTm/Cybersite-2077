@@ -108,10 +108,12 @@ export const ProfilePage = () => {
               }
             />
             {/*Инпут для загрузки аватара:*/}
+            <label htmlFor="avatar" className='visually-hidden'>Загрузка аватара</label>
             <input
               type="file"
               ref={fileInputRef}
               style={{ display: "none" }}
+              id="avatar"
               onChange={handleAvatarChange}
             />
             {/*Отображаем имя и роль пользователя:*/}
@@ -146,6 +148,8 @@ export const ProfilePage = () => {
                         <Input
                           registration={register("name")}
                           error={errors.name}
+                          label='Поле ввода имени'
+                          visuallyHidden={true}
                         />
                       </>
                     ) : (
@@ -167,8 +171,10 @@ export const ProfilePage = () => {
                 {/*Номер телефона:*/}
                 <div className={styles.row}>
                   <div className={styles.label}>
-                    <HiOutlinePhone /> Телефон{" "}
-                    {isEditing && <span className={styles.requiredStar}>*</span>}
+                    <label htmlFor="phone-input">
+                      <HiOutlinePhone />&nbsp;&nbsp;&nbsp;Телефон{" "}
+                      {isEditing && <span className={styles.requiredStar}>*</span>}
+                    </label>
                   </div>
                   <div className={styles.value}>
                     {isEditing ? (
@@ -178,6 +184,7 @@ export const ProfilePage = () => {
                           name="phone"
                           render={({ field: { onChange, value } }) => (
                             <IMaskInput
+                              id="phone-input"
                               mask="+{7} (000) 000-00-00"
                               value={value || ""}
                               onAccept={(val) => onChange(val)} // Передаем значение в форму
@@ -203,9 +210,11 @@ export const ProfilePage = () => {
                 {/*Поле даты рождения:*/}
                 <div className={styles.row}>
                   <div className={styles.label}>
-                    <HiOutlineCalendar /> День рождения{" "}
-                    {/*Если включен режим редактирования, показываем звездочку, указывая, что поле обязательно к заполнению:*/}
-                    {isEditing && <span className={styles.requiredStar}>*</span>}
+                    <label htmlFor="birthday-input">
+                      <HiOutlineCalendar />&nbsp;&nbsp;&nbsp;День рождения{" "}
+                      {/*Если включен режим редактирования, показываем звездочку, указывая, что поле обязательно к заполнению:*/}
+                      {isEditing && <span className={styles.requiredStar}>*</span>}
+                    </label>
                   </div>
                   <div className={styles.value}>
                     {isEditing ? (
@@ -216,6 +225,7 @@ export const ProfilePage = () => {
                           name="birthday"
                           render={({ field: { onChange, value } }) => (
                             <IMaskInput
+                              id='birthday-input'
                               mask={Date} //Указываем, что работаем с типом данных "Дата"
                               //IMask сам поймет DD.MM.YYYY, если указать блоки:
                               pattern="DD.MM.YYYY"
@@ -287,11 +297,14 @@ export const ProfilePage = () => {
                   </div>
                   <div className={styles.value}>
                     {isEditing ? (
-                      <select {...register("gender")} className={styles.select}>
-                        <option value="">Не указан</option>
-                        <option value="MALE">Мужской</option>
-                        <option value="FEMALE">Женский</option>
-                      </select>
+                      <label>
+                        <span className="visually-hidden">Выбор пола</span>
+                        <select {...register("gender")} className={styles.select}>
+                          <option value="">Не указан</option>
+                          <option value="MALE">Мужской</option>
+                          <option value="FEMALE">Женский</option>
+                        </select>
+                      </label>
                     ) : (
                       <span>
                         {user?.gender === "MALE" && "Мужской"}
@@ -427,7 +440,16 @@ export const ProfilePage = () => {
             <h3>Вопросы поддержке</h3>
             <span>
               <Link to="/support/tickets" style={{ marginRight: "10px" }}>
-                Перейти в мои тикеты
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    setIsEditing(false);
+                    reset();
+                  }}
+                >
+                  Перейти в мои тикеты
+                </Button>
               </Link>
 
             </span>
@@ -446,8 +468,8 @@ export const ProfilePage = () => {
             </Button>
 
           </div>
-        </div>
-      </div>
+        </div >
+      </div >
     </>
 
   );

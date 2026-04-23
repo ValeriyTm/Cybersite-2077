@@ -46,8 +46,11 @@ export const AdminUsersPage = () => {
     return (
         <div className={styles.pageWrapper}>
             <header className={styles.filterBar}>
-                <input type='search' placeholder="Поиск по email..." onChange={(e) => setEmail(e.target.value)} />
-                <select onChange={(e) => setRole(e.target.value)}>
+                <label htmlFor="email-search-for-users" className='visually-hidden'>Поиск пользовател по email</label>
+                <input id='email-search-for-users' type='search' placeholder="Поиск по email..." onChange={(e) => setEmail(e.target.value)} />
+
+                <label htmlFor="user-role" className='visually-hidden'>Выбор роли для пользователя</label>
+                <select onChange={(e) => setRole(e.target.value)} id='user-role'>
                     <option value="">Все роли</option>
                     <option value="USER">USER</option>
                     <option value="MANAGER">MANAGER</option>

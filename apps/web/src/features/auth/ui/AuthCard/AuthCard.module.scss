@@ -230,6 +230,17 @@
   font-size: 14px;
   color: #666;
   cursor: pointer;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 44px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
   input {
     cursor: pointer;

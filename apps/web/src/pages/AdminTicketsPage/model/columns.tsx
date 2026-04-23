@@ -70,17 +70,21 @@ export const getTicketColumns = (
             cell: ({ row, getValue }) => {
                 const status = String(getValue());
                 return (
-                    <select
-                        value={status}
-                        className={styles.statusSelect}
-                        data-status={status}
-                        onChange={(e) => onStatusChange(row.original.id, e.target.value)}
-                    >
-                        <option value="OPEN">Открыт</option>
-                        <option value="IN_PROGRESS">В процессе</option>
-                        <option value="RESOLVED">Решен</option>
-                        <option value="CLOSED">Отменен</option>
-                    </select>
+                    <>
+                        <label htmlFor="ticket-status" className='visually-hidden'>Изменение статуса тикета</label>
+                        <select
+                            id='ticket-status'
+                            value={status}
+                            className={styles.statusSelect}
+                            data-status={status}
+                            onChange={(e) => onStatusChange(row.original.id, e.target.value)}
+                        >
+                            <option value="OPEN">Открыт</option>
+                            <option value="IN_PROGRESS">В процессе</option>
+                            <option value="RESOLVED">Решен</option>
+                            <option value="CLOSED">Отменен</option>
+                        </select>
+                    </>
                 );
             }
         },
@@ -89,14 +93,19 @@ export const getTicketColumns = (
             header: '',
             cell: ({ row }) => (
                 <div className={styles.actionsCell}>
-                    <FaReply
-                        className={styles.replyIcon}
+                    <button
+                        type="button"
+                        cursor="pointer"
+                        title={`Ответить на тикет от ${row.original.email}`}
+                        className={styles.replyBtn}
                         data-resolved={row.original.status === 'RESOLVED'}
                         onClick={(e) => {
                             e.stopPropagation();
                             onReply(row.original);
                         }}
-                    />
+                    >
+                        <FaReply />
+                    </button>
                 </div>
             )
         }

@@ -105,7 +105,9 @@ export const AdminTicketsPage = () => {
 
                 <div className={styles.filters}>
                     {/*Поиск по email:*/}
+                    <label htmlFor="email-search-for-tickets" className='visually-hidden'>Поиск тикета по email</label>
                     <input
+                        id='email-search-for-tickets'
                         type="search"
                         placeholder="🔍 Поиск по email..."
                         className={styles.emailSearch}
@@ -114,7 +116,9 @@ export const AdminTicketsPage = () => {
                     />
 
                     {/*Фильтрация по статусам:*/}
+                    <label htmlFor="tickets-status-select" className='visually-hidden'>Фильтрация тикета по статусу</label>
                     <select
+                        id='tickets-status-select'
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                         className={styles.filterSelect}

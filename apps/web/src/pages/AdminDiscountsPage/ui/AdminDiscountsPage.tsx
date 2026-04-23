@@ -87,7 +87,9 @@ export const AdminDiscountsPage = () => {
                         </div>
 
                         {/*Инпут поиска по Email:*/}
+                        <label htmlFor="email-search-for-discounts" className='visually-hidden'>Поиск скидок по email</label>
                         <input
+                            id='email-search-for-discounts'
                             type="text"
                             placeholder="🔍 Найти по email клиента..."
                             className={styles.miniSearch}

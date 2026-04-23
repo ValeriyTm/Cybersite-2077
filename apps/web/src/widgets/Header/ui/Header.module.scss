@@ -280,7 +280,6 @@
     width: 100%;
     background: var(--auxiliary-bg-color-2);
     /* pxtorem-disable-next-line */
-    /* pxtorem-disable-next-line */
     border: 1px solid #333;
     padding: 12px 20px;
     border-radius: 8px 0 0 8px;
@@ -293,6 +292,10 @@
 
     @include mobile-s {
       height: 35px;
+    }
+
+    @include hover {
+      border-color: var(--main-text-color);
     }
 
     &:focus {

@@ -232,10 +232,12 @@ export const CartPage = () => {
 
               {!appliedPromo ? (
                 <div className={styles.inputGroup}>
+                  <label htmlFor="promo" className="visually-hidden">Ввести промокод</label>
                   <input
                     type="text"
                     placeholder="ВВЕДИТЕ СЛОВО"
                     value={promoCode}
+                    id="promo"
                     onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                   />
                   <button className={styles.applyBtn} onClick={handleApplyPromo}>

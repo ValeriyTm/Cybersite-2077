@@ -400,18 +400,6 @@
     text-align: center;
   }
 
-  a {
-    color: var(--main-text-color);
-    /* pxtorem-disable-next-line */
-    border-bottom: 1px solid var(--main-text-color);
-
-    @include hover {
-      color: var(--accent-text-color);
-      /* pxtorem-disable-next-line */
-      border-bottom: 1px solid var(--accent-text-color);
-    }
-  }
-
   h3 {
     color: var(--accent-text-color);
 
