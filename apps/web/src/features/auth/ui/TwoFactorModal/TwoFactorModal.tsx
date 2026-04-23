@@ -25,7 +25,7 @@ export const TwoFactorModal = ({
         <p>Отсканируйте QR в Aegis или Google Authenticator</p>
 
         <div className={styles.qrWrapper}>
-          <img src={qrCode} alt="QR Code" />
+          <img src={qrCode} alt="QR Code" width='200' height='200' />
         </div>
 
         <input

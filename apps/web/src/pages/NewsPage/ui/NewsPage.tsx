@@ -42,6 +42,8 @@ export const NewsPage = () => {
                                 <img
                                     src={item.mainImage ? `${API_URL}/static/news/${item.mainImage}` : '/no-image.jpg'}
                                     alt={item.title}
+                                    width='345'
+                                    height='220'
                                 />
                                 <div className={styles.categoryBadge}>{item.tags?.[0] || 'Новость'}</div>
                             </div>

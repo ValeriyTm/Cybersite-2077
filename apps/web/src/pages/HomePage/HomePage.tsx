@@ -131,6 +131,8 @@ export const HomePage = () => {
               src="src/shared/assets/images/banners/mainBanner.png"
               alt="Главный баннер страницы"
               className={styles.bannerImage}
+              width='952'
+              height='600'
             />
 
 
@@ -143,6 +145,8 @@ export const HomePage = () => {
               decoding="sync"
               fetchPriority="high"
               alt="Главное лого страницы"
+              width='952'
+              height='306'
             />
             <div className={styles.attentionBlock}>
               <span>Начни покупки с нами</span>
@@ -163,9 +167,11 @@ export const HomePage = () => {
             <p className={styles.textMain}>Наша команда:</p>
             <img
               src="src/shared/assets/images/banners/team.jpg"
-              alt=""
+              alt="Наша команда"
               loading="lazy"
               className={styles.teamImage}
+              width='628'
+              height='274'
             />
           </div>
 
@@ -207,9 +213,11 @@ export const HomePage = () => {
               <div className={styles.delCont}>
                 <img
                   src="src/shared/assets/images/banners/team1.jpg"
-                  alt=""
+                  alt="Подготовка мотоцикла к упаковке"
                   loading="lazy"
                   className={styles.delImage}
+                  width='308'
+                  height='308'
                 />
               </div>
               <div className={styles.delCont}>
@@ -229,9 +237,11 @@ export const HomePage = () => {
               <div className={styles.delCont}>
                 <img
                   src="src/shared/assets/images/banners/motos.jpg"
-                  alt=""
+                  alt="Несколько мотоциклов в ряд"
                   loading="lazy"
                   className={styles.delImage}
+                  width='308'
+                  height='308'
                 />
               </div>
               <div className={styles.delCont}>

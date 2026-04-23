@@ -68,7 +68,9 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
                                 ? `${API_URL}/static/motorcycles/${data.images[0].url}`
                                 : `/images/default-card-icon.jpg`
                         }
-                        alt=""
+                        alt="Motorcycle image"
+                        width='120'
+                        height='80'
                     />
                 </div>
 

@@ -34,7 +34,7 @@ export const ReviewCard = ({
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <div className={styles.user}>
+        <div className={styles.вuser}>
           <img decoding="async"
             src={
               review.userAvatar
@@ -42,6 +42,8 @@ export const ReviewCard = ({
                 : `images/default-avatar.png`
             }
             alt="avatar"
+            width='40'
+            height='40'
             className={styles.avatar}
           />
           <span className={styles.name}>{review.userName}</span>
@@ -73,7 +75,7 @@ export const ReviewCard = ({
             <img
               key={i}
               src={`${API_URL}${img}`}
-              alt="review-pic"
+              alt="review picture"
               onClick={() => setPhotoIndex(i)} //Открываем галерею при клике
               className={styles.clickableImg}
             />

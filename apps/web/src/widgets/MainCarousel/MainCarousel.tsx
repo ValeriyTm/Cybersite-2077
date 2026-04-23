@@ -47,7 +47,7 @@ export const MainCarousel = () => {
         {BANNERS.map((banner) => (
           <SwiperSlide key={banner.id}>
             <div className={styles.slide}>
-              <img src={banner.src} alt={banner.title} />
+              <img src={banner.src} alt={banner.title} width='628' height='646' />
               <div className={styles.overlay}>
                 <h2>{banner.title}</h2>
               </div>

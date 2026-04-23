@@ -54,6 +54,8 @@ export const PaymentModal = ({
             <img
               src={`src/shared/assets/images/logos/yookassa_logo.png`}
               alt="ЮKassa"
+              width='215'
+              height='85'
             />
           </div>
         </div>

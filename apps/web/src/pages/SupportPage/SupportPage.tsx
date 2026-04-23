@@ -278,8 +278,10 @@ export const SupportPage = () => {
                         {file.type.startsWith("image/") ? (
                           <img
                             src={URL.createObjectURL(file)}
-                            alt="preview"
+                            alt="preview for user's image"
                             className={styles.thumb}
+                            width='100'
+                            height='100'
                           />
                         ) : (
                           <div className={styles.fileIcon}>📄</div>

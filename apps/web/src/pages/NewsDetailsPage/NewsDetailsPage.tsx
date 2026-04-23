@@ -46,7 +46,8 @@ export const NewsDetailsPage = () => {
                     <h1 className={styles.title}>{article.title}</h1>
                     {article.mainImage && (
                         <div className={styles.mainImage}>
-                            <img src={`${API_URL}/static/news/${article.mainImage}`} alt={article.title} />
+                            <img src={`${API_URL}/static/news/${article.mainImage}`} alt={article.title} width='598'
+                                height='298' />
                         </div>
                     )}
                 </header>

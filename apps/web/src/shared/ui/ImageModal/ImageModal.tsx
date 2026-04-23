@@ -49,7 +49,7 @@ export const ImageModal = ({
           </button>
         )}
 
-        <img src={images[currentIndex]} alt="fullsize" />
+        <img src={images[currentIndex]} alt="fullsize review image" />
 
         {/* Кнопка Вправо */}
         {images.length > 1 && (

@@ -23,7 +23,8 @@ export const CategoryCard = ({ category }: CategoryCardProps) => {
       onClick={(e) => { !isReady && e.preventDefault() }}
     >
       <div className={styles.imageWrapper}>
-        <img src={localImage} alt={name} className={styles.image} />
+        <img src={localImage} alt={name} className={styles.image} width='370'
+          height='418' />
       </div>
 
       <div className={styles.content}>

@@ -34,7 +34,8 @@ export const BrandCard = ({ brand }: BrandCardProps) => {
         </div>
         {image && (
           <div className={styles.frame}>
-            <img src={imagePath} loading="lazy" decoding="async" alt="brand-logo" className={styles.logo} />
+            <img src={imagePath} loading="lazy" decoding="async" alt={name} className={styles.logo} width='48'
+              height='48' />
           </div>
         )}
       </div>

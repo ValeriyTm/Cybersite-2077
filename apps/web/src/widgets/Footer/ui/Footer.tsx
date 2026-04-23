@@ -40,7 +40,7 @@ export const Footer = () => {
         <div className={styles.top}>
           {/*Логотип*/}
           <Link to="/" className={styles.logolink}>
-            <img src={logoUrl} alt="Main Logo" className={styles.logo} />
+            <img src={logoUrl} alt="Main Logo" className={styles.logo} width='200' height='100' />
           </Link>
 
 

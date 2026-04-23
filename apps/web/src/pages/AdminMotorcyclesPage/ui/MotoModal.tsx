@@ -239,7 +239,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
                     >
                       <img
                         src={`${API_URL}/static/motorcycles/${img.url}`}
-                        alt="moto"
+                        alt="motorcycle image"
                       />
 
                       <div className={styles.imageActions}>

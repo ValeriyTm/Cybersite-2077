@@ -11,7 +11,7 @@ const ReviewCard = ({ name, avatarUrl, rating, text }: ReviewProps) => {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <img src={avatarUrl} alt={name} className={styles.avatar} />
+        <img src={avatarUrl} alt={name} className={styles.avatar} width='80' height='80' />
         <div>
           <h4 className={styles.name}>{name}</h4>
           <div className={styles.stars}>

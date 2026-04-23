@@ -190,7 +190,7 @@ export const Header = () => {
                   <Link to="/support">Поддержка</Link>
                 </li>
                 {canSee && <li>
-                  <Link to="/admin">Управление</Link>
+                  <Link to="/admin">Админ</Link>
                 </li>}
               </ul>
 
@@ -204,13 +204,15 @@ export const Header = () => {
                     src={t.img}
                     alt={t.title}
                     className={theme === t.id ? styles.active : styles.inactive}
+                    width='33'
+                    height='33'
                   />
                 </button>
               ))}
             </div>
 
             <Link to="/" className={styles.logolinkHidden}>
-              <img src={logoUrl} alt="Main Logo" className={styles.logo} width="140" height="45" />
+              <img src={logoUrl} alt="Main Logo" className={styles.logo} width="102" height="33" />
             </Link>
           </div>
         </div>
@@ -224,7 +226,7 @@ export const Header = () => {
 
               {/*2.1)Логотип*/}
               <Link to="/" className={styles.logolink}>
-                <img src={logoUrl} alt="Main Logo" className={styles.logo} />
+                <img src={logoUrl} alt="Main Logo" className={styles.logo} width="245" height="78" />
               </Link>
 
               {/*2.2)Кнопка каталога с Hover-меню*/}
@@ -252,6 +254,8 @@ export const Header = () => {
                           <img
                             src={`src/shared/assets/icons/catalog-icons/moto-icon.png`}
                             alt="motorcycle icon"
+                            width='24'
+                            height='24'
                           />
                           <span>Мототехника</span>
                           <span className={styles.arrow}>›</span>
@@ -261,6 +265,8 @@ export const Header = () => {
                           <img
                             src={`src/shared/assets/icons/catalog-icons/equip-icon.png`}
                             alt="motorcycle equipment icon"
+                            width='24'
+                            height='24'
                           />
                           <span>Экипировка</span>
                           <span className={styles.arrow}>›</span>
@@ -270,6 +276,8 @@ export const Header = () => {
                           <img
                             src={`src/shared/assets/icons/catalog-icons/gear-icon.webp`}
                             alt="gear icon"
+                            width='24'
+                            height='24'
                           />
                           <span>Запчасти</span>
                           <span className={styles.arrow}>›</span>
@@ -292,8 +300,10 @@ export const Header = () => {
                                   <div className={styles.brandIcon}>
                                     <img
                                       src={motoLink}
-                                      alt="moto preview"
+                                      alt={`moto ${brand.name}`}
                                       className={styles.motoIcon}
+                                      width='32'
+                                      height='32'
                                     />
                                   </div>
                                   <span>
@@ -312,7 +322,9 @@ export const Header = () => {
                               <div className={styles.brandIcon}>
                                 <img
                                   src={`src/shared/assets/icons/moto_brands/scooter.png`}
-                                  alt="default icon"
+                                  alt="alternative brand icon"
+                                  width='32'
+                                  height='32'
                                 />
                               </div>
                               <span>Прочие бренды</span>
@@ -364,7 +376,7 @@ export const Header = () => {
                           }}
                         >
                           <div className={styles.suggestImg}>
-                            <img src={linkToImage} alt="" />
+                            <img src={linkToImage} alt="moto image" width='50' height='35' />
                           </div>
                           <div className={styles.suggestInfo}>
                             <span className={styles.suggestModel}>

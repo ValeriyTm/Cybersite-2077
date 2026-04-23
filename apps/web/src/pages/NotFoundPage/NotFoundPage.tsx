@@ -38,8 +38,10 @@ export const NotFoundPage = () => {
 
           <img
             src="src/shared/assets/images/banners/For404.png"
-            alt=""
+            alt="404 Page image"
             className={styles.img404}
+            width='922'
+            height='614'
           />
 
         </div>

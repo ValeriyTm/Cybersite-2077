@@ -99,6 +99,8 @@ export const MotorcycleCard = ({
               target.onerror = null;
               target.src = DEFAULT_IMG;
             }}
+            width='425'
+            height='180'
           />
           {/*Бадж скидки */}
           {hasDiscount && (

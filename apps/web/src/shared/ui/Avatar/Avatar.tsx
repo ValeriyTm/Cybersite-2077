@@ -30,6 +30,8 @@ export const Avatar = ({
         decoding="async"
         referrerPolicy="no-referrer"
         style={{ opacity: isAvatarLoading ? 0.5 : 1 }}
+        width='120'
+        height='120'
       />
 
       {/* Спиннер при загрузке */}

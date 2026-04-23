@@ -47,7 +47,7 @@ export const MobileMenu = () => {
             <div className={styles.menuContent} onClick={(e) => e.stopPropagation()}>
                 {/*Логотип*/}
                 <Link to="/" className={styles.logolink}>
-                    <img src={logoUrl} alt="Main Logo" className={styles.logo} />
+                    <img src={logoUrl} alt="Main Logo" className={styles.logo} width='240' height='77' />
                 </Link>
 
                 <nav className={styles.nav}>

@@ -44,10 +44,12 @@
     background: var(--main-text-color);
     border-radius: 8px;
     cursor: default;
+    width: 215px;
+    height: 85px;
 
     img {
-      height: 40px;
-      display: block;
+      width: 100%;
+      height: auto;
     }
   }
 }

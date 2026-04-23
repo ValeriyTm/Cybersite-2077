@@ -403,6 +403,8 @@ export const MotorcycleDetailsPage = () => {
                   src={activeImage}
                   alt={motorcycle.model}
                   className={styles.mainImg}
+                  width='500'
+                  height='350'
                 />
               </div>
 
@@ -419,6 +421,8 @@ export const MotorcycleDetailsPage = () => {
                         src={`${STATIC_URL}/${img.url}`}
                         alt="thumb"
                         className={styles.thumbImg}
+                        width='76'
+                        height='56'
                       />
                     </div>
                   ))}

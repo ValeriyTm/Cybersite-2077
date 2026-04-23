@@ -121,10 +121,12 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
           Я даю{" "}
           <a href="/terms" target="_blank">
             Согласие на обработку персональных данных
+            <span className="visually-hidden">Откроется в новой вкладке</span>
           </a>{" "}
           и принимаю условия{" "}
           <a href="/privacy" target="_blank">
             Политики конфиденциальности
+            <span className="visually-hidden">Откроется в новой вкладке</span>
           </a>
         </label>
         {errors.acceptTerms && (

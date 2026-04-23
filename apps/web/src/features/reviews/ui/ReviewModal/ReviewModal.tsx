@@ -116,7 +116,7 @@ export const ReviewModal = ({
           <div className={styles.previews}>
             {previews.map((src, i) => (
               <div key={i} className={styles.previewItem}>
-                <img src={src} alt="preview" />
+                <img src={src} alt="preview for user review's image" width='70' height='70' />
                 <button
                   type="button"
                   className={styles.removeIcon}
