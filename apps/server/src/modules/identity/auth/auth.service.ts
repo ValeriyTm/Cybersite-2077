@@ -26,7 +26,7 @@ import { AppError } from "../../../shared/utils/app-error.js";
 import fs from "node:fs/promises"; // Используем промисы для асинхронности
 import path from "node:path";
 //Для генерации событий:
-import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
+import { eventBus, EVENTS } from "../../../shared/lib/eventBus.js";
 
 //Указываем унифицированный объект, который будет возвращаться контроллерам:
 const formatUserResponse = (user: any, rememberMe = false) => ({

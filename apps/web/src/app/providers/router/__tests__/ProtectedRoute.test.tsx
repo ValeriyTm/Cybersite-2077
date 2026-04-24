@@ -12,7 +12,7 @@ expect.extend(matchers);
 //Создаем объект-заглушку, которую будем менять:
 const authState = { isAuth: false };
 
-vi.mock("@/features/auth/model/auth-store", () => ({
+vi.mock("@/features/auth", () => ({
   //Хук будет всегда возвращать актуальное значение из authState:
   useAuthStore: vi.fn(() => authState),
 }));
@@ -63,7 +63,7 @@ describe("ProtectedRoute - Безопасность роутинга", () => {
               </ProtectedRoute>
             }
           />
-          {/* Важно: роут /auth должен быть прямым ребенком Routes */}
+          {/* Роут /auth должен быть прямым ребенком Routes */}
           <Route path="/auth" element={<div>Страница входа</div>} />
         </Routes>
       </MemoryRouter>,

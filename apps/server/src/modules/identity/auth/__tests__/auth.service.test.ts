@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { AuthService } from "../auth.service.js";
+import { authService } from "../auth.service.js";
 import { prisma } from "@repo/database";
 import fs from "fs/promises"; // Используем промисы fs
 
@@ -45,7 +45,7 @@ describe("Удаление аккаунта (deleteAccount)", () => {
     });
 
     //Затем вызываем метод удаления:
-    await AuthService.deleteAccount(userId, password);
+    await authService.deleteAccount(userId, password);
 
     //------------
     //Проверяем, что в БД ушла команда на удаление:

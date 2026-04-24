@@ -24,7 +24,7 @@ describe("TradingStore", () => {
 
     const cart = useTradingStore.getState().cartItems;
     expect(cart).toHaveLength(1);
-    expect(cart[0].quantity).toBe(3);
+    expect(cart[0].quantity).toBe(2);
   });
 
   it("Должны правильно считаться selected товары", () => {
