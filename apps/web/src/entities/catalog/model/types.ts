@@ -41,44 +41,87 @@ export interface MotorcycleFilters {
 }
 
 export interface MotorcycleShort {
-  id: string;
-  model: string;
-  slug: string;
-  brand: { name: string; country: string; slug: string };
+  brand: string;
   brandSlug: string; //Для роутинга
-  year: number;
-  price: number;
-  displacement: number;
-  power: number;
-  rating: number;
-  mainImage: string;
-  totalInStock: number;
+  category: string;
+  createdAt: string;
   discountData: {
-    originalPrice: string;
-    finalPrice: string;
-    discountPercent: string | null;
+    originalPrice: number;
+    finalPrice: number;
+    discountPercent: number | null;
     isPersonal: boolean;
   };
+  displacement: number;
+  id: string;
+  mainImage: string;
+  model: string;
+  power: number;
+  price: number;
+  rating: number;
+  slug: string;
+  totalInStock: number;
+  transmission: "CHAIN";
+  year: number;
 }
 
-export interface MotorcycleFull extends MotorcycleShort {
-  category: string;
-  topSpeed: number;
-  fuelConsumption: number;
-  engineType: string;
-  fuelSystem: string;
-  coolingSystem: string;
-  gearbox: string;
-  transmission: string;
-  frontTyre: string;
-  rearTyre: string;
-  frontBrakes: string;
-  rearBrakes: string;
+export interface MotorcycleFull {
+  brand: {
+    country: string;
+    createdAt: string;
+    id: string;
+    image: string;
+    name: string;
+    slug: string;
+    updatedAt: string;
+  };
+  brandId: string;
   colors: string[];
-  starter: string;
   comments: string;
-  images: { id: string; url: string; isMain: boolean }[];
+  coolingSystem: string;
+  engineType: string;
+  frontBrakes: string;
+  frontTyre: string;
+  fuelConsumption: number;
+  fuelSystem: string | null;
+  gearbox: string;
+  images: string[];
+  rearBrakes: string;
+  rearTyre: string;
+  siteCategory: {
+    createdAt: string;
+    description: string;
+    id: string;
+    imageUrl: string | null;
+    name: string;
+    slug: string;
+    updatedAt: string;
+  };
+  siteCategoryId: string;
+  starter: string;
+  stocks: MotorcycleStocks[];
+  topSpeed: number;
+  updatedAt: string;
+  // images: { id: string; url: string; isMain: boolean }[];
+  brandSlug: string; //Для роутинга
+  category: string;
+  createdAt: string;
+  discountData: {
+    originalPrice: number;
+    finalPrice: number;
+    discountPercent: number | null;
+    isPersonal: boolean;
+  };
+  displacement: number;
+  id: string;
+  mainImage: string;
+  model: string;
+  power: number;
+  price: number;
+  rating: number;
+  slug: string;
   totalInStock: number;
+  transmission: "CHAIN";
+  year: number;
 }
 
 export interface MotorcycleCart extends MotorcycleFull {
@@ -91,4 +134,9 @@ export interface MotorcycleResponse {
   total: number;
   page: number;
   pages: number;
+}
+
+export interface MotorcycleStocks {
+  quantity: number;
+  reserved: number;
 }

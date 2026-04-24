@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { BrowserRouter } from "react-router";
 import { MotorcycleCard } from "./MotorcycleCard";
 
 const meta = {
@@ -16,17 +15,27 @@ export const DefaultGrid: Story = {
   args: {
     viewMode: "grid",
     data: {
-      id: "1",
-      model: "Yamaha YZF-R1",
-      brand: "Yamaha",
-      brandSlug: "yamaha",
-      slug: "yzf-r1-2023",
-      year: 2023,
+      brand: "Kawasaki",
+      brandSlug: "kawasaki",
+      category: "ENDURO_OFFROAD",
+      createdAt: "2026-04-12T13:04:10.917Z",
+      discountData: {
+        discountPercent: 10,
+        finalPrice: 900000,
+        originalPrice: 1000000,
+        isPersonal: false
+      },
       displacement: 998,
+      id: "afa8c1df-2619-4d06-8af7-4d39eb809f78",
+      mainImage: "yamaha-125-mx1974.jpg",
+      model: "Yamaha YZF-R1",
       power: 200,
-      price: 1850000,
+      price: 1000000,
       rating: 4.9,
-      mainImage: "/motorcycles/yamaha-125-mx1974.jpg",
+      slug: "yzf-r1-2023",
+      totalInStock: 4,
+      transmission: 'CHAIN',
+      year: 2023,
     },
   },
 };

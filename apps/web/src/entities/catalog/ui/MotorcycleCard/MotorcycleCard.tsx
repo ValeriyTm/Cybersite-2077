@@ -70,12 +70,12 @@ export const MotorcycleCard = ({
   //Хелпер для извлечения бренда при разном формате входных данных:
   const brandName =
     typeof data.brand === "object"
-      ? data.brand.name // Если прилетел объект (из избранного)
+      ? (data.brand as any).name // Если прилетел объект (из избранного)
       : data.brand; // Если прилетела строка (из общего каталога)
 
   //Скидки и расчёт цены с учетом скидки:
   const currentPrice = data.discountData?.finalPrice ?? data.price; //
-  const hasDiscount = data.discountData.discountPercent > 0; //Есть ли скидка 
+  const hasDiscount = Number(data.discountData.discountPercent) > 0; //Есть ли скидка 
   const isPersonalDiscount = data.discountData.isPersonal; //Персональная ли скидка
 
   return (
