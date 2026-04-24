@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+//Изображения:
+import yookassaLogo from '@/shared/assets/images/logos/yookassa_logo.png'
 //Стили:
 import styles from "./PaymentModal.module.scss";
 
@@ -53,7 +55,7 @@ export const PaymentModal = ({
         <div className={styles.methodList}>
           <div className={`${styles.methodItem} ${styles.active}`}>
             <img
-              src={`src/shared/assets/images/logos/yookassa_logo.png`}
+              src={yookassaLogo}
               alt="ЮKassa"
               width='215'
               height='85'

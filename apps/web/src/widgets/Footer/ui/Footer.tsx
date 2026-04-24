@@ -13,6 +13,11 @@ import {
   FaVk,
   FaYoutube,
 } from "react-icons/fa";
+//Изображения:
+import logoOrange from '@/shared/assets/images/logos/logo-orange.png';
+import logoBlue from '@/shared/assets/images/logos/logo-blue.png';
+import logoRetro from '@/shared/assets/images/logos/logo-retro.png';
+import logoDoom from '@/shared/assets/images/logos/logo-doom.png';
 //Стили:
 import styles from "./Footer.module.scss";
 
@@ -25,17 +30,16 @@ export const Footer = () => {
   let logoUrl;
   switch (theme) {
     case "theme-orange":
-      logoUrl = `src/shared/assets/images/logos/logo-orange.png`;
+      logoUrl = logoOrange;
       break;
     case "theme-blue":
-      logoUrl = `src/shared/assets/images/logos/logo-blue.png`;
+      logoUrl = logoBlue;
       break;
     case "theme-retrowave":
-      logoUrl = `src/shared/assets/images/logos/logo-retro.png`;
+      logoUrl = logoRetro;
       break;
     case "theme-doom":
-      logoUrl = `src/shared/assets/images/logos/logo-doom.png`;
-      break;
+      logoUrl = logoDoom
   }
 
   return (

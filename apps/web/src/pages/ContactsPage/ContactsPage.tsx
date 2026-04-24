@@ -14,6 +14,8 @@ import {
   FaVk,
   FaYoutube,
 } from "react-icons/fa";
+//Изображения:
+import contactsBanner from '@/shared/assets/images/banners/contactsBanner.jpg';
 //Стили:
 import styles from './ContactsPage.module.scss'
 
@@ -40,7 +42,7 @@ export const ContactsPage = () => {
         <div className={styles.visual}>
           <p>Центральный вход со стороны парка:</p>
           <div className={styles.imgContainer}>
-            <img src="src/shared/assets/images/banners/contactsBanner.jpg" alt="Главный вход в салон" width='700' height='480' />
+            <img src={contactsBanner} alt="Главный вход в салон" width='700' height='480' />
           </div>
         </div>
         <div className={styles.contancts}>

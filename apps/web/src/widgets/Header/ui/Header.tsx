@@ -15,6 +15,19 @@ import { $api, API_URL } from "@/shared/api";
 import { Avatar } from "@/shared/ui";
 //Дебаунс для поиска:
 import debounce from "lodash/debounce";
+//Изображения:
+import logoOrange from '@/shared/assets/images/logos/logo-orange.png';
+import logoBlue from '@/shared/assets/images/logos/logo-blue.png';
+import logoRetro from '@/shared/assets/images/logos/logo-retro.png';
+import logoDoom from '@/shared/assets/images/logos/logo-doom.png';
+import themeOrange from '@/shared/assets/images/theme/theme-icon1.png';
+import themeBlue from '@/shared/assets/images/theme/theme-icon4.png';
+import themeRetro from '@/shared/assets/images/theme/theme-icon2.png';
+import themeDoom from '@/shared/assets/images/theme/theme-icon3.png';
+import motoIcon from '@/shared/assets/icons/catalog-icons/moto-icon.png';
+import equipIcon from '@/shared/assets/icons/catalog-icons/equip-icon.png';
+import gearIcon from '@/shared/assets/icons/catalog-icons/gear-icon.webp';
+import scooterIcon from '@/shared/assets/icons/moto_brands/scooter.png';
 //Стили:
 import styles from "./Header.module.scss";
 
@@ -120,29 +133,28 @@ export const Header = () => {
     state.cartItems.reduce((acc, item) => acc + item.quantity, 0),
   );
 
-  //Для иконок смены темы:
+  //---------------Иконки смены темы:-----------//
   const themes = [
-    { id: 'theme-orange', img: 'src/shared/assets/images/theme/theme-icon1.png', title: 'Тема Orange' },
-    { id: 'theme-blue', img: 'src/shared/assets/images/theme/theme-icon4.png', title: 'Тема Blue' },
-    { id: 'theme-retrowave', img: 'src/shared/assets/images/theme/theme-icon2.png', title: 'Тема Retrowave' },
-    { id: 'theme-doom', img: 'src/shared/assets/images/theme/theme-icon3-alternative.png', title: 'Тема DOOM' },
+    { id: 'theme-orange', img: themeOrange, title: 'Тема Orange' },
+    { id: 'theme-blue', img: themeBlue, title: 'Тема Blue' },
+    { id: 'theme-retrowave', img: themeRetro, title: 'Тема Retrowave' },
+    { id: 'theme-doom', img: themeDoom, title: 'Тема DOOM' },
   ];
-  //-----------
+  //-----------Логотип:---------------//
   //Путь к логотипу в зависимости от темы:
   let logoUrl;
   switch (theme) {
     case "theme-orange":
-      logoUrl = `src/shared/assets/images/logos/logo-orange.png`;
+      logoUrl = logoOrange;
       break;
     case "theme-blue":
-      logoUrl = `src/shared/assets/images/logos/logo-blue.png`;
+      logoUrl = logoBlue;
       break;
     case "theme-retrowave":
-      logoUrl = `src/shared/assets/images/logos/logo-retro.png`;
+      logoUrl = logoRetro;
       break;
     case "theme-doom":
-      logoUrl = `src/shared/assets/images/logos/logo-doom.png`;
-      break;
+      logoUrl = logoDoom
   }
   //-----------
   //Включение темы с клавиатуры:
@@ -250,7 +262,7 @@ export const Header = () => {
                           onMouseEnter={() => setActiveMainCat("moto")}
                         >
                           <img
-                            src={`src/shared/assets/icons/catalog-icons/moto-icon.png`}
+                            src={motoIcon}
                             alt="motorcycle icon"
                             width='24'
                             height='24'
@@ -261,7 +273,7 @@ export const Header = () => {
 
                         <div className={`${styles.sideItem} ${styles.disabled}`}>
                           <img
-                            src={`src/shared/assets/icons/catalog-icons/equip-icon.png`}
+                            src={equipIcon}
                             alt="motorcycle equipment icon"
                             width='24'
                             height='24'
@@ -272,7 +284,7 @@ export const Header = () => {
 
                         <div className={`${styles.sideItem} ${styles.disabled}`}>
                           <img
-                            src={`src/shared/assets/icons/catalog-icons/gear-icon.webp`}
+                            src={gearIcon}
                             alt="gear icon"
                             width='24'
                             height='24'
@@ -287,7 +299,10 @@ export const Header = () => {
                         {activeMainCat === "moto" ? (
                           <div className={styles.brandsGrid}>
                             {TOP_BRANDS.map((brand) => {
-                              const motoLink = `src/shared/assets/icons/moto_brands/${brand.slug}.png`;
+                              const motoLink = new URL(
+                                `/src/shared/assets/icons/moto_brands/${brand.slug}.png`,
+                                import.meta.url
+                              ).href;
                               return (
                                 <Link
                                   key={brand.slug}
@@ -319,7 +334,7 @@ export const Header = () => {
                             >
                               <div className={styles.brandIcon}>
                                 <img
-                                  src={`src/shared/assets/icons/moto_brands/scooter.png`}
+                                  src={scooterIcon}
                                   alt="alternative brand icon"
                                   width='32'
                                   height='32'

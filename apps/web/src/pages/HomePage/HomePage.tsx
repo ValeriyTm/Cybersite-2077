@@ -14,6 +14,25 @@ import { motion, useReducedMotion } from "motion/react";
 import { API_URL } from "@/shared/api/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
+//Изображения:
+import logoOrange from '@/shared/assets/images/logos/logo-orange.png';
+import logoBlue from '@/shared/assets/images/logos/logo-blue.png';
+import logoRetro from '@/shared/assets/images/logos/logo-retro.png';
+import logoDoom from '@/shared/assets/images/logos/logo-doom.png';
+import faceIcon1 from '@/shared/assets/images/reviews/face1.jpg';
+import faceIcon2 from '@/shared/assets/images/reviews/face2.jpg';
+import faceIcon3 from '@/shared/assets/images/reviews/face3.jpg';
+import faceIcon4 from '@/shared/assets/images/reviews/face4.jpg';
+import mainBanner from '@/shared/assets/images/banners/mainBanner.png'
+import teamBanner1 from '@/shared/assets/images/banners/team.jpg'
+import teamBanner2 from '@/shared/assets/images/banners/team1.jpg'
+import motosBanner from '@/shared/assets/images/banners/motos.jpg'
+import backWheelImage from '@/shared/assets/images/animation/back-wheel.png';
+import frontWheelImage from '@/shared/assets/images/animation/front-wheel.png';
+import frameMotoImage from '@/shared/assets/images/animation/moto-frame.png';
+import frameImage from '@/shared/assets/images/animation/frame1.png';
+import smokeImage from '@/shared/assets/images/animation/smoke.png';
+import bgGif from '@/shared/assets/images/animation/background.gif'
 //Стили:
 import styles from "./HomePage.module.scss";
 
@@ -63,17 +82,16 @@ export const HomePage = () => {
   let logoUrl;
   switch (theme) {
     case "theme-orange":
-      logoUrl = `src/shared/assets/images/logos/logo-orange.png`;
+      logoUrl = logoOrange;
       break;
     case "theme-blue":
-      logoUrl = `src/shared/assets/images/logos/logo-blue.png`;
+      logoUrl = logoBlue;
       break;
     case "theme-retrowave":
-      logoUrl = `src/shared/assets/images/logos/logo-retro.png`;
+      logoUrl = logoRetro;
       break;
     case "theme-doom":
-      logoUrl = `src/shared/assets/images/logos/logo-doom.png`;
-      break;
+      logoUrl = logoDoom
   }
 
   const catalogLink = isAuth && user ? '/catalog' : '/auth';
@@ -123,7 +141,7 @@ export const HomePage = () => {
             <img
               decoding="sync"
               fetchPriority="high"
-              src="src/shared/assets/images/banners/mainBanner.png"
+              src={mainBanner}
               alt="Главный баннер страницы"
               className={styles.bannerImage}
               width='952'
@@ -161,7 +179,7 @@ export const HomePage = () => {
           <div className={styles.cell1}>
             <p className={styles.textMain}>Наша команда:</p>
             <img
-              src="src/shared/assets/images/banners/team.jpg"
+              src={teamBanner1}
               alt="Наша команда"
               loading="lazy"
               className={styles.teamImage}
@@ -181,17 +199,17 @@ export const HomePage = () => {
                 variants={shouldReduceMotion ? {} : motoVariants}
               >
                 <motion.img
-                  src="src/shared/assets/images/animation/back-wheel.png"
+                  src={backWheelImage}
                   className={styles.backWheel}
                   variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
-                  src="src/shared/assets/images/animation/front-wheel.png"
+                  src={frontWheelImage}
                   className={styles.frontWheel}
                   variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
-                  src="src/shared/assets/images/animation/smoke.png"
+                  src={smokeImage}
                   className={styles.smoke}
                   variants={shouldReduceMotion ? {} : smokeVariants}
                 />
@@ -207,7 +225,7 @@ export const HomePage = () => {
             <div className={styles.cont}>
               <div className={styles.delCont}>
                 <img
-                  src="src/shared/assets/images/banners/team1.jpg"
+                  src={teamBanner2}
                   alt="Подготовка мотоцикла к упаковке"
                   loading="lazy"
                   className={styles.delImage}
@@ -231,7 +249,7 @@ export const HomePage = () => {
             <div className={styles.cont}>
               <div className={styles.delCont}>
                 <img
-                  src="src/shared/assets/images/banners/motos.jpg"
+                  src={motosBanner}
                   alt="Несколько мотоциклов в ряд"
                   loading="lazy"
                   className={styles.delImage}
@@ -264,25 +282,25 @@ export const HomePage = () => {
             <section className={styles.reviewCardSection}>
               <ReviewCard
                 name="Алексей Иванов"
-                avatarUrl="src/shared/assets/images/reviews/face1.jpg"
+                avatarUrl={faceIcon1}
                 rating={5}
                 text="Периодически заказываю тут мотоэкипировку - дешевле на 15-20%, чем в других местах. Шлем, купленный тут 10 лет назад, до сих пор целый 👍"
               />
               <ReviewCard
                 name="Регина Петрова"
-                avatarUrl="src/shared/assets/images/reviews/face2.jpg"
+                avatarUrl={faceIcon2}
                 rating={4}
                 text="Отличный магазин! Доставили быстро, товар качественный. Оранжевая упаковка просто огонь."
               />
               <ReviewCard
                 name="Алихан Ахметов"
-                avatarUrl="src/shared/assets/images/reviews/face3.jpg"
+                avatarUrl={faceIcon3}
                 rating={5}
                 text="Поражает ассортимент мотоциклов! Есть даже модели начала 1900-х годов, вот это да!"
               />
               <ReviewCard
                 name="Степан Васильев"
-                avatarUrl="src/shared/assets/images/reviews/face4.jpg"
+                avatarUrl={faceIcon4}
                 rating={5}
                 text="Постоянно тут покупаем детали для нашего мотосервиса. Радуют длительная гарантия и быстрые ответы поддержки"
               />

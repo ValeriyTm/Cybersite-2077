@@ -20,7 +20,6 @@ import { ReviewCard } from "@/entities/reviews";
 import styles from "./MotorcycleDetailsPage.module.scss";
 
 const STATIC_URL = `${API_URL}/static/motorcycles`;
-const DEFAULT_IMG = '/images/default-card-icon.jpg';
 
 type TabType = "specs" | "description" | "warranty" | "docs" | "reviews";
 
@@ -30,8 +29,6 @@ export const MotorcycleDetailsPage = () => {
 
   //Стейт для активного фото:
   const [activeImage, setActiveImage] = useState<string>("");
-  //Стейт для рекомендаций:
-  const [related, setRelated] = useState<MotorcycleShort[]>([]);
   //Стейт для табов:
   const [activeTab, setActiveTab] = useState<TabType>("specs");
   //Данные о том, авторизован ли юзер:
@@ -43,7 +40,6 @@ export const MotorcycleDetailsPage = () => {
 
   //Подключаем избранное и корзину
   const { toggleFavorite } = useFavorites();
-  const { addToCart } = useCart();
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
 
   //Получаем данные по мотоциклу от сервера:
@@ -63,7 +59,7 @@ export const MotorcycleDetailsPage = () => {
   });
 
   //Загружаем отзывы из MongoDB:
-  const { data: reviews, isLoading: isReviewsLoading } = useQuery({
+  const { data: reviews } = useQuery({
     queryKey: ["reviews", motorcycle?.id], // Ключ обновится, когда придет id
     queryFn: () =>
       $api.get(`/reviews/${motorcycle.id}`).then((res) => res.data),

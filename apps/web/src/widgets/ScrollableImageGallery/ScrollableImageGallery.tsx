@@ -1,5 +1,14 @@
 //Роутинг:
 import { Link } from "react-router";
+//Изображения:
+import bmwLogo from '@/shared/assets/images/scrollGallery/bmw.png';
+import ducatiLogo from '@/shared/assets/images/scrollGallery/ducati.png';
+import harleyLogo from '@/shared/assets/images/scrollGallery/harley.png';
+import hondaLogo from '@/shared/assets/images/scrollGallery/honda.png';
+import kawasakiLogo from '@/shared/assets/images/scrollGallery/kawasaki.png';
+import ktmLogo from '@/shared/assets/images/scrollGallery/ktm.png';
+import suzukiLogo from '@/shared/assets/images/scrollGallery/suzuki.png';
+import yamahaLogo from '@/shared/assets/images/scrollGallery/bmw.png';
 //Стили:
 import styles from "./ScrollableImageGallery.module.scss";
 
@@ -13,49 +22,49 @@ interface ImageItem {
 const myImages: ImageItem[] = [
   {
     id: 1,
-    src: "src/shared/assets/images/scrollGallery/bmw.png",
+    src: bmwLogo,
     slug: "bmw",
     alt: "BMW moto image",
   },
   {
     id: 2,
-    src: "src/shared/assets/images/scrollGallery/ducati.png",
+    src: ducatiLogo,
     slug: "ducati",
     alt: "ducati moto image",
   },
   {
     id: 3,
-    src: "src/shared/assets/images/scrollGallery/harley.png",
+    src: harleyLogo,
     slug: "harley-davidson",
     alt: "harley davidson moto image",
   },
   {
     id: 4,
-    src: "src/shared/assets/images/scrollGallery/honda.png",
+    src: hondaLogo,
     slug: "honda",
     alt: "honda moto image",
   },
   {
     id: 5,
-    src: "src/shared/assets/images/scrollGallery/kawasaki.png",
+    src: kawasakiLogo,
     slug: "kawasaki",
     alt: "kawasaki moto image",
   },
   {
     id: 6,
-    src: "src/shared/assets/images/scrollGallery/ktm.png",
+    src: ktmLogo,
     slug: "ktm",
     alt: "ktm moto image",
   },
   {
     id: 7,
-    src: "src/shared/assets/images/scrollGallery/suzuki.png",
+    src: suzukiLogo,
     slug: "suzuki",
     alt: "suzuki moto image",
   },
   {
     id: 8,
-    src: "src/shared/assets/images/scrollGallery/yamaha.png",
+    src: yamahaLogo,
     slug: "yamaha",
     alt: "yamaha moto image",
   },

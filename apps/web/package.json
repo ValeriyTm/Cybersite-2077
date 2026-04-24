@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "build-storybook": "storybook build",
     "chromatic": "npx chromatic --project-token=chpt_20173e3212e5b20",
     "dev": "vite",

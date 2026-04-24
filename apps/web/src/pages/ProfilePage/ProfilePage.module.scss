@@ -187,7 +187,7 @@
     }
   }
   .readonly {
-    color: var(-auxiliary-text-color);
+    color: var(--auxiliary-text-color);
     cursor: not-allowed;
   }
 }

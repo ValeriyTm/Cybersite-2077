@@ -2,6 +2,8 @@
 import { useNavigate } from "react-router";
 //SEO:
 import { Helmet } from 'react-helmet-async';
+//Изображения:
+import notFoundBanner from '@/shared/assets/images/banners/For404.png';
 //Стили:
 import styles from "./NotFoundPage.module.scss";
 
@@ -37,7 +39,7 @@ export const NotFoundPage = () => {
           </div>
 
           <img
-            src="src/shared/assets/images/banners/For404.png"
+            src={notFoundBanner}
             alt="404 Page image"
             className={styles.img404}
             width='922'

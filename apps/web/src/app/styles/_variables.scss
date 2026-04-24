@@ -4,9 +4,7 @@
 :root {
   //Шрифты отдельно:
   --font-family-base: "Tektur", sans-serif;
-  --font-family-accent-eng-title: "BlackOpsOne", sans-serif;
   --font-family-doom: "Jura", sans-serif; //DOOM
-  --font-family-doom-eng: "StalinistOne", sans-serif; //DOOM
   --font-family-retro: "KellySlab", sans-serif; //Retrowave
 
   //Цвета:
@@ -34,7 +32,7 @@
     --banner-gradient: linear-gradient(90deg, #f5220b 0%, #cf7703 100%);
     --button-gradient: linear-gradient(90deg, #df6a0b 0%, #cfc31e 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(245, 94, 7));
-    --cursor-path: url("src/shared/assets/icons/cursors/cursor-orange.png");
+    --cursor-path: url("@/shared/assets/icons/cursors/cursor-orange.png");
   }
 
   body.theme-blue {
@@ -50,7 +48,7 @@
     --banner-gradient: linear-gradient(90deg, #5177e0 0%, #8c54f3 100%);
     --button-gradient: linear-gradient(90deg, #4f6ab6 0%, #212eaa 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(54, 96, 235));
-    --cursor-path: url("src/shared/assets/icons/cursors/cursor-blue.png");
+    --cursor-path: url("@/shared/assets/icons/cursors/cursor-blue.png");
   }
 
   body.theme-retrowave {
@@ -74,7 +72,7 @@
       rgb(70, 29, 146),
       rgb(192, 34, 82)
     );
-    --cursor-path: url("src/shared/assets/icons/cursors/cursor-retro.png");
+    --cursor-path: url("@/shared/assets/icons/cursors/cursor-retro.png");
   }
 
   body.theme-doom {
@@ -90,7 +88,7 @@
     --banner-gradient: linear-gradient(90deg, #ff3c3c 0%, #b60b0b 100%);
     --button-gradient: linear-gradient(90deg, #ac6a07 0%, #d31717 100%);
     --basic-gradient: linear-gradient(to bottom right, black, rgb(189, 7, 7));
-    --cursor-path: url("src/shared/assets/icons/cursors/cursor-doom.png");
+    --cursor-path: url("@/shared/assets/icons/cursors/cursor-doom.png");
   }
 
   //----------------------Контейнер:-----------------------------//
