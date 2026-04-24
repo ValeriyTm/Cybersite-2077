@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-// import { AuthService } from '../auth.service.js';
 import { sessionService } from "../session.service.js";
 import { prisma } from "@repo/database";
 

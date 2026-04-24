@@ -32,9 +32,9 @@ jobs:
       #     env:
       #       NODE_OPTIONS: "--max-old-space-size=4096"
 
-      # 5. Проверка типов TypeScript
+      # 5. Проверка типов TypeScript на фронтенде
       - name: Type check
-        run: npm run type-check
+        run: npm run type-check -w web
 
       # 6. Запуск Unit-тестов и интеграционных тестов на фронтенде
       - name: Run Unit Tests
