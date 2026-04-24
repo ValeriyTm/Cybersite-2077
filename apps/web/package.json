@@ -14,7 +14,8 @@
     "lint:style:fix": "stylelint \"src/**/*.scss\" --fix",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "test": "vitest"
+    "test": "vitest",
+    "type-check": "tsc -b"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

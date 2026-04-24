@@ -2,7 +2,6 @@
 ![Логотип приложения](/assets/MainLogo.png)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![GitHub release](https://img.shields.io/github/v/release/ValeriyTm/Cybersite-2077)
-<!-- ![Lines](https://img.shields.io/badge/lines-число-blue) -->
 
 #### Frontend
 ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white) 
