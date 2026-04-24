@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 //Типы:
 import { type ColumnDef } from "@tanstack/react-table";
 //Иконки:
-import { FaEdit, FaTrash, FaBox, FaCopy } from "react-icons/fa";
+import { FaEdit, FaTrash, FaBox } from "react-icons/fa";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
@@ -27,6 +27,7 @@ export const getMotoColumns = (
             <button
               type="button"
               title={`Скопировать id товара для модели ${row.original.model}`}
+              //@ts-ignore:
               cursor="pointer"
               className={styles.copyBtn}
               onClick={(e) => {
@@ -69,6 +70,7 @@ export const getMotoColumns = (
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
             <button
               type="button"
+              //@ts-ignore:
               cursor="pointer"
               title={`Редактировать модель ${row.original.model}`}
               className={`${styles.editBtn}`}
@@ -80,6 +82,7 @@ export const getMotoColumns = (
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
             <button
               type="button"
+              //@ts-ignore:
               cursor="pointer"
               title={`Удалить модель ${row.original.model}`}
               className={`${styles.deleteBtn}`}
@@ -100,6 +103,7 @@ export const getMotoColumns = (
             {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
               <button
                 type="button"
+                //@ts-ignore:
                 cursor="pointer"
                 title={`Редактировать остатки для модели ${row.original.model}`}
                 className={`${styles.stockBtn}`}

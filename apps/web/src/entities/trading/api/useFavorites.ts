@@ -1,11 +1,10 @@
 //Состояния:
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTradingStore } from "@/entities/trading/model";
 //API:
 import { $api } from "@/shared/api";
 
 export const useFavorites = () => {
-  const queryClient = useQueryClient();
   const { setFavorites, toggleFavoriteLocally } = useTradingStore();
 
   //1) Запрос списка ID избранных мотоциклов при загрузке:

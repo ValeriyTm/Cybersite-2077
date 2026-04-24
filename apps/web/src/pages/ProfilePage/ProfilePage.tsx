@@ -57,7 +57,7 @@ export const ProfilePage = () => {
     handleSubmit,
     control,
     reset,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isSubmitting },
   } = profileForm;
 
   //Извлекаем методы формы смены пароля (используем алиасы, чтобы не было конфликта имен):
@@ -217,6 +217,7 @@ export const ProfilePage = () => {
                           control={control}
                           name="birthday"
                           render={({ field: { onChange, value } }) => (
+                            //@ts-ignore
                             <IMaskInput
                               id='birthday-input'
                               mask={Date} //Указываем, что работаем с типом данных "Дата"

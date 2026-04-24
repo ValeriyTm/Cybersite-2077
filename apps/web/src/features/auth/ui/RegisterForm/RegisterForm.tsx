@@ -12,13 +12,10 @@ import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
 import { Button, Input, PasswordField } from "@/shared/ui";
 //Состояния:
 import { useAuthSubmit } from "@/features/auth";
-import { useState } from "react";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
 
 export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  //Состояние для пароля (показывать его или нет):
-  const [showPassword, setShowPassword] = useState(false);
 
   //Кастомный хук:
   const { handleAuthSubmit } = useAuthSubmit<RegisterFormInput>();

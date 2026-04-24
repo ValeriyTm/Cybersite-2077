@@ -40,6 +40,7 @@ export const AdminBrandsPage = () => {
   const saveMutation = useMutation({
     mutationFn: (formData: any) =>
       editingBrand
+        //@ts-ignore:
         ? $api.patch(`/admin/brands/${editingBrand.id}`, formData)
         : $api.post("/admin/brands", formData),
     onSuccess: () => {

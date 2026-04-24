@@ -15,6 +15,13 @@ interface CartItem {
   quantity: number;
   selected: boolean;
   totalInStock: number;
+  discountData?: {
+    originalPrice: number;
+    finalPrice: number;
+    isPersonal: boolean;
+    discountPercent: number | null;
+  };
+  year?: number;
 }
 
 interface TradingState {
@@ -29,7 +36,7 @@ interface TradingState {
   isFavorite: (motorcycleId: string) => boolean; //Проверка: добавлена ли в избранное конкретная модель
 
   //Логика корзины:
-  addToCartLocally: (id: string, quantity?: number) => void; //Локальное добавление в корзину (для Optimistic UI)
+  addToCartLocally: (item: CartItem) => void; //Локальное добавление в корзину (для Optimistic UI)
   removeFromCartLocally: (id: string) => void; //Локальное удаление из корзины товара
 
   //Логика работы с чекбоксами в корзине:
@@ -40,6 +47,8 @@ interface TradingState {
   fetchCart: () => void;
 
   fetchFavoritesIds: () => void;
+
+  favoritesCount: number;
 
   clearTrading: () => void; //Очистка при выходе из аккаунта
 }
@@ -83,25 +92,25 @@ export const useTradingStore = create<TradingState>()(
     //С помощью метода get() мы достаем текущий массив favoriteIds из хранилища и проверяем, входит ли id текущего байка в массив избранных id
 
     //Добавление в корзину:
-    addToCartLocally: (id, quantity = 1) => {
+    addToCartLocally: (item: CartItem) => {
       //Достаем из хранилища текущий массив объектов корзины cartItems:
       const { cartItems } = get();
       //Ищем в массиве объект, у которого id совпадает с переданным. Если нашли — он сохранится в existing:
-      const existing = cartItems.find((item) => item.id === id);
+      const existing = cartItems.find((i) => i.id === item.id);
 
       //Если товар уже есть в корзине, выполняем блок обновления:
       if (existing) {
         set({
-          cartItems: cartItems.map((item) =>
+          cartItems: cartItems.map((i) =>
             //Если это тот самый товар, мы создаем его копию и прибавляем новое количество к текущему. Остальные товары оставляем без изменений:
-            item.id === id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item,
+            i.id === item.id
+              ? { ...i, quantity: i.quantity + item.quantity }
+              : i,
           ),
         });
       } else {
         //Если товара в корзине ещё нет, то создаем новый массив, куда копируем старые элементы и добавляем новый объект с id и quantity:
-        set({ cartItems: [...cartItems, { id, quantity }] });
+        set({ cartItems: [...cartItems, item] });
       }
     },
 

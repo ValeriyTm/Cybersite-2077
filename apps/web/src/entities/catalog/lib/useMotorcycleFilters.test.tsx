@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { MemoryRouter, useSearchParams } from "react-router";
+import { MemoryRouter } from "react-router";
 import { useMotorcycleFilters } from "./useMotorcycleFilters";
 import { describe, it, expect } from "vitest";
 

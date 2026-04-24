@@ -132,8 +132,8 @@ export const MotorcyclesPage = () => {
           {/*Фильтр по цене:*/}
           <RangeFilter
             label="Цена (₽)"
-            min={filters.minPrice}
-            max={filters.maxPrice}
+            min={Number(filters.minPrice)}
+            max={Number(filters.maxPrice)}
             onChange={(min, max) =>
               updateFilters({ minPrice: min, maxPrice: max })
             }
@@ -142,8 +142,8 @@ export const MotorcyclesPage = () => {
           {/*Фильтр по объему двигателя:*/}
           <RangeFilter
             label="Объем (см³)"
-            min={filters.minDisplacement}
-            max={filters.maxDisplacement}
+            min={Number(filters.minDisplacement)}
+            max={Number(filters.maxDisplacement)}
             onChange={(min, max) =>
               updateFilters({ minDisplacement: min, maxDisplacement: max })
             }
@@ -152,16 +152,16 @@ export const MotorcyclesPage = () => {
           {/*Фильтр по году выпуска:*/}
           <RangeFilter
             label="Год выпуска"
-            min={filters.minYear}
-            max={filters.maxYear}
+            min={Number(filters.minYear)}
+            max={Number(filters.maxYear)}
             onChange={(min, max) => updateFilters({ minYear: min, maxYear: max })}
           />
 
           {/*Фильтр по мощности:*/}
           <RangeFilter
             label="Мощность (л.с.)"
-            min={filters.minPower}
-            max={filters.maxPower}
+            min={Number(filters.minPower)}
+            max={Number(filters.maxPower)}
             onChange={(min, max) =>
               updateFilters({ minPower: min, maxPower: max })
             }
@@ -199,6 +199,7 @@ export const MotorcyclesPage = () => {
         {/*2) Карточки и сортировка:*/}
         <main className={styles.Content}>
 
+          {/*@ts-ignore: */}
           <Breadcrumbs items={breadcrumbs} />
 
           <h1 className={styles.title}>
@@ -289,7 +290,7 @@ export const MotorcyclesPage = () => {
             <div className={styles.loadingOverlay}>Обновление...</div>
           )}
           <div className={viewMode === "grid" ? styles.grid : styles.list}>
-            {data?.items?.map((moto) => {
+            {data?.items?.map((moto: any) => {
               return (
                 <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />
               );

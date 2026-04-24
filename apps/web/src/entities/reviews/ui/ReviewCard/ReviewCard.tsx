@@ -85,7 +85,7 @@ export const ReviewCard = ({
       {/*Компонент галереи: */}
       {photoIndex !== null && (
         <ImageModal
-          images={review.images.map((img) => `${API_URL}${img}`)}
+          images={review.images.map((img: any) => `${API_URL}${img}`)}
           startIndex={photoIndex}
           onClose={() => setPhotoIndex(null)}
         />

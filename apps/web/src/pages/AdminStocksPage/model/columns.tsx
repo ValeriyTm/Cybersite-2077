@@ -45,6 +45,7 @@ export const stockColumns = (onEdit: (stock: any) => void): ColumnDef<any>[] => 
     cell: ({ row }) => (
       <button
         type="button"
+        //@ts-ignore:
         cursor="pointer"
         title={`Редактировать остатки для ${row.original.motorcycle?.model}`}
         className={`${styles.editBtn}`}

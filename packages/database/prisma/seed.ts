@@ -185,8 +185,8 @@ async function main() {
       const processedColors = rawColors
         ? rawColors
             .split(";") // Режем по точке с запятой
-            .map((item) => item.trim()) // Убираем лишние пробелы по краям
-            .filter((item) => item.length > 0) // Удаляем пустые элементы, если они есть
+            .map((item: any) => item.trim()) // Убираем лишние пробелы по краям
+            .filter((item: any) => item.length > 0) // Удаляем пустые элементы, если они есть
         : [];
 
       console.log(processedColors);
@@ -230,7 +230,7 @@ async function main() {
         },
       });
       count++;
-    } catch (e) {
+    } catch (e: any) {
       //Пропускаем дубликаты slug, если они образуются:
       console.error(`⚠️Пропущен ${row.Model}: ${e.message}`);
     }

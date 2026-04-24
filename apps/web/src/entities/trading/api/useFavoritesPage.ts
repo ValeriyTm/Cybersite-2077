@@ -9,6 +9,7 @@ export const useFavoritesPage = () => {
 
   return useInfiniteQuery({
     queryKey: ["favorites-full", favoriteIds],
+    initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
       //Отправляем массив ID мотоциклов из избранного на сервер, чтобы получить все данные о мотоциклах в избранном:
       const { data } = await $api.post("/trading/favorites/details", {

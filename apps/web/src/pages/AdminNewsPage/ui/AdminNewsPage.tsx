@@ -18,14 +18,16 @@ export const AdminNewsPage = () => {
   const [editingNews, setEditingNews] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: news, isLoading } = useQuery({
+  const { data: news } = useQuery({
     queryKey: ['admin-news'],
     queryFn: () => $api.get('/admin/news').then(res => res.data)
   });
 
   const saveMutation = useMutation({
     mutationFn: (formData: FormData) =>
+
       editingNews
+        //@ts-ignore:
         ? $api.patch(`/admin/news/${editingNews._id}`, formData)
         : $api.post('/admin/news', formData),
     onSuccess: () => {

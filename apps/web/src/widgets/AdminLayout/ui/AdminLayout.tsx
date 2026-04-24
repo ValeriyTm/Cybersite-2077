@@ -88,7 +88,7 @@ export const AdminLayout = () => {
     .map(group => ({
       ...group,
       //Оставляем только те ссылки, где роль совпадает или доступ открыт для всех:
-      items: group.items.filter(item => !item.roles || item.roles.includes(userRole))
+      items: group.items.filter(item => !item.roles || item.roles.includes(userRole as string))
     }))
     //Убираем пустые группы, в которых не осталось доступных ссылок:
     .filter(group => group.items.length > 0);

@@ -47,7 +47,7 @@ export const AdminMotorcyclesPage = () => {
     updateSearch(value); //Для API (сработает через 500мс)
   };
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["admin-motorcycles", page, debouncedSearch],
     queryFn: () =>
       $api
@@ -66,6 +66,7 @@ export const AdminMotorcyclesPage = () => {
   const saveMutation = useMutation({
     mutationFn: (formData) =>
       editingMoto
+        //@ts-ignore:
         ? $api.patch(`/admin/motorcycles/${editingMoto.id}`, formData)
         : $api.post("/admin/motorcycles", formData),
     onSuccess: () => {

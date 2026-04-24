@@ -12,6 +12,7 @@ export const getOrderColumns = (
       accessorKey: 'orderNumber',
       header: '№ Заказа',
       meta: { className: styles.hideOnMobile },
+      //@ts-ignore: 
       cell: (info) => <span style={{ fontWeight: 'bold' }}>#{info.getValue()}</span>,
     },
     {

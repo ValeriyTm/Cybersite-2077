@@ -4,7 +4,7 @@
 
 //-------------Интеграционный тест для имитирования поведения цепочки «Ввод данных -> Капча -> Запрос к серверу -> Уведомление -> Редирект».
 
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { useAuthSubmit } from "../useAuthSubmit";
 import { toast } from "react-hot-toast";

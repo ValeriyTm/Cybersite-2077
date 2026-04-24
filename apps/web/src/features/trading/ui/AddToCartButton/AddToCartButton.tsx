@@ -4,8 +4,8 @@ import { useTradingStore, useCart } from "@/entities/trading/";
 import styles from "./AddToCartButton.module.scss";
 
 export interface AddToCartButtonProps {
-  motorcycle: any;
-  variant?: "card" | "favorite";
+  variant?: "card" | "details";
+  data: any;
 }
 
 export const AddToCartButton = ({

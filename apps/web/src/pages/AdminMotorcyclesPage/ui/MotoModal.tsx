@@ -17,7 +17,7 @@ import styles from "./AdminMotorcyclesPage.module.scss";
 
 
 export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
-  const { register, handleSubmit, setValue, watch } = useForm({
+  const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
 
       ...moto,

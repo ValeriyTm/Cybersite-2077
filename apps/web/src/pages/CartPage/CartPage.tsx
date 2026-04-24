@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import { ConfirmModal } from "@/shared/ui";
 import { CartItem } from "@/entities/trading";
 //API:
-import { $api, API_URL } from "@/shared/api";
+import { $api } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Уведомления:
@@ -79,7 +79,7 @@ export const CartPage = () => {
   };
   //-----------------------------------Обработчики----------------------------//
   //
-  const handleDeletingId = (data) => {
+  const handleDeletingId = (data: any) => {
     setDeletingId(data);
   }
 
@@ -180,6 +180,7 @@ export const CartPage = () => {
             <div className={styles.list}>
               {cartItems.map((item) => {
                 return (
+                  //@ts-ignore:
                   <CartItem key={item.id} data={item} handleDeletingId={handleDeletingId} />
                 )
               })}

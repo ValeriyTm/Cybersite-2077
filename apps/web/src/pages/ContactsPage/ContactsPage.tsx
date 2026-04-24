@@ -99,8 +99,6 @@ export const ContactsPage = () => {
               </li>
             </ul>
           </div>
-
-
         </div>
       </div>
     </>

@@ -1,5 +1,5 @@
 //Состояния:
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTradingStore } from "@/entities/trading/model";
 //API:
 import { $api } from "@/shared/api";
@@ -7,8 +7,6 @@ import { $api } from "@/shared/api";
 import toast from "react-hot-toast";
 
 export const useCart = () => {
-  const queryClient = useQueryClient();
-
   //Достаем методы из Zustand. Это позволяет нам мгновенно менять UI, не дожидаясь ответа от сервера (концепция Optimistic UI):
   const {
     setCart,
@@ -42,8 +40,10 @@ export const useCart = () => {
       brandSlug: string;
       slug: string;
       year: number;
+      selected: boolean;
+      totalInStock: number;
     }) => {
-      addToCartLocally(item.id, item.quantity); //Сначала добавляем данные в локальную корзину (Optimistic UI)
+      addToCartLocally(item); //Сначала добавляем данные в локальную корзину (Optimistic UI)
 
       //Отправляем на сервер объект item (со всеми данными о мотоцикле) в Body, чтобы бэкенд мог сохранить данные в Redis (там корзина):
       const { data } = await $api.post("/trading/cart/add", {
@@ -89,8 +89,6 @@ export const useCart = () => {
     },
     onSuccess: (data) => setCart(data),
   });
-
-  const { cartItems } = useTradingStore();
 
   const { mutate: removeSelected } = useMutation({
     mutationFn: async (ids: string[]) => {

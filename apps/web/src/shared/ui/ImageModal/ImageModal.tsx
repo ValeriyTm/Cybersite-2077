@@ -4,8 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import styles from "./ImageModal.module.scss";
 
 interface ImageModalProps {
-  src: string;
+  src?: string;
   onClose: () => void;
+  startIndex: number;
+  images: string[];
 }
 
 export const ImageModal = ({

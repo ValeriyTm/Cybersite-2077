@@ -12,7 +12,7 @@ import { Helmet } from 'react-helmet-async';
 import styles from "./FavotiresPage.module.scss";
 
 export const FavoritesPage = () => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useFavoritesPage();
   //Массив id избранных моделей:
   const { favoriteIds } = useTradingStore();
@@ -58,7 +58,7 @@ export const FavoritesPage = () => {
         <div className={styles.list}>
           {data?.pages.map((group, i) => (
             <React.Fragment key={i}>
-              {group.items.map((moto) => (
+              {group.items.map((moto: any) => (
                 <MotorcycleCard key={moto.id} data={moto} viewMode="list" />
               ))}
             </React.Fragment>

@@ -3,7 +3,7 @@ import { type ColumnDef } from '@tanstack/react-table';
 //Работа с датами:
 import { format } from 'date-fns';
 //Иконки:
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 //Стили:
 import styles from './columns.module.scss';
 
@@ -55,6 +55,7 @@ export const newsColumns = (onEdit: (item: any) => void,
         <div style={{ display: 'flex', gap: '15px', color: '#f39c12' }}>
           <button
             type="button"
+            //@ts-ignore:
             cursor="pointer"
             title={`Редактировать новость ${row.original.title}`}
             className={`${styles.editBtn}`}
@@ -65,6 +66,7 @@ export const newsColumns = (onEdit: (item: any) => void,
 
           <button
             type="button"
+            //@ts-ignore:
             cursor="pointer"
             title={`Удалить новость ${row.original.title}`}
             className={`${styles.deleteBtn}`}

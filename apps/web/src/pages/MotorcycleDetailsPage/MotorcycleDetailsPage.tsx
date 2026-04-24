@@ -1,11 +1,9 @@
 //Извлечение параметров из URL и роутинг:
 import { Navigate, useParams } from "react-router";
-//Типы:
-import { type MotorcycleShort } from "@/entities/catalog";
 //Состояния:
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCart, useFavorites, useTradingStore } from "@/entities/trading";
+import { useFavorites, useTradingStore } from "@/entities/trading";
 import { useAuthStore, useProfile } from "@/features/auth";
 //API:
 import { $api, API_URL } from "@/shared/api/api";
@@ -361,7 +359,7 @@ export const MotorcycleDetailsPage = () => {
   }
 
   const mainImageUrl =
-    motorcycle.images?.find((img) => img.isMain)?.url ||
+    motorcycle.images?.find((img: any) => img.isMain)?.url ||
     motorcycle.images?.[0]?.url ||
     ""; // Заглушка, если картинок нет вообще
 
@@ -404,7 +402,7 @@ export const MotorcycleDetailsPage = () => {
               {/* Список миниатюр */}
               {motorcycle.images?.length > 0 && (
                 <div className={styles.thumbnails}>
-                  {motorcycle.images.map((img) => (
+                  {motorcycle.images.map((img: any) => (
                     <div
                       key={img.id}
                       className={`${styles.thumbWrapper} ${activeImage === `${STATIC_URL}/${img.url}` ? styles.activeThumb : ""}`}
@@ -592,7 +590,7 @@ export const MotorcycleDetailsPage = () => {
                   <span>Доступные цвета</span>
                   <div className={styles.colorsWrapper}>
                     {motorcycle.colors && motorcycle.colors.length > 0 ? (
-                      motorcycle.colors.map((color, index) => (
+                      motorcycle.colors.map((color: any, index: any) => (
                         <div key={index} className={styles.colorItem}>
                           {/* Кружок с цветом:*/}
                           <span
@@ -748,7 +746,7 @@ export const MotorcycleDetailsPage = () => {
             <section className={styles.relatedSection}>
               <h2 className={styles.sectionTitle}>Похожие модели</h2>
               <div className={styles.relatedGrid}>
-                {relatedMotorcycles.map((moto) => (
+                {relatedMotorcycles.map((moto: any) => (
                   <MotorcycleCard key={moto.id} data={moto} />
                 ))}
               </div>

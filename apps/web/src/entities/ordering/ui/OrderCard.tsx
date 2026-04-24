@@ -94,7 +94,7 @@ export const OrderCard = ({ order }: { order: any }) => {
     DELIVERED: "Можете забирать",
     COMPLETED: "Завершен",
   };
-  const translatedStatus = orderStatusTranslations[order.status] || "Неизвестный статус";
+  const translatedStatus = orderStatusTranslations[order.status as keyof typeof orderStatusTranslations] || "Неизвестный статус";
 
   return (
     <article className={styles.orderCard}>

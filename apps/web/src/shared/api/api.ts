@@ -77,5 +77,4 @@ const refreshAuthLogic = (failedRequest: any) => {
 //(Реализуем Auto-refresh) [RESPONSE]
 createAuthRefreshInterceptor($api, refreshAuthLogic, {
   statusCodes: [401], //На какие коды реагировать библиотеке
-  pauseInstanceWhileRefreshing: true, //Останавливаем другие запросы, пока идет Refresh (если в момент истечения токена ушло 5 запросов одновременно, Axios поставит 4 из них «на паузу», выполнит 1 запрос на обновление токена, и только потом отправит остальные с новым ключом.)
 });

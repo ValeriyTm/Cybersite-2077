@@ -1,11 +1,9 @@
 //Роутер:
-import { useSearchParams, useNavigate } from "react-router";
+import { useSearchParams } from "react-router";
 //React Hook Form:
 import { useForm } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
-//Google reCAPTCHA v3:
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Схемы валидации Zod:
 import { ResetPasswordSchema, type ResetPasswordInput } from "@repo/validation";
 //API:
@@ -28,11 +26,6 @@ export const ResetPasswordPage = () => {
   const token = searchParams.get("token");
 
   const { handleAuthSubmit } = useAuthSubmit<ResetPasswordInput>();
-
-  const navigate = useNavigate();
-
-  //Подключаем Google Captcha (функция executeRecaptcha будет генерировать невидимый токен проверки):
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const {
     register,

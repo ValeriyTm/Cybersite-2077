@@ -71,11 +71,13 @@ export const CheckoutPage = () => {
       const savedCoords = { lat: user.defaultLat, lng: user.defaultLng };
 
       setAddress(user.defaultAddress || "");
+      //@ts-ignore:
       setCoords(savedCoords);
 
       //Запускаем расчет только когда данные "прогреты":
       calculateMutation.mutate({
         lat: savedCoords.lat,
+        //@ts-ignore:
         lng: savedCoords.lng,
         items: legalSelectedItems.map((i) => ({
           id: i.id,
@@ -130,7 +132,7 @@ export const CheckoutPage = () => {
         toast.success("Заказ оформлен!");
       }
     },
-    onError: (err) => toast.error("Ошибка при создании заказа"),
+    onError: () => toast.error("Ошибка при создании заказа"),
   });
 
   //Если пользователь вручную ввел адрес /checkout, но у него в корзине только «нелегальные» товары или вообще ничего не выбрано, его нужно выкинуть обратно в корзину:
@@ -273,6 +275,7 @@ export const CheckoutPage = () => {
                     <span>
                       {item.model} x {item.quantity} шт, {item.year} г
                     </span>
+                    {/*@ts-ignore: */}
                     <span>{(item.discountData.finalPrice * item.quantity).toLocaleString()} ₽</span>
                   </div>
                 ))}

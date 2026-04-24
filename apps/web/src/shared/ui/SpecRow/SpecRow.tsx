@@ -1,6 +1,11 @@
 import styles from "./SpecRow.module.scss";
 
-export const SpecRow = ({ label, value }) => {
+interface SpecRowProps {
+  label: string,
+  value: string | undefined,
+}
+
+export const SpecRow = ({ label, value }: SpecRowProps) => {
   const isEmpty = !value; // Проверяем, есть ли данные
 
   return (

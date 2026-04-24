@@ -5,7 +5,6 @@ import {
   type BrandResponse,
   type MotorcycleFilters,
   type MotorcycleResponse,
-  type MotorcycleShort,
   type MotorcycleFull,
 } from "../model/types";
 //API:

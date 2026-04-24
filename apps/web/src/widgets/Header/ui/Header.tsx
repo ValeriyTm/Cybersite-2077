@@ -46,7 +46,7 @@ export const Header = () => {
   //Состояние для поиска с подсказками:
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<MotorcycleShort[]>([]);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLFormElement>(null);
 
   const { activeOrdersCount, fetchActiveCount } = useOrderStore();
 
@@ -156,15 +156,6 @@ export const Header = () => {
     case "theme-doom":
       logoUrl = logoDoom
   }
-  //-----------
-  //Включение темы с клавиатуры:
-  const handleKeyDown = (event: React.KeyboardEvent, themeId: any) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault(); // Чтобы страница не скроллилась при нажатии пробела
-      setTheme(themeId);
-    }
-  };
-
   //----------
   //Показывать ссылку на страницу администраторов или нет:
   const isAdmin =

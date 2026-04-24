@@ -38,12 +38,8 @@ export const AdminTicketsPage = () => {
     setPage(1);
   };
 
-  const handleStatusChange = (val: string) => {
-    setStatusFilter(val);
-    setPage(1);
-  };
 
-  // 1. Получение данных
+  //Получение данных
   const { data, isLoading } = useQuery({
     queryKey: ['admin-tickets', page, statusFilter, debouncedEmail],
     queryFn: () => $api.get('/admin/tickets', {
@@ -190,7 +186,7 @@ export const AdminTicketsPage = () => {
                 <strong>Отправитель:</strong> {selectedTicket.firstName} {selectedTicket.lastName} ({selectedTicket.email})
               </div>
               <div className={styles.infoRow}>
-                <strong>Категория:</strong> {categoryMap[selectedTicket.category] || 'Другое'}
+                <strong>Категория:</strong> {categoryMap[selectedTicket.category as keyof typeof categoryMap] || 'Другое'}
               </div>
               <div className={styles.messageBox}>
                 <strong>Сообщение:</strong>

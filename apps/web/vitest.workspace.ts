@@ -1,6 +1,4 @@
-import { defineWorkspace } from "vitest/config";
-
-export default defineWorkspace([
+export default [
   {
     test: {
       name: "unit",
@@ -25,4 +23,4 @@ export default defineWorkspace([
       },
     },
   },
-]);
+];

@@ -16,7 +16,7 @@ import { CursorTrail, BurgerButton } from "@/shared/ui";
 import { Toaster } from "react-hot-toast";
 
 export const MainLayout = () => {
-  const { isLoading, isError } = useProfile();
+  const { isLoading } = useProfile();
   const isAuth = useAuthStore((state) => state.isAuth);
 
   const theme = useThemeStore((state) => state.theme); //Получаем текущую тему

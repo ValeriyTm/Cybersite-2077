@@ -29,10 +29,7 @@ import teamBanner2 from '@/shared/assets/images/banners/team1.jpg'
 import motosBanner from '@/shared/assets/images/banners/motos.jpg'
 import backWheelImage from '@/shared/assets/images/animation/back-wheel.png';
 import frontWheelImage from '@/shared/assets/images/animation/front-wheel.png';
-import frameMotoImage from '@/shared/assets/images/animation/moto-frame.png';
-import frameImage from '@/shared/assets/images/animation/frame1.png';
 import smokeImage from '@/shared/assets/images/animation/smoke.png';
-import bgGif from '@/shared/assets/images/animation/background.gif'
 //Стили:
 import styles from "./HomePage.module.scss";
 
@@ -201,17 +198,17 @@ export const HomePage = () => {
                 <motion.img
                   src={backWheelImage}
                   className={styles.backWheel}
-                  variants={shouldReduceMotion ? {} : wheelVariants}
+                  animate={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src={frontWheelImage}
                   className={styles.frontWheel}
-                  variants={shouldReduceMotion ? {} : wheelVariants}
+                  animate={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src={smokeImage}
                   className={styles.smoke}
-                  variants={shouldReduceMotion ? {} : smokeVariants}
+                  animate={shouldReduceMotion ? {} : smokeVariants}
                 />
               </motion.div>
             </motion.div>

@@ -40,6 +40,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   //----------------Инициализация форм------------
   ////Основная форма профиля:
   const profileForm = useForm<UpdateProfileInput>({
+    // @ts-ignore
     resolver: zodResolver(UpdateProfileSchema),
     values: {
       name: user?.name || "",

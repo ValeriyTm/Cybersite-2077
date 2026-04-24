@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { fetchBrands, type Brand, BrandCard } from "@/entities/catalog";
+import { fetchBrands, BrandCard } from "@/entities/catalog";
 //Состояния:
 import { useQuery } from "@tanstack/react-query";
 //Для поиска:

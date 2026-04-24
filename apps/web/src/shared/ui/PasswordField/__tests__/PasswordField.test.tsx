@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { PasswordField } from "../PasswordField";
 import { useForm } from "react-hook-form";
 

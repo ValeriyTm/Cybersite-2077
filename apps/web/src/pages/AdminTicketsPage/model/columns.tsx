@@ -95,6 +95,7 @@ export const getTicketColumns = (
         <div className={styles.actionsCell}>
           <button
             type="button"
+            //@ts-ignore:
             cursor="pointer"
             title={`Ответить на тикет от ${row.original.email}`}
             className={styles.replyBtn}

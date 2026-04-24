@@ -7,10 +7,20 @@ describe("TradingStore", () => {
   });
 
   it("Должно увеличиваться количество товара, если товар уже в корзине", () => {
-    const moto = { id: "1", model: "Yamaha", price: 1000, quantity: 1 };
+    const moto = {
+      id: "1",
+      model: "Yamaha",
+      price: 1000,
+      image: "",
+      brandSlug: "yamaha",
+      quantity: 1,
+      slug: "yamaha2009",
+      selected: true,
+      totalInStock: 4,
+    };
 
-    useTradingStore.getState().addToCartLocally(moto.id, 1);
-    useTradingStore.getState().addToCartLocally(moto.id, 2);
+    useTradingStore.getState().addToCartLocally(moto);
+    useTradingStore.getState().addToCartLocally(moto);
 
     const cart = useTradingStore.getState().cartItems;
     expect(cart).toHaveLength(1);

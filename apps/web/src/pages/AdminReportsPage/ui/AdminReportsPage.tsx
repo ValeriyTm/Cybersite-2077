@@ -1,7 +1,7 @@
 //API:
 import { $api } from '@/shared/api';
 //Иконки:
-import { FaFilePdf, FaFileExcel, FaChartLine } from 'react-icons/fa';
+import { FaFilePdf, FaFileExcel } from 'react-icons/fa';
 //Уведомления
 import toast from 'react-hot-toast';
 //Стили:

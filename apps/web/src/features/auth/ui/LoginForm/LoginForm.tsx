@@ -31,7 +31,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   const navigate = useNavigate();
 
   //С клиентского стора:
-  const { setAuth, tempUserId: storeId, setTempUserId } = useAuthStore();
+  const { setAuth, setTempUserId } = useAuthStore();
 
   const { handleAuthSubmit } = useAuthSubmit<LoginInput>();
 
@@ -47,6 +47,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({
+    //@ts-ignore
     resolver: zodResolver(LoginSchema),
     mode: "onBlur",
     defaultValues: {
@@ -107,7 +108,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form onSubmit={handleSubmit(onSubmit as any)} className={styles.form}>
       {/*Поле ввода email:*/}
       <div className={styles.field}>
         <label>Email</label>

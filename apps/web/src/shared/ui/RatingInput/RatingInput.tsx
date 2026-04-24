@@ -5,7 +5,7 @@ import styles from "./RatingInput.module.scss";
 interface RatingInputProps {
   value: number;
   onChange: (val: number) => void;
-  name: string;
+  name?: string;
 }
 
 export const RatingInput = ({ value, onChange, name = "rating" }: RatingInputProps) => {

@@ -3,7 +3,13 @@ import { create } from "zustand";
 //API:
 import { $api } from "@/shared/api";
 
-export const useOrderStore = create((set) => ({
+interface OrderState {
+  activeOrdersCount: number;
+  fetchActiveCount: () => Promise<void>;
+  resetOrders: () => void;
+}
+
+export const useOrderStore = create<OrderState>((set) => ({
   activeOrdersCount: 0, //Счетчик активных заказов на фронте
   fetchActiveCount: async () => {
     const res = await $api.get("/orders/active-count");

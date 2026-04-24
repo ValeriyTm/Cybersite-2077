@@ -3,12 +3,12 @@ import { useState } from 'react';
 //Работа с формами:
 import { useForm } from 'react-hook-form';
 //Иконки:
-import { FaPlus, FaTrash, FaMotorcycle, FaAlignLeft, FaImage } from 'react-icons/fa';
+import { FaTrash, FaMotorcycle, FaAlignLeft } from 'react-icons/fa';
 //Стили:
 import styles from './AdminNewsPage.module.scss';
 
 export const NewsModal = ({ news, onClose, onSubmit }: any) => {
-  const { register, handleSubmit, setValue } = useForm({
+  const { register, handleSubmit } = useForm({
     defaultValues: news || { title: '', excerpt: '', status: 'DRAFT', tags: [] }
   });
 
