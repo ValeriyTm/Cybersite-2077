@@ -1,0 +1,1 @@
+export { ReviewCardHome } from "./ReviewCardHome";

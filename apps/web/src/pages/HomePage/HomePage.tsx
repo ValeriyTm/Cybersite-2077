@@ -5,7 +5,7 @@ import { useAuthStore, useProfile } from "@/features/auth";
 import { useThemeStore } from "@/entities/session";
 //Компоненты:
 import { GlobalDiscountBanner } from "@/widgets/GlobalDiscountBanner";
-import { ReviewCard } from "@/shared/ui";
+import { ReviewCardHome } from "@/shared/ui";
 import { MainCarousel } from "@/widgets/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery";
 //Анимация:
@@ -280,25 +280,25 @@ export const HomePage = () => {
           <p>Отзывы наших постоянных клиентов:</p>
           <div className={styles.reviewContainer}>
             <section className={styles.reviewCardSection}>
-              <ReviewCard
+              <ReviewCardHome
                 name="Алексей Иванов"
                 avatarUrl={faceIcon1}
                 rating={5}
                 text="Периодически заказываю тут мотоэкипировку - дешевле на 15-20%, чем в других местах. Шлем, купленный тут 10 лет назад, до сих пор целый 👍"
               />
-              <ReviewCard
+              <ReviewCardHome
                 name="Регина Петрова"
                 avatarUrl={faceIcon2}
                 rating={4}
                 text="Отличный магазин! Доставили быстро, товар качественный. Оранжевая упаковка просто огонь."
               />
-              <ReviewCard
+              <ReviewCardHome
                 name="Алихан Ахметов"
                 avatarUrl={faceIcon3}
                 rating={5}
                 text="Поражает ассортимент мотоциклов! Есть даже модели начала 1900-х годов, вот это да!"
               />
-              <ReviewCard
+              <ReviewCardHome
                 name="Степан Васильев"
                 avatarUrl={faceIcon4}
                 rating={5}

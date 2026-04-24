@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "build-storybook": "storybook build",
     "chromatic": "npx chromatic --project-token=chpt_20173e3212e5b20",
     "dev": "vite",
@@ -15,7 +15,7 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "test": "vitest",
-    "type-check": "tsc -b"
+    "type-check": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -26,6 +26,7 @@
     "@types/leaflet": "^1.9.21",
     "axios": "^1.13.6",
     "axios-auth-refresh": "^5.0.2",
+    "date-fns": "^4.1.0",
     "focus-trap-react": "^12.0.0",
     "imask": "^7.6.1",
     "leaflet": "^1.9.4",

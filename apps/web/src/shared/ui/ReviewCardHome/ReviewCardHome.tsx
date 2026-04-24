@@ -1,4 +1,4 @@
-import styles from "./ReviewCard.module.scss";
+import styles from "./ReviewCardHome.module.scss";
 
 interface ReviewProps {
   name: string;
@@ -7,7 +7,7 @@ interface ReviewProps {
   text: string;
 }
 
-export const ReviewCard = ({ name, avatarUrl, rating, text }: ReviewProps) => {
+export const ReviewCardHome = ({ name, avatarUrl, rating, text }: ReviewProps) => {
   return (
     <article className={styles.card}>
       <div className={styles.header}>

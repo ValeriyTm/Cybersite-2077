@@ -12,5 +12,5 @@ export * from "./Input";
 export * from "./PasswordField";
 export * from "./PaymentModal";
 export * from "./RatingInput";
-export * from "./ReviewCard";
+export * from "./ReviewCardHome";
 export * from "./SpecRow";
