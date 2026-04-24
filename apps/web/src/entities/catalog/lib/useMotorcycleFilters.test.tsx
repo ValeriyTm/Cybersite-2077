@@ -1,3 +1,8 @@
+/**
+ * @vitest-environment jsdom
+ */
+//Эмулируем DOM
+
 import { renderHook, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { useMotorcycleFilters } from "./useMotorcycleFilters";
@@ -20,7 +25,7 @@ describe("useMotorcycleFilters", () => {
     expect(result.current.filters.page).toBe(2);
   });
 
-  it("Должна сбрасываться страницу на первую при изменении поиска", () => {
+  it("Должна сбрасываться страница на первую при изменении поиска", () => {
     const { result } = renderHook(() => useMotorcycleFilters(), { wrapper });
 
     //Сначала ставим 5 страницу:
@@ -37,3 +42,4 @@ describe("useMotorcycleFilters", () => {
     expect(result.current.filters.search).toBe("ninja");
   });
 });
+

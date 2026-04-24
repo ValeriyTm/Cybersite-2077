@@ -7,8 +7,10 @@ describe("Модуль Trading", () => {
     //Кликаем по тоггл-переключателю "Вход":
     cy.contains("button", /вход/i).click();
     //Вводим данные существующего юзера:
-    cy.get('input[name="email"]').type("test@example.com");
-    cy.get('input[name="password"]').type("qqqqqQQQ1!");
+    // cy.get('input[name="email"]').type("test@example.com");
+    // cy.get('input[name="password"]').type("qqqqqQQQ1!");
+    cy.get('input[name="email"]').type("admin@cybersite2077.com");
+    cy.get('input[name="password"]').type("AdminPassword2077!");
     //Нажимаем кнопку отправки формы:
     cy.get('form button[type="submit"]').contains("Войти").click();
 
