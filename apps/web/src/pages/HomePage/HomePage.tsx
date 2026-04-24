@@ -198,17 +198,20 @@ export const HomePage = () => {
                 <motion.img
                   src={backWheelImage}
                   className={styles.backWheel}
-                  animate={shouldReduceMotion ? {} : wheelVariants}
+                  //@ts-ignore:
+                  variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src={frontWheelImage}
                   className={styles.frontWheel}
-                  animate={shouldReduceMotion ? {} : wheelVariants}
+                  //@ts-ignore:
+                  variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src={smokeImage}
                   className={styles.smoke}
-                  animate={shouldReduceMotion ? {} : smokeVariants}
+                  //@ts-ignore:
+                  variants={shouldReduceMotion ? {} : smokeVariants}
                 />
               </motion.div>
             </motion.div>

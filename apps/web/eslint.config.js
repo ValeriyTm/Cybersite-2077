@@ -38,7 +38,7 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: {
         ...globals.browser, // Разрешает использование 'window', 'document' и т.д.
-        ...cypress.environments.globals, //Добавляем глобальные переменные cy, it, describe
+        ...cypress.configs.recommended.languageOptions.globals, //Добавляем глобальные переменные cy, it, describe
       },
       parserOptions: {
         tsconfigRootDir: __dirname, // Устанавливает корневой каталог для поиска tsconfig
@@ -52,7 +52,7 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      ...noUnsanitized.configs.DOM.rules, //Активируем правила No-Unsanitized
+      ...noUnsanitized.configs["recommended-legacy"].rules, //Активируем правила No-Unsanitized
     },
   }, //Строка для устранения конфликтов с Prettier (всегда последняя):
   eslintConfigPrettier,
