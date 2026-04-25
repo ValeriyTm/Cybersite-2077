@@ -25,7 +25,6 @@ import { Helmet } from 'react-helmet-async';
 import styles from "./ProfilePage.module.scss";
 
 export const ProfilePage = () => {
-  //Используем состояния из серверного хранилища:
   const { user, isLoading, logout, logoutAll } = useProfile();
 
   const {
@@ -374,12 +373,10 @@ export const ProfilePage = () => {
           </div>
           {/*  */}
 
-          {/*Кнопка включения 2FA:*/}
-          <div className={styles.securityZone}>
+          {/*Включение 2FA:*/}
+          {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && <div className={styles.securityZone}>
             <h3>Админ</h3>
-
-            {/* Отображаем кнопку только для Админов */}
-            {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
+            {
               <button
                 title='Двухфакторная аутентификация'
                 onClick={user?.is2FAEnabled ? undefined : handleSetup2FA}
@@ -388,9 +385,9 @@ export const ProfilePage = () => {
               >
                 {user.is2FAEnabled ? "2FA Активна ✅" : "Включить 2FA 🛡️"}
               </button>
-            )}
+            }
 
-          </div>
+          </div>}
 
           {/* Модальное окно настройки 2FA */}
           {qrCode && (

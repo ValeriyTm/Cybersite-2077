@@ -209,12 +209,15 @@ export class AuthService {
     //3) Удаляем аватар пользователя с сервера:
     if (user.avatarUrl) {
       try {
-        //Формируем полный путь к файлу на диске
-        //В БД лежит путь типа "/uploads/avatars/file.jpg", а
-        //нам нужно превратить его в системный путь
-        const filePath = path.join(process.cwd(), user.avatarUrl);
+        //Файл в БД имеет путь, например "/static/avatars/avatar-1777045335731-640688165.webp"
+        //На сервере же путь хранится по пути "/upload/avatars/avatar-1777045335731-640688165.webp".
+        //Заменяем static на uploads:
+        const relativePath = user.avatarUrl.replace("/static/", "uploads/");
+
+        const filePath = path.join(process.cwd(), relativePath);
 
         await fs.unlink(filePath); // Удаляем файл
+
         console.log(
           `Файл ${user.avatarUrl} успешно удален при удалении аккаунта`,
         );

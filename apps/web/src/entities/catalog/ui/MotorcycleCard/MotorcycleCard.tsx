@@ -9,13 +9,14 @@ import { useTradingStore, useFavorites } from "@/entities/trading";
 import { useAuthStore } from "@/features/auth"; //Состояние авторизации
 //Компоненты:
 import { AddToCartButton } from "@/features/trading";
+//Изображения:
+import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from "./MotorcycleCard.module.scss";
 
 
 //Пути для изображений карточки:
 const STATIC_URL = `${API_URL}/static`;
-const DEFAULT_IMG = `/images/default-card-icon.jpg`;
 
 export interface MotorcycleCardProps {
   data: MotorcycleShort;
@@ -30,7 +31,7 @@ export const MotorcycleCard = ({
 
   //Определяем какое изображение ставить для отображения изображения:
   const getImageUrl = (path: string | null | undefined) => {
-    if (!path) return DEFAULT_IMG;
+    if (!path) return defaultMotoImage;
     //Если в базе путь "/defaults/...", просто добавляем домен
     if (path.startsWith("/")) {
       return `${STATIC_URL}${path}`;
@@ -96,7 +97,7 @@ export const MotorcycleCard = ({
               //Реализуем защитный механизм: если даже по очищенному пути получаем ошибку 404
               const target = e.target as HTMLImageElement;
               target.onerror = null;
-              target.src = DEFAULT_IMG;
+              target.src = defaultMotoImage;
             }}
             width='425'
             height='180'

@@ -22,6 +22,8 @@ import { useProfile } from "@/features/auth";
 import { $api, API_URL } from "@/shared/api";
 //Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
+//Изображения:
+import defaultAvatar from "@/shared/assets/images/defaults/default-avatar.png";
 
 export const useProfileActions = (user: IUser | null | undefined) => {
   //Почему добавил типы null и undefined - Zod/Prisma любят null, а React Query возвращает undefined, пока данные загружаются.
@@ -75,7 +77,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
     ? user.avatarUrl.startsWith("http")
       ? user.avatarUrl
       : `${API_URL}${user.avatarUrl}`
-    : "images/default-avatar.png";
+    : defaultAvatar;
 
   //-----------------Обработчики----------------
   //------Отправка формы для сохранения новых данных профиля:

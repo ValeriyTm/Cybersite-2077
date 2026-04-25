@@ -24,6 +24,18 @@ h1 {
 .question {
   small {
     color: var(--accent-text-color);
+    margin-block: 10px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.question,
+.answer {
+  strong {
+    color: var(--accent-text-color);
   }
 }
 
@@ -76,7 +88,7 @@ h1 {
 }
 
 .answer {
-  margin-top: 15px;
+  margin-top: 10px;
   padding-top: 15px;
   /* pxtorem-disable-next-line */
   border-top: 1px dashed #444;

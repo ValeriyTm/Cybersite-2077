@@ -29,6 +29,11 @@
   @include tablet {
     grid-template-columns: 1fr;
   }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 //Верхняя панель управления корзиной:

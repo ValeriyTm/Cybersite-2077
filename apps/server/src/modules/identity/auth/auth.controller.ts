@@ -123,16 +123,10 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     secure: process.env.NODE_ENV === "production", // Только HTTPS в продакшене
     sameSite: "lax",
     path: "/api/identity/auth",
+    maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined,
+    //Если rememberMe - false, то undefined сделает куку сессионной.
+    //Если rememberMe - true, то задаём 7 дней для куки
   };
-
-  if (rememberMe) {
-    // Если rememberMe === true — 7 дней, иначе — null (сессионная кука):
-    cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 дней
-  } else {
-    // Явно удаляем свойства, если они могли попасть туда случайно:
-    delete cookieOptions.maxAge;
-    delete cookieOptions.expires;
-  }
 
   //Посылаем куки:
   res.cookie("refreshToken", tokens.refreshToken, cookieOptions);
@@ -351,6 +345,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
 export const googleAuth = (req: Request, res: Response) => {
   //Отправляем запрос в Google:
   const url = oAuthService.getGoogleAuthUrl();
+  console.log("Ссылка в гугл: ", url);
   //Редиректим пользователя на страницу Google для подтверждения входа:
   res.redirect(url);
 };

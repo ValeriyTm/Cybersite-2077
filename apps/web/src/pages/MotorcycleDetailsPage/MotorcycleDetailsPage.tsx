@@ -14,6 +14,8 @@ import { SpecRow, Breadcrumbs } from "@/shared/ui";
 import { MotorcycleCard } from "@/entities/catalog";
 import { AddToCartButton } from "@/features/trading";
 import { ReviewCard } from "@/entities/reviews";
+//Изображения:
+import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
 
@@ -71,7 +73,7 @@ export const MotorcycleDetailsPage = () => {
       const mainImg =
         motorcycle.images?.find((img: any) => img.isMain)?.url ||
         motorcycle.images?.[0]?.url;
-      setActiveImage(mainImg ? `${STATIC_URL}/${mainImg}` : '/images/default-card-icon.jpg');
+      setActiveImage(mainImg ? `${STATIC_URL}/${mainImg}` : defaultMotoImage);
     }
   }, [motorcycle]);
 
@@ -134,7 +136,7 @@ export const MotorcycleDetailsPage = () => {
   //Формируем SEO-строки:
   const seoTitle = `${motorcycle.brand.name} ${motorcycle.model} ${motorcycle.year} г.в. — Характеристики и цены | CyberSite2077`;
   const seoDescription = `Подробные технические характеристики ${motorcycle.brand.name} ${motorcycle.model}: двигатель ${motorcycle.displacement} см³, мощность ${motorcycle.power} л.с. Цвета: ${motorcycle.colors?.join(", ")}. Узнайте всё о модели на CyberSite2077.`;
-  const ogImage = activeImage || `/images/default-card-icon.jpg`;
+  const ogImage = activeImage || defaultMotoImage;
   const canonicalUrl = `${API_URL}/catalog/motorcycles/${brandSlug}/${slug}`;
 
   //Объект микроразметки JSON-LD:

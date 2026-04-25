@@ -1,6 +1,7 @@
 //Состояния:
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useAuthStore } from "@/features/auth";
 //API:
 import { $api } from "@/shared/api";
 //SEO:
@@ -16,6 +17,8 @@ export const MyOrdersPage = () => {
   const [statusFilter, setStatusFilter] = useState<string | undefined>(
     undefined,
   );
+
+  const { isAuth } = useAuthStore();
 
   const {
     data: orders,
@@ -38,12 +41,20 @@ export const MyOrdersPage = () => {
   });
 
   if (isLoading) {
-    return <div className={styles.loading}>Загрузка ваших заказов... 🏍️</div>;
+    return <div className={`${styles.infoState} ${styles.loading}`}>Загрузка ваших заказов... 🏍️</div>;
+  }
+
+  if (!isAuth) {
+    return (
+      <div className={`${styles.infoState} ${styles.notAuth}`}>
+        Вы не авторизованы 🔑
+      </div>
+    );
   }
 
   if (isError) {
     return (
-      <div className={styles.error}>
+      <div className={`${styles.infoState} ${styles.error}`}>
         Ошибка при загрузке заказов. Попробуйте позже.
       </div>
     );

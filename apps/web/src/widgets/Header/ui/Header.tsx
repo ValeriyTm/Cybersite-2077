@@ -1,6 +1,6 @@
 //Состояния:
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useAuthStore, useProfile } from "@/features/auth";
+import { useAuthStore, useProfile, useProfileActions } from "@/features/auth";
 import { useTradingStore } from "@/entities/trading";
 import { useOrderStore } from "@/entities/ordering";
 import { useThemeStore } from "@/entities/session";
@@ -28,6 +28,7 @@ import motoIcon from '@/shared/assets/icons/catalog-icons/moto-icon.png';
 import equipIcon from '@/shared/assets/icons/catalog-icons/equip-icon.png';
 import gearIcon from '@/shared/assets/icons/catalog-icons/gear-icon.webp';
 import scooterIcon from '@/shared/assets/icons/moto_brands/scooter.png';
+import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from "./Header.module.scss";
 
@@ -57,10 +58,9 @@ export const Header = () => {
   const isAuth = useAuthStore((state) => state.isAuth);
   const { user, isLoading } = useProfile();
 
-  //Формируем путь к аватару:
-  const avatarSrc = user?.avatarUrl
-    ? `${API_URL}${user.avatarUrl}`
-    : null; // Передаем null, чтобы сработал дефолт внутри Avatar.tsx
+  const { avatarSrc
+  } = useProfileActions(user);
+
 
   //Дебаунс запроса:
   const fetchSuggestions = useMemo(
@@ -366,9 +366,10 @@ export const Header = () => {
                 {suggestions.length > 0 && (
                   <div className={styles.suggestions}>
                     {suggestions.map((moto) => {
-                      const linkToImage = moto.mainImage
+                      const linkToImage = (moto.mainImage !== '')
                         ? `${API_URL}/static/motorcycles/${moto.mainImage}`
-                        : `images/default-card-icon.jpg`;
+                        : defaultMotoImage;
+
                       return (
                         <Link
                           key={moto.id}

@@ -1,3 +1,5 @@
+//Изображения:
+import defaultAvatar from '@/shared/assets/images/defaults/default-avatar.png'
 //Стили:
 import styles from "./Avatar.module.scss";
 
@@ -25,7 +27,7 @@ export const Avatar = ({
     >
       {/* Сама картинка */}
       <img
-        src={src || "images/default-avatar.png"}
+        src={src || defaultAvatar}
         alt={alt}
         decoding="async"
         referrerPolicy="no-referrer"

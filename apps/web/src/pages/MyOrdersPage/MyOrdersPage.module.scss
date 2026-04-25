@@ -170,3 +170,20 @@
     border: 1px solid #333;
   }
 }
+
+.error {
+  color: var(--color-danger);
+}
+
+.loading {
+  color: var(--main-text-color);
+}
+
+.notAuth {
+  color: var(--accent-text-color);
+}
+
+.infoState {
+  text-align: center;
+  padding-top: 260px;
+}

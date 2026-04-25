@@ -132,8 +132,8 @@ export const MotorcyclesPage = () => {
           {/*Фильтр по цене:*/}
           <RangeFilter
             label="Цена (₽)"
-            min={Number(filters.minPrice)}
-            max={Number(filters.maxPrice)}
+            min={filters.minPrice}
+            max={filters.maxPrice}
             onChange={(min, max) =>
               updateFilters({ minPrice: min, maxPrice: max })
             }
@@ -142,8 +142,8 @@ export const MotorcyclesPage = () => {
           {/*Фильтр по объему двигателя:*/}
           <RangeFilter
             label="Объем (см³)"
-            min={Number(filters.minDisplacement)}
-            max={Number(filters.maxDisplacement)}
+            min={filters.minDisplacement}
+            max={filters.maxDisplacement}
             onChange={(min, max) =>
               updateFilters({ minDisplacement: min, maxDisplacement: max })
             }
@@ -152,16 +152,16 @@ export const MotorcyclesPage = () => {
           {/*Фильтр по году выпуска:*/}
           <RangeFilter
             label="Год выпуска"
-            min={Number(filters.minYear)}
-            max={Number(filters.maxYear)}
+            min={filters.minYear}
+            max={filters.maxYear}
             onChange={(min, max) => updateFilters({ minYear: min, maxYear: max })}
           />
 
           {/*Фильтр по мощности:*/}
           <RangeFilter
             label="Мощность (л.с.)"
-            min={Number(filters.minPower)}
-            max={Number(filters.maxPower)}
+            min={filters.minPower}
+            max={filters.maxPower}
             onChange={(min, max) =>
               updateFilters({ minPower: min, maxPower: max })
             }

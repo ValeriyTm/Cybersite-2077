@@ -11,6 +11,8 @@ import { $api, API_URL } from "@/shared/api";
 //Компоненты:
 import { ReviewModal } from "@/features/reviews";
 import { PaymentModal } from "@/shared/ui";
+//Изображения:
+import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from "./OrderCard.module.scss";
 
@@ -18,7 +20,7 @@ export const OrderCard = ({ order }: { order: any }) => {
   //Определяем статус заказа:
   const isDelivered = order.status === "DELIVERED";
   const isCompleted = order.status === "COMPLETED";
-  const canCancel = ["PENDING", "PAID", "DELIVERY"].includes(order.status);
+  const canCancel = ["PENDING", "PAID"].includes(order.status);
   //Для реализации открытия модалки отзыва:
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -158,7 +160,7 @@ export const OrderCard = ({ order }: { order: any }) => {
           {order.items.map((item: any) => {
             const imageUrl = item.motorcycle.images?.[0]
               ? `${API_URL}/static/motorcycles/${item.motorcycle.images?.[0]?.url}`
-              : `/images/default-card-icon.jpg`;
+              : defaultMotoImage;
 
             return (
               <div key={item.id} className={styles.productRow}>

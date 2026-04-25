@@ -105,10 +105,12 @@ export class TelegramService {
 
   //Универсальный метод отправки сообщения админу:
   async sendMessage(message: string) {
-    if (!this.bot || !this.adminId) return;
+    const bot = TelegramService.bot;
+    const adminId = TelegramService.adminId;
+    if (!bot || !adminId) return;
 
     try {
-      await this.bot.telegram.sendMessage(this.adminId, message, {
+      await bot.telegram.sendMessage(adminId, message, {
         parse_mode: "HTML",
         //parse_mode: 'HTML' позволяет использовать теги <b>, <i>, <code> и т.д.
       });
@@ -119,10 +121,12 @@ export class TelegramService {
 
   //Метод для отправки файлов:
   async sendDocument(filePath: string, caption: string) {
-    if (!this.bot || !this.adminId) return;
+    const bot = TelegramService.bot;
+    const adminId = TelegramService.adminId;
+    if (!bot || !adminId) return;
     try {
-      await this.bot.telegram.sendDocument(
-        this.adminId,
+      await bot.telegram.sendDocument(
+        adminId,
         { source: filePath },
         { caption },
       );

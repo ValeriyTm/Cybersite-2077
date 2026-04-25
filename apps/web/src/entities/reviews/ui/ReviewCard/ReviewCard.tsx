@@ -4,6 +4,8 @@ import { useState } from "react";
 import { API_URL } from "@/shared/api";
 //Компоненты:
 import { ImageModal } from "@/shared/ui";
+//Изображения:
+import defaultAvatar from '@/shared/assets/images/defaults/default-avatar.png'
 //Стили:
 import styles from "./ReviewCard.module.scss";
 
@@ -33,12 +35,12 @@ export const ReviewCard = ({
   return (
     <article className={styles.card}>
       <div className={styles.header}>
-        <div className={styles.вuser}>
+        <div className={styles.user}>
           <img decoding="async"
             src={
               review.userAvatar
                 ? `${API_URL}${review.userAvatar}`
-                : `images/default-avatar.png`
+                : defaultAvatar
             }
             alt="avatar"
             width='40'

@@ -34,10 +34,10 @@ export const UserTicketsPage = () => {
               </div>
 
               <div className={styles.question}>
+                <small>{new Date(ticket.createdAt).toLocaleDateString()}</small>
                 <p>
                   <strong>Ваш вопрос:</strong> {ticket.description}
                 </p>
-                <small>{new Date(ticket.createdAt).toLocaleDateString()}</small>
               </div>
 
               <div className={styles.answer}>
@@ -46,9 +46,8 @@ export const UserTicketsPage = () => {
                   {ticket.answer ? (
                     <span> {ticket.answer}</span>
                   ) : (
-                    <p className={styles.waiting}>ждем ответа...</p>
+                    <span className={styles.waiting}> ждем ответа...</span>
                   )}
-                  {ticket.answer}
                 </p>
               </div>
             </div>
