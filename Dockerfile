@@ -54,11 +54,11 @@ WORKDIR /app/apps/server
 # CMD ["node", "dist/index.js"]
 CMD ["npx", "tsx", "src/index.ts"]
 
-# --- Stage 4: Web (Статика через Nginx) ---
-FROM nginx:stable-alpine AS web
-# Копируем билд фронта в папку nginx
-COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
-# Конфиг Nginx берем из твоей папки deploy
-COPY deploy/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# # --- Stage 4: Web (Статика через Nginx) ---
+# FROM nginx:stable-alpine AS web
+# # Копируем билд фронта в папку nginx
+# COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
+# # Конфиг Nginx берем из твоей папки deploy
+# COPY deploy/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+# EXPOSE 80
+# CMD ["nginx", "-g", "daemon off;"]

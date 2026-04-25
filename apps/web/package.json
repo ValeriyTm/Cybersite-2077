@@ -7,7 +7,7 @@
     "build": "vite build",
     "build-storybook": "storybook build",
     "chromatic": "dotenv -e .env -- npx chromatic",
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "lint:js": "eslint .",
     "lint:js:fix": "eslint . --fix",
     "lint:style": "stylelint \"src/**/*.scss\"",
