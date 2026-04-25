@@ -12,7 +12,7 @@ const window = new JSDOM("").window;
 //Инициализация очистителя, привязанного к виртуальному окну:
 const DOMPurify = createDOMPurify(window as any);
 
-export const xssClean = (req: Request, res: Response, next: NextFunction) => {
+export const xssClean = (req: Request, _res: Response, next: NextFunction) => {
   //Проверяем есть ли в запросе тело:
   if (req.body) {
     //Запуск цикла по всем полям, пришедшим в req.body:

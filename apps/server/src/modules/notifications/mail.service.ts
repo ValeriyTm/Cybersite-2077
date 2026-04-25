@@ -2,7 +2,7 @@
 //Библиотека для отправки электронных писем:
 import nodemailer from "nodemailer";
 //Логгер Grafana Loki:
-import { logger } from "src/shared/lib/logger.js";
+import { logger } from "../../shared/lib/logger.js";
 
 // Настройки из .env (использую App Password от Google):
 const transporter = nodemailer.createTransport({

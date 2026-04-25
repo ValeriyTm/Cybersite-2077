@@ -1,7 +1,7 @@
 //Воркер:
 import { Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "src/shared/lib/redis.js";
+import { redis } from "../../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 
@@ -25,6 +25,6 @@ export const cleanupWorker = new Worker(
   { connection: redis },
 );
 
-cleanupWorker.on("completed", (job, result) => {
+cleanupWorker.on("completed", (_job, result) => {
   if (result > 0) console.log(`[Cleanup] Удалено аккаунтов: ${result}`);
 });

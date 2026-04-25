@@ -2,8 +2,6 @@
 import { YooCheckout, ICreatePayment } from "@a2seven/yoo-checkout";
 //Библиотека генерации uuid v4:
 import { v4 as uuidv4 } from "uuid";
-//Клиент призмы для работы с PostgreSQL:
-import { prisma } from "@repo/database";
 //Используем сервис модуля Ordering:
 import { orderService } from "../ordering/index.js";
 

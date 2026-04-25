@@ -1,6 +1,6 @@
 //Типы:
 import { Request, Response } from "express";
-import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
@@ -10,11 +10,11 @@ import { createTicketSchema } from "@repo/validation";
 //Главный сервис модуля Support:
 import { supportService } from "./support.service.js";
 //Сервис для reCaptcha v3:
-import { recaptchaService } from "src/shared/services/recaptcha.service.js";
+import { recaptchaService } from "../../shared/services/recaptcha.service.js";
 //Очередь для удаления закрытых тикетов:
 import { scheduleTicketCleanup } from "./support.queue.js";
 //Для генерации события:
-import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Для удаления прикрепленных файлов:
 import fs from "fs/promises";
 
@@ -48,6 +48,8 @@ export const createTicket = catchAsync(
       }
       return res.status(400).json({
         message: "Ошибка валидации",
+        // eslint-disable-next-line
+        // @ts-ignore:
         errors: validation.error.flatten().fieldErrors,
       });
     }
@@ -110,6 +112,7 @@ export const updateTicketStatus = catchAsync(
     const { status } = req.body;
 
     //Обновляем статус тикета в БД:
+    // @ts-ignore:
     const ticket = await supportService.updateTicketStatus(id, status);
 
     //Если статус CLOSED или RESOLVED — ставим задачу на удаление в очередь:

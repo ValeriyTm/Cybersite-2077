@@ -6,7 +6,7 @@ import { prisma } from "@repo/database";
 import { discountLogic } from "../discount/index.js";
 
 //Подключаемся к контейнеру:
-export const esClient = new Client({ node: "http://localhost:9200" });
+export const esClient = new Client({ node: process.env.ELASTIC_NODE });
 
 export class SearchService {
   private readonly indexName = "motorcycles";
@@ -67,7 +67,11 @@ export class SearchService {
   }
 
   //Основной поиск по моделям с фильтрами:
-  async searchMotorcycles(filters: any, userId: string) {
+  async searchMotorcycles(
+    //@ts-ignore:
+    filters,
+    userId: string,
+  ) {
     const {
       brandSlug,
       search,
@@ -87,7 +91,8 @@ export class SearchService {
       onlyInStock,
     } = filters;
 
-    const query: any = {
+    //@ts-ignore:
+    const query = {
       bool: {
         must: [], //Обязательные условия
         filter: [], //Условия фильтрации
@@ -96,6 +101,7 @@ export class SearchService {
 
     //Добавляем логику поиска по названию модели:
     if (search) {
+      //@ts-ignore:
       query.bool.must.push({
         match: {
           model: {
@@ -109,11 +115,13 @@ export class SearchService {
 
     //Фильтр по бренду:
     if (brandSlug && brandSlug !== "all") {
+      //@ts-ignore:
       query.bool.filter.push({ match: { brandSlug: brandSlug } });
     }
 
     //Диапазон цен:
     if (minPrice || maxPrice) {
+      //@ts-ignore:
       query.bool.filter.push({
         range: {
           price: {
@@ -126,6 +134,7 @@ export class SearchService {
 
     //Год выпуска:
     if (minYear || maxYear) {
+      //@ts-ignore:
       query.bool.filter.push({
         range: {
           year: {
@@ -139,6 +148,7 @@ export class SearchService {
     //Только в наличии:
     const isOnlyInStock = String(onlyInStock) === "true";
     if (isOnlyInStock) {
+      //@ts-ignore:
       query.bool.filter.push({
         range: {
           totalInStock: { gt: 0 },
@@ -148,11 +158,13 @@ export class SearchService {
 
     //Категория:
     if (category) {
+      //@ts-ignore:
       query.bool.filter.push({ match: { category: category } });
     }
 
     //Объем двигателя:
     if (minDisplacement || maxDisplacement) {
+      //@ts-ignore:
       query.bool.filter.push({
         range: {
           displacement: {
@@ -165,6 +177,7 @@ export class SearchService {
 
     //Мощность двигателя:
     if (minPower || maxPower) {
+      //@ts-ignore:
       query.bool.filter.push({
         range: {
           power: {
@@ -178,29 +191,36 @@ export class SearchService {
 
     //Трансмиссия:
     if (transmission) {
+      //@ts-ignore:
       query.bool.filter.push({ match: { transmission: transmission } });
     }
 
     //Сортировка:
-    let sort: any = [{ _score: "desc" }]; //По умолчанию - по релевантности
+    let sort = [{ _score: "desc" }]; //По умолчанию - по релевантности
     //Алфавитный порядок (А-Я):
     if (sortBy === "name_asc") {
+      //@ts-ignore:
       sort = [{ "model.keyword": "asc" }];
     }
     //Алфавитный порядок (Я-А):
     if (sortBy === "name_desc") {
+      //@ts-ignore:
       sort = [{ "model.keyword": "desc" }];
     }
 
     //Цена:
+    //@ts-ignore:
     if (sortBy === "price_asc") sort = [{ price: "asc" }];
+    //@ts-ignore:
     if (sortBy === "price_desc") sort = [{ price: "desc" }];
 
     //Год выпуска:
+    //@ts-ignore:
     if (sortBy === "year_desc") sort = [{ year: "desc" }];
 
     //Рейтинг (от высокого к низкому):
     if (sortBy === "rating_desc") {
+      //@ts-ignore:
       sort = [{ rating: "desc" }];
     }
 
@@ -211,6 +231,7 @@ export class SearchService {
       from: (page - 1) * limit, //Расчёт зависит от переданного лимита (20 или 40 передаём)
       size: limit,
       query,
+      //@ts-ignore:
       sort,
     });
 

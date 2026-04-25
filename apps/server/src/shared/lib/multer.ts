@@ -34,14 +34,14 @@ export const createMulter = ({
   const upload = multer({
     storage,
     limits: { fileSize: maxSizeMb * 1024 * 1024, files: maxFiles },
-    fileFilter: (req, file, cb) => {
+    fileFilter: (_req, file, cb) => {
       if (allowedMimeTypes.includes(file.mimetype)) cb(null, true);
       else cb(new AppError(400, errorMsg) as any);
     },
   });
 
   //Кастомный мидлвар для обработки:
-  const processImages = async (req: any, res: any, next: any) => {
+  const processImages = async (req: any, _res: any, next: any) => {
     if (!req.files && !req.file) return next();
 
     const files = req.files

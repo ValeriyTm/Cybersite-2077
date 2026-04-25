@@ -9,7 +9,7 @@ import { AppError } from "../../shared/utils/app-error.js";
 
 //Получить все опубликованные новости:
 export const getAllPublished = catchAsync(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const news = await newsService.getAllPublished();
     res.json(news);
   },
@@ -18,6 +18,7 @@ export const getAllPublished = catchAsync(
 //Получить конкретную новость:
 export const getBySlug = catchAsync(async (req: Request, res: Response) => {
   const { slug } = req.params;
+  //@ts-ignore:
   const article = await newsService.getBySlug(slug);
 
   if (!article) {

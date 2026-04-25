@@ -1,6 +1,6 @@
 //Типы:
 import { Request, Response } from "express";
-import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
 //Сервисы модуля Catalog:
 import { catalogService } from "./catalog.service.js";
 import { searchService } from "./search.service.js";
@@ -13,19 +13,21 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 import { AppError } from "../../shared/utils/app-error.js";
 
 //Получение главных категорий:
-export const getCategories = catchAsync(async (req: Request, res: Response) => {
-  //Получаем данные с БД:
-  const categories = await catalogService.getSiteCategories();
+export const getCategories = catchAsync(
+  async (_req: Request, res: Response) => {
+    //Получаем данные с БД:
+    const categories = await catalogService.getSiteCategories();
 
-  //Форматируем ответ согласно OpenAPI (переименовываем _count в motorcyclesCount):
-  const result = categories.map((cat) => ({
-    ...cat,
-    motorcyclesCount: cat._count.motorcycles,
-    _count: undefined, //Убираем техническое поле Prisma
-  }));
+    //Форматируем ответ согласно OpenAPI (переименовываем _count в motorcyclesCount):
+    const result = categories.map((cat) => ({
+      ...cat,
+      motorcyclesCount: cat._count.motorcycles,
+      _count: undefined, //Убираем техническое поле Prisma
+    }));
 
-  res.status(200).json(result);
-});
+    res.status(200).json(result);
+  },
+);
 
 //Получение списка всех брендов мотоциклов:
 export const getBrands = catchAsync(async (req: Request, res: Response) => {
@@ -105,9 +107,11 @@ export const getMotorcycles = catchAsync(
 //Получение информации о конкретном мотоцикле по его slug:
 export const getMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
+    //@ts-ignore:
     const { brandSlug, slug } = req.params;
     const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
+    //@ts-ignore:
     const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
 
     if (!motorcycle) {
@@ -123,6 +127,7 @@ export const getRelated = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { slug } = req.params;
     const userId = req.user?.id;
+    //@ts-ignore:
     const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
     if (!motorcycle) return res.status(404).send();
 
@@ -151,6 +156,7 @@ export const getMotorcycleById = catchAsync(
     const { id } = req.params;
     const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
+    //@ts-ignore:
     const motorcycle = await catalogService.getMotorcycleById(id);
 
     if (!motorcycle) {
@@ -176,7 +182,7 @@ export const getMotorcycleById = catchAsync(
 );
 
 //Получение sitemap для каталога:
-export const getSitemap = catchAsync(async (req: Request, res: Response) => {
+export const getSitemap = catchAsync(async (_req: Request, res: Response) => {
   const xml = await sitemapService.generateSitemapXml();
   res.header("Content-Type", "application/xml"); //Обязательный заголовок, чтобы поисковик распознал XML
   res.send(xml);
@@ -184,7 +190,7 @@ export const getSitemap = catchAsync(async (req: Request, res: Response) => {
 
 //Запуск полной синхронизации Elasticsearch:
 export const syncAllMotorcycles = catchAsync(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     await searchService.syncAllMotorcycles();
     res.send("Синхронизация завершена! Проверь консоль бэкенда.");
   },

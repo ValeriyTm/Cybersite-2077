@@ -23,3 +23,6 @@ build
 # Логи и дампы
 *.log
 docker-compose*.yml
+
+../apps/web/dist
+../apps/server/dist

@@ -1,4 +1,4 @@
-import { createMulter } from "src/shared/lib/multer.js";
+import { createMulter } from "../../shared/lib/multer.js";
 
 export const supportUpload = createMulter({
   dest: "uploads/support",

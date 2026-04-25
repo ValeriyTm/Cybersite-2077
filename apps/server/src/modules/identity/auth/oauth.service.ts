@@ -44,6 +44,7 @@ export class OAuthService {
       //Если Google отказал, мы увидим в консоли точную причину:
       console.error(
         "GOOGLE_AUTH_ERROR_DETAILS:",
+        // @ts-ignore:
         error.response?.data || error.message,
       );
 

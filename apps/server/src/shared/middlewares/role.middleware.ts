@@ -10,7 +10,7 @@ import { prisma } from "@repo/database";
 
 //При вызове функции в её аргумент помещаем массив разрешенных ролей:
 export const roleMiddleware = (allowedRoles: string[]) => {
-  return async (req: AuthRequest, res: Response, next: NextFunction) => {
+  return async (req: AuthRequest, _res: Response, next: NextFunction) => {
     // 1. Проверяем, авторизован ли юзер вообще:
     if (!req.user) {
       throw new AppError(401, "Пользователь не авторизован");

@@ -13,6 +13,29 @@ services:
       - cybersite_net
     depends_on:
       - grafana
+  # ------------Фронтенд и бэкенд:--------------- #
+  server:
+    build:
+      context: .. # Поднимаемся в корень проекта
+      dockerfile: Dockerfile
+      target: server # Выбираем стадию бэкенда
+    container_name: cybersite_server
+    env_file: ../.env # Файл из корня
+    depends_on:
+      - postgres
+      - redis
+      - mongodb
+    networks:
+      - cybersite_net
+
+  web:
+    build:
+      context: .. # Поднимаемся в корень
+      dockerfile: Dockerfile
+      target: web # Выбираем стадию фронтенда
+    container_name: cybersite_web
+    networks:
+      - cybersite_net
   # ------------Базы данных:--------------- #
 
   # Основная база: PostgreSQL с расширением PostGIS для реализации карты

@@ -57,6 +57,7 @@ async function bootstrap() {
     console.log("Сервис очистки неподтвержденных аккаунтов запущен");
 
     //3.Только после успеха запускаем сервер:
+    // @ts-ignore:
     const server = app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
     });

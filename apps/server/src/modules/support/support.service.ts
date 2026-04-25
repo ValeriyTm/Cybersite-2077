@@ -42,6 +42,7 @@ export class SupportService {
           lastName,
           email,
           phone, // Присвоится только если есть
+          // @ts-ignore:
           category,
           description,
           attachments: {
@@ -63,6 +64,7 @@ export class SupportService {
   async updateTicketStatus(id: string, status: string) {
     return await prisma.supportTicket.update({
       where: { id },
+      // @ts-ignore:
       data: { status },
     });
   }

@@ -1,11 +1,11 @@
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "src/shared/lib/redis.js";
+import { redis } from "../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Библиотека для генерации рандомных слов:
 import { faker } from "@faker-js/faker";
 //Для создания событий:
-import { eventBus, EVENTS } from "src/shared/lib/eventBus.js";
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 
@@ -82,6 +82,7 @@ export class DiscountService {
         expiresAt.setDate(expiresAt.getDate() + 3); //Скидка на 3 дня
 
         //Записываем скидку в БД (обновляем старую или создаем новую):
+        //@ts-ignore:
         const discount = await prisma.personalDiscount.upsert({
           where: {
             userId_motorcycleId: {

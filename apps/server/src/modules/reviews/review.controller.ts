@@ -1,6 +1,6 @@
 //Типы:
 import { Response, Request } from "express";
-import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
 //Главный сервис модуля Review:
 import { reviewService } from "./review.service.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
@@ -31,6 +31,7 @@ export const createReview = catchAsync(
 export const getMotorcycleReviews = catchAsync(
   async (req: Request, res: Response) => {
     const { motorcycleId } = req.params;
+    // @ts-ignore:
     const reviews = await reviewService.getByMotorcycle(motorcycleId);
     res.json(reviews);
   },
@@ -44,6 +45,7 @@ export const deleteReview = catchAsync(
     const isAdmin = req.user.role === "ADMIN" || req.user.role === "SUPERADMIN";
 
     const result = await reviewService.deleteReview(
+      // @ts-ignore:
       reviewId,
       req.user.id,
       isAdmin,

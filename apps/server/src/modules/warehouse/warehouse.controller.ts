@@ -1,5 +1,5 @@
 //Типы:
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 //Главный сервис модуля Warehouse:
 import { warehouseService } from "./warehouse.service.js";
 //Используем свой класс для выбрасывания ошибок:
@@ -9,7 +9,7 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 
 //Получаем данные о всех складах:
 export const getAllWarehouses = catchAsync(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const warehouses = await warehouseService.getAll();
     res.json(warehouses);
   },

@@ -1,7 +1,7 @@
 //Очередь:
 import { Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "src/shared/lib/redis.js";
+import { redis } from "../../shared/lib/redis.js";
 
 export const discountQueue = new Queue("discount-tasks", {
   connection: redis,

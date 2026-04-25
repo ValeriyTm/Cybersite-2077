@@ -2,9 +2,9 @@
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Сервисы модуля Notifications:
 import { telegramService } from "./telegram.service.js";
-import { mailService } from "src/modules/notifications/mail.service.js";
+import { mailService } from "../../modules/notifications/mail.service.js";
 //Логгер Grafana Loki:
-import { logger } from "src/shared/lib/logger.js";
+import { logger } from "../../shared/lib/logger.js";
 
 export const initNotificationListeners = () => {
   //1) Реакция на событие оплаты заказа:

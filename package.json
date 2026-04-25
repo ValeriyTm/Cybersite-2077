@@ -12,6 +12,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "npm run build --workspaces --if-present",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },

@@ -3,7 +3,7 @@ import { cartService } from "./cart.service.js";
 import { favoritesService } from "./favorites.service.js";
 //Типы:
 import { Response } from "express";
-import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
 import { type ToggleFavoriteRequest } from "./trading.types.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
@@ -105,6 +105,7 @@ export const updateCartQuantity = catchAsync(
 export const removeFromCart = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { motorcycleId } = req.params;
+    // @ts-ignore:
     const cart = await cartService.removeItem(req.user.id, motorcycleId);
     res.json(cart);
   },

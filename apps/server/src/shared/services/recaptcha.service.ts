@@ -35,7 +35,7 @@ export class RecaptchaService {
       console.log("RECAPTCHA SCORE:", response.data.score);
 
       //Извлекаю данные из ответа от Google:
-      const { success, score, action } = response.data;
+      const { success, score } = response.data;
 
       //Возможные значения в ответе:
       //success: true/false (валидность токена).

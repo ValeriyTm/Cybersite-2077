@@ -177,7 +177,7 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });
 });
 //Эндпоинт, которым будет пользоваться Prometheus:
-app.get("/metrics", async (req, res) => {
+app.get("/metrics", async (_req, res) => {
   res.set("Content-Type", client.register.contentType);
   res.send(await client.register.metrics());
 });

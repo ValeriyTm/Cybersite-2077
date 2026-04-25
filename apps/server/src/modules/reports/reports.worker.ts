@@ -1,7 +1,7 @@
 //Воркер:
 import { Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "src/shared/lib/redis.js";
+import { redis } from "../../shared/lib/redis.js";
 //Основной сервис модуля Reports:
 import { reportsService } from "./reports.service.js";
 //Прочие сервисы модуля Reports:

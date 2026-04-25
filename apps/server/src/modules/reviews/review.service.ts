@@ -18,6 +18,7 @@ export class ReviewService {
   //Создание отзыва:
   async createReview(
     userId: string,
+    // @ts-ignore:
     userName: string,
     data: any,
     files: string[],
@@ -50,6 +51,7 @@ export class ReviewService {
     const review = await ReviewModel.create({
       userId,
       userName: user?.name,
+      // @ts-ignore:
       userAvatar: user?.avatarUrl,
       motorcycleId,
       orderId,

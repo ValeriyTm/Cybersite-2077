@@ -1,7 +1,7 @@
 //Воркер:
 import { Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
-import { redis } from "src/shared/lib/redis.js";
+import { redis } from "../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Для работы с путями и файлами:
@@ -35,6 +35,7 @@ export const supportCleanupWorker = new Worker(
       } catch (err) {
         // Если файла нет или ошибка доступа — просто логируем,
         // чтобы не прерывать удаление остальных файлов
+        // @ts-ignore:
         console.error(`Не удалось удалить файл ${filePath}:`, err.message);
       }
     });

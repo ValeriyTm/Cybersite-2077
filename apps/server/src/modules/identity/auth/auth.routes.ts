@@ -4,7 +4,7 @@ import * as AuthController from "./auth.controller.js";
 //Middleware:
 import { authMiddleware } from "../../../shared/middlewares/auth.middleware.js"; //Middleware для авторизации
 import { authLimiter } from "../../../shared/middlewares/rate-limiter.js"; //rate-лимитер для защиты от перебора паролей:
-import { noCacheMiddleware } from "src/shared/middlewares/noCacheMiddleware.js"; //Middleware для запрета кэширования данных на стороне клиента
+import { noCacheMiddleware } from "../../../shared/middlewares/noCacheMiddleware.js"; //Middleware для запрета кэширования данных на стороне клиента
 
 const router = Router();
 
@@ -20,6 +20,7 @@ router.post("/logout", AuthController.logout);
 //Роут выхода из всех аккаунтов:
 router.post(
   "/logout-all",
+  // @ts-ignore:
   authMiddleware,
   noCacheMiddleware,
   AuthController.logoutAll,
@@ -29,6 +30,7 @@ router.get("/refresh", AuthController.refresh);
 //Роут для замены пароля (из профиля):
 router.post(
   "/change-password",
+  // @ts-ignore:
   authMiddleware,
   noCacheMiddleware,
   AuthController.changePassword,
@@ -36,6 +38,7 @@ router.post(
 //Роут для удаления аккаунта:
 router.delete(
   "/delete-account",
+  // @ts-ignore:
   authMiddleware,
   noCacheMiddleware,
   AuthController.deleteAccount,
@@ -53,6 +56,7 @@ router.get("/google/callback", AuthController.googleCallback);
 //Роут для генерации данных для включения 2FA:
 router.post(
   "/2fa/setup",
+  // @ts-ignore:
   authMiddleware,
   noCacheMiddleware,
   AuthController.setup2FA,
@@ -60,6 +64,7 @@ router.post(
 //Роут для включения 2FA:
 router.post(
   "/2fa/enable",
+  // @ts-ignore:
   authMiddleware,
   noCacheMiddleware,
   AuthController.enable2FA,

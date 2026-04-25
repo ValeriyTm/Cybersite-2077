@@ -1,6 +1,6 @@
 //Типы:
 import { Request, Response } from "express";
-import { AuthRequest } from "src/shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
 //Главный сервис модуля Discount:
 import { discountService } from "./discount.service.js";
 //Для генерации событий:
@@ -25,7 +25,7 @@ export const applyPromoCode = catchAsync(
 
 //Получение текущей глобальной скидки:
 export const getGlobalDiscount = catchAsync(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const data = await discountService.getGlobalDiscount();
     res.json(data);
   },
@@ -33,7 +33,7 @@ export const getGlobalDiscount = catchAsync(
 
 //Тестовый запуск генерации (только для админа):
 export const triggerDiscountGen = catchAsync(
-  async (req: AuthRequest, res: Response) => {
+  async (_req: AuthRequest, res: Response) => {
     const globals = await discountService.generateGlobalDiscount();
     const personals = await discountService.generatePersonalDiscounts();
     const promos = await discountService.generateWeeklyPromos();
@@ -52,7 +52,7 @@ export const triggerDiscountGen = catchAsync(
 
 //Получить все действующие промокоды:
 export const getAllActivePromos = catchAsync(
-  async (req: Request, res: Response) => {
+  async (_req: Request, res: Response) => {
     const promos = await discountService.getAllActivePromos();
     res.json(promos);
   },

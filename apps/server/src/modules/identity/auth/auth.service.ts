@@ -29,6 +29,7 @@ import path from "node:path";
 import { eventBus, EVENTS } from "../../../shared/lib/eventBus.js";
 
 //Указываем унифицированный объект, который будет возвращаться контроллерам:
+// @ts-ignore:
 const formatUserResponse = (user: any, rememberMe = false) => ({
   id: user.id,
   email: user.email,

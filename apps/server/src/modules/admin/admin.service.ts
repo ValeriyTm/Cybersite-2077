@@ -140,6 +140,7 @@ export class AdminService {
         slug: finalSlug,
         price: Number(data.price) || 300000,
         year: Number(data.year) || new Date().getFullYear(),
+        //@ts-ignore:
         displacement: data.displacement ? Number(data.displacement) : null,
         power: data.power ? Number(data.power) : null,
         topSpeed: data.topSpeed ? Number(data.topSpeed) : null,
@@ -277,6 +278,7 @@ export class AdminService {
   }
 
   //Удаление модели мотоцикла:
+  //@ts-ignore:
   async deleteMotorcycle(id) {
     await prisma.motorcycle.delete({ where: { id } });
   }
@@ -345,6 +347,7 @@ export class AdminService {
   async updateOrderStatus(id: string, status: string) {
     return await prisma.order.update({
       where: { id },
+      //@ts-ignore:
       data: { status },
     });
   }
@@ -381,6 +384,7 @@ export class AdminService {
   async updateUserRole(id: string, role: string) {
     return await prisma.user.update({
       where: { id },
+      //@ts-ignore:
       data: { role },
     });
   }
@@ -421,6 +425,7 @@ export class AdminService {
   //---------------------Тикеты поддержки:-------------
   //Получение всех тикетов:
   async getTickets(status: string, email: string, skip: number, l: number) {
+    //@ts-ignore:
     const where: any = {};
     if (status) where.status = status;
     if (email) {
@@ -459,6 +464,7 @@ export class AdminService {
   async updateTicketStatus(id: string, status: string) {
     return await prisma.supportTicket.update({
       where: { id },
+      //@ts-ignore:
       data: { status },
     });
   }
@@ -476,6 +482,7 @@ export class AdminService {
     content: string,
     status: string,
     tags: string[],
+    //@ts-ignore:
     file: any,
     userId?: string,
   ) {

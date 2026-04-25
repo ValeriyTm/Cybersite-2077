@@ -14,7 +14,7 @@ import { AppError } from "../../shared/utils/app-error.js";
 import { catchAsync } from "../../shared/utils/catch-async.js";
 
 export const validateReviewAccess = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: AuthRequest, _res: Response, next: NextFunction) => {
     const { orderId } = req.body;
 
     //Функция для удаления файлов, если проверка не пройдена:

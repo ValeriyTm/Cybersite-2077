@@ -8,9 +8,9 @@ import { AppError } from "../utils/app-error.js";
 
 export const errorMiddleware = (
   err: Error,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   //Если ошибка является AppError, т.е. известна нам:
   if (err instanceof AppError) {

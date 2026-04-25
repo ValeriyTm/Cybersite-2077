@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 
 export const noCacheMiddleware = (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
