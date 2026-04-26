@@ -42,7 +42,8 @@ EXPOSE 3001
 
 WORKDIR /app/apps/server
 
-CMD ["npx", "tsx", "src/index.ts"]
+# CMD ["npx", "tsx", "src/index.ts"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts && npx tsx ../../packages/database/prisma/seed.ts && npx tsx src/index.ts"]
 
 # # --- Stage 4: Web (Статика через Nginx) ---
 # FROM nginx:stable-alpine AS web
