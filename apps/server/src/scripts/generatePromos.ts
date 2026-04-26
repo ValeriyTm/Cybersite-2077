@@ -83,10 +83,17 @@ async function generatePromos() {
       promos.push(code);
       const amount = Math.floor(Math.random() * (200000 - 100000 + 1)) + 100000;
 
-      await prisma.promoCode.create({
-        data: {
+      await prisma.promoCode.upsert({
+        where: { code: code }, // Ищем по уникальному полю code
+        update: {
+          discountAmount: amount,
+          isActive: true, // Активируем заново, если он уже был в базе
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        },
+        create: {
           code,
           discountAmount: amount,
+          isActive: true,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
