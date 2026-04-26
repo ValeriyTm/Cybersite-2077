@@ -97,7 +97,7 @@ export class MailService {
           <h3 style="color: #000;">${bikeName}</h3>
           <p style="text-decoration: line-through; color: #888;">Старая цена: ${oldPrice.toLocaleString()} ₽</p>
           <p style="font-size: 20px; color: #e74c3c; font-weight: bold;">Новая цена: ${newPrice.toLocaleString()} ₽</p>
-          <a href="http://localhost:5173/catalog/motorcycles/${bikeBrand.toLocaleLowerCase()}/${bikeSlug}">Перейти на сайт</a>
+          <a href="http://localhost/catalog/motorcycles/${bikeBrand.toLocaleLowerCase()}/${bikeSlug}">Перейти на сайт</a>
         </div>
         <p>Скидка действует 3 дня. Успей оформить заказ!</p>
       </div>

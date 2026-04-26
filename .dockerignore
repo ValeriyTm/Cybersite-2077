@@ -1,28 +1,29 @@
-# Зависимости (самое важное!)
+# Зависимости:
 node_modules
 **/node_modules
 npm-debug.log*
 
-# Сборка и кэш
+# Сборка и кэш:
 dist
+/apps/web/dist
+/apps/server/dist
 build
 .turbo
 .next
 .cache
 
-# Конфиги и секреты
+# Конфиги и секреты:
 .env
 .env.*
 !.env.example
 .git
 .github
 .vscode
+.VSCodeCounter
 .eslintcache
 .stylelintcache
 
 # Логи и дампы
 *.log
 docker-compose*.yml
-
-../apps/web/dist
-../apps/server/dist
+docker-desktop-data

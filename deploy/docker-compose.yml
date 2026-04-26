@@ -10,13 +10,13 @@ services:
     ports:
       - "80:80"
     volumes:
+      # Nginx отдаёт файлы фронтенда напрямую:
       - ../apps/web/dist:/usr/share/nginx/html
     networks:
       - cybersite_net
     depends_on:
       - grafana
       - server
-      # - web
   # ------------Фронтенд и бэкенд:--------------- #
   server:
     build:
@@ -32,14 +32,6 @@ services:
     networks:
       - cybersite_net
 
-  # web:
-  #   build:
-  #     context: .. # Поднимаемся в корень
-  #     dockerfile: Dockerfile
-  #     target: web # Выбираем стадию фронтенда
-  #   container_name: cybersite_web
-  #   networks:
-  #     - cybersite_net
   # ------------Базы данных:--------------- #
 
   # Основная база: PostgreSQL с расширением PostGIS для реализации карты

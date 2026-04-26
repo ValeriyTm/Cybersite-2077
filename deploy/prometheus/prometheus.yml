@@ -7,8 +7,12 @@ scrape_configs:
       - targets: ["localhost:9090"]
   - job_name: "cybermoto-backend"
     static_configs:
-      # - targets: ["host.docker.internal:3001"]
+      # Контейнер:
       - targets: ["server:3001"]
+
+      # Для локальной разработки:
+      # - targets: ["host.docker.internal:3001"]
   - job_name: "elasticsearch"
     static_configs:
+      # Контейнер:
       - targets: ["elasticsearch:9200"]
