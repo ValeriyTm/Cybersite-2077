@@ -26,6 +26,9 @@ services:
     container_name: cybersite_server
     restart: unless-stopped
     env_file: ../.env # Файл из корня
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4318/v1/traces
+      - OTEL_SERVICE_NAME=cybersite-server
     depends_on:
       - postgres
       - redis
@@ -127,6 +130,7 @@ services:
       - elasticsearch
       - loki
       - prometheus
+      - tempo
 
   loki:
     image: grafana/loki:latest
@@ -148,6 +152,22 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - cybersite_net
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: cybersite_tempo
+    user: root
+    command: ["-config.file=/etc/tempo.yaml", "-target=all"]
+    volumes:
+      - ./tempo/tempo-config.yml:/etc/tempo.yaml
+      - tempo_data:/var/lib/tempo
+    ports:
+      - "3200:3200"
+      - "4318:4318"
+      - "4317:4317"
+    networks:
+      - cybersite_net
+
   # ------------Утилиты:--------------- #
   # Веб-интерфейс для просмотра таблиц PostgreSQL
   adminer:
@@ -204,3 +224,5 @@ volumes:
   es_data:
   # Для Grafana:
   grafana_data:
+  # Для Tempo:
+  tempo_data:
