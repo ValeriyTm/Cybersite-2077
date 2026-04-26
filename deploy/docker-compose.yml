@@ -24,6 +24,7 @@ services:
       dockerfile: Dockerfile
       target: server # Выбираем стадию бэкенда
     container_name: cybersite_server
+    restart: unless-stopped
     env_file: ../.env # Файл из корня
     depends_on:
       - postgres

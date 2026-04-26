@@ -24,6 +24,8 @@ COPY . .
 # Генерируем Prisma Client:
 RUN npx prisma generate --schema=./packages/database/prisma/schema.prisma
 
+# Прогоняем тесты перед сборкой (можно раскомментировать, если не используется ci):
+# RUN npm run test
 # Собираем всё:
 RUN npm run build
 
