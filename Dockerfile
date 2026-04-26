@@ -52,7 +52,8 @@ COPY --from=builder /app/packages/database/generated ./packages/database/generat
 EXPOSE 3001
 WORKDIR /app/apps/server
 
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts && npx tsx ../../packages/database/prisma/seed.ts && npx tsx src/scripts/syncImages.ts && npx tsx src/scripts/imagesForBrands.ts &&  npx tsx src/scripts/syncElastic.ts &&  npx tsx src/scripts/generatePromos.ts && npx tsx src/index.ts"]
+# CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts && npx tsx ../../packages/database/prisma/seed.ts && npx tsx src/scripts/syncImages.ts && npx tsx src/scripts/imagesForBrands.ts &&  npx tsx src/scripts/syncElastic.ts &&  npx tsx src/scripts/generatePromos.ts && npx tsx src/index.ts"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts  &&  npx tsx src/scripts/syncElastic.ts && npx tsx src/index.ts"]
 
 # # --- Stage 4: Web  ---
 # FROM nginx:stable-alpine AS web

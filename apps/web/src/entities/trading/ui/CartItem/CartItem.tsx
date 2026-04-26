@@ -28,7 +28,6 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
   const { toggleFavorite } = useFavorites();
 
-  console.log('data: ', data)
 
   //Ошибка, если товара на складе осталось меньше, чем у нас в корзине:
   const isError = data.quantity > data.totalInStock;

@@ -11,11 +11,14 @@ import { Header } from "@/widgets/Header";
 import { MobileMenu } from "@/widgets/MobileMenu";
 import { Footer } from "@/widgets/Footer";
 import { CursorTrail, BurgerButton } from "@/shared/ui";
-
+//Для работы Яндекс метрики:
+import { useMetrika } from "@/features/analytics"
 //Уведомления:
 import { Toaster } from "react-hot-toast";
 
 export const MainLayout = () => {
+  useMetrika(); //Яндекс метрики
+
   const { isLoading } = useProfile();
   const isAuth = useAuthStore((state) => state.isAuth);
 

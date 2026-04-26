@@ -124,10 +124,20 @@ export const CartPage = () => {
     isProfileIncomplete; //Профиль не заполнен
 
 
+  ////------Работа с Я.Метрикой:-----///
+  const handleOrder = () => {
+    const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
+
+    if (typeof window !== 'undefined' && (window as any).ym) {
+      (window as any).ym(metricaId, 'reachGoal', 'ORDER_CLICK');
+      // console.log('Цель отправлена через глобальную функцию!');
+    }
+  };
   ///--------------------------При отсутствии товаров:------------------------//
   if (cartItems.length === 0) {
     return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
   }
+
 
   return (
     <>
@@ -219,6 +229,7 @@ export const CartPage = () => {
               disabled={isCheckoutDisabled}
               onClick={(e) => {
                 e.stopPropagation(); //Останавливаем "шум" для других компонентов
+                handleOrder();
                 navigate("/checkout", {
                   state: { promo: appliedPromo }, //Передаём промокод в state
                 });

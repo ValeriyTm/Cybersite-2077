@@ -1,0 +1,237 @@
+# services:
+#   # ----------------------Базы данных:-------------------------
+#   postgres:
+#     image: postgis/postgis:15-3.3
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 5
+#     container_name: cybersite_postgres_prod
+#     restart: always
+#     environment:
+#       POSTGRES_DB: ${POSTGRES_DB}
+#       POSTGRES_USER: ${POSTGRES_USER}
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#     env_file:
+#       - ../.env.prod
+#     volumes:
+#       - pg_data:/var/lib/postgresql/data
+#     networks:
+#       - cybersite_net
+
+#   redis:
+#     image: redis:7-alpine
+#     container_name: cybersite_redis_prod
+#     restart: always
+#     command: redis-server --save 60 1 --loglevel warning
+#     volumes:
+#       - redis_data:/data
+#     networks:
+#       - cybersite_net
+
+#   mongodb:
+#     image: mongo:latest
+#     container_name: cybersite_mongo_prod
+#     restart: always
+#     # environment:
+#     #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+#     #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+#     env_file:
+#       - ../.env.prod
+#     volumes:
+#       - mongo_data:/data/db
+#     networks:
+#       - cybersite_net
+
+#   elasticsearch:
+#     image: elasticsearch:8.11.1
+#     healthcheck:
+#       test:
+#         [
+#           "CMD-SHELL",
+#           "curl -s http://localhost:9200/_cluster/health | grep -q 'status.*green\\|yellow'",
+#         ]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+#     container_name: cybersite_elastic_prod
+#     restart: always
+#     environment:
+#       - discovery.type=single-node
+#       - xpack.security.enabled=false # Внутри сети Docker можно оставить так для скорости
+#       - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # Ограничиваем 512МБ
+#     volumes:
+#       - es_data:/usr/share/elasticsearch/data
+#     deploy:
+#       resources:
+#         limits:
+#           memory: 1gb # Лимит на весь контейнер
+#     networks:
+#       - cybersite_net
+
+#   # ----------------------Бэкенд:-------------------------
+#   server:
+#     build:
+#       context: ..
+#       dockerfile: Dockerfile
+#       target: server
+#     container_name: cybersite_server_prod
+#     restart: always
+#     env_file:
+#       - ../.env.prod
+#     environment:
+#       - NODE_ENV=production
+#       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+#     depends_on:
+#       postgres:
+#         condition: service_healthy
+#       redis:
+#         condition: service_started
+#       mongodb:
+#         condition: service_started
+#       elasticsearch:
+#         condition: service_healthy
+
+#   # ----------------------Nginx:-------------------------
+#   nginx:
+#     image: nginx:stable-alpine
+#     container_name: cybersite_nginx_prod
+#     restart: always
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     volumes:
+#       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+#       - ../apps/web/dist:/usr/share/nginx/html:ro # Раздаем билд фронта
+#       - ./certbot/conf:/etc/letsencrypt:ro # Для SSL в будущем
+#     depends_on:
+#       - server
+#     networks:
+#       - cybersite_net
+
+# networks:
+#   cybersite_net:
+#     driver: bridge
+
+# volumes:
+#   pg_data:
+#   redis_data:
+#   mongo_data:
+#   es_data:
+
+# version: "3.8"
+
+services:
+  # ------------Инфраструктура:--------------- #
+  nginx:
+    build: ./nginx
+    container_name: cybersite_nginx_prod
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Nginx отдаёт файлы фронтенда напрямую:
+      - ../apps/web/dist:/usr/share/nginx/html
+    networks:
+      - cybersite_net
+    depends_on:
+      - server
+  # ------------Бэкенд:--------------- #
+  server:
+    build:
+      context: .. # Поднимаемся в корень проекта
+      dockerfile: Dockerfile
+      target: server # Выбираем стадию бэкенда
+    container_name: cybersite_server_prod
+    restart: always
+    env_file: ../.env.prod # Файл из корня
+    depends_on:
+      - postgres
+      - redis
+      - mongodb
+    networks:
+      - cybersite_net
+
+  # ------------Базы данных:--------------- #
+
+  # Основная база: PostgreSQL с расширением PostGIS для реализации карты
+  postgres:
+    image: postgis/postgis:15-3.3 # Специальный образ с уже установленным PostGIS
+    container_name: cybersite_postgres_prod
+    restart: always
+    env_file:
+      - ../.env.prod
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cybersite_net
+
+  # Кэш и очереди: Redis (для корзины и BullMQ)
+  redis:
+    image: redis:7-alpine
+    container_name: cybersite_redis_prod
+    restart: always
+    volumes:
+      - redis_data:/data
+    env_file:
+      - ../.env.prod
+    networks:
+      - cybersite_net
+
+  # MongoDB (для отзывов и новостей)
+  mongodb:
+    image: mongo:6.0
+    container_name: cybersite_mongodb_prod
+    restart: always
+    env_file:
+      - ../.env.prod
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - cybersite_net
+
+  # Поисковый движок:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
+    container_name: cybersite_elasticsearch_prod
+    restart: always
+    environment:
+      - node.name=es-node-01
+      - cluster.name=cybersite-search
+      - discovery.type=single-node
+      # Полное отключение безопасности для локальной разработки:
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      # Настройки CORS для браузера:
+      - http.cors.enabled=true
+      - 'http.cors.allow-origin="*"'
+      - http.cors.allow-headers=X-Requested-With,Content-Type,Content-Length,Authorization
+      # Лимиты памяти:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - cybersite_net
+
+    # --------------------------------------------------- #
+networks:
+  cybersite_net:
+    driver: bridge
+
+volumes:
+  # Для PostgreSQL:
+  postgres_data:
+  # Для Redis:
+  redis_data:
+  # Для MongoDB:
+  mongodb_data:
+  # Для Elascticsearch:
+  es_data:

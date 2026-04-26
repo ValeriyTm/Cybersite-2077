@@ -1,3 +1,3 @@
-export { AdminRoute } from "./AdminRoute";
-export { ProtectedRoute } from "./ProtectedRoute";
-export { GuestRoute } from "./GuestRout";
+export { AdminRoute } from "./AdminRoute.js";
+export { ProtectedRoute } from "./ProtectedRoute.js";
+export { GuestRoute } from "./GuestRout.js";

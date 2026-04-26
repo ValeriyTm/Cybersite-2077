@@ -27,6 +27,16 @@ export const AddToCartButton = ({
     action();
   };
 
+  //Яндекс метрика:
+  const handleOrder = () => {
+    const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
+
+    if (typeof window !== 'undefined' && (window as any).ym) {
+      (window as any).ym(metricaId, 'reachGoal', 'CLICK-CART');
+      // console.log('Цель отправлена через глобальную функцию!');
+    }
+  };
+
   //1) Если товара нет в корзине, то показываем кнопку "В корзину"
   if (!cartItem) {
     return (
@@ -71,10 +81,12 @@ export const AddToCartButton = ({
 
         {/*Кнопка увеличения количества товара в корзине:*/}
         <button
-          onClick={(e) =>
+          onClick={(e) => {
+            handleOrder();
             handleAction(e, () =>
               updateQuantity({ id: data.id, quantity: cartItem.quantity + 1 }),
             )
+          }
           }
           className={styles.quantityBtn}
         >

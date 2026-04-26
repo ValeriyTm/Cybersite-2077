@@ -16,7 +16,7 @@ import styles from './NewsDetailsPage.module.scss';
 
 export const NewsDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  console.log('slug: ', slug)
+
   const { data: article, isLoading, isError } = useQuery({
     queryKey: ['news-article', slug],
     queryFn: () => $api.get(`/content/news/${slug}`).then(res => res.data)

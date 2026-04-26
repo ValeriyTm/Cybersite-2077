@@ -88,8 +88,6 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
   if (isAuth && !tokenFromUrl) return null;
 
   const handleSuccess = () => {
-    // Что делать, если юзер вошел или зарегистрировался?
-    // Например, закрыть модалку или перенаправить на главную:
     console.log("Действие успешно завершено!");
   };
 

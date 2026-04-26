@@ -236,7 +236,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
               {moto?.images
                 ?.filter((img: any) => !deletedImageIds.includes(img.id))
                 .map((img: any) => {
-                  console.log("img url: ", img.url);
+
                   return (
                     <div
                       key={img.id}

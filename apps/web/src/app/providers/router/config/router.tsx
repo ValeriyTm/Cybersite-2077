@@ -5,7 +5,8 @@ import { createBrowserRouter } from "react-router";
 import { HomePage } from '@/pages/HomePage';
 import { MainLayout } from "@/app/ui/";
 import { ErrorFallback } from "@/shared/ui";
-import { ProtectedRoute, GuestRoute } from "@/app/providers/router/ui";
+import { ProtectedRoute } from '@/app/providers/router/ui/ProtectedRoute.js';
+import { GuestRoute } from '@/app/providers/router/ui/GuestRout.js';
 
 const ProfilePage = lazy(() => import("@/pages/ProfilePage").then(m => ({ default: m.ProfilePage })));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));
@@ -135,7 +136,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        lazy: () => import("@/app/providers/router/ui").then(m => ({ Component: m.AdminRoute })),
+        lazy: () => import("@/app/providers/router/ui/AdminRoute.js").then(m => ({ Component: m.AdminRoute })),
         // element: <AdminRoute />, //Админ-панель
         children: [
           {

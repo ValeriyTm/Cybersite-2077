@@ -14,7 +14,7 @@ tsconfig.tsbuildinfo
 *.log
 .env
 .env.*
-!.env.example
+!.env.prod.sample
 !.env.sample
 
 # Системные файлы

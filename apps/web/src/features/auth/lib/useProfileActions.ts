@@ -122,7 +122,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   //Функция-обработчик ошибок валидации:
   const onFormError = (formErrors: any) => {
     //formErrors - объект со всеми ошибками полей, которые нашел Zod.
-    console.log("Ошибки валидации:", formErrors); //Убрать перед продакшеном
+    // console.log("Ошибки валидации:", formErrors); //Убрать перед продакшеном
 
     //Берем первую ошибку из списка:
     const fieldError = Object.values(formErrors)[0] as any;

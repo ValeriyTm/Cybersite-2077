@@ -2,7 +2,22 @@
 import { prisma } from "@repo/database"; // Клиент призмы
 import { esClient } from "../modules/catalog/index.js"; // Путь к ES клиенту
 
+const waitForElastic = async (url: string, retries = 10) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) return true;
+    } catch (e) {
+      console.log(`[Elastic] Ждем запуска (попытка ${i + 1}/${retries})...`);
+      await new Promise((res) => setTimeout(res, 15000)); // Ждем 15 секунд перед следующей попыткой
+    }
+  }
+  throw new Error("Elasticsearch не ответил вовремя.");
+};
+
 async function syncElastic() {
+  await waitForElastic("http://elasticsearch:9200");
+
   const indexName = "motorcycles";
 
   try {

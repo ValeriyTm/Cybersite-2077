@@ -7,14 +7,12 @@ import styles from "./CategoryCard.module.scss";
 
 interface CategoryCardProps {
   category: SiteCategory;
+  img: string;
 }
 
-export const CategoryCard = ({ category }: CategoryCardProps) => {
+export const CategoryCard = ({ category, img }: CategoryCardProps) => {
   const { name, slug, motorcyclesCount } = category;
-
   const isReady = slug === "motorcycles";
-
-  const localImage = `src/shared/assets/images/catalog/${slug}.jpg`; //Адрес на фронтенде
 
   return (
     <Link
@@ -24,7 +22,7 @@ export const CategoryCard = ({ category }: CategoryCardProps) => {
     >
       <article>
         <div className={styles.imageWrapper}>
-          <img src={localImage} alt={name} className={styles.image} width='370'
+          <img src={img} alt={name} className={styles.image} width='370'
             height='418' />
         </div>
 
