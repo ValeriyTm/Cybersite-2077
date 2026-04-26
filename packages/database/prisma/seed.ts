@@ -185,7 +185,7 @@ async function main() {
             .filter((item: any) => item.length > 0) // Удаляем пустые элементы, если они есть
         : [];
 
-      console.log(processedColors);
+      // console.log(processedColors);
 
       await prisma.motorcycle.upsert({
         where: { slug: row.slug }, // Ищем по уникальному слагу
