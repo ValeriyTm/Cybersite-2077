@@ -169,15 +169,11 @@ async function main() {
 
   let count = 0;
   for await (const row of motoStream) {
-    console.log("Текущая строка:", row); // отображение того, как компьютер считывает построчно CSV-файл.
+    // console.log("Текущая строка:", row); // отображение того, как компьютер считывает построчно CSV-файл.
     const brandId = brandsMap.get(row.brand.trim());
     if (!brandId) continue;
 
     try {
-      //Генерируем уникальный slug на основе модели и её даты производства:
-      // const fullModelName = `${row.Model}${row.Year}`;
-      // const modelSlug = slugify(fullModelName);
-
       /////Цвета:
       //Извлекаем значение из колонки Colors:
       const rawColors = row.colors || "";
@@ -328,4 +324,4 @@ main()
     process.exit(1);
   });
 
-//Запуск скрипта командой "npx prisma db seed" из папки packages/database
+//Запуск скрипта командой "npx prisma db seed" из папки packages/database (для локальной разработки) или через Docker (для продакшена) - там уже прописано в CMD в Dockerfile, чтобы при старте контейнера выполнялась миграция и сидирование базы данными.

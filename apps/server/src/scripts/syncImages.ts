@@ -1,5 +1,5 @@
 //Скрипт для заполнения таблицы изображений в БД.
-//Запускаю командой "npx tsx src/scripts/syncImages.ts" из apps/server
+//Запускаю командой "npx tsx src/scripts/syncImages.ts" из apps/server (для локальной разработки)
 
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";

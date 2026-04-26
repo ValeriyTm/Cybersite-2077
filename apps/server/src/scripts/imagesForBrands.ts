@@ -1,5 +1,5 @@
 //Скрипт для заполнения таблицы Brand в БД адресами на изображения.
-//Запускаю командой "npx tsx src/scripts/imagesForBrands.ts" из apps/server
+//Запускаю командой "npx tsx src/scripts/imagesForBrands.ts" из apps/server (для локальной разработки)
 
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
