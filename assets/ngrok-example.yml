@@ -1,0 +1,8 @@
+version: "3"
+agent:
+  authtoken: ваш_токен
+tunnels:
+  backend:
+    proto: http
+    addr: 80 # Порт сервера
+    domain: ваш_домен

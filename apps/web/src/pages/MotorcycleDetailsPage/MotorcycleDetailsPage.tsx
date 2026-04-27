@@ -144,7 +144,7 @@ export const MotorcycleDetailsPage = () => {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": `${motorcycle.brand.name} ${motorcycle.model}`,
-    "url": `http://localhost/catalog/motorcycles/${brandSlug}/${slug}`,
+    "url": `http://${import.meta.env.VITE_SITE_URL}/catalog/motorcycles/${brandSlug}/${slug}`,
     image: [`${API_URL}/static/motorcycles/${motorcycle.mainImage}`],
     description: `Технические характеристики ${motorcycle.model}: ${motorcycle.displacement} см³, ${motorcycle.power} л.с.`,
     "sku": slug, //Внутренний идентификатор товара в моём магазине
@@ -204,7 +204,7 @@ export const MotorcycleDetailsPage = () => {
     ],
     offers: {
       "@type": "Offer",
-      url: `http://localhost/catalog/motorcycles/${brandSlug}/${slug}`, //Ссылка на страницу, где можно купить товар
+      url: `http://${import.meta.env.VITE_SITE_URL}/catalog/motorcycles/${brandSlug}/${slug}`, //Ссылка на страницу, где можно купить товар
       priceCurrency: "RUB",
       price: motorcycle.price,
       itemCondition: "https://schema.org/NewCondition",

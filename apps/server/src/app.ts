@@ -11,7 +11,7 @@ import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
 import { xssClean } from "./shared/middlewares/xss-clean.js";
 //Middleware для защиты всех эндпоинтов от DDoS и brute force (Rate Limiting):
 import { commonLimiter } from "./shared/middlewares/rate-limiter.js";
-//Для передачи логов из Morgan в Grafana Loki:
+//Для передачи логов из Morgan в Grafana Loki (закомментировать для использования docker-compose.prod.yml):
 import { logger } from "./shared/lib/logger.js";
 //Для Prometheus:
 import client from "prom-client";
@@ -61,8 +61,9 @@ app.use(
         responseTime: tokens["response-time"](req, res),
       });
     },
+    //Следующий блок закомментировать для использования docker-compose.prod.yml:
     {
-      //Следующий код перенаправляет вывод Morgan в Loki (при помощи Winston):
+      //Этот код перенаправляет вывод Morgan в Loki (при помощи Winston):
       stream: {
         write: (message) => {
           try {

@@ -1,5 +1,3 @@
-# version: "3.8"
-
 services:
   # ------------Инфраструктура:--------------- #
   nginx:
@@ -25,7 +23,7 @@ services:
       target: server # Выбираем стадию бэкенда
     container_name: cybersite_server
     restart: unless-stopped
-    env_file: ../.env # Файл из корня
+    env_file: ../.env # Файл .env из корня проекта
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4318/v1/traces
       - OTEL_SERVICE_NAME=cybersite-server
@@ -54,7 +52,7 @@ services:
     networks:
       - cybersite_net
 
-  # Кэш и очереди: Redis (для корзины и BullMQ)
+  # Redis (для корзины и BullMQ)
   redis:
     image: redis:7-alpine
     container_name: cybersite_redis
@@ -132,6 +130,7 @@ services:
       - prometheus
       - tempo
 
+  # Агрегация и хранение логов:
   loki:
     image: grafana/loki:latest
     container_name: cybersite_loki
@@ -143,6 +142,7 @@ services:
     networks:
       - cybersite_net
 
+  # Сбор и хранение метрик приложения:
   prometheus:
     image: prom/prometheus:latest
     container_name: cybersite_prometheus
@@ -153,6 +153,7 @@ services:
     networks:
       - cybersite_net
 
+  # Трассировка запросов:
   tempo:
     image: grafana/tempo:latest
     container_name: cybersite_tempo
@@ -179,7 +180,7 @@ services:
     networks:
       - cybersite_net
 
-    # Веб-интерфейс для управления MongoDB
+    # Веб-интерфейс для управления MongoDB:
   mongo-express:
     image: mongo-express
     container_name: cybersite_mongo_express

@@ -46,20 +46,13 @@ COPY . .
 # Копируем сгенерированную призму:
 COPY --from=builder /app/packages/database/generated ./packages/database/generated
 
-# Копируем сбилженные файлы (если будем уходить от tsx)
+# Копируем сбилженные файлы (если нужно будет уходить от tsx):
 # COPY --from=builder /app/apps/server/dist ./apps/server/dist
 
 EXPOSE 3001
 WORKDIR /app/apps/server
 
-# CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts && npx tsx ../../packages/database/prisma/seed.ts && npx tsx src/scripts/syncImages.ts && npx tsx src/scripts/imagesForBrands.ts &&  npx tsx src/scripts/syncElastic.ts &&  npx tsx src/scripts/generatePromos.ts && npx tsx src/index.ts"]
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts  &&  npx tsx src/scripts/syncElastic.ts && npx tsx src/index.ts"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts && npx tsx ../../packages/database/prisma/seed.ts && npx tsx src/scripts/syncImages.ts && npx tsx src/scripts/imagesForBrands.ts &&  npx tsx src/scripts/syncElastic.ts &&  npx tsx src/scripts/generatePromos.ts && npx tsx src/index.ts"]
+# Короткий вариант для тестов:
+# CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts  &&  npx tsx src/scripts/syncElastic.ts && npx tsx src/index.ts"]
 
-# # --- Stage 4: Web  ---
-# FROM nginx:stable-alpine AS web
-# # Копируем билд фронта в папку nginx
-# COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
-# # Конфиг Nginx берем из папки deploy
-# COPY deploy/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-# EXPOSE 80
-# CMD ["nginx", "-g", "daemon off;"]
