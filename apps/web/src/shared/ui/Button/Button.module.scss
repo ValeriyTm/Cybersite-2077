@@ -42,7 +42,7 @@
 }
 
 .secondary {
-  background-color: var(--auxiliary-bg-color);
+  background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--main-text-color);
   color: white;
@@ -55,7 +55,7 @@
 }
 
 .outline {
-  background-color: var(--auxiliary-bg-color);
+  background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--primary-color, var(--accent-text-color));
   color: var(--primary-color, var(--accent-text-color));

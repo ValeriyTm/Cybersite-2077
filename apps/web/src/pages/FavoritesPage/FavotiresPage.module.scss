@@ -55,14 +55,14 @@
   align-items: center;
   justify-content: center;
   padding: 100px 0;
-  color: rgba(155, 15, 15, 0.5);
+  color: var(--main-text-color);
   font-size: 1.2rem;
   gap: 20px;
 
   &::before {
     content: "🤍";
     font-size: 3rem;
-    opacity: 0.3;
+    opacity: 0.5;
   }
 }
 

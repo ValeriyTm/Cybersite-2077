@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import pkg from "pg";
 const { Pool } = pkg;
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/prisma/index.js"; // Проверь, чтобы путь вел к index.js или client
+import { PrismaClient } from "./generated/prisma/index.js";
 
 //Указываем путь к корневому .env:
 const __filename = fileURLToPath(import.meta.url);
