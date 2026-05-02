@@ -6,11 +6,11 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import hpp from "hpp";
 //Middleware для глобальной обработки ошибок:
-import { errorMiddleware } from "./shared/middlewares/error.middleware.js";
+import { errorMiddleware } from "./shared/middlewares/errorMiddleware.js";
 //Middleware для санитизации входящих данных при помощи библиотеки DOMPurify:
-import { xssClean } from "./shared/middlewares/xss-clean.js";
+import { xssClean } from "./shared/middlewares/xssClean.js";
 //Middleware для защиты всех эндпоинтов от DDoS и brute force (Rate Limiting):
-import { commonLimiter } from "./shared/middlewares/rate-limiter.js";
+import { commonLimiter } from "./shared/middlewares/rateLimiter.js";
 //Для передачи логов из Morgan в Grafana Loki (закомментировать для использования docker-compose.prod.yml):
 import { logger } from "./shared/lib/logger.js";
 //Для Prometheus:
@@ -71,7 +71,6 @@ app.use(
             logger.info("HTTP Request", logData); // Отправляем как объект
           } catch (e) {
             logger.info(message.trim()); // Если вдруг придет не JSON
-            console.log(`Ошибка: `, e);
           }
         },
       },

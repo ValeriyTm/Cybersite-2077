@@ -27,10 +27,11 @@ import fs from "node:fs/promises"; // Используем промисы для
 import path from "node:path";
 //Для генерации событий:
 import { eventBus, EVENTS } from "../../../shared/lib/eventBus.js";
+//Типы:
+import { type UserFullInfo } from "@repo/types/src/index.js";
 
 //Указываем унифицированный объект, который будет возвращаться контроллерам:
-// @ts-ignore:
-const formatUserResponse = (user: any, rememberMe = false) => ({
+const formatUserResponse = (user: UserFullInfo) => ({
   id: user.id,
   email: user.email,
   name: user.name,
@@ -40,7 +41,6 @@ const formatUserResponse = (user: any, rememberMe = false) => ({
   birthday: user.birthday,
   gender: user.gender,
   is2FAEnabled: user.is2FAEnabled,
-  // rememberMe,
 });
 
 export class AuthService {
@@ -106,7 +106,11 @@ export class AuthService {
     //Меняем свойство isActiveted у юзера в БД на true:
     await prisma.user.update({
       where: { id: user.id },
-      data: { isActivated: true, activationToken: null }, // Стираем токен, чтобы ссылку нельзя было юзать дважды
+      data: {
+        isActivated: true,
+        activationToken: null, // Стираем токен, чтобы ссылку нельзя было юзать дважды
+        emailVerified: new Date(),
+      },
     });
   }
 
@@ -142,8 +146,11 @@ export class AuthService {
       };
     }
 
+    console.log("user: ", user);
     //Возвращаем все необходимые для работы клиента поля:
-    return formatUserResponse(user, data.rememberMe ?? false);
+    const result = formatUserResponse(user);
+    console.log("result: ", result);
+    return result;
   }
 
   async getUserData(userId: string) {

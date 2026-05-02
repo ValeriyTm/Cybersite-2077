@@ -1,6 +1,6 @@
 //Типы:
 import { Request, Response } from "express";
-import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":

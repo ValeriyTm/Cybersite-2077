@@ -1,6 +1,6 @@
 //Типы:
 import { Response, Request } from "express";
-import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 //Главный сервис модуля Review:
 import { reviewService } from "./review.service.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":

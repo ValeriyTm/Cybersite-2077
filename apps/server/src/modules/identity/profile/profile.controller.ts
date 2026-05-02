@@ -1,6 +1,6 @@
 //Типы:
 import { Response } from "express";
-import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../../shared/utils/catch-async.js";
 //Сервис для взаимодействия с БД для подмодуля profule:

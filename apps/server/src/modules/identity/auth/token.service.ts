@@ -1,6 +1,18 @@
 ////---------------------------Сервис для работы с JWT-токенами
 //Библиотека для работы с JWT:
 import jwt from "jsonwebtoken";
+//Логгер Grafana Loki:
+import { logger } from "../../../shared/lib/logger.js";
+
+// Определяем форму данных в токене
+export interface UserPayload {
+  id: string;
+  email: string;
+  role: string;
+  name: string;
+  iat: number;
+  exp: number;
+}
 
 export class TokenService {
   //Метод для генерации пары "access token - refresh token":
@@ -18,9 +30,10 @@ export class TokenService {
   //Метод для валидации (расшифровка, проверка подписи и срока жизни) access токена:
   validateAccessToken(token: string) {
     try {
-      return jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
+      return jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as UserPayload;
       //Для проверки подписи используем JWT_ACCESS_SECRET
-    } catch (e) {
+    } catch (error) {
+      logger.error(`Проблемы валидации токена: `, error);
       return null;
     }
   }

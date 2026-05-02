@@ -1,7 +1,7 @@
 //------------------------------Middleware для отсечения отзывов на не свой заказ и на не завершенный заказ
 //Типы:
 import { Response, NextFunction } from "express";
-import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 //Модель для взаимодействия с MongoDB:
 import { ReviewModel } from "./review.model.js";
 //Клиент призмы для работы с PostgreSQL:

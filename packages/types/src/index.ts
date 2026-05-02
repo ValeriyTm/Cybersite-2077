@@ -27,6 +27,32 @@ export interface IUser {
   defaultLng: number | null;
 }
 
+export interface UserFullInfo {
+  id: string;
+  email: string;
+  emailVerified: Date | null;
+  name: string;
+  passwordHash: string;
+  phone: string | null;
+  birthday: Date | null;
+  gender: UserGender;
+  role: UserRole;
+  isActivated: boolean;
+  activationToken: string | null;
+  provider: string | null;
+  providerId: string | null;
+  avatarUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  resetPasswordToken: string | null;
+  resetPasswordExpires: Date | null;
+  twoFactorSecret: string | null;
+  is2FAEnabled: boolean;
+  defaultAddress: string | null;
+  defaultLat: number | null;
+  defaultLng: number | null;
+}
+
 //Типизируем ответ при авторизации:
 export interface AuthResponse {
   accessToken: string;

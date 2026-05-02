@@ -2,7 +2,7 @@ import { Router } from "express";
 //Основной контроллер модуля Warehouse:
 import * as warehouseController from "./warehouse.controller.js";
 //Middleware:
-import { authMiddleware } from "../../shared/middlewares/auth.middleware.js"; //Проверка авторизации
+import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //Проверка авторизации
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 
 const router = Router();
@@ -12,7 +12,6 @@ router.get("/", warehouseController.getAllWarehouses);
 // Рассчитать доставку:
 router.post(
   "/calculate",
-  // @ts-ignore:
   authMiddleware,
   noCacheMiddleware,
   warehouseController.calculateDelivery,

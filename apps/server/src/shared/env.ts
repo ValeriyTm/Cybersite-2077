@@ -11,4 +11,4 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //Запускаем dotenv, указывая скрипту путь к .env, лежащему в корне проекта (берем путь текущего скрипта и идём назад на 3 шага):
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+dotenv.config({ path: path.resolve(__dirname, "../../../../.env") });

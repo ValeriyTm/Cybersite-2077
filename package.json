@@ -5,7 +5,7 @@
   "keywords": [],
   "license": "MIT",
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "workspaces": [
     "apps/*",

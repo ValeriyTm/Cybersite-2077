@@ -1,7 +1,7 @@
 //--Тут связь с HTTP. Этот код принимает запросы от клиентов, направляет их в сервис (где осуществляется взаимодействие с БД), получает ответ от сервиса, затем отправляет ответ клиентам--
 //Типы:
 import { Request, Response } from "express";
-import { AuthRequest } from "../../../shared/middlewares/auth.middleware.js"; //Интерфейс получаемых данных от пользователя:
+import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js"; //Интерфейс получаемых данных от пользователя:
 //Схемы валидации Zod:
 import {
   RegisterSchema,

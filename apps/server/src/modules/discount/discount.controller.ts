@@ -1,6 +1,6 @@
 //Типы:
 import { Request, Response } from "express";
-import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 //Главный сервис модуля Discount:
 import { discountService } from "./discount.service.js";
 //Для генерации событий:

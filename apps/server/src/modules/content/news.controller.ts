@@ -11,6 +11,7 @@ import { AppError } from "../../shared/utils/app-error.js";
 export const getAllPublished = catchAsync(
   async (_req: Request, res: Response) => {
     const news = await newsService.getAllPublished();
+    console.log("hoho");
     res.json(news);
   },
 );

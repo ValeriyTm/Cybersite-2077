@@ -1,6 +1,6 @@
 //Типы:
 import { Response } from "express";
-import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 //Главный сервис модуля Ordering:
 import { orderService } from "./order.service.js";
 //Поисковый сервис модуля Catalog:

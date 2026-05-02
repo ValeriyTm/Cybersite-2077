@@ -1,5 +1,5 @@
 //Типы:
-import { AuthRequest } from "../../shared/middlewares/auth.middleware.js";
+import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 
 //Тип для запроса POST "/favorites/toggle/:motorcycleId":
 export interface ToggleFavoriteRequest extends AuthRequest {
