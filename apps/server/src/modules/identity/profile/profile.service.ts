@@ -6,6 +6,7 @@ import { UpdateProfileInput } from "@repo/validation";
 //Для работы с путями и файлами:
 import fs from "node:fs/promises";
 import path from "node:path";
+
 export class ProfileService {
   //Получаем данные о пользователе из БД:
   static async getProfile(userId: string) {
@@ -38,12 +39,7 @@ export class ProfileService {
 
   //Обновляем данные о пользователе в БД:
   static async updateProfile(userId: string, data: UpdateProfileInput) {
-    console.log("Данные для обновления:", data);
-
-    //1) Создаем объект для базы, содержащий пришедшие данные:
-    const updateData: any = { ...data };
-
-    //2) Проверки:
+    //1) Проверки:
     //Проверяем по уникальному номеру телефона:
     if (data.phone) {
       const existingUser = await prisma.user.findFirst({
@@ -60,13 +56,7 @@ export class ProfileService {
       }
     }
 
-    //Если дата пришла строкой, превращаем её в объект Date для Prisma:
-    if (data.birthday) {
-      updateData.birthday = new Date(data.birthday);
-    }
-    //В schema.prisma поле birthday имеет тип DateTime. Явное преобразование через new Date()
-
-    //3) Обновляем данные в БД и возвращаем ответ контроллеру в виде выбранных полей:
+    //2) Обновляем данные в БД и возвращаем ответ контроллеру в виде выбранных полей:
     return prisma.user.update({
       where: { id: userId },
       data: {

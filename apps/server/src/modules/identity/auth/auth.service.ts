@@ -27,11 +27,13 @@ import fs from "node:fs/promises"; // Используем промисы для
 import path from "node:path";
 //Для генерации событий:
 import { eventBus, EVENTS } from "../../../shared/lib/eventBus.js";
+//Логгер Grafana Loki:
+import { logger } from "../../../shared/lib/logger.js";
 //Типы:
-import { type UserFullInfo } from "@repo/types/src/index.js";
+import { User } from "@repo/database/generated/prisma";
 
 //Указываем унифицированный объект, который будет возвращаться контроллерам:
-const formatUserResponse = (user: UserFullInfo) => ({
+const formatUserResponse = (user: User) => ({
   id: user.id,
   email: user.email,
   name: user.name,
@@ -42,6 +44,14 @@ const formatUserResponse = (user: UserFullInfo) => ({
   gender: user.gender,
   is2FAEnabled: user.is2FAEnabled,
 });
+
+export interface IGoogleUser {
+  email: string;
+  name: string;
+  picture: string;
+  sub: string;
+  email_verified: boolean;
+}
 
 export class AuthService {
   //Записываем нового пользователя в БД:
@@ -66,7 +76,7 @@ export class AuthService {
     const activationToken = randomUUID();
 
     //5)Создаём и записываем пользователя в БД:
-    const user = await prisma.user.create({
+    const user: User = await prisma.user.create({
       data: {
         email: data.email,
         name: data.name,
@@ -83,9 +93,8 @@ export class AuthService {
 
       //Генерируем событие для отправки письма:
       eventBus.emit(EVENTS.ACCOUNT_CREATED, user.email, activationLink);
-    } catch (e) {
-      console.error("❌ Ошибка отправки почты:", e);
-      // На этапе разработки просто выведем ошибку в консоль.
+    } catch (error) {
+      logger.error(`❌ Ошибка отправки почты: `, error);
     }
 
     //Возвращаем юзера:
@@ -166,9 +175,9 @@ export class AuthService {
         birthday: true,
         gender: true,
         is2FAEnabled: true,
+        defaultAddress: true,
         defaultLat: true,
         defaultLng: true,
-        defaultAddress: true,
       },
     });
   }
@@ -176,7 +185,7 @@ export class AuthService {
   async logoutAll(userId: string) {
     // Удаляем абсолютно все токены этого пользователя из БД
     return prisma.token.deleteMany({
-      where: { userId: userId },
+      where: { userId },
     });
   }
 
@@ -226,9 +235,11 @@ export class AuthService {
 
         await fs.unlink(filePath); // Удаляем файл
 
-        console.log(
-          `Файл ${user.avatarUrl} успешно удален при удалении аккаунта`,
-        );
+        logger.info("Avatar Deleted", {
+          message: `Файл ${user.avatarUrl} успешно удален при удалении аккаунта`,
+          avatarUrl: user.avatarUrl,
+          userId: user.id,
+        });
       } catch (err) {
         // Если файла нет на диске (например, удалили вручную), просто логируем:
         console.error("Ошибка при удалении файла аватара:", err);
@@ -292,7 +303,7 @@ export class AuthService {
   }
 
   //-----Реализуем OAuth + OIDC:
-  async processGoogleUser(googleUser: any) {
+  async processGoogleUser(googleUser: IGoogleUser) {
     //1) Ищем или создаем пользователя:
     let user = await prisma.user.findUnique({
       where: { email: googleUser.email },
@@ -304,7 +315,7 @@ export class AuthService {
           name: googleUser.name,
           avatarUrl: googleUser.picture, // Сохраняем ссылку на фото из Google
           isActivated: true, // Google-аккаунты априори подтверждены
-          passwordHash: "", // Для OAuth пароль не нужен, можно оставить пустым или генерировать случайный
+          passwordHash: "", // Для OAuth пароль не нужен
         },
       });
     }

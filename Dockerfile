@@ -1,9 +1,12 @@
-# --- Stage 1: Base (установка всех зависимостей) ---
+# ------------------Многоэтапная сборка (multi-stage build)--------------------- #
+# --- Этап 1: Base (установка всех зависимостей) ---
+# Этот этап позволит нам при изменении кода без изменения зависимостей перезапустить контейнер без повторной установки всех зависимостей. Тут ставим вообще все зависимости проекта (в т.ч. dev), чтобы на следующем этапе сгенерировать код.
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat
+# Ставим библиотеку совместимости для корректной работы Prisma в Alpine:
+RUN apk add --no-cache libc6-compat 
 WORKDIR /app
 
-# Копируем корневой и все остальные package.json по всему проекту:
+# Копируем корневой и все остальные package.json по всему проекту внутрь контейнера:
 COPY package*.json ./
 COPY apps/server/package.json ./apps/server/
 COPY apps/web/package.json ./apps/web/
@@ -11,35 +14,42 @@ COPY packages/database/package.json ./packages/database/
 COPY packages/types/package.json ./packages/types/
 COPY packages/validation/package.json ./packages/validation/
 
-# Пропускаем скачивание Cypress:
+# Пропускаем скачивание Cypress (экономия места и времени сборки):
 ENV CYPRESS_INSTALL_BINARY=0
 
-# Устанавливаем все зависимости монорепозитория:
+# Устанавливаем все зависимости проекта:
 RUN npm ci 
 
-# --- Stage 2: Builder ---
+# --- Этап 2: Builder ---
+# На этом этапе генерируем код, который пойдет в финальный образ. Для этого этапа нужны все зависимости, в т.ч. dev.
 FROM base AS builder
+
+# Копируем весь код проекта в контейнер:
 COPY . .
 
 # Генерируем Prisma Client:
 RUN npx prisma generate --schema=./packages/database/prisma/schema.prisma
 
-# Прогоняем тесты перед сборкой (можно раскомментировать, если не используется ci):
+# Прогоняем тесты перед сборкой (можно раскомментировать, если не используется CI):
 # RUN npm run test 
+
 # Собираем всё:
 RUN npm run build
 
-# --- Stage 3: Cleaner (Оставляем только продакшн-зависимости) ---
+# --- Этап 3: Cleaner (Оставляем только продакшн-зависимости) ---
+# Очищаем этап base от dev-зависимостей, т.е. на этом этапе получаем только prod-зависимости.
 FROM base AS production-deps
 WORKDIR /app
-# Выдрасываем dev-зависимости и чистим npm-кэш:
+
+# Выбрасываем dev-зависимости и чистим npm-кэш:
 RUN npm ci --omit=dev && npm cache clean --force
 
-# --- Stage 4: Server ---
+# --- Этап 4: Server ---
+# Главный этап. Тут используем зависимости с production-deps этапа и сгенерированный код с этапа builder, а также делаем прочую работу.
 FROM node:20-alpine AS server
 WORKDIR /app
 
-# Копируем prod-зависимости:
+# Копируем prod-зависимости (т.е. все зависимости берем с этапа production-deps):
 COPY --from=production-deps /app/node_modules ./node_modules
 COPY . .
 

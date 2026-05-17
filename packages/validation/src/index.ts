@@ -113,8 +113,7 @@ export const UpdateProfileSchema = z
       .regex(
         /^[a-z0-9_]+$/,
         "Для имени используйте только латиницу, цифры и нижнее подчеркивание",
-      )
-      .optional(), //Говорит, что параметр не обязательный
+      ),
     phone: z
       .string()
       .trim()
@@ -123,7 +122,7 @@ export const UpdateProfileSchema = z
         /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/,
         "Введите корректный номер телефона",
       )
-      .nullish(),
+      .nullable(),
 
     birthday: z.coerce
       .date({
@@ -131,14 +130,11 @@ export const UpdateProfileSchema = z
         invalid_type_error: "Введите корректную дату",
       })
       .max(new Date(), "Дата не может быть в будущем")
-      .nullable()
-      .optional(),
-    gender: z
-      .preprocess(
-        (val) => (val === "" ? null : val), // Если пришла пустая строка — превращаем в null
-        z.enum(["MALE", "FEMALE"]).nullable(), // Разрешаем null
-      )
-      .optional(),
+      .nullable(),
+    gender: z.preprocess(
+      (val) => (val === "" ? null : val), // Если пришла пустая строка — превращаем в null
+      z.enum(["MALE", "FEMALE"]).nullable(), // Разрешаем null
+    ),
   })
   .strict();
 

@@ -36,7 +36,9 @@ export const register = catchAsync(async (req: Request, res: Response) => {
   if (!result.success) {
     //Если данные не прошли проверку (например, email некорректен), сервер сразу возвращает
     //статус 400 (Bad Request) и список ошибок по конкретным полям:
-    return res.status(400).json({ errors: result.error.flatten().fieldErrors });
+    return res.status(400).json({
+      errors: result.error.flatten((issue) => issue.message).fieldErrors,
+    });
   }
 
   //2) Проверяем капчу (до того, как лезть в БД и проверять пароль):
@@ -126,7 +128,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   //9) Задаём настройки куки:
   const cookieOptions: any = {
     httpOnly: true, // Защита от XSS
-    secure: process.env.NODE_ENV === "production", // Только HTTPS в продакшене
+    secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
     sameSite: "lax",
     path: "/api/identity/auth",
     maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : undefined,
@@ -157,8 +159,8 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 
   //3) Очищаем куку с теми же параметрами, с которыми создавали:
   res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    httpOnly: true, // Защита от XSS
+    secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
     sameSite: "lax",
     path: "/api/identity/auth",
   });
@@ -209,8 +211,8 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   //7) Обновляем куку:
   res.cookie("refreshToken", tokens.refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000, //7 дней
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    httpOnly: true, // Защита от XSS
+    secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
     sameSite: "lax",
     //Куки с refresh-токеном будут отправляться клиентом только по этому пути:
     path: "/api/identity/auth",
@@ -280,7 +282,7 @@ export const forgotPassword = catchAsync(
     const result = ForgotPasswordSchema.safeParse(req.body);
     if (!result.success) {
       return res.status(400).json({
-        errors: result.error.flatten().fieldErrors,
+        errors: result.error.flatten((issue) => issue.message).fieldErrors,
       });
     }
 
@@ -314,8 +316,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   const validation = ResetPasswordSchema.safeParse(req.body);
   if (!validation.success) {
     return res.status(400).json({
-      // @ts-ignore:
-      errors: validation.error.flatten().fieldErrors,
+      errors: validation.error.flatten((issue) => issue.message).fieldErrors,
     });
   }
 
@@ -375,8 +376,8 @@ export const googleCallback = catchAsync(
     //4) Устанавливаем куку (используем те же настройки, что для обычного логина):
     res.cookie("refreshToken", tokens.refreshToken, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      httpOnly: true, // Защита от XSS
+      secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
       sameSite: "lax",
       path: "/api/identity/auth",
     });
@@ -413,9 +414,7 @@ export const verify2FA = catchAsync(async (req: Request, res: Response) => {
   const result = Verify2FASchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({
-      // eslint-disable-next-line:
-      // @ts-ignore:
-      errors: result.error.flatten().fieldErrors,
+      errors: result.error.flatten((issue) => issue.message).fieldErrors,
     });
   }
 
@@ -438,8 +437,8 @@ export const verify2FA = catchAsync(async (req: Request, res: Response) => {
   //6) Устанавливаем куки:
   res.cookie("refreshToken", tokens.refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    httpOnly: true, // Защита от XSS
+    secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
     sameSite: "lax",
     path: "/api/identity/auth",
   });

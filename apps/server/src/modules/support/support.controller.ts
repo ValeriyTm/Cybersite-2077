@@ -46,11 +46,9 @@ export const createTicket = catchAsync(
         // Ждем завершения удалений перед ответом (или можно не ждать, если файлы не критичны)
         await Promise.all(deletePromises);
       }
+
       return res.status(400).json({
-        message: "Ошибка валидации",
-        // eslint-disable-next-line
-        // @ts-ignore:
-        errors: validation.error.flatten().fieldErrors,
+        errors: validation.error.flatten((issue) => issue.message).fieldErrors,
       });
     }
 

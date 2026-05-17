@@ -7,7 +7,7 @@ export type UserRole =
   | "SUPERADMIN";
 
 //Типизируем пол:
-export type UserGender = "MALE" | "FEMALE" | null;
+export type UserGender = "MALE" | "FEMALE" | null; //null, т.к. поле опциональное
 
 //Типизируем данные юзера:
 export interface IUser {
@@ -15,38 +15,10 @@ export interface IUser {
   email: string;
   name: string;
   role: UserRole;
-  isActivated: boolean;
   avatarUrl: string | null;
   phone: string | null;
-  birthday: string | null;
+  birthday: string | null; //Сервер отправляет Date | null, но Date будет преобразовано в string
   gender: UserGender;
-  is2FAEnabled: boolean;
-  createdAt: string;
-  defaultAddress: string | null;
-  defaultLat: number | null;
-  defaultLng: number | null;
-}
-
-export interface UserFullInfo {
-  id: string;
-  email: string;
-  emailVerified: Date | null;
-  name: string;
-  passwordHash: string;
-  phone: string | null;
-  birthday: Date | null;
-  gender: UserGender;
-  role: UserRole;
-  isActivated: boolean;
-  activationToken: string | null;
-  provider: string | null;
-  providerId: string | null;
-  avatarUrl: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  resetPasswordToken: string | null;
-  resetPasswordExpires: Date | null;
-  twoFactorSecret: string | null;
   is2FAEnabled: boolean;
   defaultAddress: string | null;
   defaultLat: number | null;

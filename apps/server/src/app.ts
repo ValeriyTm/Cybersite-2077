@@ -81,7 +81,7 @@ app.use(
 //Настройка заголовков безопасности. Helmet всегда должен стоять самым первым (кроме логирования):
 app.use(
   helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginResourcePolicy: { policy: "cross-origin" }, //Политика CORP. Заголовок сообщает браузеру, что данный ресурс (например, изображение или скрипт) может быть загружен любым сайтом, даже если запрос идет с другого домена
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
@@ -103,6 +103,8 @@ app.use(
       },
     },
     xFrameOptions: { action: "deny" }, //Защита от Clickjacking
+    xContentTypeOptions: true, //Явно включаем заголовок X-Content-Type-Options: nosniff (для борьбы с MIME-type sniffing, в т.ч. XSS и XSSI)
+    xXssProtection: true, //Явно отключаем заколовок X-XSS-Protection (т.к. он устарел и опасен)
   }),
 );
 //При использовании helmet не допускается какой-либо JS-код
@@ -117,6 +119,19 @@ app.set("trust proxy", 1);
 //Защита всех эндпоинтов от DDoS и brute force (Rate Limiting):
 app.use(commonLimiter);
 //Лимитер отсекает лишние запросы по IP еще до того, как сервер начнет тратить память на парсинг JSON (express.json()) или очистку от XSS.
+
+//Блокируем запросы с Content-Type типа XML, чтобы предотвратить атаки XXE:
+app.use((req, res, next) => {
+  const contentType = req.headers["content-type"];
+  if (
+    contentType &&
+    (contentType.includes("xml") ||
+      contentType.includes("application/xhtml+xml"))
+  ) {
+    return res.status(415).json({ error: "Формат XML не поддерживается" });
+  }
+  next();
+});
 
 //Парсер тела json-запроса от клиента
 //(срабатывает, если с клиента приходит нечто формата

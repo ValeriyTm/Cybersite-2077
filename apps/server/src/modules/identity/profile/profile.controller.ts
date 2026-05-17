@@ -28,9 +28,9 @@ export const updateMe = catchAsync(async (req: AuthRequest, res: Response) => {
   //1) Валидируем пришедшие данные при помощи схемы Zod:
   const result = UpdateProfileSchema.safeParse(req.body);
   if (!result.success) {
-    // eslint-disable-next-line
-    // @ts-ignore:
-    return res.status(400).json({ errors: result.error.flatten().fieldErrors });
+    return res.status(400).json({
+      errors: result.error.flatten((issue) => issue.message).fieldErrors,
+    });
   }
 
   //2) Обновляем данные в БД:
