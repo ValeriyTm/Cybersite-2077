@@ -1,8 +1,8 @@
 import {
   fetchSiteCategories,
-  type SiteCategory,
   CategoryCard,
 } from "@/entities/catalog";
+import { type SiteCategory } from "@repo/types";
 //Состояния:
 import { useEffect, useState } from "react";
 //API:

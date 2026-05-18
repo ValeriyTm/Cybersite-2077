@@ -1,6 +1,1 @@
-export {
-  fetchSiteCategories,
-  fetchBrands,
-  fetchMotorcycles,
-  fetchMotorcycleBySlug,
-} from "./catalogApi";
+export { fetchSiteCategories, fetchBrands } from "./catalogApi";

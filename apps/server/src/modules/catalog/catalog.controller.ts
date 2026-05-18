@@ -12,11 +12,13 @@ import {
   GetBrandsArgs,
   MotoBySlugServiceArgs,
   MotorcyclesServiceArgs,
+  RelatedBySlugServiceArgs,
 } from "@repo/validation";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
+import { MotorcycleFullServer } from "@repo/types";
 
 //Получение главных категорий:
 export const getCategories = catchAsync(
@@ -89,14 +91,14 @@ export const getMotorcycle = catchAsync(
 //Поиск аналогичных мотоциклов (рекомендации):
 export const getRelated = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { slug } = req.params;
+    const { slug } = req.params as RelatedBySlugServiceArgs;
     const userId = req.user?.id;
-    //@ts-ignore:
+
     const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
     if (!motorcycle) return res.status(404).send();
 
     const related = await searchService.getRelatedMotorcycles(
-      motorcycle,
+      motorcycle as MotorcycleFullServer,
       userId,
     );
     res.json(related);

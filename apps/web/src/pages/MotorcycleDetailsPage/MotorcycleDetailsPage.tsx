@@ -2,16 +2,16 @@
 import { Navigate, useParams } from "react-router";
 //Состояния:
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFavorites, useTradingStore } from "@/entities/trading";
 import { useAuthStore, useProfile } from "@/features/auth";
+import { useMotorcycleBySlug, useRelatedMotos, useMotorcycleReviews } from "@/entities/catalog/lib";
 //API:
-import { $api, API_URL } from "@/shared/api/api";
+import { API_URL } from "@/shared/api/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Компоненты:
 import { SpecRow, Breadcrumbs } from "@/shared/ui";
-import { MotorcycleCard, type MotorcycleFull, type MotorcycleReview, type MotorcycleShort } from "@/entities/catalog";
+import { MotorcycleCard, type MotorcycleReview, type MotorcycleShort } from "@/entities/catalog";
 import { AddToCartButton } from "@/features/trading";
 import { ReviewCard } from "@/entities/reviews";
 //Изображения:
@@ -34,20 +34,12 @@ export const MotorcycleDetailsPage = () => {
   //Извлекаем данные юзера для работы с отзывом:
   const { user } = useProfile();
 
-  const queryClient = useQueryClient();
-
   //Подключаем избранное и корзину:
   const { toggleFavorite } = useFavorites();
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
 
-  //Получаем данные по мотоциклу от сервера:
-  const { data: motorcycle, isLoading, isError } = useQuery({
-    queryKey: ["motorcycle", slug],
-    queryFn: () =>
-      $api
-        .get<MotorcycleFull>(`catalog/motorcycles/${brandSlug?.toLowerCase()}/${slug}`)
-        .then((res) => res.data),
-  });
+  //Получаем данные о мотоцикле:
+  const { data: motorcycle, isLoading, isError } = useMotorcycleBySlug({ brandSlug, slug });
 
   //------------------Изображения:----------------------//
   //Состояние для кликнутому изображению в галерее:
@@ -67,40 +59,22 @@ export const MotorcycleDetailsPage = () => {
 
   //------------------------Рекоммендации:-------------//
   //Получаем данные по рекомендованным мотоциклам:
-  const { data: relatedMotorcycles = [] } = useQuery({
-    queryKey: ["related", slug],
-    queryFn: () =>
-      $api.get(`catalog/motorcycles/${slug}/related`).then((res) => res.data),
-  });
+  const { data: relatedMotorcycles } = useRelatedMotos({ slug });
   //------------------------------------------------------//
 
   //----------------------Отзывы:--------------------------//
-  //Загружаем отзывы из MongoDB:
-  const { data: reviews } = useQuery({
-    queryKey: ["reviews", motorcycle?.id], // Ключ обновится, когда придет id
-    queryFn: () =>
-      $api.get(`/reviews/${motorcycle?.id}`).then((res) => res.data),
-    //Запрос не уйдет, пока motorcycle.id равен undefined:
-    enabled: !!motorcycle?.id,
+  const {
+    reviews, //Список отщывов
+    deleteReview, //Функция удаления отзыва
+  } = useMotorcycleReviews({
+    motorcycleId: motorcycle?.id,
+    slug
   });
 
-  //Мутация удаления отзыва
-  const deleteMutation = useMutation({
-    mutationFn: (reviewId: string) => $api.delete(`/reviews/${reviewId}`),
-    onSuccess: () => {
-      //Обновляем список отзывов:
-      queryClient.invalidateQueries({ queryKey: ["reviews", motorcycle?.id] });
-
-      //Обновляем данные самого мотоцикла (чтобы звезды в шапке изменились):
-      //(используем slug, так как это ключ первого запроса)
-      queryClient.invalidateQueries({ queryKey: ["motorcycle", slug] });
-    },
-  });
-
-  //Для удаления отзыва:
+  //Обработчик для удаления отзыва:
   const handleDelete = (reviewId: string) => {
     if (window.confirm("Удалить этот отзыв?")) {
-      deleteMutation.mutate(reviewId);
+      deleteReview(reviewId);
     }
   };
   //------------------------------------------------------------//
@@ -118,7 +92,6 @@ export const MotorcycleDetailsPage = () => {
   };
 
   //--------------------Проблемные случаи:-------------------//
-
   //Лоадер:
   if (isLoading)
     return <div className={styles.loader}>Загрузка...</div>;

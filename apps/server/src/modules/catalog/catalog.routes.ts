@@ -9,6 +9,7 @@ import {
   GetBrandsQuerySchema,
   GetMotoBySlugSchema,
   GetMotorcyclesQuerySchema,
+  GetRelatedBySlugSchema,
 } from "@repo/validation";
 
 const router = Router();
@@ -19,8 +20,7 @@ router.get("/sitemap.xml", catalogController.getSitemap);
 //Получение главных категорий (/api/catalog/categories):
 router.get("/categories", catalogController.getCategories);
 
-//Список брендов с пагинацией для страницы (/api/catalog/brands?page=1&limit=20):
-// router.get("/brands", catalogController.getBrands);
+//Список брендов с пагинацией для страницы (/api/catalog/brands):
 router.get(
   "/brands",
   validate(GetBrandsQuerySchema),
@@ -41,6 +41,7 @@ router.get("/search/suggest", catalogController.getSuggestions);
 //Получение аналогичных мотоциклов (рекомендации) (/api/catalog/motorcycles/:slug/related):
 router.get(
   "/motorcycles/:slug/related",
+  validate(GetRelatedBySlugSchema),
   optionalAuth,
   catalogController.getRelated,
 );

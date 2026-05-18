@@ -373,3 +373,12 @@ export const GetMotoBySlugSchema = z.object({
 });
 export type MotoBySlugInput = z.infer<typeof GetMotoBySlugSchema>;
 export type MotoBySlugServiceArgs = MotoBySlugInput["params"];
+
+//----------------------------2.4) Схема для получения рекоммендаций:--------------------------------------------//
+export const GetRelatedBySlugSchema = z.object({
+  params: z.object({
+    slug: z.string().min(1, "Слаг обязателен"),
+  }),
+});
+export type RelatedBySlugInput = z.infer<typeof GetRelatedBySlugSchema>;
+export type RelatedBySlugServiceArgs = RelatedBySlugInput["params"];

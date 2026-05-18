@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
-import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort } from "@/entities/catalog";
+import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, type MotorcycleResponse } from "@/entities/catalog";
 import { useQuery } from "@tanstack/react-query";
 //API:
 import { $api } from "@/shared/api";
@@ -37,12 +37,12 @@ export const MotorcyclesPage = () => {
     setIsOpen(!isOpen);
   };
 
-  //Загружаем и кэшируем даннеы о моделях мотоциклов с учетом фильтров:
+  //Загружаем и кэшируем данные о моделях мотоциклов с учетом фильтров:
   const { data, isLoading } = useQuery({
     queryKey: ["motorcycles", brandSlug, filters],
     queryFn: () =>
       $api
-        .get(`catalog/motorcycles/`, {
+        .get<MotorcycleResponse>(`catalog/motorcycles/`, {
           params: { ...filters, brandSlug },
         })
         //Оставляем только полезные данные в data:

@@ -1,17 +1,8 @@
 import type {
-  StarterType,
   TransmissionType,
-  GearboxType,
-  CoolingType,
   MotoCategory,
 } from "@repo/database/generated/prisma/index.js";
-export interface SiteCategory {
-  id: string;
-  name: string;
-  slug: string;
-  imageUrl: string | null;
-  motorcyclesCount: number;
-}
+import { type MotorcycleFull } from "@repo/types";
 
 export interface Brand {
   id: string;
@@ -71,71 +62,6 @@ export interface MotorcycleShort {
   year: number;
 }
 
-export interface MotorcycleFull {
-  brand: {
-    country: string;
-    createdAt: string;
-    id: string;
-    image: string;
-    name: string;
-    slug: string;
-    updatedAt: string;
-  };
-  brandId: string;
-  colors: string[];
-  comments: string | null;
-  coolingSystem: CoolingType | null;
-  engineType: string | null;
-  frontBrakes: string | null;
-  frontTyre: string | null;
-  fuelConsumption: number | null;
-  fuelSystem: string | null;
-  gearbox: GearboxType | null;
-  rearBrakes: string | null;
-  rearTyre: string | null;
-  siteCategory: {
-    createdAt: string;
-    description: string;
-    id: string;
-    imageUrl: string | null;
-    name: string;
-    slug: string;
-    updatedAt: string;
-  };
-  siteCategoryId: string;
-  starter: StarterType | null;
-  stocks: MotorcycleStocks[];
-  topSpeed: number | null;
-  updatedAt: string;
-  images: {
-    createdAt: string;
-    id: string;
-    isMain: boolean;
-    motorcycleId: string;
-    url: string;
-  }[];
-  brandSlug: string; //Для роутинга
-  category: MotoCategory;
-  createdAt: string;
-  discountData: {
-    originalPrice: number;
-    finalPrice: number;
-    discountPercent: number | null;
-    isPersonal: boolean;
-  };
-  displacement: number;
-  id: string;
-  mainImage: string;
-  model: string;
-  power: number | null;
-  price: number;
-  rating: number;
-  slug: string;
-  totalInStock: number;
-  transmission: TransmissionType | null;
-  year: number;
-}
-
 export interface MotorcycleCart extends MotorcycleFull {
   quantity: number;
   selected: boolean;
@@ -146,11 +72,6 @@ export interface MotorcycleResponse {
   total: number;
   page: number;
   pages: number;
-}
-
-export interface MotorcycleStocks {
-  quantity: number;
-  reserved: number;
 }
 
 export interface MotorcycleReview {

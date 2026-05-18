@@ -6,6 +6,8 @@ import { prisma } from "@repo/database";
 import { discountLogic } from "../discount/index.js";
 //Схемы валидации Zod:
 import { MotorcyclesServiceArgs } from "@repo/validation";
+//Типы:
+import { MotorcycleFullServer, type MotorcycleFull } from "@repo/types";
 
 //Подключаемся к контейнеру:
 export const esClient = new Client({ node: process.env.ELASTIC_NODE });
@@ -271,7 +273,11 @@ export class SearchService {
   }
 
   //Поиск аналогичных мотоциклов (рекомендации):
-  async getRelatedMotorcycles(motorcycle: any, userId?: string, limit = 4) {
+  async getRelatedMotorcycles(
+    motorcycle: MotorcycleFullServer,
+    userId?: string,
+    limit = 4,
+  ) {
     //[Отбор происходит по принципу «похожий класс + похожий объём».Мы ищем мотоциклы только из той же категории. Elastic старается в первую очередь выдать модели того же производителя. Мы ищем модели с объёмом +/- 30% от текущего.]
     //Собираем только те фильтры, которые реально существуют в объекте:
     const must: any[] = [];
