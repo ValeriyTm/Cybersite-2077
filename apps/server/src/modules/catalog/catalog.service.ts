@@ -2,6 +2,8 @@
 import { prisma } from "@repo/database";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
+//Схемы валидации Zod:
+import { GetBrandsArgs } from "@repo/validation";
 
 export class CatalogService {
   //Получение основных категорий приложения:
@@ -22,10 +24,10 @@ export class CatalogService {
   }
 
   //Получение списка брендов:
-  async getBrands(page: number = 1, limit: number = 20, search?: string) {
+  async getBrands({ page, limit, search }: GetBrandsArgs) {
     const skip = (page - 1) * limit;
 
-    // Создаем объект фильтрации
+    //Создаем объект фильтрации:
     const where = search
       ? { name: { contains: search, mode: "insensitive" as const } }
       : {};
@@ -45,7 +47,7 @@ export class CatalogService {
             select: { motorcycles: true }, //motorcyclesCount (общее кол-во мотоциклов конкретного бренда)
           },
         },
-        orderBy: { name: "asc" }, //Сортируем по алфавиту по умолчанию
+        orderBy: { name: "asc" }, //Сортируем по алфавиту
       }),
       prisma.brand.count({ where }), //Считаем количество только найденных брендов
     ]);

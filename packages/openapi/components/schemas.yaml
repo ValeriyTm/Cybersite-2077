@@ -393,7 +393,7 @@ Brand:
 
 BrandInPage:
   type: object
-  required: [id, name, country, slug]
+  required: [id, name, country, slug, motorcyclesCount]
   properties:
     id:
       type: string

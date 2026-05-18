@@ -17,7 +17,7 @@ import styles from "./BrandPage.module.scss";
 export const BrandPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  //Извлекаем данные (страница и поисковый запрос) из URL:
+  //Извлекаем данные (номер страницы и поисковый запрос) из URL:
   const currentPage = Number(searchParams.get("page")) || 1;
   const search = searchParams.get("search") || "";
 
@@ -29,19 +29,22 @@ export const BrandPage = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  //Всего страниц:
   const totalPages = data?.pages || 1;
 
-  //Функция для обновления URL:
+  //Функция для обновления get-параметров в URL:
   const updateParams = (
     newParams: Record<string, string | number | undefined>,
   ) => {
+    //Достаем текущие параметры из URL и записываем в params:
     const params = new URLSearchParams(searchParams);
+    //Обновление значений get-параметров в params в соответствии с новыми newParams:
     Object.entries(newParams).forEach(([key, value]) => {
       if (value) params.set(key, String(value));
       else params.delete(key);
     });
     if (!newParams.page) params.set("page", "1"); //Сброс на первую страницу при поиске
-    setSearchParams(params);
+    setSearchParams(params); //Обновляем URL в поисковой строке
   };
 
   //Дебаунс для поиска:

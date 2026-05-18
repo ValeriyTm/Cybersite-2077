@@ -7,6 +7,8 @@ import { searchService } from "./search.service.js";
 import { sitemapService } from "./sitemap.service.js";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
+//Схемы валидации Zod:
+import { GetBrandsArgs } from "@repo/validation";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
@@ -31,16 +33,10 @@ export const getCategories = catchAsync(
 
 //Получение списка всех брендов мотоциклов:
 export const getBrands = catchAsync(async (req: Request, res: Response) => {
-  //Вытаскиваем параметры из адресной строки и приводим к числам с дефолтными значениями:
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 20;
-  const search = req.query.search as string; //Забираем строку поиска
+  //Данные приходят в виде { page: 5, limit: 24, search: '' }
+  const data = req.query as unknown as GetBrandsArgs;
 
-  const { items, total, pages } = await catalogService.getBrands(
-    page,
-    limit,
-    search,
-  );
+  const { items, total, page, pages } = await catalogService.getBrands(data);
 
   //Мапим результат:
   const formattedItems = items.map((brand) => ({
@@ -61,6 +57,8 @@ export const getBrands = catchAsync(async (req: Request, res: Response) => {
 export const getMotorcycles = catchAsync(
   async (req: AuthRequest, res: Response) => {
     // Собираем все значеняи из фильтров из строки запроса:
+    console.log("query: ", req.query);
+
     const filters = {
       brandSlug: req.query.brandSlug as string,
       search: req.query.search as string,
@@ -95,6 +93,8 @@ export const getMotorcycles = catchAsync(
       sortBy: req.query.sortBy as string,
       onlyInStock: req.query.onlyInStock as string,
     };
+
+    console.log("filters: ", filters);
 
     // Достаем userId из токена (если он есть; если нет, то персональные скидки будет не доступны)
     const userId = req.user?.id;

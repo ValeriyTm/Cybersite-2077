@@ -1,8 +1,10 @@
 import { z } from "zod";
 
-//-----------------Схемы для регистрации:---------------------//
-
-//Схема для регистрации, которая будет использоваться на бэкенде:
+////-----------------------------------------------------------------------------------------------////
+////--------------------------1) Модуль Auth-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------1.1) Схема для регистрации:--------------------------------------------//
+//----------------------------1.1.1)Схема для регистрации, которая будет использоваться на бэкенде:
 export const RegisterSchema = z
   .object({
     //Валидируем email:
@@ -50,7 +52,7 @@ export const RegisterSchema = z
   })
   .strict();
 
-//Схема для регистрации, которая будет использоваться на фронтенде:
+//----------------------1.1.2)Схема для регистрации, которая будет использоваться на фронтенде:
 export const RegisterFormSchema = RegisterSchema.extend({
   confirmPassword: z.string().min(1, "Подтвердите пароль"),
   acceptTerms: z.literal(true, {
@@ -68,17 +70,17 @@ export const RegisterFormSchema = RegisterSchema.extend({
         code: "custom",
         message: "Пароль не должен содержать ваше имя",
         path: ["password"],
+        //В superRefine происходит сверка имени и пароля; если в пароле есть имя, то это будет ошибкой.
       });
     }
   });
-//В superRefine происходит сверка имени и пароля; если в пароле есть имя, то это будет ошибкой.
 
 //Создаём тип для регистрации на основе схемы (для backend):
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 //Создаём тип для регистрации на основе схемы (для frontend):
 export type RegisterFormInput = z.infer<typeof RegisterFormSchema>;
-//---------------------------------------------------------
-//-----------------Схемы для логина:---------------------//
+
+//----------------------------1.2) Схема для логина:--------------------------------------------//
 //Схема для логина:
 export const LoginSchema = z
   .object({
@@ -279,3 +281,86 @@ export const createTicketSchema = z.object({
   captchaToken: z.string({ required_error: "Ошибка безопасности" }),
   // captchaToken: z.string().min(1, "Токен безопасности обязателен"),
 });
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------2) Модуль Catalog-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------2.1) Схема для получения брендов:--------------------------------------------//
+export const GetBrandsQuerySchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    //Благодаря default автоматически подставится значение 1, если page не указан в адресной строке
+
+    limit: z.coerce.number().int().positive().max(100).default(24),
+
+    search: z.string().optional(),
+    //Тип для search: string | undefined (т.к. optional)
+  }),
+});
+
+type BrandsPageInput = z.infer<typeof GetBrandsQuerySchema>;
+//Чистый тип для сервиса:
+export type GetBrandsArgs = BrandsPageInput["query"];
+
+//----------------------------2.2) Схема для получения мотоциклов бренда:--------------------------------------------//
+const MotoCategoryEnum = z.enum([
+  "Allround",
+  "ATV",
+  "Classic",
+  "Cross / motocross",
+  "Custom / cruiser",
+  "Enduro / offroad",
+  "Minibike, cross",
+  "Minibike, sport",
+  "Naked bike",
+  "Prototype / concept model",
+  "Scooter",
+  "Speedway",
+  "Sport",
+  "Sport touring",
+  "Super motard",
+  "Touring",
+  "Trial",
+  "Unspecified category",
+]);
+const TransmissionTypeEnum = z.enum(["Chain", "Belt", "Cardan"]);
+
+export const GetMotorcyclesQuerySchema = z.object({
+  query: z
+    .object({
+      brandSlug: z
+        .string()
+        .toLowerCase()
+        .min(1, "brandSlug является обязательным параметром"),
+      minPrice: z.coerce.number().int().positive().optional(),
+      maxPrice: z.coerce.number().int().positive().optional(),
+      minYear: z.coerce.number().int().min(1894).max(2026).optional(),
+      maxYear: z.coerce.number().int().min(1894).max(2026).optional(),
+      minDisplacement: z.coerce.number().int().positive().optional(),
+      maxDisplacement: z.coerce.number().int().positive().optional(),
+      minPower: z.coerce.number().positive().optional(),
+      maxPower: z.coerce.number().positive().optional(),
+      category: MotoCategoryEnum.optional(),
+      transmission: TransmissionTypeEnum.optional(),
+      // onlyInStock: z.boolean().default(false),
+      onlyInStock: z.string().default("false"),
+      page: z.coerce.number().int().positive().default(1),
+      limit: z.coerce.number().int().positive().default(20),
+      search: z.string().optional(),
+      sortBy: z
+        .enum([
+          "price_asc",
+          "price_desc",
+          "year_desc",
+          "rating_desc",
+          "name_asc",
+          "name_desc",
+        ])
+        .optional(),
+    })
+    .strict(), // Запрещаем любые другие параметры
+});
+
+// Тип для контроллера и сервиса
+export type MotorcyclesQueryInput = z.infer<typeof GetMotorcyclesQuerySchema>;
+export type MotorcyclesServiceArgs = MotorcyclesQueryInput["query"];

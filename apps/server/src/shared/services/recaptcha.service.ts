@@ -10,7 +10,7 @@ export class RecaptchaService {
     const GOOGLE_URL = "https://www.google.com/recaptcha/api/siteverify"; //Эндпоинт Google API, куда нужно отправить данные для проверки
 
     //Если мы в режиме разработки или тестов, можно пропускать проверку, чтобы лишний раз не обращаться к Google:
-    if (process.env.NODE_ENV === "test") return true;
+    if (process.env.NODE_ENV === "development") return true;
 
     //Если клиент не прислал токен, выбрасываем ошибку:
     if (!token) {

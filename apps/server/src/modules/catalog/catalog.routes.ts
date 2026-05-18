@@ -3,6 +3,12 @@ import { Router } from "express";
 import * as catalogController from "./catalog.controller.js";
 //Middleware:
 import { optionalAuth } from "../../shared/middlewares/optionalAuthMiddleware.js"; //Опциональная авторизация
+import { validate } from "../../shared/middlewares/validate.js";
+//Схемы валидации:
+import {
+  GetBrandsQuerySchema,
+  GetMotorcyclesQuerySchema,
+} from "@repo/validation";
 
 const router = Router();
 
@@ -11,9 +17,19 @@ router.get("/sitemap.xml", catalogController.getSitemap);
 //Получение главных категорий (/api/catalog/categories):
 router.get("/categories", catalogController.getCategories);
 //Список брендов с пагинацией для страницы (/api/catalog/brands?page=1&limit=20):
-router.get("/brands", catalogController.getBrands);
+// router.get("/brands", catalogController.getBrands);
+router.get(
+  "/brands",
+  validate(GetBrandsQuerySchema),
+  catalogController.getBrands,
+);
 //Получение всех мотоциклов одного бренда (/api/catalog/motorcycles):
-router.get("/motorcycles", optionalAuth, catalogController.getMotorcycles);
+router.get(
+  "/motorcycles",
+  validate(GetMotorcyclesQuerySchema),
+  optionalAuth,
+  catalogController.getMotorcycles,
+);
 //Поиск с выводом предположений:
 router.get("/search/suggest", catalogController.getSuggestions);
 //Получение аналогичных мотоциклов (рекомендации) (/api/catalog/motorcycles/:slug/related):
