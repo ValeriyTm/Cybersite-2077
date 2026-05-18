@@ -1,7 +1,7 @@
 //Извлечение параметров из URL и роутинг:
 import { Navigate, useParams } from "react-router";
 //Состояния:
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFavorites, useTradingStore } from "@/entities/trading";
 import { useAuthStore, useProfile } from "@/features/auth";
@@ -11,13 +11,14 @@ import { $api, API_URL } from "@/shared/api/api";
 import { Helmet } from "react-helmet-async";
 //Компоненты:
 import { SpecRow, Breadcrumbs } from "@/shared/ui";
-import { MotorcycleCard } from "@/entities/catalog";
+import { MotorcycleCard, type MotorcycleFull, type MotorcycleReview, type MotorcycleShort } from "@/entities/catalog";
 import { AddToCartButton } from "@/features/trading";
 import { ReviewCard } from "@/entities/reviews";
 //Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
+
 
 const STATIC_URL = `${API_URL}/static/motorcycles`;
 
@@ -26,9 +27,6 @@ type TabType = "specs" | "description" | "warranty" | "docs" | "reviews";
 export const MotorcycleDetailsPage = () => {
   //Извлекаем бренд и модель из адресной строки:
   const { brandSlug, slug } = useParams<{ brandSlug: string; slug: string }>();
-
-  //Стейт для активного фото:
-  const [activeImage, setActiveImage] = useState<string>("");
   //Стейт для табов:
   const [activeTab, setActiveTab] = useState<TabType>("specs");
   //Данные о том, авторизован ли юзер:
@@ -38,44 +36,53 @@ export const MotorcycleDetailsPage = () => {
 
   const queryClient = useQueryClient();
 
-  //Подключаем избранное и корзину
+  //Подключаем избранное и корзину:
   const { toggleFavorite } = useFavorites();
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
 
   //Получаем данные по мотоциклу от сервера:
-  const { data: motorcycle, isLoading: isMotoLoading, isError: isMotoError } = useQuery({
+  const { data: motorcycle, isLoading, isError } = useQuery({
     queryKey: ["motorcycle", slug],
     queryFn: () =>
       $api
-        .get(`catalog/motorcycles/${brandSlug?.toLowerCase()}/${slug}`)
+        .get<MotorcycleFull>(`catalog/motorcycles/${brandSlug?.toLowerCase()}/${slug}`)
         .then((res) => res.data),
   });
 
+  //------------------Изображения:----------------------//
+  //Состояние для кликнутому изображению в галерее:
+  const [clickedImgUrl, setClickedImgUrl] = useState<string | null>(null);
+
+  //С сервера приходят данные вида: {..., images: MotorcycleImg[], ...}
+
+  //Ищем основное изображение для мотоцикла среди всех его изображений:
+  const mainImg = motorcycle?.images?.find((img) => img.isMain)?.url
+    || motorcycle?.images?.[0]?.url;
+  //Базовым изображением выбираем основное или дефолтное (если основного нет):
+  const basicUrl = mainImg ? `${STATIC_URL}/${mainImg}` : defaultMotoImage;
+
+  //Актуальное текущее изображение: 
+  const activeImage = clickedImgUrl || basicUrl;
+  //----------------------------------------------------//
+
+  //------------------------Рекоммендации:-------------//
   //Получаем данные по рекомендованным мотоциклам:
   const { data: relatedMotorcycles = [] } = useQuery({
     queryKey: ["related", slug],
     queryFn: () =>
       $api.get(`catalog/motorcycles/${slug}/related`).then((res) => res.data),
   });
+  //------------------------------------------------------//
 
+  //----------------------Отзывы:--------------------------//
   //Загружаем отзывы из MongoDB:
   const { data: reviews } = useQuery({
     queryKey: ["reviews", motorcycle?.id], // Ключ обновится, когда придет id
     queryFn: () =>
-      $api.get(`/reviews/${motorcycle.id}`).then((res) => res.data),
+      $api.get(`/reviews/${motorcycle?.id}`).then((res) => res.data),
     //Запрос не уйдет, пока motorcycle.id равен undefined:
     enabled: !!motorcycle?.id,
   });
-
-  //Для работы с изображениями:
-  useEffect(() => {
-    if (motorcycle) {
-      const mainImg =
-        motorcycle.images?.find((img: any) => img.isMain)?.url ||
-        motorcycle.images?.[0]?.url;
-      setActiveImage(mainImg ? `${STATIC_URL}/${mainImg}` : defaultMotoImage);
-    }
-  }, [motorcycle]);
 
   //Мутация удаления отзыва
   const deleteMutation = useMutation({
@@ -90,14 +97,13 @@ export const MotorcycleDetailsPage = () => {
     },
   });
 
-  //-------
   //Для удаления отзыва:
   const handleDelete = (reviewId: string) => {
     if (window.confirm("Удалить этот отзыв?")) {
       deleteMutation.mutate(reviewId);
     }
   };
-  //-----
+  //------------------------------------------------------------//
   //Подключаем логику избранного
 
   //Проверяем, в избранном ли текущий байк (data?.id сработает корректно, когда данные подгрузятся):
@@ -114,11 +120,11 @@ export const MotorcycleDetailsPage = () => {
   //--------------------Проблемные случаи:-------------------//
 
   //Лоадер:
-  if (isMotoLoading)
+  if (isLoading)
     return <div className={styles.loader}>Загрузка...</div>;
 
   //Если произошла ошибка запроса:
-  if (isMotoError || !motorcycle) {
+  if (isError || !motorcycle) {
     return <Navigate to="/404" replace />;
   }
   //----------------Breadcrumbs:------//
@@ -220,152 +226,69 @@ export const MotorcycleDetailsPage = () => {
   };
 
   //-------------------Задаю понятные названия:-------------------
-  let STARTER;
-  switch (motorcycle.starter) {
-    case "KICK":
-      STARTER = "Кикстартер";
-      break;
-    case "ELECTRIC":
-      STARTER = "Электростартер";
-      break;
-    case "ELECTRIC_KICK":
-      STARTER = "Электро- и кикстартер";
-  }
+  const STARTER_MAP = {
+    KICK: "Кикстартер",
+    ELECTRIC: "Электростартер",
+    ELECTRIC_KICK: "Электро- и кикстартер"
+  };
+  const STARTER = (motorcycle.starter && STARTER_MAP[motorcycle.starter]) ?? "Нет данных";
 
-  let TRANSMISSION;
-  switch (motorcycle.transmission) {
-    case "BELT":
-      TRANSMISSION = "Ременная передача";
-      break;
-    case "CHAIN":
-      TRANSMISSION = "Цепная передача";
-      break;
-    case "CARDAN":
-      TRANSMISSION = "Карданная передача";
-  }
+  const TRANSMISSION_MAP = {
+    BELT: "Ременная передача",
+    CHAIN: "Цепная передача",
+    CARDAN: "Карданная передача"
+  };
+  const TRANSMISSION = (motorcycle.transmission && TRANSMISSION_MAP[motorcycle.transmission]) ?? "Нет данных";
 
-  let COOLING;
-  switch (motorcycle.coolingSystem) {
-    case "OIL":
-      COOLING = "Жидкостное охлаждение";
-      break;
-    case "AIR":
-      COOLING = "Воздушное охлаждение";
-      break;
-    case "OIL_AIR":
-      COOLING = "Воздушное и жидкостное охлаждение";
-  }
 
-  let GEARBOX;
-  switch (motorcycle.gearbox) {
-    case "SPEED1":
-      GEARBOX = "Одноступенчатая";
-      break;
-    case "SPEED2":
-      GEARBOX = "Двухступенчатая";
-      break;
-    case "SPEED2AUTOMATIC":
-      GEARBOX = "Двухступенчатая автоматическая";
-      break;
-    case "SPEED3":
-      GEARBOX = "Трехступенчатая";
-      break;
-    case "SPEED3AUTOMATIC":
-      GEARBOX = "Трехступенчатая автоматическая";
-      break;
-    case "SPEED4":
-      GEARBOX = "Четырехступенчатая";
-      break;
-    case "SPEED4WITHREVERSE":
-      GEARBOX = "Четырехступенчатая с задней передачей";
-      break;
-    case "SPEED5":
-      GEARBOX = "Пятиступенчатая";
-      break;
-    case "SPEED5WITHREVERSE":
-      GEARBOX = "Пятиступенчатая с задней передачей";
-      break;
-    case "SPEED6":
-      GEARBOX = "Шестиступенчатая";
-      break;
-    case "SPEED6WITHREVERSE":
-      GEARBOX = "Шестиступенчатая с задней передачей";
-      break;
-    case "SPEED7":
-      GEARBOX = "Семиступенчатая";
-      break;
-    case "SPEED8":
-      GEARBOX = "Восьмиступенчатая";
-      break;
-    case "AUTOMATIC":
-      GEARBOX = "Автоматическая";
-      break;
-  }
+  const COOLING_MAP = {
+    LIQUID: "Жидкостное охлаждение",
+    AIR: "Воздушное охлаждение",
+    OIL_AIR: "Воздушное и жидкостное охлаждение"
+  };
+  const COOLING = (motorcycle.coolingSystem && COOLING_MAP[motorcycle.coolingSystem]) ?? "Нет данных";
 
-  let CATEGORY;
-  switch (motorcycle.category) {
-    case "ALLROUND":
-      CATEGORY = "Универсальный";
-      break;
-    case "ATV":
-      CATEGORY = "Квадроцикл";
-      break;
-    case "CLASSIC":
-      CATEGORY = "Классический";
-      break;
-    case "CROSS_MOTOCROSS":
-      CATEGORY = "Кросс/мотокросс";
-      break;
-    case "CUSTOM_CRUISER":
-      CATEGORY = "Кастом/круизер";
-      break;
-    case "ENDURO_OFFROAD":
-      CATEGORY = "Эндуро";
-      break;
-    case "MINIBIKE_CROSS":
-      CATEGORY = "Минибайк, кросс";
-      break;
-    case "MINIBIKE_SPORT":
-      CATEGORY = "Минибайк, спорт";
-      break;
-    case "NAKED_BIKE":
-      CATEGORY = "Нейкед (стрит)";
-      break;
-    case "PROTOTYPE_CONCEPT":
-      CATEGORY = "Прототип/концепт";
-      break;
-    case "SCOOTER":
-      CATEGORY = "Скутер";
-      break;
-    case "SPEEDWAY":
-      CATEGORY = "Трековый";
-      break;
-    case "SPORT":
-      CATEGORY = "Спортбайк";
-      break;
-    case "SPORT_TOURING":
-      CATEGORY = "Спорт-туринг";
-      break;
-    case "SUPER_MOTARD":
-      CATEGORY = "Супермото";
-      break;
-    case "TOURING":
-      CATEGORY = "Туристический";
-      break;
-    case "TRIAL":
-      CATEGORY = "Trial";
-      break;
-    case "UNSPECIFIED":
-      CATEGORY = "Не классифицировано";
-      break;
-  }
 
-  const mainImageUrl =
-    motorcycle.images?.find((img: any) => img.isMain)?.url ||
-    motorcycle.images?.[0]?.url ||
-    ""; // Заглушка, если картинок нет вообще
+  const GEARBOX_MAP = {
+    SPEED1: "Одноступенчатая",
+    SPEED2: "Двухступенчатая",
+    SPEED2AUTOMATIC: "Двухступенчатая автоматическая",
+    SPEED3: "Трехступенчатая",
+    SPEED3AUTOMATIC: "Трехступенчатая автоматическая",
+    SPEED4: "Четырехступенчатая",
+    SPEED4WITHREVERSE: "Четырехступенчатая с задней передачей",
+    SPEED5: "Пятиступенчатая",
+    SPEED5WITHREVERSE: "Пятиступенчатая с задней передачей",
+    SPEED6: "Шестиступенчатая",
+    SPEED6WITHREVERSE: "Шестиступенчатая с задней передачей",
+    SPEED7: "Семиступенчатая",
+    SPEED8: "Восьмиступенчатая",
+    AUTOMATIC: "Автоматическая"
+  };
+  const GEARBOX = (motorcycle.gearbox && GEARBOX_MAP[motorcycle.gearbox]) ?? "Нет данных";
 
-  const realRating = Number(motorcycle.rating.toFixed(1));
+
+  const CATEGORY_MAP = {
+    ALLROUND: "Универсальный",
+    ATV: "Квадроцикл",
+    CLASSIC: "Классический",
+    CROSS_MOTOCROSS: "Кросс/мотокросс",
+    CUSTOM_CRUISER: "Кастом/круизер",
+    ENDURO_OFFROAD: "Эндуро",
+    MINIBIKE_CROSS: "Минибайк, кросс",
+    MINIBIKE_SPORT: "Минибайк, спорт",
+    NAKED_BIKE: "Нейкед (стрит)",
+    PROTOTYPE_CONCEPT: "Прототип/концепт",
+    SCOOTER: "Скутер",
+    SPEEDWAY: "Трековый",
+    SPORT: "Спортбайк",
+    SPORT_TOURING: "Спорт-туринг",
+    SUPER_MOTARD: "Супермото",
+    TOURING: "Туристический",
+    TRIAL: "Trial",
+    UNSPECIFIED: "Не классифицировано"
+  };
+  const CATEGORY = CATEGORY_MAP[motorcycle.category];
 
   return (
     <>
@@ -404,21 +327,24 @@ export const MotorcycleDetailsPage = () => {
               {/* Список миниатюр */}
               {motorcycle.images?.length > 0 && (
                 <div className={styles.thumbnails}>
-                  {motorcycle.images.map((img: any) => (
-                    <div
-                      key={img.id}
-                      className={`${styles.thumbWrapper} ${activeImage === `${STATIC_URL}/${img.url}` ? styles.activeThumb : ""}`}
-                      onClick={() => setActiveImage(`${STATIC_URL}/${img.url}`)}
-                    >
-                      <img
-                        src={`${STATIC_URL}/${img.url}`}
-                        alt="thumb"
-                        className={styles.thumbImg}
-                        width='76'
-                        height='56'
-                      />
-                    </div>
-                  ))}
+                  {motorcycle.images.map((img) => {
+
+                    return (
+                      <div
+                        key={img.id}
+                        className={`${styles.thumbWrapper}`}
+                        onClick={() => setClickedImgUrl(`${STATIC_URL}/${img.url}`)}
+                      >
+                        <img
+                          src={`${STATIC_URL}/${img.url}`}
+                          alt="thumb"
+                          className={styles.thumbImg}
+                          width='76'
+                          height='56'
+                        />
+                      </div>
+                    )
+                  })}
                 </div>
               )}
             </div>
@@ -428,7 +354,7 @@ export const MotorcycleDetailsPage = () => {
               <div className={styles.brandBadge}>{motorcycle.brand.name}</div>
 
               <div className={styles.actionRow}>
-                {motorcycle.discountData.discountPercent > 0 ? (
+                {Number(motorcycle.discountData.discountPercent) > 0 ? (
                   <>
                     <div className={styles.oldPrice}>
                       {motorcycle.discountData.originalPrice.toLocaleString()} ₽
@@ -460,7 +386,7 @@ export const MotorcycleDetailsPage = () => {
                       id: motorcycle.id,
                       model: motorcycle.model,
                       price: motorcycle.price,
-                      image: mainImageUrl,
+                      image: mainImg || '',
                       brandSlug: motorcycle.brand.slug,
                       slug: motorcycle.slug,
                       totalInStock: motorcycle.totalInStock,
@@ -486,7 +412,7 @@ export const MotorcycleDetailsPage = () => {
                 {motorcycle.year} года выпуска. Объем двигателя{" "}
                 {motorcycle.displacement} см³.
               </p>
-              <p className={styles.description}>Текущий рейтинг: {realRating}</p>
+              <p className={styles.description}>Текущий рейтинг: {Number(motorcycle.rating.toFixed(1))}</p>
               <p className={styles.description}>
                 Артикул товара: {motorcycle.slug}
               </p>
@@ -592,18 +518,20 @@ export const MotorcycleDetailsPage = () => {
                   <span>Доступные цвета</span>
                   <div className={styles.colorsWrapper}>
                     {motorcycle.colors && motorcycle.colors.length > 0 ? (
-                      motorcycle.colors.map((color: any, index: any) => (
-                        <div key={index} className={styles.colorItem}>
-                          {/* Кружок с цветом:*/}
-                          <span
-                            className={styles.colorDot}
-                            style={{ backgroundColor: color.toLowerCase() }}
-                            title={color}
-                          />
-                          {/* Название цвета */}
-                          <strong>{color}</strong>
-                        </div>
-                      ))
+                      motorcycle.colors.map((color: string, index: number) => {
+                        return (
+                          <div key={index} className={styles.colorItem}>
+                            {/* Кружок с цветом:*/}
+                            <span
+                              className={styles.colorDot}
+                              style={{ backgroundColor: color.toLowerCase() }}
+                              title={color}
+                            />
+                            {/* Название цвета */}
+                            <strong>{color}</strong>
+                          </div>
+                        )
+                      })
                     ) : (
                       <strong>Не указано</strong>
                     )}
@@ -725,15 +653,17 @@ export const MotorcycleDetailsPage = () => {
             {activeTab === "reviews" && (
               <div className={styles.reviewsTab} role="tabpanel">
                 {reviews?.length > 0 ? (
-                  reviews.map((review: any) => (
-                    <ReviewCard
-                      key={review._id}
-                      review={review}
-                      onDelete={() => handleDelete(review._id)}
-                      currentUserId={user?.id}
-                      isAdmin={user?.role === "ADMIN"}
-                    />
-                  ))
+                  reviews.map((review: MotorcycleReview) => {
+                    return (
+                      <ReviewCard
+                        key={review._id}
+                        review={review}
+                        onDelete={() => handleDelete(review._id)}
+                        currentUserId={user?.id}
+                        isAdmin={user?.role === "ADMIN"}
+                      />
+                    )
+                  })
                 ) : (
                   <div className={styles.noReviews}>
                     <p>На эту модель пока нет отзывов. Станьте первым!</p>
@@ -748,7 +678,7 @@ export const MotorcycleDetailsPage = () => {
             <section className={styles.relatedSection}>
               <h2 className={styles.sectionTitle}>Похожие модели</h2>
               <div className={styles.relatedGrid}>
-                {relatedMotorcycles.map((moto: any) => (
+                {relatedMotorcycles.map((moto: MotorcycleShort) => (
                   <MotorcycleCard key={moto.id} data={moto} />
                 ))}
               </div>

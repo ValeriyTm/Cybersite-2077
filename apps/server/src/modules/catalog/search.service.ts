@@ -4,10 +4,35 @@ import { Client } from "@elastic/elasticsearch";
 import { prisma } from "@repo/database";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
+//Схемы валидации Zod:
+import { MotorcyclesServiceArgs } from "@repo/validation";
 
 //Подключаемся к контейнеру:
 export const esClient = new Client({ node: process.env.ELASTIC_NODE });
 
+interface ElasticQuery {
+  bool: {
+    must: Record<string, any>[];
+    filter: Record<string, any>[];
+  };
+}
+
+interface MotorcycleDocument {
+  model: string;
+  slug: string;
+  brand: string;
+  brandSlug: string;
+  category: string;
+  year: number;
+  price: number;
+  displacement: number;
+  createdAt: string;
+  power: number;
+  transmission: string;
+  rating: number;
+  mainImage: string;
+  totalInStock: number;
+}
 export class SearchService {
   private readonly indexName = "motorcycles";
 
@@ -66,12 +91,8 @@ export class SearchService {
     }
   }
 
-  //Основной поиск по моделям с фильтрами:
-  async searchMotorcycles(
-    //@ts-ignore:
-    filters,
-    userId: string,
-  ) {
+  //Основной поиск/сортировка по моделям с фильтрами:
+  async searchMotorcycles(data: MotorcyclesServiceArgs, userId: string) {
     const {
       brandSlug,
       search,
@@ -89,19 +110,18 @@ export class SearchService {
       limit = 20,
       sortBy,
       onlyInStock,
-    } = filters;
+    } = data;
 
-    //@ts-ignore:
-    const query = {
+    const query: ElasticQuery = {
       bool: {
         must: [], //Обязательные условия
         filter: [], //Условия фильтрации
       },
     };
 
+    //------------------------Поиск:-----------------------//
     //Добавляем логику поиска по названию модели:
     if (search) {
-      //@ts-ignore:
       query.bool.must.push({
         match: {
           model: {
@@ -115,13 +135,11 @@ export class SearchService {
 
     //Фильтр по бренду:
     if (brandSlug && brandSlug !== "all") {
-      //@ts-ignore:
       query.bool.filter.push({ match: { brandSlug: brandSlug } });
     }
 
     //Диапазон цен:
     if (minPrice || maxPrice) {
-      //@ts-ignore:
       query.bool.filter.push({
         range: {
           price: {
@@ -134,7 +152,6 @@ export class SearchService {
 
     //Год выпуска:
     if (minYear || maxYear) {
-      //@ts-ignore:
       query.bool.filter.push({
         range: {
           year: {
@@ -148,7 +165,6 @@ export class SearchService {
     //Только в наличии:
     const isOnlyInStock = String(onlyInStock) === "true";
     if (isOnlyInStock) {
-      //@ts-ignore:
       query.bool.filter.push({
         range: {
           totalInStock: { gt: 0 },
@@ -158,13 +174,11 @@ export class SearchService {
 
     //Категория:
     if (category) {
-      //@ts-ignore:
       query.bool.filter.push({ match: { category: category } });
     }
 
     //Объем двигателя:
     if (minDisplacement || maxDisplacement) {
-      //@ts-ignore:
       query.bool.filter.push({
         range: {
           displacement: {
@@ -177,7 +191,6 @@ export class SearchService {
 
     //Мощность двигателя:
     if (minPower || maxPower) {
-      //@ts-ignore:
       query.bool.filter.push({
         range: {
           power: {
@@ -191,53 +204,41 @@ export class SearchService {
 
     //Трансмиссия:
     if (transmission) {
-      //@ts-ignore:
       query.bool.filter.push({ match: { transmission: transmission } });
     }
 
-    //Сортировка:
-    let sort = [{ _score: "desc" }]; //По умолчанию - по релевантности
-    //Алфавитный порядок (А-Я):
-    if (sortBy === "name_asc") {
-      //@ts-ignore:
-      sort = [{ "model.keyword": "asc" }];
-    }
-    //Алфавитный порядок (Я-А):
-    if (sortBy === "name_desc") {
-      //@ts-ignore:
-      sort = [{ "model.keyword": "desc" }];
-    }
+    //---------------------Сортировка-------------:
+    type SortOrder = "asc" | "desc";
+    type SortSetting = Record<string, SortOrder>;
 
-    //Цена:
-    //@ts-ignore:
-    if (sortBy === "price_asc") sort = [{ price: "asc" }];
-    //@ts-ignore:
-    if (sortBy === "price_desc") sort = [{ price: "desc" }];
+    const sortMapping = new Map<string, SortSetting[]>([
+      ["name_asc", [{ "model.keyword": "asc" }]],
+      ["name_desc", [{ "model.keyword": "desc" }]],
+      ["price_asc", [{ price: "asc" }]],
+      ["price_desc", [{ price: "desc" }]],
+      ["year_desc", [{ year: "desc" }]],
+      ["rating_desc", [{ rating: "desc" }]],
+    ]);
 
-    //Год выпуска:
-    //@ts-ignore:
-    if (sortBy === "year_desc") sort = [{ year: "desc" }];
+    const sort: SortSetting[] = (sortBy
+      ? sortMapping.get(sortBy)
+      : undefined) || [{ _score: "desc" }];
 
-    //Рейтинг (от высокого к низкому):
-    if (sortBy === "rating_desc") {
-      //@ts-ignore:
-      sort = [{ rating: "desc" }];
-    }
-
-    // console.log("Debag elastic query:", JSON.stringify(query, null, 2));
-
-    const result = await esClient.search({
+    //---------------------------------------------------
+    const result = await esClient.search<MotorcycleDocument>({
       index: this.indexName,
       from: (page - 1) * limit, //Расчёт зависит от переданного лимита (20 или 40 передаём)
       size: limit,
       query,
-      //@ts-ignore:
       sort,
     });
 
+    //Для отладки:
+    // console.log("result: ", JSON.stringify(result, null, 2));
+
     //Превращаем хиты Elastic в обычные объекты:
-    const rawItems = result.hits.hits.map((hit: any) => ({
-      ...(hit._source as any), //Распаковываем данные документа
+    const rawItems = result.hits.hits.map((hit) => ({
+      ...hit._source, //Распаковываем данные документа
       id: hit._id, //Явно добавляем id из метаданных Elastic
     }));
 
@@ -259,7 +260,7 @@ export class SearchService {
     const totalItems =
       typeof result.hits.total === "number"
         ? result.hits.total
-        : (result.hits.total as any)?.value || 0;
+        : result.hits.total?.value || 0;
 
     return {
       items: itemsWithDiscounts, //Возвращаем обогащенные скидками данные

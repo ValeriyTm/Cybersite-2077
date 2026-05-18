@@ -101,6 +101,10 @@ paths:
         - name: transmission
           in: query
           schema: { $ref: "../components/schemas.yaml#/TransmissionType" }
+        - name: onlyInStock
+          in: query
+          schema: { type: string }
+          example: "false"
         - name: page
           in: query
           schema: { type: integer, default: 1 }

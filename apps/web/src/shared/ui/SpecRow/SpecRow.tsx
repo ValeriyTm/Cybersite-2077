@@ -2,7 +2,7 @@ import styles from "./SpecRow.module.scss";
 
 interface SpecRowProps {
   label: string,
-  value: string | undefined,
+  value: string | number | null,
 }
 
 export const SpecRow = ({ label, value }: SpecRowProps) => {

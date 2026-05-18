@@ -16,6 +16,8 @@ export const validate = (schema: ZodType) => {
       });
 
       const safeParsed = parsed as any;
+
+      //Для отладки:
       console.log("safeParsed: ", safeParsed);
 
       //2.Безопасная перезапись через дескрипторы свойств:

@@ -1,3 +1,10 @@
+import type {
+  StarterType,
+  TransmissionType,
+  GearboxType,
+  CoolingType,
+  MotoCategory,
+} from "@repo/database/generated/prisma/index.js";
 export interface SiteCategory {
   id: string;
   name: string;
@@ -29,7 +36,7 @@ export interface MotorcycleFilters {
   maxPrice?: number;
   minYear?: number;
   maxYear?: number;
-  category?: string;
+  category?: MotoCategory;
   minDisplacement?: number;
   maxDisplacement?: number;
   minPower?: number;
@@ -43,7 +50,7 @@ export interface MotorcycleFilters {
 export interface MotorcycleShort {
   brand: string;
   brandSlug: string; //Для роутинга
-  category: string;
+  category: MotoCategory;
   createdAt: string;
   discountData: {
     originalPrice: number;
@@ -60,7 +67,7 @@ export interface MotorcycleShort {
   rating: number;
   slug: string;
   totalInStock: number;
-  transmission: "CHAIN";
+  transmission: TransmissionType;
   year: number;
 }
 
@@ -76,17 +83,16 @@ export interface MotorcycleFull {
   };
   brandId: string;
   colors: string[];
-  comments: string;
-  coolingSystem: string;
-  engineType: string;
-  frontBrakes: string;
-  frontTyre: string;
-  fuelConsumption: number;
+  comments: string | null;
+  coolingSystem: CoolingType | null;
+  engineType: string | null;
+  frontBrakes: string | null;
+  frontTyre: string | null;
+  fuelConsumption: number | null;
   fuelSystem: string | null;
-  gearbox: string;
-  images: string[];
-  rearBrakes: string;
-  rearTyre: string;
+  gearbox: GearboxType | null;
+  rearBrakes: string | null;
+  rearTyre: string | null;
   siteCategory: {
     createdAt: string;
     description: string;
@@ -97,13 +103,19 @@ export interface MotorcycleFull {
     updatedAt: string;
   };
   siteCategoryId: string;
-  starter: string;
+  starter: StarterType | null;
   stocks: MotorcycleStocks[];
-  topSpeed: number;
+  topSpeed: number | null;
   updatedAt: string;
-  // images: { id: string; url: string; isMain: boolean }[];
+  images: {
+    createdAt: string;
+    id: string;
+    isMain: boolean;
+    motorcycleId: string;
+    url: string;
+  }[];
   brandSlug: string; //Для роутинга
-  category: string;
+  category: MotoCategory;
   createdAt: string;
   discountData: {
     originalPrice: number;
@@ -115,12 +127,12 @@ export interface MotorcycleFull {
   id: string;
   mainImage: string;
   model: string;
-  power: number;
+  power: number | null;
   price: number;
   rating: number;
   slug: string;
   totalInStock: number;
-  transmission: "CHAIN";
+  transmission: TransmissionType | null;
   year: number;
 }
 
@@ -139,4 +151,18 @@ export interface MotorcycleResponse {
 export interface MotorcycleStocks {
   quantity: number;
   reserved: number;
+}
+
+export interface MotorcycleReview {
+  _id: string;
+  motorcycleId: string;
+  orderId: string;
+  userId: string;
+  userName: string;
+  userAvatar: string | null;
+  rating: number;
+  comment: string;
+  images: string[];
+  createdAt: string;
+  __v: number;
 }

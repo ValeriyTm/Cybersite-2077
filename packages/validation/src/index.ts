@@ -361,6 +361,15 @@ export const GetMotorcyclesQuerySchema = z.object({
     .strict(), // Запрещаем любые другие параметры
 });
 
-// Тип для контроллера и сервиса
 export type MotorcyclesQueryInput = z.infer<typeof GetMotorcyclesQuerySchema>;
 export type MotorcyclesServiceArgs = MotorcyclesQueryInput["query"];
+
+//----------------------------2.3) Схема для получения конкретного мотоцикла:--------------------------------------------//
+export const GetMotoBySlugSchema = z.object({
+  params: z.object({
+    brandSlug: z.string().min(1, "Бренд обязателен"),
+    slug: z.string().min(1, "Слаг обязателен"),
+  }),
+});
+export type MotoBySlugInput = z.infer<typeof GetMotoBySlugSchema>;
+export type MotoBySlugServiceArgs = MotoBySlugInput["params"];

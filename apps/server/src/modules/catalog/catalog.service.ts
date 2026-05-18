@@ -78,7 +78,7 @@ export class CatalogService {
 
     if (!moto) return null;
 
-    // Считаем общее доступное количество для фронтенда
+    //Остатки товара:
     const totalInStock = moto.stocks.reduce(
       (acc, s) => acc + (s.quantity - s.reserved),
       0,

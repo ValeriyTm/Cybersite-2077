@@ -7,6 +7,7 @@ import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
 import {
   GetBrandsQuerySchema,
+  GetMotoBySlugSchema,
   GetMotorcyclesQuerySchema,
 } from "@repo/validation";
 
@@ -14,8 +15,10 @@ const router = Router();
 
 //Генерация актуального sitemap.xml (/api/catalog/sitemap.xml):
 router.get("/sitemap.xml", catalogController.getSitemap);
+
 //Получение главных категорий (/api/catalog/categories):
 router.get("/categories", catalogController.getCategories);
+
 //Список брендов с пагинацией для страницы (/api/catalog/brands?page=1&limit=20):
 // router.get("/brands", catalogController.getBrands);
 router.get(
@@ -23,6 +26,7 @@ router.get(
   validate(GetBrandsQuerySchema),
   catalogController.getBrands,
 );
+
 //Получение всех мотоциклов одного бренда (/api/catalog/motorcycles):
 router.get(
   "/motorcycles",
@@ -30,20 +34,25 @@ router.get(
   optionalAuth,
   catalogController.getMotorcycles,
 );
+
 //Поиск с выводом предположений:
 router.get("/search/suggest", catalogController.getSuggestions);
+
 //Получение аналогичных мотоциклов (рекомендации) (/api/catalog/motorcycles/:slug/related):
 router.get(
   "/motorcycles/:slug/related",
   optionalAuth,
   catalogController.getRelated,
 );
+
 //Получение информации о конкретном мотоцикле по slug (/api/catalog/motorcycles/:brandSlug/:slug):
 router.get(
   "/motorcycles/:brandSlug/:slug",
+  validate(GetMotoBySlugSchema),
   optionalAuth,
   catalogController.getMotorcycle,
 ); //Добавили опциональную авторизацию, чтобы получать токен и на его основе выводить персонализированную скидку
+
 //Получение информации о конкретном мотоцикле по id (/api/catalog/motorcycles/:id):
 router.get(
   "/motorcycles/:id",

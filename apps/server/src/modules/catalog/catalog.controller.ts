@@ -8,7 +8,11 @@ import { sitemapService } from "./sitemap.service.js";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
 //Схемы валидации Zod:
-import { GetBrandsArgs } from "@repo/validation";
+import {
+  GetBrandsArgs,
+  MotoBySlugServiceArgs,
+  MotorcyclesServiceArgs,
+} from "@repo/validation";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
@@ -56,50 +60,12 @@ export const getBrands = catchAsync(async (req: Request, res: Response) => {
 //Получение всех мотоциклов конкретного бренда:
 export const getMotorcycles = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    // Собираем все значеняи из фильтров из строки запроса:
-    console.log("query: ", req.query);
-
-    const filters = {
-      brandSlug: req.query.brandSlug as string,
-      search: req.query.search as string,
-      minPrice: req.query.minPrice
-        ? parseInt(req.query.minPrice as string)
-        : undefined,
-      maxPrice: req.query.maxPrice
-        ? parseInt(req.query.maxPrice as string)
-        : undefined,
-      minYear: req.query.minYear
-        ? parseInt(req.query.minYear as string)
-        : undefined,
-      maxYear: req.query.maxYear
-        ? parseInt(req.query.maxYear as string)
-        : undefined,
-      category: req.query.category as string,
-      transmission: req.query.transmission as string,
-      minDisplacement: req.query.minDisplacement
-        ? parseInt(req.query.minDisplacement as string)
-        : undefined,
-      maxDisplacement: req.query.maxDisplacement
-        ? parseInt(req.query.maxDisplacement as string)
-        : undefined,
-      minPower: req.query.minPower
-        ? parseInt(req.query.minPower as string)
-        : undefined,
-      maxPower: req.query.maxPower
-        ? parseInt(req.query.maxPower as string)
-        : undefined,
-      page: parseInt(req.query.page as string) || 1,
-      limit: parseInt(req.query.limit as string) || 20,
-      sortBy: req.query.sortBy as string,
-      onlyInStock: req.query.onlyInStock as string,
-    };
-
-    console.log("filters: ", filters);
+    const data = req.query as unknown as MotorcyclesServiceArgs;
 
     // Достаем userId из токена (если он есть; если нет, то персональные скидки будет не доступны)
     const userId = req.user?.id;
 
-    const result = await searchService.searchMotorcycles(filters, userId);
+    const result = await searchService.searchMotorcycles(data, userId);
     res.status(200).json(result);
   },
 );
@@ -107,11 +73,9 @@ export const getMotorcycles = catchAsync(
 //Получение информации о конкретном мотоцикле по его slug:
 export const getMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    //@ts-ignore:
-    const { brandSlug, slug } = req.params;
+    const { slug } = req.params as MotoBySlugServiceArgs;
     const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
-    //@ts-ignore:
     const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
 
     if (!motorcycle) {

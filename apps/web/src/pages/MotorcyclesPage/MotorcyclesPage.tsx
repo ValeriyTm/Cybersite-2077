@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
-import { useMotorcycleFilters, useCatalogStore } from "@/entities/catalog";
+import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort } from "@/entities/catalog";
 import { useQuery } from "@tanstack/react-query";
 //API:
 import { $api } from "@/shared/api";
@@ -88,7 +88,7 @@ export const MotorcyclesPage = () => {
     { label: "Каталог", href: "/catalog" },
     { label: "Бренды", href: "/catalog/motorcycles" },
     {
-      label: brandSlug?.toUpperCase(),
+      label: brandSlug === 'all' ? 'Поиск' : brandSlug?.toUpperCase(),
       href: `/catalog/motorcycles/${brandSlug}`,
     }, //Текущая страница
   ];
@@ -199,12 +199,12 @@ export const MotorcyclesPage = () => {
         {/*2) Карточки и сортировка:*/}
         <main className={styles.Content}>
 
-          {/*@ts-ignore: */}
+
           <Breadcrumbs items={breadcrumbs} />
 
           <h1 className={styles.title}>
-            {slug === "all"
-              ? `Результаты поиска: ${filters.search}`
+            {brandSlug === "all"
+              ? `Результаты поиска: "${filters.search}"`
               : `Мотоциклы ${brandSlug?.toUpperCase()}`}
           </h1>
           <h5>Найдено моделей: {data?.total || 0}</h5>
@@ -290,7 +290,7 @@ export const MotorcyclesPage = () => {
             <div className={styles.loadingOverlay}>Обновление...</div>
           )}
           <div className={viewMode === "grid" ? styles.grid : styles.list}>
-            {data?.items?.map((moto: any) => {
+            {data?.items?.map((moto: MotorcycleShort) => {
               return (
                 <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />
               );
@@ -334,7 +334,7 @@ export const MotorcyclesPage = () => {
                   const totalPages = data?.pages || 1;
 
                   let startPage = Math.max(1, filters.page - 2);
-                  let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+                  const endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
                   if (endPage - startPage < maxButtons - 1) {
                     startPage = Math.max(1, endPage - maxButtons + 1);
