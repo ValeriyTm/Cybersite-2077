@@ -397,7 +397,24 @@ export type GetSuggestionsArgs = SuggestionsInput["query"];
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------3) Модуль Admin-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////
-//----------------------------3.1) Схема для создания мотоцикла:-------------------------------------//
+//----------------------------3.1) Схема для получения мотоциклов:-------------------------------------//
+export const GetMotosAdminSchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    //Благодаря default автоматически подставится значение 1, если page не указан в адресной строке
+
+    limit: z.coerce.number().int().positive().max(100).default(10),
+
+    search: z.string(),
+    //Тип для search: string | undefined (т.к. optional)
+  }),
+});
+
+type MotosAdminInput = z.infer<typeof GetMotosAdminSchema>;
+//Чистый тип для сервиса:
+export type MotosAdminArgs = MotosAdminInput["query"];
+
+//----------------------------3.2) Схема для создания мотоцикла:-------------------------------------//
 export const createMotorcycleAdminSchema = z.object({
   body: z.object({
     model: z
@@ -472,3 +489,17 @@ export const createMotorcycleAdminSchema = z.object({
     }),
   }),
 });
+
+type createMotorcycleAdminInput = z.infer<typeof createMotorcycleAdminSchema>;
+//Чистый тип для сервиса:
+export type createMotorcycleAdminArgs = createMotorcycleAdminInput["body"];
+//----------------------------3.3) Схема для обновления мотоцикла:-------------------------------------//
+
+//----------------------------3.4) Схема для удаления мотоцикла:-------------------------------------//
+export const DeleteMotoAdminSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, "id обязателен"),
+  }),
+});
+export type DeleteMotoAdminInput = z.infer<typeof DeleteMotoAdminSchema>;
+export type DeleteMotoAdminArgs = DeleteMotoAdminInput["params"];

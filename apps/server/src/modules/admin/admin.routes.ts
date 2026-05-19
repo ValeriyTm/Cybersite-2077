@@ -8,7 +8,11 @@ import { productUpload } from "./upload.js"; //Middleware для загрузк�
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
-import { createMotorcycleAdminSchema } from "@repo/validation";
+import {
+  createMotorcycleAdminSchema,
+  DeleteMotoAdminSchema,
+  GetMotosAdminSchema,
+} from "@repo/validation";
 
 const router = Router();
 
@@ -52,8 +56,10 @@ router.get(
 router.get(
   "/motorcycles",
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
+  validate(GetMotosAdminSchema),
   adminController.getMotorcycles,
 );
+
 //Создание записи о мотоцикле:
 router.post(
   "/motorcycles",
@@ -62,6 +68,7 @@ router.post(
   validate(createMotorcycleAdminSchema),
   adminController.createMotorcycle,
 );
+
 //Правка записи о мотоцикле:
 router.patch(
   "/motorcycles/:id",
@@ -69,10 +76,12 @@ router.patch(
   productUpload.array("images", 5),
   adminController.updateMotorcycle,
 );
+
 //Удаление записи о мотоцикле:
 router.delete(
   "/motorcycles/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(DeleteMotoAdminSchema),
   adminController.deleteMotorcycle,
 );
 //---------------------Работа с остатками:-------------

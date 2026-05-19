@@ -66,7 +66,6 @@ export const AdminMotorcyclesPage = () => {
   const saveMutation = useMutation({
     mutationFn: (formData) =>
       editingMoto
-        //@ts-ignore:
         ? $api.patch(`/admin/motorcycles/${editingMoto.id}`, formData)
         : $api.post("/admin/motorcycles", formData),
     onSuccess: () => {

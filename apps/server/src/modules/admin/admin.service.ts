@@ -3,7 +3,7 @@ import { prisma } from "@repo/database";
 //Модель взаимодействия с MongoDB (из модуля Content):
 import { NewsModel } from "../content/index.js";
 //Типы:
-import { CreateMotorcycleDto } from "./admin.dto.js";
+import { createMotorcycleAdminArgs } from "@repo/validation";
 //Взаимодействие с файлами и путями:
 import { promises as fs } from "fs";
 import * as path from "path";
@@ -92,7 +92,7 @@ export class AdminService {
 
   //Создание новой модели мотоцикла:
   async createMotorcycle(
-    data: CreateMotorcycleDto,
+    data: createMotorcycleAdminArgs,
     files: Express.Multer.File[],
   ) {
     //Формируем slug: соединяем модель и год
@@ -280,8 +280,7 @@ export class AdminService {
   }
 
   //Удаление модели мотоцикла:
-  //@ts-ignore:
-  async deleteMotorcycle(id) {
+  async deleteMotorcycle(id: string) {
     await prisma.motorcycle.delete({ where: { id } });
   }
 

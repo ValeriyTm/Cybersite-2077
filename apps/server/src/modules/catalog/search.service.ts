@@ -368,7 +368,7 @@ export class SearchService {
         match_phrase_prefix: {
           //Ищет по первым буквам слов:
           model: {
-            query: query,
+            query,
           },
         },
       },
@@ -377,7 +377,9 @@ export class SearchService {
     });
 
     return {
-      ids: result.hits.hits.map((hit) => hit._id),
+      ids: result.hits.hits
+        .map((hit) => hit._id)
+        .filter((id): id is string => !!id), //Фильтруем, чтобы избавиться от _id, которые undefined
       total:
         typeof result.hits.total === "number"
           ? result.hits.total
@@ -446,7 +448,7 @@ export class SearchService {
     await esClient
       .delete({
         index: this.indexName,
-        id: id,
+        id,
       })
       .catch(() => {}); // Игнорируем, если в индексе уже нет
   }

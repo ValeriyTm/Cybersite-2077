@@ -2,6 +2,7 @@
 //Типы:
 import { Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
+import { DeleteMotoAdminArgs, MotosAdminArgs } from "@repo/validation";
 //Главный сервис модуля Admin:
 import { adminService } from "./admin.service.js";
 //Сервисы модуля Reports:
@@ -111,7 +112,11 @@ export const searchBrands = catchAsync(
 //Метод получения информации о всех мотоциклах:
 export const getMotorcycles = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { page = 1, limit = 10, search = "" } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      search = "",
+    } = req.query as unknown as MotosAdminArgs;
     const p = Number(page);
     const l = Number(limit);
     const searchQuery = String(search).trim();
@@ -126,7 +131,6 @@ export const getMotorcycles = catchAsync(
         p,
         l,
       );
-      // @ts-ignore:
       ids = esResult.ids;
       totalCount = esResult.total;
 
@@ -161,7 +165,6 @@ export const getMotorcycles = catchAsync(
 export const createMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const data = req.body;
-    console.log("data in moto creating: ", data);
     const files = req.files as Express.Multer.File[];
 
     const motorcycle = await adminService.createMotorcycle(data, files);
@@ -176,7 +179,9 @@ export const createMotorcycle = catchAsync(
 //Метод изменения записи о мотоцикле:
 export const updateMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    //@ts-ignore:
+    console.log("update req.body: ", req.body);
+    console.log("update req.params: ", req.params);
+
     const {
       id: _, //Извлекаем лишнее
       brand, //Извлекаем лишнее
@@ -208,11 +213,10 @@ export const updateMotorcycle = catchAsync(
 //Метод удаления записи о мотоцикле:
 export const deleteMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.params as unknown as DeleteMotoAdminArgs;
     await adminService.deleteMotorcycle(id);
 
     //Удаляем из Elastic
-    //@ts-ignore:
     await searchService.deleteFromIndex(id);
     res.json({ message: "Мотоцикл удален" });
   },
