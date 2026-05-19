@@ -9,6 +9,8 @@ import { DataTable } from "@/shared/ui";
 import { getMotoColumns } from "../model/columns";
 //Компоненты:
 import { MotoModal } from "./MotoModal";
+//Типы:
+import type { MotorcycleAdminSend, MotorcycleEditAdmin } from "@/entities/catalog";
 //Уведомления:
 import { toast } from "react-hot-toast";
 //Дебанус поиска:
@@ -18,7 +20,7 @@ import styles from "./AdminMotorcyclesPage.module.scss";
 
 export const AdminMotorcyclesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingMoto, setEditingMoto] = useState(null);
+  const [editingMoto, setEditingMoto] = useState<null | MotorcycleEditAdmin>(null);
   const queryClient = useQueryClient();
 
   const { user } = useProfile();
@@ -47,6 +49,7 @@ export const AdminMotorcyclesPage = () => {
     updateSearch(value); //Для API (сработает через 500мс)
   };
 
+  //Получаем данные о мотоциклах с сервера:
   const { data } = useQuery({
     queryKey: ["admin-motorcycles", page, debouncedSearch],
     queryFn: () =>
@@ -78,19 +81,19 @@ export const AdminMotorcyclesPage = () => {
       const serverErrors = error.response?.data?.errors;
 
       if (serverErrors && Array.isArray(serverErrors)) {
-        // 2. Перебираем и выводим каждую ошибку отдельно
+        //Перебираем и выводим каждую ошибку отдельно:
         serverErrors.forEach((err) => {
           toast.error(`Ошибка в поле [${err.path.replace(/^body\./, "")}]: ${err.message}`)
         });
       } else {
-        //Резервный лог на случай других ошибок (сеть, 500 и т.д.)
+        //Резервный лог на случай других ошибок (сеть, 500 и т.д.):
         toast.error(`Произошла неизвестная ошибка: ${error.message}`)
       }
     },
   });
 
   const columns = getMotoColumns(
-    (moto) => {
+    (moto: MotorcycleEditAdmin) => {
       setEditingMoto(moto);
       setIsModalOpen(true);
 
@@ -137,8 +140,10 @@ export const AdminMotorcyclesPage = () => {
         <MotoModal
           moto={editingMoto}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(data: any) => saveMutation.mutate(data)}
-
+          onSubmit={(data) => {
+            console.log('data!!: ', Object.fromEntries(data))
+            saveMutation.mutate(data)
+          }}
         />
       )}
 

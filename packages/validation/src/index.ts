@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { optional, z } from "zod";
 
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------1) Модуль Auth-------------------------------------------------------////
@@ -463,7 +463,12 @@ export const createMotorcycleAdminSchema = z.object({
     displacement: z
       .string()
       .regex(/^\d+$/, "Объем должен быть числовой строкой"),
-    power: z.string(),
+    power: z
+      .string()
+      .regex(
+        /^\d+(\.\d+)?$/,
+        "Мощность должна быть числом (например, 8 или 8.5)",
+      ),
     coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
     gearbox: z.enum([
       "SPEED1",
@@ -494,7 +499,113 @@ type createMotorcycleAdminInput = z.infer<typeof createMotorcycleAdminSchema>;
 //Чистый тип для сервиса:
 export type createMotorcycleAdminArgs = createMotorcycleAdminInput["body"];
 //----------------------------3.3) Схема для обновления мотоцикла:-------------------------------------//
+export const updateMotorcycleAdminSchema = z.object({
+  body: z.object({
+    id: z.string(),
+    model: z
+      .string()
+      .trim()
+      .min(2, { message: "Имя слишком короткое" })
+      .max(30, "Максимум 30 символов для модели")
+      .regex(
+        /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/,
+        "Для модели используйте только цифры, английские и русские буквы",
+      ),
+    slug: z.string(),
+    brandId: z.string(),
+    category: z.enum(
+      [
+        "ATV",
+        "ALLROUND",
+        "CLASSIC",
+        "CROSS_MOTOCROSS",
+        "CUSTOM_CRUISER",
+        "ENDURO_OFFROAD",
+        "MINIBIKE_CROSS",
+        "MINIBIKE_SPORT",
+        "NAKED_BIKE",
+        "PROTOTYPE_CONCEPT",
+        "SCOOTER",
+        "SPEEDWAY",
+        "SPORT",
+        "SPORT_TOURING",
+        "SUPER_MOTARD",
+        "TOURING",
+        "TRIAL",
+        "UNSPECIFIED",
+      ],
+      {
+        message: "Выберите корректную категорию мотоцикла",
+      },
+    ),
+    year: z.string().regex(/^\d{4}$/, "Неверный формат года"),
+    displacement: z
+      .string()
+      .regex(/^\d+$/, "Объем должен быть числовой строкой"),
+    power: z
+      .string()
+      .regex(
+        /^\d+(\.\d+)?$/,
+        "Мощность должна быть числом (например, 8 или 8.5)",
+      ),
+    fuelConsumption: z.preprocess(
+      (val) => (val === "null" || val === "" ? null : val),
+      z.string().nullable(),
+    ),
+    engineType: z.string(),
+    fuelSystem: z.string(),
+    coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
+    gearbox: z.enum([
+      "SPEED1",
+      "SPEED2",
+      "SPEED2AUTOMATIC",
+      "SPEED3",
+      "SPEED3AUTOMATIC",
+      "SPEED4",
+      "SPEED4WITHREVERSE",
+      "SPEED5",
+      "SPEED5WITHREVERSE",
+      "SPEED6",
+      "SPEED6WITHREVERSE",
+      "SPEED7",
+      "SPEED8",
+      "AUTOMATIC",
+    ]),
+    transmission: z.enum(["CHAIN", "BELT", "CARDAN"]),
+    frontTyre: z.string().trim(),
+    rearTyre: z.string().trim(),
+    frontBrakes: z.string().trim(),
+    rearBrakes: z.string().trim(),
+    // Предобработка массива цветов (на случай одиночной строки из Form Data):
+    colors: z.preprocess((val) => {
+      if (!val) return [];
+      if (typeof val === "string") return [val];
+      return val;
+    }, z.array(z.string())),
+    starter: z.enum(["ELECTRIC", "KICK", "ELECTRIC_KICK"]),
+    comments: z.string(),
+    rating: z.string(),
+    price: z.string().regex(/^\d+$/, "Цена должна быть числовой строкой"),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
+    brand: z.any(),
+    images: z.any(),
+    siteCategory: z.enum(["Мотоциклы", "Мотоэкипировка", "Запчасти"], {
+      message: "Выберите корректную категорию товара",
+    }),
+    deletedImageIds: z
+      .array(z.string().min(1, { message: "id не должен быть пустым" }))
+      .optional(),
+    mainImageId: z.string().optional(),
+  }),
+  params: z.object({
+    id: z.string().min(1, "id обязателен"),
+  }),
+});
 
+export type updateMotoAdminInput = z.infer<typeof updateMotorcycleAdminSchema>;
+export type updateMotoAdminBodyArgs = updateMotoAdminInput["body"];
+export type updateMotoAdminParamsArgs = updateMotoAdminInput["params"];
 //----------------------------3.4) Схема для удаления мотоцикла:-------------------------------------//
 export const DeleteMotoAdminSchema = z.object({
   params: z.object({

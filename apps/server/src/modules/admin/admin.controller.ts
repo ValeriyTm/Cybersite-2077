@@ -2,7 +2,12 @@
 //Типы:
 import { Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
-import { DeleteMotoAdminArgs, MotosAdminArgs } from "@repo/validation";
+import {
+  DeleteMotoAdminArgs,
+  MotosAdminArgs,
+  updateMotoAdminBodyArgs,
+  updateMotoAdminParamsArgs,
+} from "@repo/validation";
 //Главный сервис модуля Admin:
 import { adminService } from "./admin.service.js";
 //Сервисы модуля Reports:
@@ -182,29 +187,27 @@ export const updateMotorcycle = catchAsync(
     console.log("update req.body: ", req.body);
     console.log("update req.params: ", req.params);
 
-    const {
-      id: _, //Извлекаем лишнее
-      brand, //Извлекаем лишнее
-      createdAt, //Извлекаем лишнее
-      updatedAt, //Извлекаем лишнее
-      deletedImageIds,
-      mainImageId,
-      ...rawData
-    } = req.body;
-    const { id } = req.params;
+    const { deletedImageIds, mainImageId, ...rawData } =
+      req.body as unknown as updateMotoAdminBodyArgs;
+
+    //Удаляем лишние поля:
+    // delete rawData.id;
+    delete rawData.brand;
+    // delete rawData.createdAt;
+    // delete rawData.updatedAt;
+
+    const { id } = req.params as unknown as updateMotoAdminParamsArgs;
     const files = req.files as Express.Multer.File[];
 
     const motorcycle = await adminService.updateMotorcycle(
       rawData,
       files,
-      deletedImageIds,
-      mainImageId,
-      //@ts-ignore:
       id,
+      mainImageId,
+      deletedImageIds,
     );
 
     //Обновляем данные в Elastic:
-    //@ts-ignore:
     await searchService.indexMotorcycle(id);
     res.json(motorcycle);
   },

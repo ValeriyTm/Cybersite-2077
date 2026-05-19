@@ -10,6 +10,7 @@ import {
   TRANSMISSION_TYPES,
   STARTER_TYPES,
 } from "../model/constants";
+import type { MotorcycleEditAdmin } from "@/entities/catalog";
 //API:
 import { $api, API_URL } from "@/shared/api";
 //Стили:
@@ -37,7 +38,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
 
   //Если мы редактируем байк, подставим название текущего бренда в инпут поиска:
   useEffect(() => {
-    if (moto?.brand?.name) setSearchQuery(moto.brand.name);
+    if (moto.brand.name) setSearchQuery(moto.brand.name);
   }, [moto]);
 
   const handleSearch = async (val: string) => {
@@ -234,7 +235,7 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             <label>Текущие изображения</label>
             <div className={styles.existingImagesGrid}>
               {moto?.images
-                ?.filter((img: any) => !deletedImageIds.includes(img.id))
+                ?.filter((img: MotorcycleEditAdmin['images']) => !deletedImageIds.includes(img.id))
                 .map((img: any) => {
 
                   return (

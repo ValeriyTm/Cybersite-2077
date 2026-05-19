@@ -89,22 +89,6 @@ export class CatalogService {
 
     return { ...moto, totalInStock, discountData };
   }
-
-  //Получение данных о конкретном мотоцикле по его id:
-  // async getMotorcycleById(id: string) {
-  //   return await prisma.motorcycle.findUnique({
-  //     where: { id },
-  //     include: {
-  //       brand: true,
-  //       siteCategory: true,
-  //       images: true, //Галерея изображений
-  //       //Подтягиваем остатки со всех складов:
-  //       stocks: {
-  //         select: { quantity: true, reserved: true },
-  //       },
-  //     },
-  //   });
-  // }
 }
 
 export const catalogService = new CatalogService();

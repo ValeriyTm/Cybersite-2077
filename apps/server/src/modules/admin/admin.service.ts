@@ -3,7 +3,10 @@ import { prisma } from "@repo/database";
 //Модель взаимодействия с MongoDB (из модуля Content):
 import { NewsModel } from "../content/index.js";
 //Типы:
-import { createMotorcycleAdminArgs } from "@repo/validation";
+import {
+  createMotorcycleAdminArgs,
+  updateMotoAdminBodyArgs,
+} from "@repo/validation";
 //Взаимодействие с файлами и путями:
 import { promises as fs } from "fs";
 import * as path from "path";
@@ -18,6 +21,8 @@ const slugify = (text: string) =>
     .replace(/\s+/g, "-")
     .replace(/[^\w-]+/g, "")
     .replace(/--+/g, "-");
+
+type updateMotoAdminBodyArgsCleared = Omit<updateMotoAdminBodyArgs, "brand">;
 
 export class AdminService {
   //---------------------Работа с брендами:-------------
@@ -161,14 +166,14 @@ export class AdminService {
 
   //Обновление данных о модели мотоцикла:
   async updateMotorcycle(
-    rawData: any,
+    rawData: updateMotoAdminBodyArgsCleared,
     files: Express.Multer.File[],
-    deletedImageIds: string[],
-    mainImageId: string,
     id: string,
+    mainImageId?: string,
+    deletedImageIds?: string[],
   ) {
     //Очистка данных:
-    const data: any = {};
+    const data: Partial<updateMotoAdminBodyArgsCleared> = {};
     Object.keys(rawData).forEach((key) => {
       const value = rawData[key];
 
@@ -259,20 +264,25 @@ export class AdminService {
       };
     });
 
+    //Извлекаем из объекта поле "siteCategory":
+    const { siteCategory, ...finalData } = updateData;
+    //Превращаем "siteCategory" в "siteCategoryId":
+    const siteCategoryId = await prisma.siteCategory.findUnique({
+      where: { name: siteCategory },
+      select: { id: true },
+    });
+
     return await prisma.motorcycle.update({
       where: { id },
       data: {
-        ...updateData,
-        price: data.price ? Number(data.price) : 0,
+        ...finalData,
+        siteCategoryId: siteCategoryId!.id,
+        price: data.price ? Number(data.price) : 300000,
         year: Number(data.year) || new Date().getFullYear(),
-        colors: Array.isArray(data.colors) ? data.colors : [],
+        displacement: data.displacement ? Number(data.displacement) : 0,
         power: data.power ? Number(data.power) : null,
-        topSpeed: data.topSpeed ? Number(data.topSpeed) : null,
-        fuelConsumption: data.fuelConsumption
-          ? Number(data.fuelConsumption)
-          : null,
         rating: data.rating ? Number(data.rating) : 0,
-        displacement: data.displacement ? Number(data.displacement) : undefined,
+        colors: Array.isArray(data.colors) ? data.colors : [],
         images: { create: newImages },
       },
       include: { images: true },

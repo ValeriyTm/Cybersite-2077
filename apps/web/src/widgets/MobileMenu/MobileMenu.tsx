@@ -93,7 +93,7 @@ export const MobileMenu = () => {
               <Link to="/support">Поддержка 💬</Link>
             </li>
             {canSee && <li>
-              <Link to="/admin">Управление ⚙️</Link>
+              <Link to="/admin">Админ ⚙️</Link>
             </li>}
           </ul>
         </nav>

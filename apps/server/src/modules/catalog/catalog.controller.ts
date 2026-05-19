@@ -123,36 +123,6 @@ export const getSuggestions = catchAsync(
   },
 );
 
-//Получение информации о конкретном мотоцикле по его id:
-// export const getMotorcycleById = catchAsync(
-//   async (req: AuthRequest, res: Response) => {
-//     const { id } = req.params;
-//     const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
-
-//     const motorcycle = await catalogService.getMotorcycleById(id);
-
-//     if (!motorcycle) {
-//       throw new AppError(404, "Мотоцикл не найден");
-//     }
-
-//     // Считаем общее доступное количество для фронтенда
-//     const totalInStock = motorcycle.stocks.reduce(
-//       (acc, s) => acc + (s.quantity - s.reserved),
-//       0,
-//     );
-
-//     //Считаем скидку:
-//     const discountData = await discountLogic.calculateFinalPrice(
-//       motorcycle,
-//       userId,
-//     );
-
-//     const result = { ...motorcycle, totalInStock, discountData };
-
-//     res.json(result);
-//   },
-// );
-
 //Получение sitemap для каталога:
 export const getSitemap = catchAsync(async (_req: Request, res: Response) => {
   const xml = await sitemapService.generateSitemapXml();

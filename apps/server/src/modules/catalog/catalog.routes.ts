@@ -61,13 +61,6 @@ router.get(
   catalogController.getMotorcycle,
 ); //Добавили опциональную авторизацию, чтобы получать токен и на его основе выводить персонализированную скидку
 
-//Получение информации о конкретном мотоцикле по id (/api/catalog/motorcycles/:id):
-// router.get(
-//   "/motorcycles/:id",
-//   optionalAuth,
-//   catalogController.getMotorcycleById,
-// );
-
 //Временный роут для ручного запуска синхронизации
 //(http://localhost:3001/api/catalog/sync-search):
 router.get(

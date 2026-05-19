@@ -12,6 +12,7 @@ import {
   createMotorcycleAdminSchema,
   DeleteMotoAdminSchema,
   GetMotosAdminSchema,
+  updateMotorcycleAdminSchema,
 } from "@repo/validation";
 
 const router = Router();
@@ -74,6 +75,7 @@ router.patch(
   "/motorcycles/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   productUpload.array("images", 5),
+  validate(updateMotorcycleAdminSchema),
   adminController.updateMotorcycle,
 );
 
