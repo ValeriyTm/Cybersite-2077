@@ -12,6 +12,7 @@ import {
   createMotorcycleAdminSchema,
   DeleteMotoAdminSchema,
   GetMotosAdminSchema,
+  SearchBrandsAdminSchema,
   updateMotorcycleAdminSchema,
 } from "@repo/validation";
 
@@ -50,6 +51,7 @@ router.patch(
 router.get(
   "/brands/search",
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
+  validate(SearchBrandsAdminSchema),
   adminController.searchBrands,
 );
 //---------------------Работа с мотоциклами:-------------

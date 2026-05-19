@@ -10,7 +10,7 @@ import { getMotoColumns } from "../model/columns";
 //Компоненты:
 import { MotoModal } from "./MotoModal";
 //Типы:
-import type { MotorcycleAdminSend, MotorcycleEditAdmin } from "@/entities/catalog";
+import type { MotorcycleEditAdmin } from "@/entities/catalog";
 //Уведомления:
 import { toast } from "react-hot-toast";
 //Дебанус поиска:
@@ -66,7 +66,7 @@ export const AdminMotorcyclesPage = () => {
     enabled: debouncedSearch.length === 0 || debouncedSearch.length >= 2,
   });
 
-  const saveMutation = useMutation({
+  const saveMutation = useMutation<unknown, any, FormData>({
     mutationFn: (formData) =>
       editingMoto
         ? $api.patch(`/admin/motorcycles/${editingMoto.id}`, formData)
@@ -138,7 +138,7 @@ export const AdminMotorcyclesPage = () => {
 
       {isModalOpen && (
         <MotoModal
-          moto={editingMoto}
+          moto={editingMoto as MotorcycleEditAdmin}
           onClose={() => setIsModalOpen(false)}
           onSubmit={(data) => {
             console.log('data!!: ', Object.fromEntries(data))

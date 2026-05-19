@@ -22,7 +22,10 @@ const slugify = (text: string) =>
     .replace(/[^\w-]+/g, "")
     .replace(/--+/g, "-");
 
-type updateMotoAdminBodyArgsCleared = Omit<updateMotoAdminBodyArgs, "brand">;
+type updateMotoAdminBodyArgsCleared = Omit<
+  updateMotoAdminBodyArgs,
+  "deletedImageIds" | "mainImageId" | "brand"
+>;
 
 export class AdminService {
   //---------------------Работа с брендами:-------------
@@ -166,106 +169,105 @@ export class AdminService {
 
   //Обновление данных о модели мотоцикла:
   async updateMotorcycle(
-    rawData: updateMotoAdminBodyArgsCleared,
+    rawData: updateMotoAdminBodyArgs,
     files: Express.Multer.File[],
     id: string,
-    mainImageId?: string,
-    deletedImageIds?: string[],
+    // mainImageId?: string,
+    // deletedImageIds?: string[],
   ) {
-    //Очистка данных:
-    const data: Partial<updateMotoAdminBodyArgsCleared> = {};
-    Object.keys(rawData).forEach((key) => {
-      const value = rawData[key];
-
-      //Заменяем NaN или строку "null" на реальный null
-      if (Number.isNaN(value) || value === "NaN" || value === "null") {
-        data[key] = null;
-      } else if (
-        [
-          "price",
-          "year",
-          "displacement",
-          "power",
-          "topSpeed",
-          "fuelConsumption",
-        ].includes(key)
-      ) {
-        // Принудительно конвертируем в число, если поле должно быть числом
-        data[key] = value !== "" ? Number(value) : null;
-      } else {
-        data[key] = value;
-      }
-    });
-
-    let updateData: any = { ...data };
-    if (data.model || data.year) {
-      // Подтягиваем текущие данные, если чего-то не хватает в запросе
-      const current = await prisma.motorcycle.findUnique({ where: { id } });
-      const model = data.model || current?.model;
-      const year = data.year || current?.year;
-      updateData.slug = slugify(`${model}${year}`);
+    //1.Генерируем slug:
+    let slug = rawData.slug;
+    if (rawData.model || rawData.year) {
+      // Подтягиваем текущие данные, если чего-то не хватает в запросе:
+      const current = await prisma.motorcycle.findUnique({
+        where: { id },
+        select: { model: true, year: true },
+      });
+      const model = rawData.model || current?.model;
+      const year = rawData.year || current?.year;
+      slug = slugify(`${model}${year}`);
     }
 
-    //Удаляем помеченные изображения
-    if (deletedImageIds) {
-      const idsArray = Array.isArray(deletedImageIds)
-        ? deletedImageIds
-        : [deletedImageIds];
-
-      //Находим файлы, чтобы удалить их с диска
+    //2.Удаляем старые изображения:
+    if (rawData.deletedImageIds && rawData.deletedImageIds.length > 0) {
       const imagesToDelete = await prisma.productImage.findMany({
-        where: { id: { in: idsArray } },
+        where: { id: { in: rawData.deletedImageIds } },
+        select: { url: true },
       });
 
-      for (const img of imagesToDelete) {
-        const filePath = path.resolve("uploads/motorcycles", img.url);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      }
-
+      await Promise.all(
+        imagesToDelete.map(async (img) => {
+          const filePath = path.resolve("uploads/motorcycles", img.url);
+          try {
+            //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
+            // eslint-disable-next-line security/detect-non-literal-fs-filename
+            await fs.unlink(filePath);
+          } catch {
+            console.log("Файл уже удален");
+          }
+        }),
+      );
       await prisma.productImage.deleteMany({
-        where: { id: { in: idsArray } },
+        where: { id: { in: rawData.deletedImageIds } },
       });
     }
 
-    //Обновляем статус "Главная"
-    if (mainImageId) {
+    //3.Обновляем главное изображение:
+    if (rawData.mainImageId) {
       await prisma.productImage.updateMany({
         where: { motorcycleId: id },
         data: { isMain: false },
       });
       await prisma.productImage.update({
-        where: { id: mainImageId },
+        where: { id: rawData.mainImageId },
         data: { isMain: true },
       });
     }
 
-    //Узнаем, сколько картинок осталось в базе для этого байка, чтобы продолжить нумерацию (например, начать с "-3", если 3 уже есть)
+    //4.Узнаем, сколько картинок осталось в базе для этого байка, чтобы продолжить нумерацию (например, начать с "-3", если 3 уже есть)
     const existingImagesCount = await prisma.productImage.count({
       where: { motorcycleId: id },
     });
+    //Добавляем новые файлы:
+    const newImages = await Promise.all(
+      files.map(async (file, index) => {
+        const extension = path.extname(file.originalname);
+        const newFileName = `${slug}-${existingImagesCount + index}${extension}`;
+        const newPath = path.join(path.dirname(file.path), newFileName);
 
-    //Добавляем новые файлы
-    const newImages = files.map((file, index) => {
-      const extension = path.extname(file.originalname);
-      //Формируем имя: slug-N.jpg
-      const newFileName = `${updateData.slug}-${existingImagesCount + index}${extension}`;
+        try {
+          //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
+          // eslint-disable-next-line security/detect-non-literal-fs-filename
+          await fs.rename(file.path, newPath);
+        } catch {
+          console.log("Ошибка перемещения");
+        }
+        return { url: newFileName, isMain: false };
+      }),
+    );
 
-      const oldPath = file.path;
-      const newPath = path.join(path.dirname(oldPath), newFileName);
+    //5.Извлекаем из объекта данных все лишние поля (также отключаем оповещения ESLint, что переменные далее не используются):
+    const {
+      // eslint-disable-next-line
+      id: _ignoredId,
+      siteCategory,
+      // eslint-disable-next-line
+      brand,
+      // eslint-disable-next-line
+      images,
+      // eslint-disable-next-line
+      createdAt,
+      // eslint-disable-next-line
+      updatedAt,
+      // eslint-disable-next-line
+      deletedImageIds: _d,
+      // eslint-disable-next-line
+      mainImageId: _m,
+      // eslint-disable-next-line
+      fuelConsumption,
+      ...finalData
+    } = rawData;
 
-      //Физически переименовываем файл на диске
-      if (fs.existsSync(oldPath)) {
-        fs.renameSync(oldPath, newPath);
-      }
-
-      return {
-        url: newFileName,
-        isMain: false,
-      };
-    });
-
-    //Извлекаем из объекта поле "siteCategory":
-    const { siteCategory, ...finalData } = updateData;
     //Превращаем "siteCategory" в "siteCategoryId":
     const siteCategoryId = await prisma.siteCategory.findUnique({
       where: { name: siteCategory },
@@ -276,13 +278,8 @@ export class AdminService {
       where: { id },
       data: {
         ...finalData,
+        slug,
         siteCategoryId: siteCategoryId!.id,
-        price: data.price ? Number(data.price) : 300000,
-        year: Number(data.year) || new Date().getFullYear(),
-        displacement: data.displacement ? Number(data.displacement) : 0,
-        power: data.power ? Number(data.power) : null,
-        rating: data.rating ? Number(data.rating) : 0,
-        colors: Array.isArray(data.colors) ? data.colors : [],
         images: { create: newImages },
       },
       include: { images: true },

@@ -538,22 +538,22 @@ export const updateMotorcycleAdminSchema = z.object({
         message: "Выберите корректную категорию мотоцикла",
       },
     ),
-    year: z.string().regex(/^\d{4}$/, "Неверный формат года"),
-    displacement: z
-      .string()
-      .regex(/^\d+$/, "Объем должен быть числовой строкой"),
-    power: z
-      .string()
-      .regex(
-        /^\d+(\.\d+)?$/,
-        "Мощность должна быть числом (например, 8 или 8.5)",
-      ),
-    fuelConsumption: z.preprocess(
-      (val) => (val === "null" || val === "" ? null : val),
-      z.string().nullable(),
+    year: z.coerce
+      .number()
+      .min(1850)
+      .max(2077)
+      .default(() => new Date().getFullYear()),
+    displacement: z.coerce.number().default(0),
+    power: z.preprocess(
+      (val) => (val === "null" || val === "" || val === "NaN" ? null : val),
+      z.coerce.number().nullable(),
     ),
+    // fuelConsumption: z.preprocess(
+    //   (val) => (val === "null" || val === "" ? null : val),
+    //   z.string().nullable(),
+    // ),
     engineType: z.string(),
-    fuelSystem: z.string(),
+    // fuelSystem: z.string(),
     coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
     gearbox: z.enum([
       "SPEED1",
@@ -572,10 +572,10 @@ export const updateMotorcycleAdminSchema = z.object({
       "AUTOMATIC",
     ]),
     transmission: z.enum(["CHAIN", "BELT", "CARDAN"]),
-    frontTyre: z.string().trim(),
-    rearTyre: z.string().trim(),
-    frontBrakes: z.string().trim(),
-    rearBrakes: z.string().trim(),
+    // frontTyre: z.string().trim(),
+    // rearTyre: z.string().trim(),
+    // frontBrakes: z.string().trim(),
+    // rearBrakes: z.string().trim(),
     // Предобработка массива цветов (на случай одиночной строки из Form Data):
     colors: z.preprocess((val) => {
       if (!val) return [];
@@ -584,8 +584,10 @@ export const updateMotorcycleAdminSchema = z.object({
     }, z.array(z.string())),
     starter: z.enum(["ELECTRIC", "KICK", "ELECTRIC_KICK"]),
     comments: z.string(),
-    rating: z.string(),
-    price: z.string().regex(/^\d+$/, "Цена должна быть числовой строкой"),
+    // rating: z.coerce.number().default(0),
+    price: z.coerce
+      .number({ message: "Цена должна быть числом" })
+      .default(300000),
     createdAt: z.string().optional(),
     updatedAt: z.string().optional(),
     brand: z.any(),
@@ -614,3 +616,13 @@ export const DeleteMotoAdminSchema = z.object({
 });
 export type DeleteMotoAdminInput = z.infer<typeof DeleteMotoAdminSchema>;
 export type DeleteMotoAdminArgs = DeleteMotoAdminInput["params"];
+
+//----------------------------3.5) Схема для поиска бренда:-------------------------------------//
+export const SearchBrandsAdminSchema = z.object({
+  query: z.object({
+    query: z.string(),
+  }),
+});
+
+export type SearchBrandsAdminInput = z.infer<typeof SearchBrandsAdminSchema>;
+export type SearchBrandsAdminArgs = SearchBrandsAdminInput["query"];

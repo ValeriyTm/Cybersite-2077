@@ -1,10 +1,11 @@
 //--------Этот контроллер будет отвечать за получение списков с пагинацией и поиском.
 //Типы:
-import { Response } from "express";
+import { raw, Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 import {
   DeleteMotoAdminArgs,
   MotosAdminArgs,
+  SearchBrandsAdminArgs,
   updateMotoAdminBodyArgs,
   updateMotoAdminParamsArgs,
 } from "@repo/validation";
@@ -98,16 +99,15 @@ export const updateBrand = catchAsync(
   },
 );
 //---------------------Работа с мотоциклами:-------------
-//Метод поиска брендов (нужен для создания новой записи о мотоцикле):
+//Метод поиска брендов (нужен для создания новой записи о мотоцикле; в поле выбора бренда автоматический поиск):
 export const searchBrands = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { query } = req.query;
+    const { query } = req.query as unknown as SearchBrandsAdminArgs;
 
     if (!query || String(query).length < 2) {
       return res.json([]);
     }
 
-    // @ts-ignore:
     const brands = await adminService.searchBrands(query);
 
     res.json(brands);
@@ -184,28 +184,11 @@ export const createMotorcycle = catchAsync(
 //Метод изменения записи о мотоцикле:
 export const updateMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    console.log("update req.body: ", req.body);
-    console.log("update req.params: ", req.params);
-
-    const { deletedImageIds, mainImageId, ...rawData } =
-      req.body as unknown as updateMotoAdminBodyArgs;
-
-    //Удаляем лишние поля:
-    // delete rawData.id;
-    delete rawData.brand;
-    // delete rawData.createdAt;
-    // delete rawData.updatedAt;
-
+    const data = req.body as unknown as updateMotoAdminBodyArgs;
     const { id } = req.params as unknown as updateMotoAdminParamsArgs;
     const files = req.files as Express.Multer.File[];
 
-    const motorcycle = await adminService.updateMotorcycle(
-      rawData,
-      files,
-      id,
-      mainImageId,
-      deletedImageIds,
-    );
+    const motorcycle = await adminService.updateMotorcycle(data, files, id);
 
     //Обновляем данные в Elastic:
     await searchService.indexMotorcycle(id);

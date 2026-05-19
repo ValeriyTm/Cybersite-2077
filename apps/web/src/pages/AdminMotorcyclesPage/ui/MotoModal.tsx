@@ -1,5 +1,5 @@
 //Состояния:
-import { useState, useEffect } from "react";
+import { useState } from "react";
 //Работа с формами:
 import { useForm } from "react-hook-form";
 //Типы:
@@ -16,31 +16,42 @@ import { $api, API_URL } from "@/shared/api";
 //Стили:
 import styles from "./AdminMotorcyclesPage.module.scss";
 
+interface MotoFormValues extends Omit<MotorcycleEditAdmin, "colors" | "images" | "deletedImageIds"> {
+  colors: string;  // В форме это строка "red, black", а не массив
+}
 
-export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
+interface MotoModalProps {
+  moto: MotorcycleEditAdmin;
+  onClose: () => void;
+  onSubmit: (data: FormData) => void;
+}
+
+export const MotoModal = ({ moto, onClose, onSubmit }: MotoModalProps) => {
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
-
       ...moto,
       colors: moto?.colors ? moto.colors.join(", ") : "",
     },
   });
 
-  const [searchQuery, setSearchQuery] = useState("");
+
   const [searchResults, setSearchResults] = useState<
     { id: string; name: string }[]
   >([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
   const [mainImageId, setMainImageId] = useState<string | null>(
-    moto?.images?.find((img: any) => img.isMain)?.id || null,
+    moto?.images?.find((img) => img.isMain)?.id || null,
   );
 
-  //Если мы редактируем байк, подставим название текущего бренда в инпут поиска:
-  useEffect(() => {
-    if (moto.brand.name) setSearchQuery(moto.brand.name);
-  }, [moto]);
-
+  //Храним ID бренда, который сейчас отображается в инпуте:
+  const [prevBrandId, setPrevBrandId] = useState(moto?.brandId || "");
+  const [searchQuery, setSearchQuery] = useState(moto?.brand?.name || "");
+  //Если ID бренда в пропсах изменился (или загрузился в первый раз, переписав дефолтный пустой стейт):
+  if (moto?.brandId !== prevBrandId) {
+    setPrevBrandId(moto?.brandId || "");
+    setSearchQuery(moto?.brand?.name || "");
+  }
   const handleSearch = async (val: string) => {
     setSearchQuery(val);
     if (val.length >= 2) {
@@ -55,16 +66,24 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
     }
   };
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: MotoFormValues) => {
     const formData = new FormData();
 
     //Добавляем все текстовые поля:
     Object.keys(data).forEach((key) => {
-      if (key === "colors") {
-        const colorsArray = data.colors.split(",").map((c: any) => c.trim());
-        colorsArray.forEach((c: any) => formData.append("colors[]", c));
+      const typedKey = key as keyof MotoFormValues;
+      const value = data[typedKey];
+
+      if (value == undefined || value == null) return;
+
+      if (typedKey === "colors") {
+        const colorsArray = data.colors.split(",").map((c: string) => c.trim());
+        colorsArray.forEach((c: string) => formData.append("colors[]", c));
+      } else if (typedKey === "brand") {
+        // Объект brand не нужно отправлять целиком, у нас есть brandId
+        return;
       } else {
-        formData.append(key, data[key]);
+        formData.append(typedKey, String(value));
       }
     });
 
@@ -235,9 +254,8 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
             <label>Текущие изображения</label>
             <div className={styles.existingImagesGrid}>
               {moto?.images
-                ?.filter((img: MotorcycleEditAdmin['images']) => !deletedImageIds.includes(img.id))
-                .map((img: any) => {
-
+                ?.filter((img) => !deletedImageIds.includes(img.id))
+                .map((img) => {
                   return (
                     <div
                       key={img.id}

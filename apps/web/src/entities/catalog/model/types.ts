@@ -82,6 +82,7 @@ export interface MotorcycleEditAdmin {
   createdAt: string;
   displacement: number;
   engineType: string | null;
+  gearbox: GearboxType | null;
   id: string;
   images: {
     createdAt: Date;
@@ -96,13 +97,35 @@ export interface MotorcycleEditAdmin {
   rating: number;
   rearBrakes: string | null;
   rearTyre: string | null;
-  siteCategoryId: string;
+  siteCategory: string;
   slug: string;
   starter: StarterType | null;
   topSpeed: number | null;
   transmission: TransmissionType | null;
   updatedAt: string;
   year: number;
+  deletedImageIds: string[];
+}
+
+export interface MotorcycleResponse {
+  items: MotorcycleShort[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
+export interface MotorcycleReview {
+  _id: string;
+  motorcycleId: string;
+  orderId: string;
+  userId: string;
+  userName: string;
+  userAvatar: string | null;
+  rating: number;
+  comment: string;
+  images: string[];
+  createdAt: string;
+  __v: number;
 }
 
 export interface MotorcycleAdminSend {
@@ -142,25 +165,4 @@ export interface MotorcycleAdminSend {
   transmission: TransmissionType | null;
   updatedAt: string;
   year: number;
-}
-
-export interface MotorcycleResponse {
-  items: MotorcycleShort[];
-  total: number;
-  page: number;
-  pages: number;
-}
-
-export interface MotorcycleReview {
-  _id: string;
-  motorcycleId: string;
-  orderId: string;
-  userId: string;
-  userName: string;
-  userAvatar: string | null;
-  rating: number;
-  comment: string;
-  images: string[];
-  createdAt: string;
-  __v: number;
 }
