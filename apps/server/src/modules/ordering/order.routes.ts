@@ -4,6 +4,7 @@ import * as orderController from "./order.controller.js";
 //Middleware:
 import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //Проверка авторизации
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
+import { roleMiddleware } from "src/shared/middlewares/roleMiddleware.js";
 
 const router = Router();
 
@@ -33,6 +34,7 @@ router.patch("/:orderId/cancel", authMiddleware, orderController.cancelOrder);
 router.patch(
   "/:orderId/pay-test",
   authMiddleware,
+  roleMiddleware(["SUPERADMIN"]),
   orderController.payOrderTest,
 );
 // PATCH http://localhost:3001/api/orders/тут-id-заказа/pay-test - после этого заказ из pending переходит в paid, а затем в delivery

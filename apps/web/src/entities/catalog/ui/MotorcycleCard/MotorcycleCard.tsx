@@ -124,7 +124,7 @@ export const MotorcycleCard = ({
           {/*Бадж высокого рейтинга:*/}
           {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
 
-          {data.totalInStock && (
+          {data.totalInStock > 0 && (
             <span className={styles.presence}>В наличии</span>
           )}
         </div>
@@ -141,7 +141,7 @@ export const MotorcycleCard = ({
         <div className={styles.specs}>
           <span>{data.year} г.</span>
           {Number(data.displacement) > 0 && <span>{data.displacement} см³</span>}
-          <span>{data.power !== 0 ? `${data.power} л.с.` : ""}</span>
+          <span>{data.power === 0 ? "" : `${data.power} л.с.`}</span>
           <span className={styles.rating}>{data.rating.toFixed(1)} ★</span>
         </div>
 

@@ -5,12 +5,12 @@ import type {
 import { type MotorcycleFull } from "@repo/types";
 
 export interface Brand {
-  id: string;
-  name: string;
   country: string;
-  slug: string;
-  motorcyclesCount: number;
+  id: string;
   image: string;
+  motorcyclesCount: number;
+  name: string;
+  slug: string;
 }
 
 export interface BrandResponse {
@@ -40,7 +40,7 @@ export interface MotorcycleFilters {
 
 export interface MotorcycleShort {
   brand: string;
-  brandSlug: string; //Для роутинга
+  brandSlug: string;
   category: MotoCategory;
   createdAt: string;
   discountData: {
@@ -53,12 +53,12 @@ export interface MotorcycleShort {
   id: string;
   mainImage: string;
   model: string;
-  power: number;
+  power: number | null;
   price: number;
   rating: number;
   slug: string;
   totalInStock: number;
-  transmission: TransmissionType;
+  transmission: TransmissionType | null;
   year: number;
 }
 

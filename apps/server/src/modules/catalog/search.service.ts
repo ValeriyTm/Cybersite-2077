@@ -7,7 +7,8 @@ import { discountLogic } from "../discount/index.js";
 //Схемы валидации Zod:
 import { MotorcyclesServiceArgs } from "@repo/validation";
 //Типы:
-import { MotorcycleFullServer, type MotorcycleFull } from "@repo/types";
+import { type MotorcycleFullServer } from "@repo/types";
+import { QueryDslQueryContainer } from "@elastic/elasticsearch/lib/api/types.js";
 
 //Подключаемся к контейнеру:
 export const esClient = new Client({ node: process.env.ELASTIC_NODE });
@@ -280,15 +281,11 @@ export class SearchService {
   ) {
     //[Отбор происходит по принципу «похожий класс + похожий объём».Мы ищем мотоциклы только из той же категории. Elastic старается в первую очередь выдать модели того же производителя. Мы ищем модели с объёмом +/- 30% от текущего.]
     //Собираем только те фильтры, которые реально существуют в объекте:
-    const must: any[] = [];
-    const should: any[] = [];
+    const must: QueryDslQueryContainer[] = [];
+    const should: QueryDslQueryContainer[] = [];
 
     if (motorcycle.category) {
       must.push({ term: { "category.keyword": motorcycle.category } });
-    }
-
-    if (motorcycle.brandSlug) {
-      should.push({ term: { "brandSlug.keyword": motorcycle.brandSlug } });
     }
 
     if (motorcycle.displacement && motorcycle.displacement > 0) {
@@ -305,28 +302,30 @@ export class SearchService {
     const query = {
       bool: {
         must,
-        //Добавляем should только если в нем есть элементы:
-        ...(should.length > 0 && { should }),
+        ...(should.length > 0 && { should }), //Добавляем should только если в нем есть элементы
         must_not: [
           { term: { _id: motorcycle.id } }, //Исключаем текущую модель из рекомендаций
         ],
       },
     };
 
-    const result = await esClient.search({
+    const result = await esClient.search<MotorcycleDocument>({
       index: this.indexName,
       size: limit,
       query,
     });
 
+    //Для отладки (просмотр возвращаемых данных с Elastic):
+    // console.log("result 2: ", JSON.stringify(result, null, 2));
+
     //Превращаем хиты Elastic в объекты:
-    const rawItems = result.hits.hits.map((hit: any) => ({
-      ...(hit._source as any),
+    const rawItems = result.hits.hits.map((hit) => ({
+      ...hit._source,
       id: hit._id,
     }));
 
     return await Promise.all(
-      rawItems.map(async (moto: any) => {
+      rawItems.map(async (moto) => {
         const discountData = await discountLogic.calculateFinalPrice(
           moto,
           userId,
@@ -345,7 +344,7 @@ export class SearchService {
         match_phrase_prefix: {
           //Ищет по первым буквам слов:
           model: {
-            query: query,
+            query,
           },
         },
       },

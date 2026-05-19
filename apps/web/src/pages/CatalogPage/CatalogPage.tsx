@@ -1,10 +1,9 @@
 import {
-  fetchSiteCategories,
   CategoryCard,
+  useSiteCategories,
 } from "@/entities/catalog";
-import { type SiteCategory } from "@repo/types";
 //Состояния:
-import { useEffect, useState } from "react";
+import { type ProductCategory } from "@repo/types";
 //API:
 import { API_URL } from "@/shared/api";
 //SEO:
@@ -19,11 +18,8 @@ import spareImage from '@/shared/assets/images/catalog/spare.jpg';
 import styles from "./CatalogPage.module.scss";
 
 export const CatalogPage = () => {
-  const [categories, setCategories] = useState<SiteCategory[]>([]);
 
-  useEffect(() => {
-    fetchSiteCategories().then(setCategories);
-  }, []);
+  const { data: categories = [], isLoading, isError } = useSiteCategories();
 
   //Изображения:
   const CATEGORY_IMAGES: Record<string, string> = {
@@ -40,6 +36,19 @@ export const CatalogPage = () => {
     { label: "Каталог", href: "/catalog" }, // Текущая страница
   ];
 
+  if (isLoading)
+    return (
+      <div style={{ textAlign: "center", padding: "40px" }}>Загрузка...</div>
+    );
+
+  if (isError) {
+    return (
+      <div style={{ textAlign: "center", padding: "40px" }}>
+        Ошибка при загрузке категорий. Попробуйте позже.
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
@@ -52,9 +61,11 @@ export const CatalogPage = () => {
 
         <h1 className={styles.pageTitle}>Каталог техники</h1>
         <div className={styles.grid}>
-          {categories.map((cat) => (
-            <CategoryCard key={cat.id} category={cat} img={CATEGORY_IMAGES[cat.slug]} />
-          ))}
+          {categories.map((cat: ProductCategory) => {
+            return (
+              <CategoryCard key={cat.id} category={cat} img={CATEGORY_IMAGES[cat.slug]} />
+            )
+          })}
         </div>
       </main>
 

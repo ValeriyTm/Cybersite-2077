@@ -4,13 +4,24 @@ import { prisma } from "@repo/database";
 const BASE_URL = "https://cybersite2077.com"; //Мой будущий домен тут будет
 
 export class SitemapService {
-  async generateSitemapXml() {
+  //Переменные для хранения кэша:
+  private cachedXml: string | null = null;
+  private lastGenerated: number = 0;
+  private readonly CACHE_TTL = 24 * 60 * 60 * 1000; //Время жизни кэша — 24 часа
+
+  async generateSitemapXml(): Promise<string> {
+    const now = Date.now();
+
+    //Проверяем, есть ли живой кэш в памяти:
+    if (this.cachedXml && now - this.lastGenerated < this.CACHE_TTL) {
+      return this.cachedXml; //Если есть, то возвращаем
+    }
+
     const motorcycles = await prisma.motorcycle.findMany({
       select: {
         slug: true,
         updatedAt: true,
         brand: {
-          //Получаем данные, заходя в связанную модель Brand:
           select: { slug: true },
         },
       },
@@ -33,18 +44,25 @@ export class SitemapService {
         : new Date().toISOString().split("T")[0];
 
       urls.push(`
-  <url>
-    <loc>${BASE_URL}/catalog/motorcycles/${bSlug}/${m.slug}</loc>
-    <lastmod>${lastMod}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>`);
+                <url>
+                <loc>${BASE_URL}/catalog/motorcycles/${bSlug}/${m.slug}</loc>
+                <lastmod>${lastMod}</lastmod>
+                <changefreq>monthly</changefreq>
+                <priority>0.7</priority>
+                </url>
+                `);
     });
 
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://sitemaps.org">
-${urls.join("")}
-</urlset>`;
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+                 <urlset xmlns="http://sitemaps.org">
+                 ${urls.join("")}
+                 </urlset>`;
+
+    //Записываем результат в кэш и обновляем время:
+    this.cachedXml = xml;
+    this.lastGenerated = now;
+
+    return xml;
   }
 }
 

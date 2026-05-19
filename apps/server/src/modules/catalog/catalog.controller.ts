@@ -6,19 +6,21 @@ import { catalogService } from "./catalog.service.js";
 import { searchService } from "./search.service.js";
 import { sitemapService } from "./sitemap.service.js";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
-import { discountLogic } from "../discount/index.js";
+// import { discountLogic } from "../discount/index.js";
 //Схемы валидации Zod:
 import {
   GetBrandsArgs,
+  GetSuggestionsArgs,
   MotoBySlugServiceArgs,
   MotorcyclesServiceArgs,
   RelatedBySlugServiceArgs,
 } from "@repo/validation";
+//Типы:
+import { MotorcycleFullServer } from "@repo/types";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
-import { AppError } from "../../shared/utils/app-error.js";
-import { MotorcycleFullServer } from "@repo/types";
+// import { AppError } from "../../shared/utils/app-error.js";
 
 //Получение главных категорий:
 export const getCategories = catchAsync(
@@ -26,13 +28,18 @@ export const getCategories = catchAsync(
     //Получаем данные с БД:
     const categories = await catalogService.getSiteCategories();
 
-    //Форматируем ответ согласно OpenAPI (переименовываем _count в motorcyclesCount):
+    //Форматируем ответ (переименовываем _count в motorcyclesCount):
     const result = categories.map((cat) => ({
       ...cat,
       motorcyclesCount: cat._count.motorcycles,
       _count: undefined, //Убираем техническое поле Prisma
     }));
 
+    //Заголовки кэширования:
+    res.header(
+      "Cache-Control",
+      "public, max-age=600, s-maxage=3600, stale-while-revalidate=600",
+    );
     res.status(200).json(result);
   },
 );
@@ -108,7 +115,7 @@ export const getRelated = catchAsync(
 //Поиск с выводом предположений:
 export const getSuggestions = catchAsync(
   async (req: Request, res: Response) => {
-    const query = req.query.q as string;
+    const { q: query } = req.query as GetSuggestionsArgs;
     if (!query || query.length < 2) return res.json([]); //Ищем от 2-х символов
 
     const suggestions = await searchService.suggestMotorcycles(query);
@@ -117,40 +124,45 @@ export const getSuggestions = catchAsync(
 );
 
 //Получение информации о конкретном мотоцикле по его id:
-export const getMotorcycleById = catchAsync(
-  async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
+// export const getMotorcycleById = catchAsync(
+//   async (req: AuthRequest, res: Response) => {
+//     const { id } = req.params;
+//     const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
-    //@ts-ignore:
-    const motorcycle = await catalogService.getMotorcycleById(id);
+//     const motorcycle = await catalogService.getMotorcycleById(id);
 
-    if (!motorcycle) {
-      throw new AppError(404, "Мотоцикл не найден");
-    }
+//     if (!motorcycle) {
+//       throw new AppError(404, "Мотоцикл не найден");
+//     }
 
-    // Считаем общее доступное количество для фронтенда
-    const totalInStock = motorcycle.stocks.reduce(
-      (acc, s) => acc + (s.quantity - s.reserved),
-      0,
-    );
+//     // Считаем общее доступное количество для фронтенда
+//     const totalInStock = motorcycle.stocks.reduce(
+//       (acc, s) => acc + (s.quantity - s.reserved),
+//       0,
+//     );
 
-    //Считаем скидку:
-    const discountData = await discountLogic.calculateFinalPrice(
-      motorcycle,
-      userId,
-    );
+//     //Считаем скидку:
+//     const discountData = await discountLogic.calculateFinalPrice(
+//       motorcycle,
+//       userId,
+//     );
 
-    const result = { ...motorcycle, totalInStock, discountData };
+//     const result = { ...motorcycle, totalInStock, discountData };
 
-    res.json(result);
-  },
-);
+//     res.json(result);
+//   },
+// );
 
 //Получение sitemap для каталога:
 export const getSitemap = catchAsync(async (_req: Request, res: Response) => {
   const xml = await sitemapService.generateSitemapXml();
-  res.header("Content-Type", "application/xml"); //Обязательный заголовок, чтобы поисковик распознал XML
+  //Кэширование, чтобы поисковики не нагружали сервер:
+  res.header(
+    "Cache-Control",
+    "public, max-age=3600, s-maxage=86400, stale-while-revalidate=60",
+  );
+  //Обязательный заголовок, чтобы поисковик распознал XML:
+  res.header("Content-Type", "application/xml");
   res.send(xml);
 });
 
@@ -158,6 +170,6 @@ export const getSitemap = catchAsync(async (_req: Request, res: Response) => {
 export const syncAllMotorcycles = catchAsync(
   async (_req: Request, res: Response) => {
     await searchService.syncAllMotorcycles();
-    res.send("Синхронизация завершена! Проверь консоль бэкенда.");
+    res.send("Синхронизация завершена! Можно убедиться в консоли бэкенда.");
   },
 );

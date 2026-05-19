@@ -1,12 +1,12 @@
 //Роутинг:
 import { Link } from "react-router";
 //Типы:
-import { type SiteCategory } from "@repo/types";
+import { type ProductCategory } from "@repo/types";
 //Стили:
 import styles from "./CategoryCard.module.scss";
 
 interface CategoryCardProps {
-  category: SiteCategory;
+  category: ProductCategory;
   img: string;
 }
 
@@ -17,8 +17,8 @@ export const CategoryCard = ({ category, img }: CategoryCardProps) => {
   return (
     <Link
       to={`/catalog/${slug}`}
-      className={`${styles.CategoryCard} ${!isReady ? styles.notReady : ""}`}
-      onClick={(e) => { !isReady && e.preventDefault() }}
+      className={`${styles.CategoryCard} ${isReady ? "" : styles.notReady}`}
+      onClick={(e) => { if (!isReady) e.preventDefault() }}
     >
       <article>
         <div className={styles.imageWrapper}>

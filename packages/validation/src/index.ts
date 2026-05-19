@@ -382,3 +382,14 @@ export const GetRelatedBySlugSchema = z.object({
 });
 export type RelatedBySlugInput = z.infer<typeof GetRelatedBySlugSchema>;
 export type RelatedBySlugServiceArgs = RelatedBySlugInput["params"];
+
+//----------------------------2.5) Схема для подсказок к глобальному поиску:-------------------------------------//
+export const GetSuggestionsQuerySchema = z.object({
+  query: z.object({
+    q: z.string().min(2).toLowerCase(),
+  }),
+});
+
+type SuggestionsInput = z.infer<typeof GetSuggestionsQuerySchema>;
+//Чистый тип для сервиса:
+export type GetSuggestionsArgs = SuggestionsInput["query"];

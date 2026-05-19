@@ -88,7 +88,15 @@ export interface MotorcycleFullServer {
   rating: number;
   rearBrakes: string | null;
   rearTyre: string | null;
-  siteCategory: SiteCategoryServer;
+  siteCategory: {
+    createdAt: Date;
+    description: string | null;
+    id: string;
+    imageUrl: string | null;
+    name: string;
+    slug: string;
+    updatedAt: Date;
+  };
   siteCategoryId: string;
   slug: string;
   starter: StarterType | null;
@@ -100,22 +108,21 @@ export interface MotorcycleFullServer {
   year: number;
 }
 
-export interface SiteCategoryServer {
-  createdAt: Date;
-  description: string | null;
-  id: string;
-  imageUrl: string | null;
-  name: string;
-  slug: string;
-  updatedAt: Date;
-}
-
+//Тип для преобразования Date в string
 type DeepSerializeDates<T> = T extends Date
   ? string
   : T extends object
     ? { [K in keyof T]: DeepSerializeDates<T[K]> }
     : T;
 
-//Фронтендерские типы отличаются тем, что там вместо Date будет string:
-export type SiteCategory = DeepSerializeDates<SiteCategoryServer>;
+//Фронтендерский тип отличается тем, что там вместо Date будет string:
 export type MotorcycleFull = DeepSerializeDates<MotorcycleFullServer>;
+
+export interface ProductCategory {
+  description: string | null;
+  id: string;
+  imageUrl: string | null;
+  motorcyclesCount: number;
+  name: string;
+  slug: string;
+}

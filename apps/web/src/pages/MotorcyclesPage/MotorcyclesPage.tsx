@@ -88,7 +88,7 @@ export const MotorcyclesPage = () => {
     { label: "Каталог", href: "/catalog" },
     { label: "Бренды", href: "/catalog/motorcycles" },
     {
-      label: brandSlug === 'all' ? 'Поиск' : brandSlug?.toUpperCase(),
+      label: brandSlug === 'all' ? 'Поиск' : brandSlug?.toUpperCase() ?? '',
       href: `/catalog/motorcycles/${brandSlug}`,
     }, //Текущая страница
   ];

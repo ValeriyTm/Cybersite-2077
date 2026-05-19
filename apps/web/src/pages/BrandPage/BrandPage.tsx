@@ -1,14 +1,14 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { fetchBrands, BrandCard } from "@/entities/catalog";
-//Состояния:
-import { useQuery } from "@tanstack/react-query";
+import { BrandCard, useBrands } from "@/entities/catalog";
 //Для поиска:
 import debounce from "lodash/debounce";
 //Компоненты:
 import { Breadcrumbs } from "@/shared/ui";
 //API:
 import { API_URL } from "@/shared/api";
+//Типы:
+import { type Brand } from '@/entities/catalog/model/types';
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
@@ -22,18 +22,13 @@ export const BrandPage = () => {
   const search = searchParams.get("search") || "";
 
   //Получаем данные о брендах:
-  const { data, isLoading } = useQuery({
-    queryKey: ["brands", currentPage, search],
-    queryFn: () => fetchBrands(currentPage, 24, search),
-    placeholderData: (previousData) => previousData,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data, isLoading } = useBrands({ page: currentPage, limit: 24, search });
 
   //Всего страниц:
   const totalPages = data?.pages || 1;
 
   //Функция для обновления get-параметров в URL:
-  const updateParams = (
+  const updateParams = useCallback((
     newParams: Record<string, string | number | undefined>,
   ) => {
     //Достаем текущие параметры из URL и записываем в params:
@@ -45,12 +40,12 @@ export const BrandPage = () => {
     });
     if (!newParams.page) params.set("page", "1"); //Сброс на первую страницу при поиске
     setSearchParams(params); //Обновляем URL в поисковой строке
-  };
+  }, [searchParams, setSearchParams]);
 
   //Дебаунс для поиска:
   const debouncedSearch = useMemo(
     () => debounce((val: string) => updateParams({ search: val }), 500),
-    [searchParams],
+    [updateParams],
   );
 
   //Хлебные крошки:
@@ -95,9 +90,11 @@ export const BrandPage = () => {
 
         {/* Карточки брендов: */}
         <div className={styles.grid}>
-          {data?.items.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} />
-          ))}
+          {data?.items.map((brand: Brand) => {
+            return (
+              <BrandCard key={brand.id} brand={brand} />
+            )
+          })}
         </div>
 
         {/* Пагинация: */}
@@ -124,7 +121,7 @@ export const BrandPage = () => {
               {(() => {
                 const pages = [];
                 let start = Math.max(1, currentPage - 2);
-                let end = Math.min(totalPages, start + 4);
+                const end = Math.min(totalPages, start + 4);
                 if (end === totalPages) start = Math.max(1, end - 4);
 
                 for (let i = start; i <= end; i++) {
