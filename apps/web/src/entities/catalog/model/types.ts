@@ -166,3 +166,10 @@ export interface MotorcycleAdminSend {
   updatedAt: string;
   year: number;
 }
+
+export interface BrandData {
+  id?: string;
+  name: string;
+  country: string;
+  slug: string;
+}

@@ -1,9 +1,17 @@
 //Работа с формами:
 import { useForm } from "react-hook-form";
+//Типы:
+import { type BrandData } from "@/entities/catalog";
 //Стили:
 import styles from "./AdminBrandsPage.module.scss";
 
-export const BrandModal = ({ brand, onClose, onSubmit }: any) => {
+interface BrandModalProps {
+  brand: BrandData | null; // null, если мы добавляем новый бренд
+  onClose: () => void;
+  onSubmit: (data: BrandData) => void; // react-hook-form вернет объект типа BrandData
+}
+
+export const BrandModal = ({ brand, onClose, onSubmit }: BrandModalProps) => {
   const { register, handleSubmit } = useForm({
     defaultValues: brand || { name: "", country: "", slug: "" },
   });

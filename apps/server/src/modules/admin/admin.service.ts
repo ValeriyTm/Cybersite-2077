@@ -22,11 +22,6 @@ const slugify = (text: string) =>
     .replace(/[^\w-]+/g, "")
     .replace(/--+/g, "-");
 
-type updateMotoAdminBodyArgsCleared = Omit<
-  updateMotoAdminBodyArgs,
-  "deletedImageIds" | "mainImageId" | "brand"
->;
-
 export class AdminService {
   //---------------------Работа с брендами:-------------
   //Получить все бренды:

@@ -548,12 +548,7 @@ export const updateMotorcycleAdminSchema = z.object({
       (val) => (val === "null" || val === "" || val === "NaN" ? null : val),
       z.coerce.number().nullable(),
     ),
-    // fuelConsumption: z.preprocess(
-    //   (val) => (val === "null" || val === "" ? null : val),
-    //   z.string().nullable(),
-    // ),
     engineType: z.string(),
-    // fuelSystem: z.string(),
     coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
     gearbox: z.enum([
       "SPEED1",
@@ -572,11 +567,6 @@ export const updateMotorcycleAdminSchema = z.object({
       "AUTOMATIC",
     ]),
     transmission: z.enum(["CHAIN", "BELT", "CARDAN"]),
-    // frontTyre: z.string().trim(),
-    // rearTyre: z.string().trim(),
-    // frontBrakes: z.string().trim(),
-    // rearBrakes: z.string().trim(),
-    // Предобработка массива цветов (на случай одиночной строки из Form Data):
     colors: z.preprocess((val) => {
       if (!val) return [];
       if (typeof val === "string") return [val];
@@ -584,7 +574,6 @@ export const updateMotorcycleAdminSchema = z.object({
     }, z.array(z.string())),
     starter: z.enum(["ELECTRIC", "KICK", "ELECTRIC_KICK"]),
     comments: z.string(),
-    // rating: z.coerce.number().default(0),
     price: z.coerce
       .number({ message: "Цена должна быть числом" })
       .default(300000),
@@ -626,3 +615,98 @@ export const SearchBrandsAdminSchema = z.object({
 
 export type SearchBrandsAdminInput = z.infer<typeof SearchBrandsAdminSchema>;
 export type SearchBrandsAdminArgs = SearchBrandsAdminInput["query"];
+
+//----------------------------3.6) Схема для получения брендов:-------------------------------------//
+export const GetBrandsAdminSchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    //Благодаря default автоматически подставится значение 1, если page не указан в адресной строке
+
+    limit: z.coerce.number().int().positive().max(100).default(10),
+
+    search: z.string().optional(),
+    //Тип для search: string | undefined (т.к. optional)
+  }),
+});
+
+type BrandsAdminInput = z.infer<typeof GetBrandsAdminSchema>;
+//Чистый тип для сервиса:
+export type BrandsAdminArgs = BrandsAdminInput["query"];
+
+//----------------------------3.7) Схема для создания бренда:-------------------------------------//
+export const CreateBrandAdminSchema = z.object({
+  body: z.object({
+    name: z
+      .string()
+      .trim()
+      .min(2, { message: "Имя слишком короткое" })
+      .max(20, "Максимум 20 символов для имени")
+      .regex(
+        /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/,
+        "Для модели используйте только цифры, английские и русские буквы",
+      ),
+    country: z
+      .string()
+      .trim()
+      .min(2, { message: "Название страны слишком короткое" })
+      .max(30, "Максимум 30 символов для страны")
+      .regex(
+        /^[а-яА-ЯёЁ ]+$/,
+        "Для названия страны используйте только русские буквы",
+      ),
+    slug: z
+      .string()
+      .trim()
+      .min(2, { message: "Slug слишком короткий" })
+      .max(30, "Максимум 30 символов для slug")
+      .regex(/^[a-zA-Zа ]+$/, "Для slug используйте только английскиебуквы"),
+  }),
+});
+
+export type CreateBrandAdminInput = z.infer<typeof CreateBrandAdminSchema>;
+export type CreateBrandAdminArgs = CreateBrandAdminInput["body"];
+
+//----------------------------3.8) Схема для обновления бренда:-------------------------------------//
+export const UpdateBrandAdminSchema = z.object({
+  body: z.object({
+    name: z
+      .string()
+      .trim()
+      .min(2, { message: "Имя слишком короткое" })
+      .max(20, "Максимум 20 символов для имени")
+      .regex(
+        /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/,
+        "Для модели используйте только цифры, английские и русские буквы",
+      ),
+    country: z
+      .string()
+      .trim()
+      .min(2, { message: "Название страны слишком короткое" })
+      .max(30, "Максимум 30 символов для страны")
+      .regex(
+        /^[а-яА-ЯёЁ ]+$/,
+        "Для названия страны используйте только русские буквы",
+      ),
+    slug: z
+      .string()
+      .trim()
+      .min(2, { message: "Slug слишком короткий" })
+      .max(30, "Максимум 30 символов для slug")
+      .regex(/^[a-zA-Zа ]+$/, "Для slug используйте только английскиебуквы"),
+  }),
+  params: z.object({
+    id: z.string().min(1, "id обязателен"),
+  }),
+});
+export type UpdateBrandAdminInput = z.infer<typeof UpdateBrandAdminSchema>;
+export type UpdateBrandAdminBodyArgs = UpdateBrandAdminInput["body"];
+export type UpdateBrandAdminParamArgs = UpdateBrandAdminInput["params"];
+
+//----------------------------3.9) Схема для удаления бренда:-------------------------------------//
+export const DeleteBrandAdminSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, "id обязателен"),
+  }),
+});
+export type DeleteBrandAdminInput = z.infer<typeof DeleteBrandAdminSchema>;
+export type DeleteBrandAdminParamArgs = DeleteBrandAdminInput["params"];

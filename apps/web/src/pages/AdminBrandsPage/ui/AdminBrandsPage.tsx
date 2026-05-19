@@ -7,6 +7,8 @@ import { $api } from "@/shared/api";
 import { BrandModal } from "./BrandModal";
 import { DataTable } from "@/shared/ui";
 import { getColumns } from "../model/columns";
+//Типы:
+import { type BrandData } from "@/entities/catalog";
 //Уведомления:
 import { toast } from "react-hot-toast";
 //Стили:
@@ -15,7 +17,7 @@ import styles from "./AdminBrandsPage.module.scss";
 export const AdminBrandsPage = () => {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingBrand, setEditingBrand] = useState(null);
+  const [editingBrand, setEditingBrand] = useState<BrandData | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -38,9 +40,8 @@ export const AdminBrandsPage = () => {
 
   //Мутация для сохранения (создание или апдейт):
   const saveMutation = useMutation({
-    mutationFn: (formData: any) =>
+    mutationFn: (formData: BrandData) =>
       editingBrand
-        //@ts-ignore:
         ? $api.patch(`/admin/brands/${editingBrand.id}`, formData)
         : $api.post("/admin/brands", formData),
     onSuccess: () => {
@@ -52,7 +53,7 @@ export const AdminBrandsPage = () => {
   });
 
   //Прокидываем функцию редактирования в колонки:
-  const handleEdit = (brand: any) => {
+  const handleEdit = (brand: BrandData) => {
     setEditingBrand(brand);
     setIsModalOpen(true);
   };
@@ -105,7 +106,10 @@ export const AdminBrandsPage = () => {
         <BrandModal
           brand={editingBrand}
           onClose={() => setIsModalOpen(false)}
-          onSubmit={(data: any) => saveMutation.mutate(data)}
+          onSubmit={(data: BrandData) => {
+            saveMutation.mutate(data)
+          }
+          }
         />
       )}
     </div>

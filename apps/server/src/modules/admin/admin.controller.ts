@@ -3,9 +3,14 @@
 import { raw, Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 import {
+  BrandsAdminArgs,
+  CreateBrandAdminArgs,
+  DeleteBrandAdminParamArgs,
   DeleteMotoAdminArgs,
   MotosAdminArgs,
   SearchBrandsAdminArgs,
+  UpdateBrandAdminBodyArgs,
+  UpdateBrandAdminParamArgs,
   updateMotoAdminBodyArgs,
   updateMotoAdminParamsArgs,
 } from "@repo/validation";
@@ -25,10 +30,9 @@ import { AppError } from "../../shared/utils/app-error.js";
 //---------------------Работа с брендами:-------------
 // Универсальный метод для получения списка брендов:
 export const getBrands = catchAsync(async (req: AuthRequest, res: Response) => {
-  const { page = 1, limit = 10, search = "" } = req.query;
+  const { page, limit, search = "" } = req.query as unknown as BrandsAdminArgs;
   const skip = (Number(page) - 1) * Number(limit);
 
-  //@ts-ignore:
   const { brands, total } = await adminService.getBrands(search, skip, limit);
 
   res.json({
@@ -44,7 +48,7 @@ export const getBrands = catchAsync(async (req: AuthRequest, res: Response) => {
 //Метод для удаления бренда:
 export const deleteBrand = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.params as DeleteBrandAdminParamArgs;
 
     //Находим все связанные модели мотоциклов перед удалением, а также производим удаление:
     //@ts-ignore:
@@ -63,7 +67,7 @@ export const deleteBrand = catchAsync(
 //Метод для создания бренда:
 export const createBrand = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { name, country, slug } = req.body;
+    const { name, country, slug } = req.body as CreateBrandAdminArgs;
     const brand = await adminService.createBrand(name, country, slug);
 
     // При создании нового бренда мотоциклов еще нет,
@@ -75,10 +79,9 @@ export const createBrand = catchAsync(
 //Метод для изменения информации о бренде:
 export const updateBrand = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { name, country, slug } = req.body;
+    const { id } = req.params as UpdateBrandAdminParamArgs;
+    const { name, country, slug } = req.body as UpdateBrandAdminBodyArgs;
 
-    // @ts-ignore:
     const brands = await adminService.updateBrand(id, name, country, slug);
 
     //Если изменился slug или name — синхронизируем все байки этого бренда в Elastic:
@@ -88,7 +91,6 @@ export const updateBrand = catchAsync(
     ) {
       //Запускаем в фоне, чтобы не заставлять админа ждать окончания индексации всех байков:
       searchService
-        //@ts-ignore:
         .syncBrandMotorcycles(id)
         .catch((err) =>
           console.error(`Ошибка синхронизации бренда ${id} в ES:`, err),

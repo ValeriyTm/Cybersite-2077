@@ -9,10 +9,14 @@ import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js
 import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
 import {
+  CreateBrandAdminSchema,
   createMotorcycleAdminSchema,
+  DeleteBrandAdminSchema,
   DeleteMotoAdminSchema,
+  GetBrandsAdminSchema,
   GetMotosAdminSchema,
   SearchBrandsAdminSchema,
+  UpdateBrandAdminSchema,
   updateMotorcycleAdminSchema,
 } from "@repo/validation";
 
@@ -27,26 +31,33 @@ router.use(noCacheMiddleware); //Запрещаем кэширование ст�
 router.get(
   "/brands",
   roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
+  validate(GetBrandsAdminSchema),
   adminController.getBrands,
 );
 //Удаление бренда:
 router.delete(
   "/brands/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(DeleteBrandAdminSchema),
   adminController.deleteBrand,
 );
+
 //Создание бренда:
 router.post(
   "/brands",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(CreateBrandAdminSchema),
   adminController.createBrand,
 );
+
 //Обновление бренда:
 router.patch(
   "/brands/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(UpdateBrandAdminSchema),
   adminController.updateBrand,
 );
+
 //Поиск бренда:
 router.get(
   "/brands/search",
