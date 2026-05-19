@@ -2,9 +2,12 @@
 import { prisma } from "@repo/database";
 //Модель взаимодействия с MongoDB (из модуля Content):
 import { NewsModel } from "../content/index.js";
+//Типы:
+import { CreateMotorcycleDto } from "./admin.dto.js";
 //Взаимодействие с файлами и путями:
-import fs from "fs";
-import path from "path";
+import { promises as fs } from "fs";
+import * as path from "path";
+import { da } from "@faker-js/faker";
 
 //Функция для генерации slug для модели мотоцикла:
 const slugify = (text: string) =>
@@ -15,21 +18,6 @@ const slugify = (text: string) =>
     .replace(/\s+/g, "-")
     .replace(/[^\w-]+/g, "")
     .replace(/--+/g, "-");
-
-export interface CreateMotorcycleDto {
-  model: string;
-  brandId: string;
-  price: string | number;
-  year: string | number;
-  category: string;
-  description?: string;
-  displacement?: string | number;
-  power?: string | number;
-  topSpeed?: string | number;
-  fuelConsumption?: string | number;
-  colors?: string[];
-  files?: Express.Multer.File[]; // Для обработки картинок
-}
 
 export class AdminService {
   //---------------------Работа с брендами:-------------
@@ -103,16 +91,17 @@ export class AdminService {
   }
 
   //Создание новой модели мотоцикла:
-  async createMotorcycle(dto: CreateMotorcycleDto) {
-    const { files, ...data } = dto;
-
+  async createMotorcycle(
+    data: CreateMotorcycleDto,
+    files: Express.Multer.File[],
+  ) {
     //Формируем slug: соединяем модель и год
     const year = data.year || new Date().getFullYear();
     const rawSlug = `${data.model}${year}`;
     const finalSlug = slugify(rawSlug);
 
     //Обрабатываем файлы и переименовываем их
-    const imageRecords = files?.map((file, index) => {
+    const imagePromises = (files || []).map(async (file, index) => {
       const extension = path.extname(file.originalname); // .jpg, .png
       // Формат: slug.jpg, slug-1.jpg, slug-2.jpg
       const newFileName =
@@ -123,9 +112,14 @@ export class AdminService {
       const oldPath = file.path;
       const newPath = path.join(path.dirname(oldPath), newFileName);
 
-      //Физически переименовываем файл на диске
-      if (fs.existsSync(oldPath)) {
-        fs.renameSync(oldPath, newPath);
+      try {
+        //Асинхронно переименовываем файл на диске:
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
+        await fs.rename(oldPath, newPath);
+      } catch (err: any) {
+        //Если файла не существовало (например, сбой загрузки Multer, т.е., например, массив files не пустой, но на самом диске файла физически не оказалось), игнорируем ошибку ENOENT.
+        //Остальные системные ошибки пробрасываем дальше.
+        if (err.code !== "ENOENT") throw err;
       }
 
       return {
@@ -134,19 +128,27 @@ export class AdminService {
       };
     });
 
+    // Ждем, пока все файлы физически переименуются на диске:
+    const imageRecords = await Promise.all(imagePromises);
+
+    //Извлекаем из объекта поле "siteCategory":
+    const { siteCategory, ...newData } = data;
+
+    //Превращаем "siteCategory" в "siteCategoryId":
+    const siteCategoryId = await prisma.siteCategory.findUnique({
+      where: { name: siteCategory },
+      select: { id: true },
+    });
+
     return await prisma.motorcycle.create({
       data: {
-        ...data,
+        ...newData,
+        siteCategoryId: siteCategoryId!.id,
         slug: finalSlug,
         price: Number(data.price) || 300000,
         year: Number(data.year) || new Date().getFullYear(),
-        //@ts-ignore:
-        displacement: data.displacement ? Number(data.displacement) : null,
+        displacement: data.displacement ? Number(data.displacement) : 0,
         power: data.power ? Number(data.power) : null,
-        topSpeed: data.topSpeed ? Number(data.topSpeed) : null,
-        fuelConsumption: data.fuelConsumption
-          ? Number(data.fuelConsumption)
-          : null,
         rating: 0,
         colors: Array.isArray(data.colors) ? data.colors : [],
         images: {

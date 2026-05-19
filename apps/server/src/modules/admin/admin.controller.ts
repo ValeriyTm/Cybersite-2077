@@ -161,10 +161,10 @@ export const getMotorcycles = catchAsync(
 export const createMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const data = req.body;
+    console.log("data in moto creating: ", data);
     const files = req.files as Express.Multer.File[];
 
-    //@ts-ignore:
-    const motorcycle = await adminService.createMotorcycle({ data, files });
+    const motorcycle = await adminService.createMotorcycle(data, files);
 
     //Обновление данных в Elasticsearch:
     await searchService.indexMotorcycle(motorcycle.id);

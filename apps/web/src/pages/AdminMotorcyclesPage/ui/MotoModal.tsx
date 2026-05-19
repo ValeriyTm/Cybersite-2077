@@ -285,8 +285,8 @@ export const MotoModal = ({ moto, onClose, onSubmit }: any) => {
           {/*Скрытое поле для категории сайта (по дефолту "Мотоциклы"):*/}
           <input
             type="hidden"
-            {...register("siteCategoryId")}
-            value="081b4c44-59b1-4b2a-884b-f4bcfdc7c21e"
+            {...register("siteCategory")}
+            value="Мотоциклы"
           />
 
           <div className={`${styles.modalActions} ${styles.fullWidth}`}>

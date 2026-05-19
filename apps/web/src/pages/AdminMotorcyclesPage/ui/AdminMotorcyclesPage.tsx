@@ -74,6 +74,20 @@ export const AdminMotorcyclesPage = () => {
       setIsModalOpen(false);
       toast.success("Данные обновлены");
     },
+    onError: (error: any) => {
+      //Массив ошибок из ответа сервера:
+      const serverErrors = error.response?.data?.errors;
+
+      if (serverErrors && Array.isArray(serverErrors)) {
+        // 2. Перебираем и выводим каждую ошибку отдельно
+        serverErrors.forEach((err) => {
+          toast.error(`Ошибка в поле [${err.path.replace(/^body\./, "")}]: ${err.message}`)
+        });
+      } else {
+        //Резервный лог на случай других ошибок (сеть, 500 и т.д.)
+        toast.error(`Произошла неизвестная ошибка: ${error.message}`)
+      }
+    },
   });
 
   const columns = getMotoColumns(

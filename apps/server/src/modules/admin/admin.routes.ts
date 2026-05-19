@@ -6,6 +6,9 @@ import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //M
 import { roleMiddleware } from "../../shared/middlewares/roleMiddleware.js"; //Middleware для проверки роли пользователя
 import { productUpload } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
+import { validate } from "../../shared/middlewares/validate.js";
+//Схемы валидации:
+import { createMotorcycleAdminSchema } from "@repo/validation";
 
 const router = Router();
 
@@ -56,6 +59,7 @@ router.post(
   "/motorcycles",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   productUpload.array("images", 5),
+  validate(createMotorcycleAdminSchema),
   adminController.createMotorcycle,
 );
 //Правка записи о мотоцикле:

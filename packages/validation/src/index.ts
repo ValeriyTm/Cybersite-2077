@@ -393,3 +393,82 @@ export const GetSuggestionsQuerySchema = z.object({
 type SuggestionsInput = z.infer<typeof GetSuggestionsQuerySchema>;
 //Чистый тип для сервиса:
 export type GetSuggestionsArgs = SuggestionsInput["query"];
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------3) Модуль Admin-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------3.1) Схема для создания мотоцикла:-------------------------------------//
+export const createMotorcycleAdminSchema = z.object({
+  body: z.object({
+    model: z
+      .string()
+      .trim()
+      .min(2, { message: "Имя слишком короткое" })
+      .max(30, "Максимум 30 символов для модели")
+      .regex(
+        /^[a-zA-Zа-яА-ЯёЁ0-9]+$/,
+        "Для модели используйте только цифры, английские и русские буквы",
+      ),
+    colors: z.array(
+      z
+        .string()
+        .min(3, { message: "Название цвета слишком короткое" })
+        .max(20, "Максимум 20 символов для цвета"),
+    ),
+    year: z.string().regex(/^\d{4}$/, "Неверный формат года"),
+    brandId: z.string(),
+    category: z.enum(
+      [
+        "ATV",
+        "ALLROUND",
+        "CLASSIC",
+        "CROSS_MOTOCROSS",
+        "CUSTOM_CRUISER",
+        "ENDURO_OFFROAD",
+        "MINIBIKE_CROSS",
+        "MINIBIKE_SPORT",
+        "NAKED_BIKE",
+        "PROTOTYPE_CONCEPT",
+        "SCOOTER",
+        "SPEEDWAY",
+        "SPORT",
+        "SPORT_TOURING",
+        "SUPER_MOTARD",
+        "TOURING",
+        "TRIAL",
+        "UNSPECIFIED",
+      ],
+      {
+        message: "Выберите корректную категорию мотоцикла",
+      },
+    ),
+    price: z.string().regex(/^\d+$/, "Цена должна быть числовой строкой"),
+    displacement: z
+      .string()
+      .regex(/^\d+$/, "Объем должен быть числовой строкой"),
+    power: z.string(),
+    coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
+    gearbox: z.enum([
+      "SPEED1",
+      "SPEED2",
+      "SPEED2AUTOMATIC",
+      "SPEED3",
+      "SPEED3AUTOMATIC",
+      "SPEED4",
+      "SPEED4WITHREVERSE",
+      "SPEED5",
+      "SPEED5WITHREVERSE",
+      "SPEED6",
+      "SPEED6WITHREVERSE",
+      "SPEED7",
+      "SPEED8",
+      "AUTOMATIC",
+    ]),
+    transmission: z.enum(["CHAIN", "BELT", "CARDAN"]),
+    starter: z.enum(["ELECTRIC", "KICK", "ELECTRIC_KICK"]),
+    comments: z.string(),
+    siteCategory: z.enum(["Мотоциклы", "Мотоэкипировка", "Запчасти"], {
+      message: "Выберите корректную категорию товара",
+    }),
+  }),
+});
