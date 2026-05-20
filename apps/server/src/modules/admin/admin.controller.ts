@@ -4,9 +4,13 @@ import { raw, Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 import {
   BrandsAdminArgs,
+  ChangeOrderStatusAdminBodyArgs,
+  ChangeOrderStatusAdminParamsArgs,
   CreateBrandAdminArgs,
   DeleteBrandAdminParamArgs,
   DeleteMotoAdminArgs,
+  GetOrdersAdminArgs,
+  GetPersonalDiscountsArgs,
   MotosAdminArgs,
   SearchBrandsAdminArgs,
   StocksAdminArgs,
@@ -245,14 +249,16 @@ export const updateStock = catchAsync(
 //---------------------Работа с заказами:-------------
 //Получить все заказы:
 export const getOrders = catchAsync(async (req: AuthRequest, res: Response) => {
-  const { page = 1, limit = 10, status, email } = req.query;
-  const skip = (Number(page) - 1) * Number(limit);
+  const { page, limit, status, email } =
+    req.query as unknown as GetOrdersAdminArgs;
+  const skip = (page - 1) * limit;
+  console.log("status: ", status);
 
   const [orders, total] = await adminService.getOrders(
-    status,
-    email,
     skip,
     limit,
+    status,
+    email,
   );
 
   res.json({
@@ -268,10 +274,9 @@ export const getOrders = catchAsync(async (req: AuthRequest, res: Response) => {
 //Изменить статус заказа:
 export const updateOrderStatus = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { status } = req.body;
+    const { id } = req.params as unknown as ChangeOrderStatusAdminParamsArgs;
+    const { status } = req.body as ChangeOrderStatusAdminBodyArgs;
 
-    //@ts-ignore:
     const order = await adminService.updateOrderStatus(id, status);
 
     res.json(order);
@@ -359,9 +364,8 @@ export const getPromoCodes = catchAsync(
 //Поулчаем персональные скидки:
 export const getPersonalDiscounts = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { email } = req.query;
+    const { email } = req.query as GetPersonalDiscountsArgs;
 
-    //@ts-ignore:
     const discounts = await adminService.getPersonalDiscounts(email);
 
     res.json(discounts);

@@ -16,7 +16,12 @@ import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Типы:
-import { CreateOrderServiceArgs } from "@repo/validation";
+import {
+  CancelOrderParamArgs,
+  ConfirmOrderParamArgs,
+  CreateOrderServiceArgs,
+  GetOrdersArgs,
+} from "@repo/validation";
 
 //Создание заказа:
 export const createOrder = catchAsync(
@@ -41,13 +46,9 @@ export const createOrder = catchAsync(
 //Получить заказы пользователя:
 export const getMyOrders = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    //Забираем статус из query-параметров (например, /api/orders/my?status=PAID):
-    const { status } = req.query;
+    const { status } = req.query as GetOrdersArgs;
 
-    const orders = await orderService.getUserOrders(
-      req.user.id,
-      status as string | undefined,
-    );
+    const orders = await orderService.getUserOrders(req.user.id, status);
 
     res.json(orders);
   },
@@ -62,6 +63,79 @@ export const getActiveOrdersCount = catchAsync(
     res.json({ count });
   },
 );
+
+//Контроллер для перевода статуса заказа из DELIVERED в COMPLETED:
+export const completeOrder = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const { orderId } = req.params as ConfirmOrderParamArgs;
+    const userId = req.user.id;
+
+    //Ищем заказ и проверяем, принадлежит ли он текущему юзеру:
+    const order = await orderService.getUserOrder(orderId, userId);
+    if (!order) return res.status(404).json({ message: "Заказ не найден" });
+
+    //Разрешаем завершать только доставленные заказы:
+    if (order.status !== "DELIVERED") {
+      return res
+        .status(400)
+        .json({ message: "Нельзя завершить заказ, который еще не доставлен" });
+    }
+
+    //Обновляем статус заказа в PostgreSQL:
+    const updatedOrder = await orderService.changeStatusOrder(
+      orderId,
+      "COMPLETED",
+    );
+
+    res.json(updatedOrder);
+  },
+);
+
+//Контроллер для перевода статуса заказа в CANCELED:
+export const cancelOrder = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const { orderId } = req.params as CancelOrderParamArgs;
+    const userId = req.user.id;
+
+    //Ищем заказ со всеми позициями:
+    const order = await orderService.getUserOrderWithItems(orderId, userId);
+    if (!order) return res.status(404).json({ message: "Заказ не найден" });
+
+    //Проверяем допустимость отмены (при следующих статусах уже не отменить заказ):
+    const forbiddenStatuses = [
+      "DELIVERY",
+      "DELIVERED",
+      "COMPLETED",
+      "CANCELED",
+    ];
+    if (forbiddenStatuses.includes(order.status)) {
+      throw new AppError(
+        400,
+        "Этот заказ уже нельзя отменить (он доставлен или уже отменен)",
+      );
+    }
+
+    //Логика возврата денег через ЮKassа (если заказ оплачен, инициируем возврат перед транзакцией в БД):
+    if (order.paymentStatus === "succeeded" && order.paymentId) {
+      try {
+        const refundAmount = order.totalPrice / 1000; //Используем ту же логику /1000, что и при оплате, чтобы суммы совпали
+
+        await paymentService.createRefund(order.paymentId, refundAmount);
+        console.log(`Возврат средств инициирован для заказа: ${order.id}`);
+      } catch (refundError) {
+        console.error("Ошибка при возврате в ЮKassa:", refundError);
+        throw new AppError(500, "Ошибка при оформлении возврата средств");
+      }
+    }
+
+    //Транзакция (отмена + возврат резерва на склад):
+    const canceledOrder = await orderService.cancelUserOrder(orderId, order);
+
+    res.json(canceledOrder);
+  },
+);
+
+//-----------------------------------------------------------------------------------------
 
 //!Тестовый эндпоинт для оплаты (для проверки работы BullMQ)!:
 //(он меняет статус заказа на PAID и удаляет резерв и физический товар из БД)
@@ -102,80 +176,5 @@ export const payOrderTest = catchAsync(
     res.json({
       message: "Оплата прошла, остатки списаны, доставка запланирована!",
     });
-  },
-);
-
-//Контроллер для перевода статуса заказа из DELIVERED в COMPLETED:
-export const completeOrder = catchAsync(
-  async (req: AuthRequest, res: Response) => {
-    const { orderId } = req.params;
-    const userId = req.user.id;
-
-    //Ищем заказ и проверяем, принадлежит ли он текущему юзеру:
-    // @ts-ignore:
-    const order = await orderService.getUserOrder(orderId, userId);
-    if (!order) return res.status(404).json({ message: "Заказ не найден" });
-
-    //Разрешаем завершать только доставленные заказы:
-    if (order.status !== "DELIVERED") {
-      return res
-        .status(400)
-        .json({ message: "Нельзя завершить заказ, который еще не доставлен" });
-    }
-
-    //Обновляем статус заказа в PostgreSQL:
-    const updatedOrder = await orderService.changeStatusOrder(
-      // @ts-ignore:
-      orderId,
-      "COMPLETED",
-    );
-
-    res.json(updatedOrder);
-  },
-);
-
-//Контроллер для перевода статуса заказа в CANCELED:
-export const cancelOrder = catchAsync(
-  async (req: AuthRequest, res: Response) => {
-    const { orderId } = req.params;
-    const userId = req.user.id;
-
-    //Ищем заказ со всеми позициями:
-    // @ts-ignore:
-    const order = await orderService.getUserOrderWithItems(orderId, userId);
-    if (!order) return res.status(404).json({ message: "Заказ не найден" });
-
-    //Проверяем допустимость отмены (при следующих статусах уже не отменить заказ):
-    const forbiddenStatuses = [
-      "DELIVERY",
-      "DELIVERED",
-      "COMPLETED",
-      "CANCELED",
-    ];
-    if (forbiddenStatuses.includes(order.status)) {
-      throw new AppError(
-        400,
-        "Этот заказ уже нельзя отменить (он доставлен или уже отменен)",
-      );
-    }
-
-    //Логика возврата денег через ЮKassа (если заказ оплачен, инициируем возврат перед транзакцией в БД):
-    if (order.paymentStatus === "succeeded" && order.paymentId) {
-      try {
-        const refundAmount = order.totalPrice / 1000; //Используем ту же логику /1000, что и при оплате, чтобы суммы совпали
-
-        await paymentService.createRefund(order.paymentId, refundAmount);
-        console.log(`Возврат средств инициирован для заказа: ${order.id}`);
-      } catch (refundError) {
-        console.error("Ошибка при возврате в ЮKassa:", refundError);
-        throw new AppError(500, "Ошибка при оформлении возврата средств");
-      }
-    }
-
-    //Транзакция (отмена + возврат резерва на склад):
-    // @ts-ignore:
-    const canceledOrder = await orderService.cancelUserOrder(orderId, order);
-
-    res.json(canceledOrder);
   },
 );

@@ -9,12 +9,15 @@ import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js
 import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
 import {
+  ChangeOrderStatusAdminSchema,
   CreateBrandAdminSchema,
   createMotorcycleAdminSchema,
   DeleteBrandAdminSchema,
   DeleteMotoAdminSchema,
   GetBrandsAdminSchema,
   GetMotosAdminSchema,
+  GetOrdersAdminSchema,
+  GetPersonalDiscountsSchema,
   GetStocksAdminSchema,
   SearchBrandsAdminSchema,
   UpdateBrandAdminSchema,
@@ -125,12 +128,15 @@ router.patch(
 router.get(
   "/orders",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(GetOrdersAdminSchema),
   adminController.getOrders,
 );
+
 //Изменить статус заказа:
 router.patch(
   "/orders/:id/status",
   roleMiddleware(["ADMIN", "SUPERADMIN"]),
+  validate(ChangeOrderStatusAdminSchema),
   adminController.updateOrderStatus,
 );
 //---------------------Управление доступом:-------------
@@ -155,6 +161,7 @@ router.post(
   roleMiddleware(["ADMIN", "SUPERADMIN"]),
   adminController.globalSearchSync,
 );
+
 //---------------------Скидки и промокоды:-------------
 //Получение промокодов:
 router.get(
@@ -162,12 +169,15 @@ router.get(
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   adminController.getPromoCodes,
 );
+
 //Получение персональных скидок:
 router.get(
   "/personal-discounts",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(GetPersonalDiscountsSchema),
   adminController.getPersonalDiscounts,
 );
+
 //---------------------Отчеты:-------------
 //Скачать отчет:
 router.get(
@@ -175,6 +185,7 @@ router.get(
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   adminController.downloadSalesReport,
 );
+
 //---------------------Тикеты поддержки:-------------
 //Получить все тикеты:
 router.get(
@@ -182,18 +193,21 @@ router.get(
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   adminController.getTickets,
 );
+
 //Ответить на тикет:
 router.patch(
   "/tickets/:id/reply",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   adminController.replyToTicket,
 );
+
 //Изменить статус тикета:
 router.patch(
   "/tickets/:id/status",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   adminController.updateTicketStatus,
 );
+
 //---------------------Контент:-------------
 //Получение всех новостей:
 router.get(
@@ -201,6 +215,7 @@ router.get(
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
   adminController.getNews,
 );
+
 //Создать новость:
 router.post(
   "/news",
@@ -208,6 +223,7 @@ router.post(
   productUpload.single("mainImage"),
   adminController.createNews,
 );
+
 //Изменить новость:
 router.patch(
   "/news/:id",
@@ -215,6 +231,7 @@ router.patch(
   productUpload.single("mainImage"),
   adminController.updateNews,
 );
+
 //Удалить новость:
 router.delete(
   "/news/:id",

@@ -1,5 +1,5 @@
 //Состояния:
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { useProfile } from '@/features/auth';
 //Формирование таблицы:
@@ -11,21 +11,31 @@ import { $api } from '@/shared/api';
 import toast from 'react-hot-toast';
 //Стили:
 import styles from './AdminOrdersPage.module.scss'
+import type { OrderResponse, OrderStatusUp } from '@/entities/admin/types/types';
+
+
+interface UpdateStatusPayload {
+  id: string;
+  status: OrderStatusUp;
+}
 
 export const AdminOrdersPage = () => {
   const [page, setPage] = useState(1);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<OrderStatusUp | ''>('');
   const [email, setEmail] = useState('');
+
   const queryClient = useQueryClient();
   const { user } = useProfile();
 
-  const { data } = useQuery({
+  const { data } = useQuery<OrderResponse>({
     queryKey: ['admin-orders', page, status, email],
-    queryFn: () => $api.get('/admin/orders', { params: { page, status, email } }).then(res => res.data)
+    queryFn: () => $api.get<OrderResponse>('/admin/orders', { params: { page, status, email } }).then(res => res.data)
   });
 
-  const statusMutation = useMutation({
-    mutationFn: ({ id, status }: any) => $api.patch(`/admin/orders/${id}/status`, { status }),
+  console.log('data: adm ', data);
+
+  const statusMutation = useMutation<unknown, Error, UpdateStatusPayload>({
+    mutationFn: ({ id, status }) => $api.patch(`/admin/orders/${id}/status`, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       toast.success('Статус обновлен');
@@ -33,10 +43,12 @@ export const AdminOrdersPage = () => {
   });
 
   const columns = getOrderColumns(
-    (id, status) => statusMutation.mutate({ id, status }),
+    (id: string, status: OrderStatusUp) => statusMutation.mutate({ id, status }),
     user?.role
   );
 
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => setStatus(e.target.value as OrderStatusUp | '');
 
   return (
     <div className={styles.pageWrapper}>
@@ -46,11 +58,11 @@ export const AdminOrdersPage = () => {
           id='order-search'
           type='search'
           placeholder="Поиск по Email..."
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
         />
 
         <label htmlFor="order-status" className='visually-hidden'>Фильтрация заказа по статусу</label>
-        <select onChange={(e) => setStatus(e.target.value)} className={styles.statusSelect} id='order-status'>
+        <select onChange={handleStatusChange} className={styles.statusSelect} id='order-status'>
           <option value="">Все статусы</option>
           <option value="PENDING">PENDING</option>
           <option value="PAID">PAID</option>

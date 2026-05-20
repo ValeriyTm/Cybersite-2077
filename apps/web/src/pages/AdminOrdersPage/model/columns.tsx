@@ -4,16 +4,18 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 //Стили:
 import styles from './columns.module.scss'
+//Типы:
+import type { OrderFromServer, OrderItem, OrderStatusUp } from '@/entities/admin/types/types';
 
 export const getOrderColumns = (
-  onStatusChange: (id: string, newStatus: string) => void,
-  userRole: string | undefined): ColumnDef<any>[] => [
+  onStatusChange: (id: string, newStatus: OrderStatusUp) => void,
+  userRole: string | undefined): ColumnDef<OrderFromServer>[] => [
     {
       accessorKey: 'orderNumber',
       header: '№ Заказа',
       meta: { className: styles.hideOnMobile },
-      //@ts-ignore: 
-      cell: (info) => <span style={{ fontWeight: 'bold' }}>#{info.getValue()}</span>,
+
+      cell: (info) => <span style={{ fontWeight: 'bold' }}>#{info.getValue<string | number>()}</span>,
     },
     {
       header: 'Клиент',
@@ -29,7 +31,7 @@ export const getOrderColumns = (
       header: 'Товары',
       cell: ({ row }) => (
         <div style={{ fontSize: '0.8rem' }}>
-          {row.original.items.map((item: any) => (
+          {row.original.items.map((item: OrderItem) => (
             <div key={item.id}>
               • {item.motorcycle.model} ({item.quantity} шт.)
             </div>
@@ -61,7 +63,7 @@ export const getOrderColumns = (
               value={String(getValue())}
               className={styles.statusSelect}
               disabled={isRestricted}
-              onChange={(e) => onStatusChange(row.original.id, e.target.value)}
+              onChange={(e) => onStatusChange(row.original.id, e.target.value as OrderStatusUp)}
             >
               <option value="PENDING">PENDING</option>
               <option value="PAID">PAID</option>

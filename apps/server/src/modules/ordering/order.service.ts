@@ -1,5 +1,5 @@
 //Клиент призмы для работы с PostgreSQL:
-import { prisma } from "@repo/database";
+import { OrderStatus, Order, prisma, OrderItem } from "@repo/database";
 //Схема взаимодействия с MongoDB из модуля Review:
 import { ReviewModel } from "../reviews/index.js";
 //Используем сервис модуля Payment:
@@ -10,6 +10,10 @@ import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 import { searchService } from "../catalog/search.service.js";
 //Типы:
 import { CreateOrderServiceArgs } from "@repo/validation";
+
+interface OrderWithItems extends Order {
+  items: OrderItem[];
+}
 
 export class OrderService {
   //Создание заказа с резервированием остатков и обновлением профиля
@@ -147,7 +151,7 @@ export class OrderService {
       where: {
         userId,
         //Если статус пришел, фильтруем по нему. Если нет — отдаем всё.
-        status: status ? (status as any) : undefined,
+        status: status ? (status as OrderStatus) : undefined,
       },
       include: {
         items: {
@@ -205,7 +209,7 @@ export class OrderService {
   async getActiveOrdersCount(userId: string) {
     return await prisma.order.count({
       where: {
-        userId: userId,
+        userId,
         status: { in: ["PENDING", "PAID", "DELIVERY"] }, //Статусы, при которых заказы считаются активными
       },
     });
@@ -214,20 +218,21 @@ export class OrderService {
   //Получить конкретный заказ юзера:
   async getUserOrder(orderId: string, userId: string) {
     return await prisma.order.findUnique({
-      where: { id: orderId, userId: userId },
+      where: { id: orderId, userId },
     });
   }
 
   //Получить конкретный заказ юзера со всеми позициями:
   async getUserOrderWithItems(orderId: string, userId: string) {
-    return await prisma.order.findUnique({
-      where: { id: orderId, userId: userId },
+    const result: OrderWithItems | null = await prisma.order.findUnique({
+      where: { id: orderId, userId },
       include: { items: true },
     });
+    return result;
   }
 
   //Убрать товар из зарезервированного (при отмене заказа), а также сменить статус:
-  async cancelUserOrder(orderId: string, order: any) {
+  async cancelUserOrder(orderId: string, order: OrderWithItems) {
     //Транзакция (смена статуса + возврат резерва на склад):
     return await prisma.$transaction(async (tx) => {
       // Меняем статус заказа:

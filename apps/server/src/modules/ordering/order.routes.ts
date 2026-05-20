@@ -7,7 +7,12 @@ import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js
 import { roleMiddleware } from "src/shared/middlewares/roleMiddleware.js";
 import { validate } from "src/shared/middlewares/validate.js";
 //Схемы валидации:
-import { CreateOrderSchema } from "@repo/validation";
+import {
+  CancelOrderSchema,
+  ConfirmOrderSchema,
+  CreateOrderSchema,
+  GetOrdersSchema,
+} from "@repo/validation";
 
 const router = Router();
 
@@ -22,7 +27,12 @@ router.post(
 );
 
 //Получение списка всех заказов юзера:
-router.get("/my", authMiddleware, orderController.getMyOrders);
+router.get(
+  "/my",
+  authMiddleware,
+  validate(GetOrdersSchema),
+  orderController.getMyOrders,
+);
 
 //Получение списка активных заказов юзера:
 router.get(
@@ -35,11 +45,17 @@ router.get(
 router.patch(
   "/:orderId/complete",
   authMiddleware,
+  validate(ConfirmOrderSchema),
   orderController.completeOrder,
 );
 
-//Отмена заказа:
-router.patch("/:orderId/cancel", authMiddleware, orderController.cancelOrder);
+//Отмена заказа (перевод в статус CANCELED):
+router.patch(
+  "/:orderId/cancel",
+  authMiddleware,
+  validate(CancelOrderSchema),
+  orderController.cancelOrder,
+);
 
 //-----------------------Тестовые эндпоинты---------------
 //Тестовый эндпоинт для оплаты (если модуль Payment недоступен):

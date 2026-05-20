@@ -1,5 +1,5 @@
 //Клиент призмы для работы с PostgreSQL:
-import { prisma } from "@repo/database";
+import { OrderStatus, prisma } from "@repo/database";
 //Модель взаимодействия с MongoDB (из модуля Content):
 import { NewsModel } from "../content/index.js";
 //Типы:
@@ -312,7 +312,12 @@ export class AdminService {
 
   //---------------------Работа с заказами:-------------
   //Получить все заказы:
-  async getOrders(status: string, email: string, skip: number, limit: number) {
+  async getOrders(
+    skip: number,
+    limit: number,
+    status?: string,
+    email?: string,
+  ) {
     //Формируем фильтры:
     const where: any = {};
     if (status) where.status = status;
@@ -336,7 +341,7 @@ export class AdminService {
           },
         },
         skip,
-        take: Number(limit),
+        take: limit,
         orderBy: { createdAt: "desc" },
       }),
       prisma.order.count({ where }),
@@ -344,10 +349,9 @@ export class AdminService {
   }
 
   //Изменить статус заказа:
-  async updateOrderStatus(id: string, status: string) {
+  async updateOrderStatus(id: string, status: OrderStatus) {
     return await prisma.order.update({
       where: { id },
-      //@ts-ignore:
       data: { status },
     });
   }

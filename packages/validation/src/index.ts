@@ -743,8 +743,70 @@ type StocksUpdateAdminInput = z.infer<typeof UpdateStocksAdminSchema>;
 export type StocksUpdateAdminParamsArgs = StocksUpdateAdminInput["params"];
 export type StocksUpdateAdminBodyArgs = StocksUpdateAdminInput["body"];
 
+//----------------------------3.12) Схема для получения персональных скидок:-------------------------------------//
+export const GetPersonalDiscountsSchema = z.object({
+  query: z.object({
+    email: z.string().trim().toLowerCase(),
+  }),
+});
+
+type GetPersonalDiscountsInput = z.infer<typeof GetPersonalDiscountsSchema>;
+//Чистый тип для сервиса:
+export type GetPersonalDiscountsArgs = GetPersonalDiscountsInput["query"];
+
+//----------------------------3.13) Схема для получения заказов:-------------------------------------//
+export const GetOrdersAdminSchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().max(100).default(10),
+    status: z
+      .enum([
+        "PENDING",
+        "PAID",
+        "CANCELED",
+        "DELIVERY",
+        "DELIVERED",
+        "COMPLETED",
+        "",
+      ])
+      .optional(),
+    email: z.string().optional(),
+  }),
+});
+
+type GetOrdersAdminInput = z.infer<typeof GetOrdersAdminSchema>;
+//Чистый тип для сервиса:
+export type GetOrdersAdminArgs = GetOrdersAdminInput["query"];
+
+//----------------------------3.14) Схема для изменения статуса заказа:-------------------------------------//
+export const ChangeOrderStatusAdminSchema = z.object({
+  body: z.object({
+    status: z.enum([
+      "PENDING",
+      "PAID",
+      "CANCELED",
+      "DELIVERY",
+      "DELIVERED",
+      "COMPLETED",
+    ]),
+  }),
+  params: z.object({
+    id: z
+      .string()
+      .min(1, { message: "id не должен быть пустой строкой" })
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+
+type ChangeOrderStatusAdminInput = z.infer<typeof ChangeOrderStatusAdminSchema>;
+//Чистый тип для сервиса:
+export type ChangeOrderStatusAdminBodyArgs =
+  ChangeOrderStatusAdminInput["body"];
+export type ChangeOrderStatusAdminParamsArgs =
+  ChangeOrderStatusAdminInput["params"];
+
 ////-----------------------------------------------------------------------------------------------////
-////--------------------------4) Модуль Trading-------------------------------------------------------////
+////--------------------------4) Модуль Traparamsing-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////
 //----------------------------4.1) Схема для добавления в избранное:-------------------------------------//
 export const ToggleFavSchema = z.object({
@@ -945,3 +1007,47 @@ export const CreateOrderSchema = z.object({
 });
 export type CreateOrderInput = z.infer<typeof CreateOrderSchema>;
 export type CreateOrderServiceArgs = CreateOrderInput["body"];
+
+//----------------------------7.2) Схема для получения заказов:-------------------------------------//
+export const GetOrdersSchema = z.object({
+  query: z.object({
+    status: z
+      .enum([
+        "PENDING",
+        "PAID",
+        "CANCELED",
+        "DELIVERY",
+        "DELIVERED",
+        "COMPLETED",
+      ])
+      .optional(),
+  }),
+});
+
+type GetOrdersInput = z.infer<typeof GetOrdersSchema>;
+//Чистый тип для сервиса:
+export type GetOrdersArgs = GetOrdersInput["query"];
+
+//----------------------------7.3) Схема для подтверждения заказа:-------------------------------------//
+export const ConfirmOrderSchema = z.object({
+  params: z.object({
+    orderId: z
+      .string()
+      .min(1, "id заказа обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+export type ConfirmOrderInput = z.infer<typeof ConfirmOrderSchema>;
+export type ConfirmOrderParamArgs = ConfirmOrderInput["params"];
+
+//----------------------------7.4) Схема для отмены заказа:-------------------------------------//
+export const CancelOrderSchema = z.object({
+  params: z.object({
+    orderId: z
+      .string()
+      .min(1, "id заказа обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+export type CancelOrderInput = z.infer<typeof CancelOrderSchema>;
+export type CancelOrderParamArgs = CancelOrderInput["params"];
