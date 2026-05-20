@@ -121,6 +121,11 @@ export class PaymentService {
     //Выполняем смену статуса и списание остатков за одну транзакцию:
     return await orderService.confirmUserOrder(orderId);
   }
+
+  //Используем Callback Verification для получения реальных данных с ЮКассы:
+  async callbackVerification(paymentId: string) {
+    return await checkout.getPayment(paymentId);
+  }
 }
 
 export const paymentService = new PaymentService();

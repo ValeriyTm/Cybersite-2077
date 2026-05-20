@@ -13,19 +13,44 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 
 export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
   const notification = req.body;
-  console.log("req.body from yoo: ", req.body);
-  const payment = notification.object; //ЮKassa присылает 'notification' с объектом 'object' внутри
-  const orderId = payment.metadata.orderId; //ID, который заложили при создании заказа:
 
-  if (!orderId) {
-    console.error("Получен вебхук без orderId в metadata");
-    return res.status(400).send("Не найден заказ");
+  //1. Используем Callback Verification для проверки достоверности запроса:
+  const paymentId = notification.object?.id;
+  if (!paymentId) {
+    console.error("Получен некорректный вебхук: отсутствует ID платежа");
+    return res.status(400).send("Bad Request: Missing payment ID");
   }
 
-  //Проверяем тип события:
+  let actualPayment;
+  let orderId = null;
+
+  if (
+    notification.event === "payment.succeeded" ||
+    notification.event === "payment.canceled"
+  ) {
+    try {
+      actualPayment = await paymentService.callbackVerification(paymentId);
+    } catch (error) {
+      console.error(
+        `Ошибка при встречном запросе платежа ${paymentId} из ЮKassa:`,
+        error,
+      );
+      // Возвращаем 500, чтобы ЮKassa повторила попытку позже, если у них был временный сбой:
+      return res.status(500).send("Internal Server Error");
+    }
+  }
+
+  //2.Проверяем тип события:
   switch (notification.event) {
     case "payment.succeeded": {
       //Событие успешного платежа
+
+      //Извлекаем orderId из метаданных реального ответа ЮKassa
+      orderId = actualPayment!.metadata?.orderId;
+      if (!orderId) {
+        console.error(`В платеже ${paymentId} отсутствуют метаданные orderId`);
+        return res.status(200).send("OK"); // Отвечаем 200, чтобы ЮKassa не зацикливала отправку
+      }
 
       //Обновляем статус заказа и остатки в БД (а также проверяем заказ, чтобы не дублировалась оплата):
       const result = await paymentService.applyChangeAfterPayment(orderId);
@@ -66,13 +91,20 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
     case "payment.canceled": {
       //Событие отмены платежа
 
+      //Извлекаем orderId из метаданных реального ответа ЮKassa
+      orderId = actualPayment!.metadata?.orderId;
+      if (!orderId) {
+        console.error(`В платеже ${paymentId} отсутствуют метаданные orderId`);
+        return res.status(200).send("OK"); // Отвечаем 200, чтобы ЮKassa не зацикливала отправку
+      }
+
       if (!orderId) {
         console.error("Получен вебхук payment.canceled без orderId в metadata");
         break;
       }
 
       console.log(
-        `Платеж отменен для заказа: ${orderId}. Причина: ${payment.cancellation_details?.reason}`,
+        `Платеж отменен для заказа: ${orderId}. Причина: ${actualPayment!.cancellation_details?.reason}`,
       );
 
       //Осуществляем отмену брони:
@@ -100,7 +132,6 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
 
       //Когда-нибудь добавить запись причины отмена платежа от Юкассы в БД.
       //Когда-нибудь изменить функционал, чтобы, если первый платеж отменился, то заказ не окончательно отменялся, а жил какое-тов время для возможности повторной оплаты.
-      //Для настоящего приложения ещё нужно добавить проверку криптографической подписи (HMAC / Content-Signature).
 
       break;
     }
@@ -110,13 +141,21 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       const refund = notification.object;
       const paymentId = refund.payment_id; //ID платежа из ЮKassa (не refund.id, т.к. refund.id - это id возврата)
       const refundAmount = refund.amount.value;
+      const refundOrderId = refund.metadata?.orderId;
+
+      if (!refundOrderId) {
+        console.error(
+          `В вебхуке возврата по платежу ${paymentId} отсутствует orderId в metadata`,
+        );
+        break;
+      }
 
       console.log(
-        `ЮKassa подтвердила возврат по платежу ${paymentId} на сумму ${refundAmount}`,
+        `ЮKassa подтвердила возврат по платежу ${paymentId} для заказа ${refundOrderId} на сумму ${refundAmount}`,
       );
 
       //Обновляем статус заказа и осуществляем возврат товара на склад:
-      const order = await paymentService.finishRefundOrCancel(orderId);
+      const order = await paymentService.finishRefundOrCancel(refundOrderId);
 
       // Синхронизируем склад с ElasticSearch:
       if (order) {
@@ -143,6 +182,6 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
     }
   }
 
-  //Обязательно отвечаем ЮKassa статусом 200, иначе она будет слать уведомления в течение 24 часов:
+  //3.Обязательно отвечаем ЮKassa статусом 200, иначе она будет слать уведомления в течение 24 часов:
   res.status(200).send("OK");
 });
