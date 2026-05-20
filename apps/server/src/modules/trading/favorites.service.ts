@@ -54,7 +54,7 @@ export class FavoritesService {
         },
       },
       take: limit,
-      skip: skip,
+      skip,
     });
 
     //Рассчитываем остатки (totalInStock) и скидки для каждого мотоцикла:
@@ -87,7 +87,7 @@ export class FavoritesService {
   //Получить количество товаров в избранном:
   async getFavoritesCount(userId: string) {
     return await prisma.favorite.count({
-      where: { userId: userId },
+      where: { userId },
     });
   }
 }

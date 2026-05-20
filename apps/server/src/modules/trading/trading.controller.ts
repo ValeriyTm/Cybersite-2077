@@ -5,6 +5,11 @@ import { favoritesService } from "./favorites.service.js";
 import { Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 import { type ToggleFavoriteRequest } from "./trading.types.js";
+import {
+  AddToCartArgs,
+  GetFavsByIdsArgs,
+  ToggleFavServiceArgs,
+} from "@repo/validation";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 
@@ -13,7 +18,7 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 export const toggleFavorite = catchAsync(
   async (req: ToggleFavoriteRequest, res: Response) => {
     const userId = req.user.id; //Берем из middleware авторизации
-    const { motorcycleId } = req.params;
+    const { motorcycleId } = req.params as ToggleFavServiceArgs;
 
     const result = await favoritesService.toggleFavorite(userId, motorcycleId);
     res.json(result);
@@ -31,8 +36,7 @@ export const getFavoriteIds = catchAsync(
 //Контроллер получения данных о мотоциклах по списку избранного юзера (дле реализации страницы избранного):
 export const getFavoritesByIds = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    //Извлекаем данные из тела запроса
-    const { ids, limit = 10, skip = 0 } = req.body;
+    const { ids, limit = 10, skip = 0 } = req.body as GetFavsByIdsArgs;
     const userId = req.user.id;
 
     //Если массив пустой, сразу отдаем пустой ответ:
@@ -70,16 +74,22 @@ export const getCart = catchAsync(async (req: AuthRequest, res: Response) => {
 
 //Контроллер добавления в корзину:
 export const addToCart = catchAsync(async (req: AuthRequest, res: Response) => {
-  const { motorcycleId, quantity, model, price, image, brandSlug, slug, year } =
-    req.body;
-
-  const cart = await cartService.addToCart(req.user.id, {
-    id: motorcycleId,
+  const {
+    motorcycleId: id,
     quantity,
     model,
     price,
     image,
-    brandSlug,
+    slug,
+    year,
+  } = req.body as AddToCartArgs;
+
+  const cart = await cartService.addToCart(req.user.id, {
+    id,
+    quantity,
+    model,
+    price,
+    image,
     slug,
     year,
   });

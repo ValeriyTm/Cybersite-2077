@@ -24,7 +24,10 @@ export const discountWorker = new Worker(
         break;
     }
   },
-  { connection: redis },
+  {
+    connection: redis,
+    lockDuration: 60000, //Устанавливаем lockDuration в 60 секунд, чтобы предотвратить повторное выполнение задачи другим воркером в случае сбоя
+  },
 );
 
 discountWorker.on("completed", (job) => {

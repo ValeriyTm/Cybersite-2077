@@ -179,7 +179,7 @@ export const CheckoutPage = () => {
   );
 
   //Передаем итоговую цену в мутацию создания заказа:
-  const handleCreateOrder = (shouldPay: Boolean) => {
+  const handleCreateOrder = (shouldPay: boolean) => {
     const payload = {
       items: legalSelectedItems.map((item) => ({
         id: item.id,

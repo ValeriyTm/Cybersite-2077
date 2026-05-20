@@ -710,3 +710,57 @@ export const DeleteBrandAdminSchema = z.object({
 });
 export type DeleteBrandAdminInput = z.infer<typeof DeleteBrandAdminSchema>;
 export type DeleteBrandAdminParamArgs = DeleteBrandAdminInput["params"];
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------4) Модуль Trading-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------4.1) Схема для добавления в избранное:-------------------------------------//
+export const ToggleFavSchema = z.object({
+  params: z.object({
+    motorcycleId: z
+      .string()
+      .min(1, "id мотоцикла обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+export type ToggleFavInput = z.infer<typeof ToggleFavSchema>;
+export type ToggleFavServiceArgs = ToggleFavInput["params"];
+
+//----------------------------4.2) Схема для получения данных о избранном по списку id:-------------------------------------//
+export const GetFavsByIdsSchema = z.object({
+  body: z.object({
+    ids: z.array(
+      z
+        .string()
+        .min(1, { message: "id не должен быть пустой строкой" })
+        .max(36, "Максимум 36 символов для id"),
+    ),
+    limit: z.coerce.number().int().positive().max(100).default(10),
+
+    skip: z.coerce.number().int().nonnegative().default(0),
+  }),
+});
+
+type GetFavsByIdsInput = z.infer<typeof GetFavsByIdsSchema>;
+//Чистый тип для сервиса:
+export type GetFavsByIdsArgs = GetFavsByIdsInput["body"];
+
+//----------------------------4.3) Схема для добавления в корзину:-------------------------------------//
+export const AddToCartSchema = z.object({
+  body: z.object({
+    motorcycleId: z
+      .string()
+      .min(1, { message: "id не должен быть пустой строкой" })
+      .max(36, "Максимум 36 символов для id"),
+    quantity: z.coerce.number().int().positive(),
+    model: z.string().min(1),
+    price: z.coerce.number().nonnegative().default(300000),
+    image: z.string().catch(""),
+    slug: z.string().min(1).max(50),
+    year: z.coerce.number().int().min(1850).max(new Date().getFullYear()),
+  }),
+});
+
+type AddToCartInput = z.infer<typeof AddToCartSchema>;
+//Чистый тип для сервиса:
+export type AddToCartArgs = AddToCartInput["body"];

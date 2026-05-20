@@ -6,6 +6,15 @@ import { prisma } from "@repo/database";
 import { warehouseService } from "../warehouse/index.js";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
+//Типы:
+import { AddToCartArgs } from "@repo/validation";
+
+//Заменяем в типе motorcycleId на id:
+type CartItem = Omit<AddToCartArgs, "motorcycleId"> & {
+  id: string;
+};
+
+// type RealCartItem =
 
 export class CartService {
   //Удобный перевод userId в название записи в хранилище Redis:
@@ -54,7 +63,7 @@ export class CartService {
 
     //Финальная сборка и расчёт скидок:
     const enrichedCart = await Promise.all(
-      cartItems.map(async (item: any) => {
+      cartItems.map(async (item: CartItem) => {
         const moto = motorcycles.find((m) => m.id === item.id);
         if (!moto) return null;
 
@@ -78,9 +87,10 @@ export class CartService {
   }
 
   //Добавить товар в корзину / обновить количество:
-  async addToCart(userId: string, item: any) {
+  async addToCart(userId: string, item: CartItem) {
     const cart = await this.getCart(userId);
-    const existing = cart.find((i: any) => i.id === item.id);
+    const existing = cart.find((i: CartItem) => i.id === item.id);
+    console.log("cartItem: ", existing);
 
     if (existing) {
       existing.quantity += item.quantity;
@@ -92,7 +102,6 @@ export class CartService {
         price: item.price,
         image: item.image,
         slug: item.slug,
-        brandSlug: item.brandSlug,
         quantity: item.quantity,
         year: item.year,
         selected: true, //Поле для чекбокса выбора

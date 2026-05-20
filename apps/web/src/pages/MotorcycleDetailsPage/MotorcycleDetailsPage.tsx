@@ -363,6 +363,7 @@ export const MotorcycleDetailsPage = () => {
                       brandSlug: motorcycle.brand.slug,
                       slug: motorcycle.slug,
                       totalInStock: motorcycle.totalInStock,
+                      year: motorcycle.year,
                     }}
                   />
 
