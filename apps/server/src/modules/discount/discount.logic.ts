@@ -26,7 +26,6 @@ type MotorcycleFromDB = Omit<
 export class DiscountLogic {
   //Метод вычисляет финальную цену мотоцикла для конкретного пользователя:
   async calculateFinalPrice(motorcycle: MotorcycleFromDB, userId?: string) {
-    console.log("motorcycle to calculate: ", motorcycle);
     let finalPrice = motorcycle.price;
     let appliedDiscount = 0; // В процентах (выбираем бОльшую)
 

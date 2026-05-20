@@ -15,17 +15,21 @@ import { addOrderExpirationTask, addDeliveryStartTask } from "./order.queue.js";
 import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+//Типы:
+import { CreateOrderServiceArgs } from "@repo/validation";
 
 //Создание заказа:
 export const createOrder = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const order = await orderService.createOrder(req.user.id, req.body);
+    const data = req.body as CreateOrderServiceArgs;
+
+    const order = await orderService.createOrder(req.user.id, data);
 
     //Добавляем задачу в очередь BullMQ (таймер на 1 час):
     await addOrderExpirationTask(order.id);
 
     //Собираем ID только тех товаров, которые были в заказе:
-    const orderedIds = req.body.items.map((item: any) => item.id);
+    const orderedIds = data.items.map((item) => item.id);
 
     //После создания заказа очищаем корзину (Redis) от заказанных позиций:
     await cartService.removeMultiple(req.user.id, orderedIds);

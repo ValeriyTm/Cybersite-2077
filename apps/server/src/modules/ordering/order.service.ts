@@ -8,10 +8,12 @@ import { paymentService } from "../payment/index.js";
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Поисковый сервис модуля Catalog:
 import { searchService } from "../catalog/search.service.js";
+//Типы:
+import { CreateOrderServiceArgs } from "@repo/validation";
 
 export class OrderService {
   //Создание заказа с резервированием остатков и обновлением профиля
-  async createOrder(userId: string, data: any) {
+  async createOrder(userId: string, data: CreateOrderServiceArgs) {
     const { items, address, coords, deliveryInfo, totalPrice } = data;
 
     //1.Транзакция в БД:
@@ -31,7 +33,7 @@ export class OrderService {
           warehouseId: deliveryInfo.warehouse.id,
           paymentStatus: "pending", //Начальный статус платежа
           items: {
-            create: items.map((item: any) => ({
+            create: items.map((item) => ({
               motorcycleId: item.id,
               quantity: item.quantity,
               priceAtOrder: item.price, //Фиксируем цену на момент покупки

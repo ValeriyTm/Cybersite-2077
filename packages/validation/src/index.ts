@@ -901,3 +901,47 @@ export const DeliveryCalculateSchema = z.object({
 });
 export type DeliveryCalculateInput = z.infer<typeof DeliveryCalculateSchema>;
 export type DeliveryCalculateServiceArgs = DeliveryCalculateInput["body"];
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------7) Модуль Ordering-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------7.1) Схема для создания заказа:-------------------------------------//
+export const CreateOrderSchema = z.object({
+  body: z.object({
+    items: z.array(
+      z.object({
+        id: z
+          .string()
+          .min(1, "id мотоцикла обязателен")
+          .max(36, "Максимум 36 символов для id"),
+        model: z.string().min(1).max(40),
+        price: z.number().int().nonnegative(),
+        quantity: z.number().int().positive(),
+      }),
+    ),
+    address: z.string().min(1).max(200),
+    coords: z.object({
+      lat: z.number().min(-90).max(90),
+      lng: z.number().min(-180).max(180),
+    }),
+    deliveryInfo: z.object({
+      warehouse: z.object({
+        id: z.string().min(1),
+        name: z.string().min(1).max(40),
+        city: z.string().min(1).max(20),
+        lat: z.number().min(-90).max(90),
+        lng: z.number().min(-180).max(180),
+        distanceKm: z.number().nonnegative(),
+      }),
+      cost: z.number().int().nonnegative(),
+      days: z.number().int().positive(),
+      estimatedDate: z.string(),
+      distanceKm: z.number().int().nonnegative(),
+    }),
+    promoCode: z.string().min(2).max(20).nullable(),
+    totalPrice: z.number().int().nonnegative(),
+    shouldPay: z.boolean(),
+  }),
+});
+export type CreateOrderInput = z.infer<typeof CreateOrderSchema>;
+export type CreateOrderServiceArgs = CreateOrderInput["body"];

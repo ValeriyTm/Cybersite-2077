@@ -65,7 +65,6 @@ export class CartService {
       cartItems.map(async (item: CartItem) => {
         const moto = motorcycles.find((m) => m.id === item.id);
         if (!moto) return null;
-        console.log("moto in cart: ", moto);
 
         //Рассчитываем скидку для этого товара и этого юзера:
         const discountData = await discountLogic.calculateFinalPrice(
