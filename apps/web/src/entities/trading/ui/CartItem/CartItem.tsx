@@ -15,7 +15,7 @@ import styles from './CartItem.module.scss'
 
 export interface CartCardProps {
   data: MotorcycleCart;
-  handleDeletingId: (data: any) => void;
+  handleDeletingId: (data: string) => void;
 }
 
 
@@ -67,7 +67,6 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
             <img
               src={
                 (data.images?.length > 0)
-                  //@ts-ignore:
                   ? `${API_URL}/static/motorcycles/${data.images[0].url}`
                   : defaultMotoImage
               }

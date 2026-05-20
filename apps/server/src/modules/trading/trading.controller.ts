@@ -4,11 +4,15 @@ import { favoritesService } from "./favorites.service.js";
 //Типы:
 import { Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
-import { type ToggleFavoriteRequest } from "./trading.types.js";
 import {
   AddToCartArgs,
+  DeleteMultipleFromCartArgs,
+  DeleteSingleFromCartServiceArgs,
   GetFavsByIdsArgs,
+  ToggleAllCartServiceArgs,
   ToggleFavServiceArgs,
+  ToggleSingleCartServiceArgs,
+  UpdateQuantityCartArgs,
 } from "@repo/validation";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
@@ -16,7 +20,7 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 //--------------------------Избранное:------------------------------//
 //Контроллер добавления нового мотоцикла в избранное:
 export const toggleFavorite = catchAsync(
-  async (req: ToggleFavoriteRequest, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     const userId = req.user.id; //Берем из middleware авторизации
     const { motorcycleId } = req.params as ToggleFavServiceArgs;
 
@@ -74,25 +78,9 @@ export const getCart = catchAsync(async (req: AuthRequest, res: Response) => {
 
 //Контроллер добавления в корзину:
 export const addToCart = catchAsync(async (req: AuthRequest, res: Response) => {
-  const {
-    motorcycleId: id,
-    quantity,
-    model,
-    price,
-    image,
-    slug,
-    year,
-  } = req.body as AddToCartArgs;
+  const data = req.body as AddToCartArgs;
 
-  const cart = await cartService.addToCart(req.user.id, {
-    id,
-    quantity,
-    model,
-    price,
-    image,
-    slug,
-    year,
-  });
+  const cart = await cartService.addToCart(req.user.id, data);
 
   res.json(cart);
 });
@@ -100,7 +88,7 @@ export const addToCart = catchAsync(async (req: AuthRequest, res: Response) => {
 //Изменение количества товара для конкретной позиции:
 export const updateCartQuantity = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { motorcycleId, quantity } = req.body;
+    const { motorcycleId, quantity } = req.body as UpdateQuantityCartArgs;
 
     const cart = await cartService.updateQuantity(
       req.user.id,
@@ -114,8 +102,8 @@ export const updateCartQuantity = catchAsync(
 //Удаление позиции из корзины:
 export const removeFromCart = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { motorcycleId } = req.params;
-    // @ts-ignore:
+    const { motorcycleId } = req.params as DeleteSingleFromCartServiceArgs;
+
     const cart = await cartService.removeItem(req.user.id, motorcycleId);
     res.json(cart);
   },
@@ -124,7 +112,7 @@ export const removeFromCart = catchAsync(
 //Удаление всех позиций в корзине:
 export const removeSelectedFromCart = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { ids } = req.body; //Массив ID выбранных чекбоксами товаров
+    const { ids } = req.body as DeleteMultipleFromCartArgs; //Массив ID выбранных чекбоксами товаров
     const cart = await cartService.removeMultiple(req.user.id, ids);
     res.json(cart);
   },
@@ -134,7 +122,7 @@ export const removeSelectedFromCart = catchAsync(
 export const toggleSelect = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const userId = req.user.id;
-    const { motorcycleId, selected } = req.body;
+    const { motorcycleId, selected } = req.body as ToggleSingleCartServiceArgs;
 
     const updatedCart = await cartService.toggleSelectItem(
       userId,
@@ -150,7 +138,7 @@ export const toggleSelect = catchAsync(
 export const toggleSelectAll = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const userId = req.user.id;
-    const { isSelected } = req.body;
+    const { isSelected } = req.body as ToggleAllCartServiceArgs;
 
     const updatedCart = await cartService.toggleSelectAll(userId, isSelected);
 

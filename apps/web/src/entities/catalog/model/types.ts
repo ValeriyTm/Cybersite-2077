@@ -5,7 +5,7 @@ import type {
   StarterType,
   GearboxType,
 } from "@repo/database/generated/prisma/index.js";
-import { type MotorcycleFull, type MotorcycleStocks } from "@repo/types";
+import { type MotorcycleFull } from "@repo/types";
 
 export interface Brand {
   country: string;
@@ -65,10 +65,10 @@ export interface MotorcycleShort {
   year: number;
 }
 
-export interface MotorcycleCart extends MotorcycleFull {
+export type MotorcycleCart = Omit<MotorcycleFull, "siteCategory"> & {
   quantity: number;
   selected: boolean;
-}
+};
 
 export interface MotorcycleEditAdmin {
   brand: {

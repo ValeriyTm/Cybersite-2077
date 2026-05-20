@@ -10,6 +10,11 @@ import {
   GetFavsByIdsSchema,
   ToggleFavSchema,
   AddToCartSchema,
+  UpdateQuantityCartSchema,
+  DeleteSingleFromCartSchema,
+  DeleteMultipleFromCartSchema,
+  ToggleSingleCartSchema,
+  ToggleAllCartSchema,
 } from "@repo/validation";
 
 const router = Router();
@@ -59,6 +64,7 @@ router.post(
 router.patch(
   "/cart/quantity",
   authMiddleware,
+  validate(UpdateQuantityCartSchema),
   tradingController.updateCartQuantity,
 );
 
@@ -66,6 +72,7 @@ router.patch(
 router.delete(
   "/cart/item/:motorcycleId",
   authMiddleware,
+  validate(DeleteSingleFromCartSchema),
   tradingController.removeFromCart,
 );
 
@@ -73,17 +80,24 @@ router.delete(
 router.post(
   "/cart/remove-selected",
   authMiddleware,
+  validate(DeleteMultipleFromCartSchema),
   tradingController.removeSelectedFromCart,
 );
 
 //-------Роуты чекбокса корзины:-----------//
 // Переключить один чекбокс:
-router.patch("/cart/select", authMiddleware, tradingController.toggleSelect);
+router.patch(
+  "/cart/select",
+  authMiddleware,
+  validate(ToggleSingleCartSchema),
+  tradingController.toggleSelect,
+);
 
 // Массовое выделение:
 router.patch(
   "/cart/select-all",
   authMiddleware,
+  validate(ToggleAllCartSchema),
   tradingController.toggleSelectAll,
 );
 

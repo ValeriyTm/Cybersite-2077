@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { API_URL } from "@/shared/api";
 //Типы:
 import { type MotorcycleShort } from "@/entities/catalog/model";
+import type { MotorcycleFull } from "@repo/types";
 //Состояния:
 import { useTradingStore, useFavorites } from "@/entities/trading";
 import { useAuthStore } from "@/features/auth"; //Состояние авторизации
@@ -19,7 +20,7 @@ import styles from "./MotorcycleCard.module.scss";
 const STATIC_URL = `${API_URL}/static`;
 
 export interface MotorcycleCardProps {
-  data: MotorcycleShort;
+  data: MotorcycleShort | MotorcycleFull;
   viewMode?: "grid" | "list";
 }
 
@@ -28,6 +29,12 @@ export const MotorcycleCard = ({
   viewMode = "grid", //Вид карточки (сетка или список)
 }: MotorcycleCardProps) => {
   const isAuth = useAuthStore((state) => state.isAuth); //Авторизован ли юзер
+
+  //Где находится mainImage зависит от того, какие данные передаются в компонент:
+  //(из FavoritesPage передаётся MotorcycleFull, из остальных мест - MotorcycleShort)
+  const mainImage = 'mainImage' in data
+    ? data.mainImage // Если это MotorcycleShort, берем плоскую строку
+    : data.images?.find(img => img.isMain)?.url;
 
   //Определяем какое изображение ставить для отображения изображения:
   const getImageUrl = (path: string | null | undefined) => {
@@ -52,7 +59,7 @@ export const MotorcycleCard = ({
   const cardClassName = `${styles.Card} ${viewMode === "list" ? styles.listView : ""}`;
 
   //-----
-  // 1. Подключаем логику избранного
+  //Подключаем логику избранного:
   const { toggleFavorite } = useFavorites();
   const isFavorite = useTradingStore((state) =>
     state.favoriteIds.includes(data.id),
@@ -67,11 +74,12 @@ export const MotorcycleCard = ({
     toggleFavorite(data.id);
   };
   //-----
+  const currentBrandSlug = data.brandSlug ?? (typeof data.brand === 'object' ? data.brand.slug : '');
 
   //Хелпер для извлечения бренда при разном формате входных данных:
   const brandName =
     typeof data.brand === "object"
-      ? (data.brand as any).name // Если прилетел объект (из избранного)
+      ? (data.brand).name // Если прилетел объект (из избранного)
       : data.brand; // Если прилетела строка (из общего каталога)
 
   //Скидки и расчёт цены с учетом скидки:
@@ -81,14 +89,15 @@ export const MotorcycleCard = ({
 
   return (
     <Link
-      to={`/catalog/motorcycles/${data.brandSlug}/${data.slug}`}
+      //Способ получения slug бренда зависит из места, откуда вызывается компонент:
+      to={`/catalog/motorcycles/${currentBrandSlug}/${data.slug}`}
       className={cardClassName}
     >
       {viewMode === "grid" && (
         <div className={styles.imageBox}>
           {/*Изображение:*/}
           <img
-            src={getImageUrl(data.mainImage)}
+            src={getImageUrl(mainImage)}
             loading="lazy"
             decoding="async"
             alt={data.model}
@@ -183,8 +192,8 @@ export const MotorcycleCard = ({
                 id: data.id,
                 model: data.model,
                 price: data.price,
-                image: getImageUrlCart(data.mainImage),
-                brandSlug: data.brandSlug,
+                image: getImageUrlCart(mainImage),
+                brandSlug: currentBrandSlug,
                 slug: data.slug,
                 totalInStock: data.totalInStock,
                 year: data.year,

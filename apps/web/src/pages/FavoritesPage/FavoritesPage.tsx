@@ -9,22 +9,19 @@ import { FaArrowUp } from "react-icons/fa";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
-import styles from "./FavotiresPage.module.scss";
+import styles from "./FavoritesPage.module.scss";
+import type { MotorcycleFull } from "@repo/types";
 
 export const FavoritesPage = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useFavoritesPage();
   //Массив id избранных моделей:
   const { favoriteIds } = useTradingStore();
+
+  //-----------------------Подъем наверх экрана:--------------------//
   //Показывать кнопку подъема наверх страницы или нет:
   const [showScroll, setShowScroll] = useState(false);
 
-  if (favoriteIds.length === 0)
-    return (
-      <div className={styles.empty}>У вас пока нет избранных моделей 🤍</div>
-    );
-
-  //-----------------------Подъем наверх экрана:--------------------//
   //Следим за прокруткой экрана, чтобы понять, выводить кнопку подъема или ещё рано:
   useEffect(() => {
     const checkScroll = () => {
@@ -46,6 +43,13 @@ export const FavoritesPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  //---------------------------------------
+  if (favoriteIds.length === 0)
+    return (
+      <div className={styles.empty}>У вас пока нет избранных моделей 🤍</div>
+    );
+
+
   return (
     <>
       <Helmet>
@@ -58,9 +62,11 @@ export const FavoritesPage = () => {
         <div className={styles.list}>
           {data?.pages.map((group, i) => (
             <React.Fragment key={i}>
-              {group.items.map((moto: any) => (
-                <MotorcycleCard key={moto.id} data={moto} viewMode="list" />
-              ))}
+              {group.items.map((moto: MotorcycleFull) => {
+                return (
+                  <MotorcycleCard key={moto.id} data={moto} viewMode="list" />
+                )
+              })}
             </React.Fragment>
             //React.Fragment используется как невидимый контейнер для группировки списка элементов внутри метода .map().
           ))}

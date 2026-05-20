@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/profile/favorites",
-        lazy: () => import("@/pages/FavoritesPage/FavotiresPage").then(m => ({ Component: m.FavoritesPage })),
+        lazy: () => import("@/pages/FavoritesPage/FavoritesPage").then(m => ({ Component: m.FavoritesPage })),
         //Страница избранных товаров
       },
       {

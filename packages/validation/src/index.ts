@@ -764,3 +764,76 @@ export const AddToCartSchema = z.object({
 type AddToCartInput = z.infer<typeof AddToCartSchema>;
 //Чистый тип для сервиса:
 export type AddToCartArgs = AddToCartInput["body"];
+
+//----------------------------4.4) Схема для обновления кол-ва в корзине:-------------------------------------//
+export const UpdateQuantityCartSchema = z.object({
+  body: z.object({
+    motorcycleId: z
+      .string()
+      .min(1, { message: "id не должен быть пустой строкой" })
+      .max(36, "Максимум 36 символов для id"),
+    quantity: z.coerce.number().int().positive(),
+  }),
+});
+
+type UpdateQuantityCartInput = z.infer<typeof UpdateQuantityCartSchema>;
+//Чистый тип для сервиса:
+export type UpdateQuantityCartArgs = UpdateQuantityCartInput["body"];
+
+//----------------------------4.5) Схема для удаления одного товара из корзины:-------------------------------------//
+export const DeleteSingleFromCartSchema = z.object({
+  params: z.object({
+    motorcycleId: z
+      .string()
+      .min(1, "id мотоцикла обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+export type DeleteSingleFromCartInput = z.infer<
+  typeof DeleteSingleFromCartSchema
+>;
+export type DeleteSingleFromCartServiceArgs =
+  DeleteSingleFromCartInput["params"];
+
+//----------------------------4.6) Схема для удаления нескольких товаров из корзины:-------------------------------------//
+export const DeleteMultipleFromCartSchema = z.object({
+  body: z.object({
+    ids: z.array(
+      z
+        .string()
+        .min(1, { message: "id не должен быть пустой строкой" })
+        .max(36, "Максимум 36 символов для id"),
+    ),
+  }),
+});
+
+type DeleteMultipleFromCartInput = z.infer<typeof DeleteMultipleFromCartSchema>;
+//Чистый тип для сервиса:
+export type DeleteMultipleFromCartArgs = DeleteMultipleFromCartInput["body"];
+
+//----------------------------4.7) Схема для переключения товара в корзине:-------------------------------------//
+export const ToggleSingleCartSchema = z.object({
+  body: z.object({
+    motorcycleId: z
+      .string()
+      .min(1, "id мотоцикла обязателен")
+      .max(36, "Максимум 36 символов для id"),
+    selected: z.boolean(),
+  }),
+});
+export type ToggleSingleCartInput = z.infer<typeof ToggleSingleCartSchema>;
+export type ToggleSingleCartServiceArgs = ToggleSingleCartInput["body"];
+
+//----------------------------4.87) Схема для переключения всех товаров в корзине:-------------------------------------//
+export const ToggleAllCartSchema = z.object({
+  body: z.object({
+    isSelected: z.boolean(),
+  }),
+});
+export type ToggleAllCartInput = z.infer<typeof ToggleAllCartSchema>;
+export type ToggleAllCartServiceArgs = ToggleAllCartInput["body"];
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------5) Модуль ?-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------5.1) Схема для ?:-------------------------------------//

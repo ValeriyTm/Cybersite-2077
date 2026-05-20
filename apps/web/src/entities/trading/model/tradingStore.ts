@@ -4,39 +4,23 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 //API:
 import { $api } from "@/shared/api";
-
-interface CartItem {
-  id: string;
-  model: string;
-  price: number;
-  image: string;
-  brandSlug: string;
-  slug: string;
-  quantity: number;
-  selected: boolean;
-  totalInStock: number;
-  discountData?: {
-    originalPrice: number;
-    finalPrice: number;
-    isPersonal: boolean;
-    discountPercent: number | null;
-  };
-  year?: number;
-}
+//Типы:
+import type { MotorcycleCart } from "@/entities/catalog";
+import type { AddToCartLocally } from "../types/types";
 
 interface TradingState {
   favoriteIds: string[]; //Массив ID избранных моделей
-  cartItems: CartItem[]; //Массив объектов корзины
+  cartItems: MotorcycleCart[]; //Массив объектов корзины
 
   setFavorites: (ids: string[]) => void;
-  setCart: (items: CartItem[]) => void;
+  setCart: (items: MotorcycleCart[]) => void;
 
   //Логика избранного
   toggleFavoriteLocally: (motorcycleId: string) => void; //Локальное добавление в избранное (для Optimistic UI)
   isFavorite: (motorcycleId: string) => boolean; //Проверка: добавлена ли в избранное конкретная модель
 
   //Логика корзины:
-  addToCartLocally: (item: CartItem) => void; //Локальное добавление в корзину (для Optimistic UI)
+  addToCartLocally: (item: AddToCartLocally) => void; //Локальное добавление в корзину (для Optimistic UI)
   removeFromCartLocally: (id: string) => void; //Локальное удаление из корзины товара
 
   //Логика работы с чекбоксами в корзине:
@@ -92,7 +76,7 @@ export const useTradingStore = create<TradingState>()(
     //С помощью метода get() мы достаем текущий массив favoriteIds из хранилища и проверяем, входит ли id текущего байка в массив избранных id
 
     //Добавление в корзину:
-    addToCartLocally: (item: CartItem) => {
+    addToCartLocally: (item: MotorcycleCart) => {
       //Достаем из хранилища текущий массив объектов корзины cartItems:
       const { cartItems } = get();
       //Ищем в массиве объект, у которого id совпадает с переданным. Если нашли — он сохранится в existing:
@@ -157,7 +141,7 @@ export const useTradingStore = create<TradingState>()(
     //Оставляет в корзине только те товары, у которых selected: false. Это «подчищает» интерфейс, оставляя пользователю то, что он решил не удалять/не покупать.
 
     //5. Установить значения корзины целиком (синхронизация с ответом сервера):
-    setCart: (items: CartItem[]) =>
+    setCart: (items: MotorcycleCart[]) =>
       set({
         cartItems: items.map((item) => ({
           ...item,

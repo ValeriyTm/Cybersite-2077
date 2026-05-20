@@ -12,6 +12,7 @@ import { AddToCartArgs } from "@repo/validation";
 //Заменяем в типе motorcycleId на id:
 type CartItem = Omit<AddToCartArgs, "motorcycleId"> & {
   id: string;
+  selected: boolean;
 };
 
 // type RealCartItem =
@@ -30,7 +31,7 @@ export class CartService {
     if (cartItems.length === 0) return [];
 
     //Собираем все ID товаров из корзины:
-    const ids = cartItems.map((item: any) => item.id);
+    const ids = cartItems.map((item: CartItem) => item.id);
 
     //Получаем полные данные мотоциклов (нужны для года выпуска и цены):
     const motorcycles = await prisma.motorcycle.findMany({
@@ -79,7 +80,7 @@ export class CartService {
           quantity: item.quantity,
           totalInStock: stockMap[item.id] || 0, //Если товара нет в таблице Stock, то указываем "0"
           discountData, //Скидки { finalPrice, discountPercent, isPersonal }
-        };
+        }; //Возвращаем полную корзину с данными из БД и скидками
       }),
     );
 
@@ -87,17 +88,25 @@ export class CartService {
   }
 
   //Добавить товар в корзину / обновить количество:
-  async addToCart(userId: string, item: CartItem) {
-    const cart = await this.getCart(userId);
-    const existing = cart.find((i: CartItem) => i.id === item.id);
-    console.log("cartItem: ", existing);
+  async addToCart(userId: string, item: AddToCartArgs) {
+    //Ключ корзины пользователя:
+    const cartKey = this.getCartKey(userId);
+    //Получаем всю корзину:
+    const cart = await redis.get(cartKey);
+    //Получаем все итемы корзины:
+    const cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
+
+    //Получаем конкретный итем:
+    const existing = cartItems.find(
+      (i: CartItem) => i.id === item.motorcycleId,
+    );
 
     if (existing) {
       existing.quantity += item.quantity;
     } else {
       //Сохраняем все данные, нужные для отрисовки макета:
-      cart.push({
-        id: item.id,
+      cartItems.push({
+        id: item.motorcycleId,
         model: item.model,
         price: item.price,
         image: item.image,
@@ -109,55 +118,74 @@ export class CartService {
     }
 
     //Метод setex устанавливает время хранения данных на 7 дней:
-    await redis.setex(`cart:${userId}`, 60 * 60 * 24 * 7, JSON.stringify(cart));
-    return cart;
+    await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
+    return cartItems;
   }
 
   //Изменить количество для конкретной позиции:
   async updateQuantity(userId: string, itemId: string, quantity: number) {
-    //1) Идем в PostgreSQL через WarehouseService и узнаем доступные не зарезервированные остатки на складах:
+    //Идем в PostgreSQL через WarehouseService и узнаем доступные не зарезервированные остатки на складах:
     const available = await warehouseService.getAvailableStock(itemId);
+    //Ограничиваем максимальное количество тем, что реально есть на складах (а минимальное - единицей):
+    const finalQuantity = Math.max(1, Math.min(quantity, available));
 
-    //2) Ограничиваем максимальное количество тем, что реально есть на складах:
-    const finalQuantity = Math.min(quantity, available);
+    //Ключ корзины пользователя:
+    const cartKey = this.getCartKey(userId);
+    //Получаем всю корзину:
+    const cart = await redis.get(cartKey);
+    //Получаем все итемы корзины:
+    const cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
+    if (cartItems.length === 0) return [];
 
-    const cart = await this.getCart(userId);
-    const item = cart.find((i: any) => i.id === itemId);
+    //Получаем конкретный итем:
+    const targetCartItem = cartItems.find(
+      (item: CartItem) => item.id === itemId,
+    );
 
-    if (item) {
+    if (targetCartItem) {
       //Не даем опуститься ниже 1:
-      item.quantity = Math.max(1, finalQuantity);
+      targetCartItem.quantity = finalQuantity;
 
       //Метод setex устанавливает время хранения данных на 7 дней:
-      await redis.setex(
-        `cart:${userId}`,
-        60 * 60 * 24 * 7,
-        JSON.stringify(cart),
-      );
+      await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
     }
-    return cart;
+    return cartItems;
   }
 
   //Удалить позицию из корзины:
   async removeItem(userId: string, itemId: string) {
-    let cart = await this.getCart(userId);
+    //Ключ корзины пользователя:
+    const cartKey = this.getCartKey(userId);
+    //Получаем всю корзину:
+    const cart = await redis.get(cartKey);
+    //Получаем все итемы корзины:
+    let cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
+    if (cartItems.length === 0) return [];
+
     //Создаём новый отфильтрованный список товаров,  из которого исключен элемент с указанным itemId:
-    cart = cart.filter((i: any) => i.id !== itemId);
+    cartItems = cartItems.filter((i: CartItem) => i.id !== itemId);
 
     //Обновленный список (уже без удаленного товара) переводится в строку JSON и записывается обратно в Redis:
-    await redis.setex(`cart:${userId}`, 60 * 60 * 24 * 7, JSON.stringify(cart));
+    await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
     //Метод setex устанавливает время хранения данных на 7 дней
 
-    return cart;
+    return cartItems;
   }
 
   //Удаление всех позиций из корзины:
   async removeMultiple(userId: string, itemIds: string[]) {
-    let cart = await this.getCart(userId);
-    cart = cart.filter((i: any) => !itemIds.includes(i.id));
+    //Ключ корзины пользователя:
+    const cartKey = this.getCartKey(userId);
+    //Получаем всю корзину:
+    const cart = await redis.get(cartKey);
+    //Получаем все итемы корзины:
+    let cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
+    if (cartItems.length === 0) return [];
+    //Фильтруем (удаляем по id):
+    cartItems = cartItems.filter((i: CartItem) => !itemIds.includes(i.id));
 
-    await redis.setex(`cart:${userId}`, 60 * 60 * 24 * 7, JSON.stringify(cart));
-    return cart;
+    await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
+    return cartItems;
   }
 
   //Метод переключения одного товара в корзине:
@@ -166,35 +194,35 @@ export class CartService {
     motorcycleId: string,
     isSelected: boolean,
   ) {
-    const key = this.getCartKey(userId);
-    const data = await redis.get(key); //Получаем данные по корзине из Redis
+    const cartKey = this.getCartKey(userId);
+    const data = await redis.get(cartKey); //Получаем данные по корзине из Redis
     const cartItems = data ? JSON.parse(data) : [];
     //Если данные есть, превращаем строку JSON обратно в массив объектов.
     //Если данных нет (корзина пуста), создаем пустой массив.
 
-    const updatedCart = cartItems.map((item: any) =>
+    const updatedCart = cartItems.map((item: CartItem) =>
       item.id === motorcycleId ? { ...item, selected: isSelected } : item,
     );
     //Пробегаем по всем товарам в корзине. Если id товара совпадает с нужным motorcycleId, создаём
     //копию этого товара с обновленным полем selected. Остальные товары оставляем без изменений.
 
-    await redis.set(key, JSON.stringify(updatedCart)); //Сохраняем обновленный массив обратно в Redis, предварительно превратив его в строку
+    await redis.set(cartKey, JSON.stringify(updatedCart)); //Сохраняем обновленный массив обратно в Redis, предварительно превратив его в строку
     return this.getCart(userId); //Возвращаем полную корзину с данными из БД и скидками
   }
 
   //Метод для работы чекбокса "Выбрать всё / Снять всё" для товаров корзины:
   async toggleSelectAll(userId: string, isSelected: boolean) {
-    const key = this.getCartKey(userId);
-    const data = await redis.get(key);
+    const cartKey = this.getCartKey(userId);
+    const data = await redis.get(cartKey);
     const cartItems = data ? JSON.parse(data) : [];
 
-    const updatedCart = cartItems.map((item: any) => ({
+    const updatedCart = cartItems.map((item: CartItem) => ({
       ...item,
       selected: isSelected,
     }));
 
-    await redis.set(key, JSON.stringify(updatedCart));
-    return this.getCart(userId);
+    await redis.set(cartKey, JSON.stringify(updatedCart));
+    return this.getCart(userId); //Возвращаем полную корзину с данными из БД и скидками
   }
 }
 

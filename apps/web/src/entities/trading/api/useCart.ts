@@ -5,6 +5,7 @@ import { useTradingStore } from "@/entities/trading/model";
 import { $api } from "@/shared/api";
 //Уведомления:
 import toast from "react-hot-toast";
+import { type MotorcycleCart } from "@/entities/catalog";
 
 export const useCart = () => {
   //Достаем методы из Zustand. Это позволяет нам мгновенно менять UI, не дожидаясь ответа от сервера (концепция Optimistic UI):
@@ -21,7 +22,7 @@ export const useCart = () => {
   const { isLoading } = useQuery({
     queryKey: ["cart"], //Уникальный идентификатор данных корзины в кэше.
     queryFn: async () => {
-      const { data } = await $api.get<any[]>("/trading/cart");
+      const { data } = await $api.get<MotorcycleCart[]>("/trading/cart");
       setCart(data);
       return data;
       //Запрос идет на бэкенд (/trading/cart), получает массив товаров и сразу прокидывает его в Zustand через setCart(data), чтобы цифры в хедере и список товаров обновились.
@@ -39,9 +40,9 @@ export const useCart = () => {
       image: string;
       brandSlug: string;
       slug: string;
-      year: number;
       selected: boolean;
       totalInStock: number;
+      year: number;
     }) => {
       addToCartLocally(item); //Сначала добавляем данные в локальную корзину (Optimistic UI)
 

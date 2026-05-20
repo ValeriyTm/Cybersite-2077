@@ -22,8 +22,7 @@ import styles from "./CartPage.module.scss";
 export const CartPage = () => {
   const { user } = useProfile(); // Достаем данные профиля
 
-  const { cartItems } =
-    useTradingStore();
+  const { cartItems } = useTradingStore();
   const {
     removeItem,
     removeSelected,
@@ -64,11 +63,10 @@ export const CartPage = () => {
       acc + (item.discountData?.finalPrice || item.price) * item.quantity,
     0,
   );
-  //Применяем действие промокодов и получаем конечную цену:
-  const finalTotal = useMemo(() => {
-    const promoAmount = Number(appliedPromo?.amount || 0); //Уменьшение суммы от промокода
-    return Math.max(0, subtotal - promoAmount); //Получаем конечную сумму
-  }, [subtotal, appliedPromo]); //Пересчитываем при каждом изменении выделенных товаров и примененного промокода
+
+  const promoAmount = Number(appliedPromo?.amount || 0); //Уменьшение суммы от промокода
+  const finalTotal = Math.max(0, subtotal - promoAmount); //Получаем конечную сумму
+  //------------------------------------------------------------------//
 
   //Обработчик удаления одного товара из корзины:
   const handleConfirmSingle = () => {
@@ -79,7 +77,7 @@ export const CartPage = () => {
   };
   //-----------------------------------Обработчики----------------------------//
   //
-  const handleDeletingId = (data: any) => {
+  const handleDeletingId = (data: string) => {
     setDeletingId(data);
   }
 
@@ -93,6 +91,7 @@ export const CartPage = () => {
     } catch (e) {
       setAppliedPromo(null);
       toast.error("Промокод не найден, истек или уже использован");
+      console.log('Ошибка: ', e)
     }
   };
 
@@ -130,7 +129,6 @@ export const CartPage = () => {
 
     if (typeof window !== 'undefined' && (window as any).ym) {
       (window as any).ym(metricaId, 'reachGoal', 'ORDER_CLICK');
-      // console.log('Цель отправлена через глобальную функцию!');
     }
   };
   ///--------------------------При отсутствии товаров:------------------------//
@@ -190,7 +188,6 @@ export const CartPage = () => {
             <div className={styles.list}>
               {cartItems.map((item) => {
                 return (
-                  //@ts-ignore:
                   <CartItem key={item.id} data={item} handleDeletingId={handleDeletingId} />
                 )
               })}

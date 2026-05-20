@@ -287,7 +287,7 @@ export const CheckoutPage = () => {
           <aside className={styles.summary}>
             <h3>Ваш заказ</h3>
             <div className={styles.row}>
-              <span>Товары ({cartItems.length}):</span>
+              <span>Товары ({legalSelectedItems.length}):</span>
               <span>+ {itemsTotal.toLocaleString()} ₽</span>
             </div>
 

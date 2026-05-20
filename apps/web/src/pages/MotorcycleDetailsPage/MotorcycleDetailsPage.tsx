@@ -7,6 +7,8 @@ import { useAuthStore, useProfile } from "@/features/auth";
 import { useMotorcycleBySlug, useRelatedMotos, useMotorcycleReviews } from "@/entities/catalog/lib";
 //API:
 import { API_URL } from "@/shared/api/api";
+//Типы:
+import type { MotorcycleFull } from "@repo/types";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Компоненты:
@@ -39,8 +41,8 @@ export const MotorcycleDetailsPage = () => {
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
 
   //Получаем данные о мотоцикле:
-  const { data: motorcycle, isLoading, isError } = useMotorcycleBySlug({ brandSlug, slug });
-
+  const { data, isLoading, isError } = useMotorcycleBySlug({ brandSlug, slug });
+  const motorcycle = data as MotorcycleFull | undefined; //Типизируем 
   //------------------Изображения:----------------------//
   //Состояние для кликнутому изображению в галерее:
   const [clickedImgUrl, setClickedImgUrl] = useState<string | null>(null);
@@ -124,7 +126,7 @@ export const MotorcycleDetailsPage = () => {
     "@type": "Product",
     "name": `${motorcycle.brand.name} ${motorcycle.model}`,
     "url": `http://${import.meta.env.VITE_SITE_URL}/catalog/motorcycles/${brandSlug}/${slug}`,
-    image: [`${API_URL}/static/motorcycles/${motorcycle.mainImage}`],
+    image: [`${API_URL}/static/motorcycles/${motorcycle.images?.find(img => img.isMain)?.url}`],
     description: `Технические характеристики ${motorcycle.model}: ${motorcycle.displacement} см³, ${motorcycle.power} л.с.`,
     "sku": slug, //Внутренний идентификатор товара в моём магазине
     "mpn": slug, //Идентификатор товара от производителя

@@ -5,7 +5,16 @@ import styles from "./AddToCartButton.module.scss";
 
 export interface AddToCartButtonProps {
   variant?: "card" | "details";
-  data: any;
+  data: {
+    id: string,
+    model: string,
+    price: number,
+    image: string,
+    brandSlug: string,
+    slug: string,
+    totalInStock: number,
+    year: number,
+  };
 }
 
 export const AddToCartButton = ({
@@ -33,7 +42,6 @@ export const AddToCartButton = ({
 
     if (typeof window !== 'undefined' && (window as any).ym) {
       (window as any).ym(metricaId, 'reachGoal', 'CLICK-CART');
-      // console.log('Цель отправлена через глобальную функцию!');
     }
   };
 
@@ -44,7 +52,7 @@ export const AddToCartButton = ({
         disabled={!data.totalInStock} //Если товара нет в наличии, кнопка будет неактивной
         className={styles.addBtn}
         onClick={(e) =>
-          handleAction(e, () => addToCart({ ...data, quantity: 1 }))
+          handleAction(e, () => addToCart({ ...data, quantity: 1, selected: true }))
         }
       >
         {data.totalInStock ? "🛒 В корзину" : "Нет в наличии"}

@@ -56,6 +56,7 @@ export interface MotorcycleFullServer {
     updatedAt: Date;
   };
   brandId: string;
+  brandSlug?: never;
   category: MotoCategory;
   colors: string[];
   comments: string | null;
