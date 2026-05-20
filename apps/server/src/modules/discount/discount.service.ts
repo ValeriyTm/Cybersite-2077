@@ -82,8 +82,7 @@ export class DiscountService {
         expiresAt.setDate(expiresAt.getDate() + 3); //Скидка на 3 дня
 
         //Записываем скидку в БД (обновляем старую или создаем новую):
-        //@ts-ignore:
-        const discount = await prisma.personalDiscount.upsert({
+        await prisma.personalDiscount.upsert({
           where: {
             userId_motorcycleId: {
               userId: user.id,
@@ -150,8 +149,7 @@ export class DiscountService {
   //Получение текущей глобальной скидки:
   async getGlobalDiscount() {
     const raw = await redis.get("global_sale");
-    const data = raw ? JSON.parse(raw) : null;
-    return data;
+    return raw ? JSON.parse(raw) : null;
   }
 
   //Получить все действующие промокоды:

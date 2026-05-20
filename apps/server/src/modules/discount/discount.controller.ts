@@ -7,11 +7,13 @@ import { discountService } from "./discount.service.js";
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+//Типы:
+import { ApplyPromoServiceArgs } from "@repo/validation";
 
 //Применение промокода:
 export const applyPromoCode = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { code } = req.body;
+    const { code } = req.body as ApplyPromoServiceArgs;
     const userId = req.user.id;
 
     const promo = await discountService.applyPromoCode(code, userId);

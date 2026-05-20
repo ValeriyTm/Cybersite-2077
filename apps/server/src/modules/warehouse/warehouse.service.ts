@@ -1,8 +1,11 @@
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Пространство имен из библиотеки:
-import { Prisma } from "@repo/database/generated/prisma";
+import { Prisma, type Warehouse } from "@repo/database/generated/prisma";
 
+interface DeliveryInfo extends Warehouse {
+  distanceKm: number;
+}
 export class WarehouseService {
   //Проверяем, сколько товара доступно для формирования заказа:
   async getAvailableStock(motorcycleId: string): Promise<number> {
@@ -31,18 +34,18 @@ export class WarehouseService {
     const itemIds = items.map((i) => i.id);
     const totalUniqueItems = itemIds.length;
 
-    const warehouses: any[] = await prisma.$queryRaw`
-    SELECT 
-      w.id, w.name, w.city, w.lat, w.lng,
-      ST_DistanceSphere(ST_MakePoint(w.lng, w.lat), ST_MakePoint(${lng}, ${lat})) / 1000 as "distanceKm" 
-    FROM "Warehouse" w
-    JOIN "Stock" s ON s."warehouseId" = w.id
-    WHERE s."motorcycleId" IN (${Prisma.join(itemIds)}) 
-      AND (s.quantity - s.reserved) >= 1 -- Проверяем, что хотя бы 1 есть (упрощенно)
-    GROUP BY w.id
-    HAVING COUNT(DISTINCT s."motorcycleId") = ${totalUniqueItems} -- Склад должен иметь все типы товаров из корзины
-    ORDER BY "distanceKm" ASC
-  `;
+    const warehouses: DeliveryInfo[] = await prisma.$queryRaw`
+        SELECT 
+          w.id, w.name, w.city, w.lat, w.lng,
+          ST_DistanceSphere(ST_MakePoint(w.lng, w.lat), ST_MakePoint(${lng}, ${lat})) / 1000 as "distanceKm" 
+        FROM "Warehouse" w
+        JOIN "Stock" s ON s."warehouseId" = w.id
+        WHERE s."motorcycleId" IN (${Prisma.join(itemIds)}) 
+         AND (s.quantity - s.reserved) >= 1 -- Проверяем, что хотя бы 1 есть (упрощенно)
+        GROUP BY w.id
+        HAVING COUNT(DISTINCT s."motorcycleId") = ${totalUniqueItems} -- Склад должен иметь все типы товаров из корзины
+        ORDER BY "distanceKm" ASC
+      `;
     //Используем ST_DistanceSphere для расчета расстояния в метрах по дуге сферы (Земли). Делим на 1000, чтобы получить километры.
 
     //Возвращаем ближайший из подходящих или null:

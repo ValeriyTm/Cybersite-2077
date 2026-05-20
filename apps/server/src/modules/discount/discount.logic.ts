@@ -3,10 +3,30 @@
 import { redis } from "../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
+//Типы:
+import { MotorcycleFullServer } from "@repo/types";
+
+type MotorcycleFromDB = Omit<
+  MotorcycleFullServer,
+  | "siteCategory"
+  | "discountData"
+  | "stocks"
+  | "totalInStock"
+  | "images"
+  | "brand"
+> & {
+  //Исправляем структуру brand, делая image зануляемым:
+  brand: Omit<MotorcycleFullServer["brand"], "image"> & {
+    image: string | null;
+  };
+  //Возвращаем правильный тип для изображений:
+  images: MotorcycleFullServer["images"];
+};
 
 export class DiscountLogic {
   //Метод вычисляет финальную цену мотоцикла для конкретного пользователя:
-  async calculateFinalPrice(motorcycle: any, userId?: string) {
+  async calculateFinalPrice(motorcycle: MotorcycleFromDB, userId?: string) {
+    console.log("motorcycle to calculate: ", motorcycle);
     let finalPrice = motorcycle.price;
     let appliedDiscount = 0; // В процентах (выбираем бОльшую)
 

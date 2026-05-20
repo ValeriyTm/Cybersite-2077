@@ -6,6 +6,8 @@ import { warehouseService } from "./warehouse.service.js";
 import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+//Типы:
+import { DeliveryCalculateServiceArgs } from "@repo/validation";
 
 //Получаем данные о всех складах:
 export const getAllWarehouses = catchAsync(
@@ -18,7 +20,7 @@ export const getAllWarehouses = catchAsync(
 //Расчёт стоимости и сроков доставки для заказа:
 export const calculateDelivery = catchAsync(
   async (req: Request, res: Response) => {
-    const { lat, lng, items } = req.body; //Получаем координаты и массив {id, quantity}
+    const { lat, lng, items } = req.body as DeliveryCalculateServiceArgs; //Получаем координаты и массив объектов {id, quantity}
 
     if (!items || items.length === 0) {
       throw new AppError(400, "Корзина пуста");

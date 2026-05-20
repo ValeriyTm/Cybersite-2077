@@ -834,6 +834,38 @@ export type ToggleAllCartInput = z.infer<typeof ToggleAllCartSchema>;
 export type ToggleAllCartServiceArgs = ToggleAllCartInput["body"];
 
 ////-----------------------------------------------------------------------------------------------////
-////--------------------------5) Модуль ?-------------------------------------------------------////
+////--------------------------5) Модуль Discount-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////
-//----------------------------5.1) Схема для ?:-------------------------------------//
+//----------------------------5.1) Схема для применения промокода:-------------------------------------//
+export const ApplyPromoSchema = z.object({
+  body: z.object({
+    code: z
+      .string()
+      .min(1, "code промокода обязателен")
+      .max(30, "Максимум 30 символов для промокода"),
+  }),
+});
+export type ApplyPromoInput = z.infer<typeof ApplyPromoSchema>;
+export type ApplyPromoServiceArgs = ApplyPromoInput["body"];
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------6) Модуль Warehouse-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------6.1) Схема для расчёта доставки:-------------------------------------//
+export const DeliveryCalculateSchema = z.object({
+  body: z.object({
+    lat: z.coerce.number().min(-90).max(90), // Широта: от -90 до 90 градусов
+    lng: z.coerce.number().min(-180).max(180), // Долгота: от -180 до 180 градусов
+    items: z.array(
+      z.object({
+        id: z
+          .string()
+          .min(1, { message: "id не должен быть пустой строкой" })
+          .max(36, "Максимум 36 символов для id"),
+        quantity: z.number().int().positive(),
+      }),
+    ),
+  }),
+});
+export type DeliveryCalculateInput = z.infer<typeof DeliveryCalculateSchema>;
+export type DeliveryCalculateServiceArgs = DeliveryCalculateInput["body"];

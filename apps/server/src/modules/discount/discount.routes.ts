@@ -5,6 +5,9 @@ import * as discountController from "./discount.controller.js";
 import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //Проверка авторизации
 import { roleMiddleware } from "../../shared/middlewares/roleMiddleware.js"; //Проверка роли пользователя
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
+import { validate } from "src/shared/middlewares/validate.js";
+//Схемы валидации:
+import { ApplyPromoSchema } from "@repo/validation";
 
 const router = Router();
 
@@ -16,6 +19,7 @@ router.post(
   "/apply-promo",
   authMiddleware,
   noCacheMiddleware,
+  validate(ApplyPromoSchema),
   discountController.applyPromoCode,
 );
 
