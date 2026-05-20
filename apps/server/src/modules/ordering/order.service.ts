@@ -21,51 +21,52 @@ export class OrderService {
     const { items, address, coords, deliveryInfo, totalPrice } = data;
 
     //1.Транзакция в БД:
-    const order = await prisma.$transaction(async (tx) => {
-      //1.1.Создаем запись заказа и товаров в нем:
-      const order = await tx.order.create({
-        data: {
-          userId,
-          status: "PENDING", //Резерв на 1 час
-          address,
-          deliveryLat: coords.lat,
-          deliveryLng: coords.lng,
-          distance: deliveryInfo.distanceKm,
-          deliveryCost: deliveryInfo.cost,
-          estimatedDate: new Date(deliveryInfo.estimatedDate),
-          totalPrice,
-          warehouseId: deliveryInfo.warehouse.id,
-          paymentStatus: "pending", //Начальный статус платежа
-          items: {
-            create: items.map((item) => ({
-              motorcycleId: item.id,
-              quantity: item.quantity,
-              priceAtOrder: item.price, //Фиксируем цену на момент покупки
-            })),
-          },
-        },
-        include: { items: true },
-      });
-
-      //1.2.Резервируем товар на складе (reserved += quantity)
-      for (const item of items) {
-        await tx.stock.update({
-          where: {
-            motorcycleId_warehouseId: {
-              motorcycleId: item.id,
-              warehouseId: deliveryInfo.warehouse.id,
+    const order = await prisma.$transaction(
+      async (tx) => {
+        //1.1.Создаем запись заказа и товаров в нем:
+        const order = await tx.order.create({
+          data: {
+            userId,
+            status: "PENDING", //Резерв на 1 час
+            address,
+            deliveryLat: coords.lat,
+            deliveryLng: coords.lng,
+            distance: deliveryInfo.distanceKm,
+            deliveryCost: deliveryInfo.cost,
+            estimatedDate: new Date(deliveryInfo.estimatedDate),
+            totalPrice,
+            warehouseId: deliveryInfo.warehouse.id,
+            paymentStatus: "pending", //Начальный статус платежа
+            items: {
+              create: items.map((item) => ({
+                motorcycleId: item.id,
+                quantity: item.quantity,
+                priceAtOrder: item.price, //Фиксируем цену на момент покупки
+              })),
             },
           },
-          data: {
-            //Увеличиваем только резерв, а физическое количество (quantity) пока не трогаем
-            reserved: { increment: item.quantity },
-          },
+          include: { items: true },
         });
-      }
 
-      //1.3.Обновляем адрес по умолчанию у пользователя (PostGIS + поля) в таблице users:
-      //(используем $executeRaw для работы с типом geometry)
-      await tx.$executeRaw`
+        //1.2.Резервируем товар на складе (reserved += quantity)
+        for (const item of items) {
+          await tx.stock.update({
+            where: {
+              motorcycleId_warehouseId: {
+                motorcycleId: item.id,
+                warehouseId: deliveryInfo.warehouse.id,
+              },
+            },
+            data: {
+              //Увеличиваем только резерв, а физическое количество (quantity) пока не трогаем
+              reserved: { increment: item.quantity },
+            },
+          });
+        }
+
+        //1.3.Обновляем адрес по умолчанию у пользователя (PostGIS + поля) в таблице users:
+        //(используем $executeRaw для работы с типом geometry)
+        await tx.$executeRaw`
         UPDATE "users" 
         SET 
           location = ST_SetSRID(ST_MakePoint(${coords.lng}, ${coords.lat}), 4326),
@@ -75,58 +76,62 @@ export class OrderService {
         WHERE id = ${userId}
       `;
 
-      //1.4.Фиксируем использование промокода
-      if (data.promoCode) {
-        const promo = await tx.promoCode.findUnique({
-          where: { code: data.promoCode.toUpperCase() },
+        //1.4.Фиксируем использование промокода
+        if (data.promoCode) {
+          const promo = await tx.promoCode.findUnique({
+            where: { code: data.promoCode.toUpperCase() },
+          });
+
+          if (promo) {
+            //Фиксируем, какой юзер использовал (чтобы не применил дважды):
+            await tx.usedPromo.create({
+              data: {
+                userId,
+                promoCodeId: promo.id,
+              },
+            });
+            //Увеличиваем счётчик общего использования промокода (чтобы в админке отображать):
+            await tx.promoCode.update({
+              where: { id: promo.id },
+              data: {
+                usedCount: { increment: 1 }, // Атомарное увеличение на 1
+              },
+            });
+          }
+        }
+
+        //1.5.Генерируем платеж в ЮKassa:
+        // Достаем email юзера (он нам нужен для чека)
+        const user = await tx.user.findUnique({ where: { id: userId } });
+
+        const payment = await paymentService.createPayment(
+          order.id,
+          totalPrice,
+          order.items, //Передаем товары
+          user?.email || "test@example.com", //Передаем email юзера
+          `Оплата заказа №${order.orderNumber}`,
+        ); //Тут совершается запрос к ЮКассе
+
+        //1.6.Сохраняем данные платежа в заказ:
+        const updatedOrder = await tx.order.update({
+          where: { id: order.id },
+          data: {
+            paymentId: payment.id,
+            paymentUrl: payment.confirmation.confirmation_url,
+          },
+          include: { items: true },
         });
 
-        if (promo) {
-          //Фиксируем, какой юзер использовал (чтобы не применил дважды):
-          await tx.usedPromo.create({
-            data: {
-              userId,
-              promoCodeId: promo.id,
-            },
-          });
-          //Увеличиваем счётчик общего использования промокода (чтобы в админке отображать):
-          await tx.promoCode.update({
-            where: { id: promo.id },
-            data: {
-              usedCount: { increment: 1 }, // Атомарное увеличение на 1
-            },
-          });
-        }
-      }
+        //1.7.Создаём событие для оповещений в ТГ:
+        eventBus.emit(EVENTS.ORDER_CREATED, order);
 
-      //1.5.Генерируем платеж в ЮKassa:
-      // Достаем email юзера (он нам нужен для чека)
-      const user = await tx.user.findUnique({ where: { id: userId } });
-
-      const payment = await paymentService.createPayment(
-        order.id,
-        totalPrice,
-        order.items, //Передаем товары
-        user?.email || "test@example.com", //Передаем email юзера
-        `Оплата заказа №${order.orderNumber}`,
-      );
-
-      //1.6.Сохраняем данные платежа в заказ:
-      const updatedOrder = await tx.order.update({
-        where: { id: order.id },
-        data: {
-          paymentId: payment.id,
-          paymentUrl: payment.confirmation.confirmation_url,
-        },
-        include: { items: true },
-      });
-
-      //1.7.Создаём событие для оповещений в ТГ:
-      eventBus.emit(EVENTS.ORDER_CREATED, order);
-
-      //1.8.Возвращаем заказ
-      return updatedOrder;
-    });
+        //1.8.Возвращаем заказ
+        return updatedOrder;
+      },
+      {
+        timeout: 15000, // Увеличиваем таймаут до 10 секунд
+      },
+    );
 
     //2.Обновляем остатки в Elasticsearch:
     try {
