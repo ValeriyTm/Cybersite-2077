@@ -305,10 +305,7 @@ export class AdminService {
   async updateStock(id: string, quantity: number) {
     return await prisma.stock.update({
       where: { id },
-      data: {
-        //  Принудительно приводим к числу и проверяем на валидность
-        quantity: !isNaN(Number(quantity)) ? Number(quantity) : 0,
-      },
+      data: { quantity },
       select: { motorcycleId: true },
     });
   }

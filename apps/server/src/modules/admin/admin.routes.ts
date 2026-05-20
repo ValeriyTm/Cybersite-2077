@@ -15,9 +15,11 @@ import {
   DeleteMotoAdminSchema,
   GetBrandsAdminSchema,
   GetMotosAdminSchema,
+  GetStocksAdminSchema,
   SearchBrandsAdminSchema,
   UpdateBrandAdminSchema,
   updateMotorcycleAdminSchema,
+  UpdateStocksAdminSchema,
 } from "@repo/validation";
 
 const router = Router();
@@ -65,6 +67,7 @@ router.get(
   validate(SearchBrandsAdminSchema),
   adminController.searchBrands,
 );
+
 //---------------------Работа с мотоциклами:-------------
 //Получение мотоциклов конкретного бренда:
 router.get(
@@ -99,19 +102,24 @@ router.delete(
   validate(DeleteMotoAdminSchema),
   adminController.deleteMotorcycle,
 );
+
 //---------------------Работа с остатками:-------------
 //Получить остатки по складам:
 router.get(
   "/stocks",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(GetStocksAdminSchema),
   adminController.getStocks,
 );
+
 //Обновить значения остатков:
 router.patch(
   "/stocks/:id",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(UpdateStocksAdminSchema),
   adminController.updateStock,
 );
+
 //---------------------Работа с заказами:-------------
 //Получить все заказы:
 router.get(

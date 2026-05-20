@@ -9,6 +9,9 @@ import {
   DeleteMotoAdminArgs,
   MotosAdminArgs,
   SearchBrandsAdminArgs,
+  StocksAdminArgs,
+  StocksUpdateAdminBodyArgs,
+  StocksUpdateAdminParamsArgs,
   UpdateBrandAdminBodyArgs,
   UpdateBrandAdminParamArgs,
   updateMotoAdminBodyArgs,
@@ -212,9 +215,8 @@ export const deleteMotorcycle = catchAsync(
 //---------------------Работа с остатками:-------------
 //Получение всех остатков:
 export const getStocks = catchAsync(async (req: AuthRequest, res: Response) => {
-  const { motoId } = req.query;
+  const { motoId } = req.query as StocksAdminArgs;
 
-  //@ts-ignore:
   const stocks = await adminService.getStocks(motoId);
 
   res.json({ data: stocks });
@@ -223,10 +225,9 @@ export const getStocks = catchAsync(async (req: AuthRequest, res: Response) => {
 //Обновление остатков:
 export const updateStock = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { quantity } = req.body;
+    const { id } = req.params as StocksUpdateAdminParamsArgs;
+    const { quantity } = req.body as StocksUpdateAdminBodyArgs;
 
-    //@ts-ignore:
     const stock = await adminService.updateStock(id, quantity);
 
     //Обновление инфы в Elasticsearch:
@@ -248,7 +249,6 @@ export const getOrders = catchAsync(async (req: AuthRequest, res: Response) => {
   const skip = (Number(page) - 1) * Number(limit);
 
   const [orders, total] = await adminService.getOrders(
-    //@ts-ignore:
     status,
     email,
     skip,

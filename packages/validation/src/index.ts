@@ -711,6 +711,38 @@ export const DeleteBrandAdminSchema = z.object({
 export type DeleteBrandAdminInput = z.infer<typeof DeleteBrandAdminSchema>;
 export type DeleteBrandAdminParamArgs = DeleteBrandAdminInput["params"];
 
+//----------------------------3.10) Схема для получения остатков:-------------------------------------//
+export const GetStocksAdminSchema = z.object({
+  query: z.object({
+    motoId: z
+      .string()
+      .min(1, { message: "id не должен быть пустой строкой" })
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+
+type StocksAdminInput = z.infer<typeof GetStocksAdminSchema>;
+//Чистый тип для сервиса:
+export type StocksAdminArgs = StocksAdminInput["query"];
+
+//----------------------------3.11) Схема для обновления остатков:-------------------------------------//
+export const UpdateStocksAdminSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .min(1, { message: "id не должен быть пустой строкой" })
+      .max(36, "Максимум 36 символов для id"),
+  }),
+  body: z.object({
+    quantity: z.coerce.number().int().nonnegative(),
+  }),
+});
+
+type StocksUpdateAdminInput = z.infer<typeof UpdateStocksAdminSchema>;
+//Чистый тип для сервиса:
+export type StocksUpdateAdminParamsArgs = StocksUpdateAdminInput["params"];
+export type StocksUpdateAdminBodyArgs = StocksUpdateAdminInput["body"];
+
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------4) Модуль Trading-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////
