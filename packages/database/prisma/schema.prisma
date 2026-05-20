@@ -346,7 +346,7 @@ model Order {
 
   // Данные о платежах:
   paymentId     String? @unique //ID транзакции в системе ЮKassa (напр. "24b1...")
-  paymentStatus String? @default("pending") //pending, succeeded, canceled
+  paymentStatus String? @default("pending") //pending, succeeded, canceled, refunded
   paymentUrl    String? //Ссылка на оплату (на случай, если юзер закроет вкладку и захочет оплатить позже)
 
   // Связь со складом отгрузки (который определил сервер)

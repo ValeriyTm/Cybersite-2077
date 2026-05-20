@@ -1,9 +1,25 @@
 //Библиотека (не официальная, но указана на сайте Юкассы) для взаимодействия с Юкассой:
-import { YooCheckout, ICreatePayment } from "@a2seven/yoo-checkout";
+import {
+  YooCheckout,
+  ICreatePayment,
+  ICreateRefund,
+} from "@a2seven/yoo-checkout";
 //Библиотека генерации uuid v4:
 import { v4 as uuidv4 } from "uuid";
 //Используем сервис модуля Ordering:
 import { orderService } from "../ordering/index.js";
+
+interface Item {
+  orderId: string;
+  id: string;
+  motorcycleId: string;
+  quantity: number;
+  priceAtOrder: number;
+}
+
+interface ICreateRefundWithMetadata extends ICreateRefund {
+  metadata?: Record<string, string>;
+}
 
 const checkout = new YooCheckout({
   shopId: process.env.YOOKASSA_SHOP_ID!,
@@ -15,7 +31,7 @@ export class PaymentService {
   async createPayment(
     orderId: string,
     amount: number,
-    items: any[],
+    items: Item[],
     customerEmail: string,
     description: string,
   ) {
@@ -23,7 +39,8 @@ export class PaymentService {
 
     const createPayload: ICreatePayment = {
       amount: {
-        value: (amount / 1000).toFixed(2), //Уменьшаем суммы, чтобы ЮKassa пропустила
+        value: (amount / 1000).toFixed(2),
+        //Уменьшаем суммы, чтобы ЮKassa пропустила, т.к. испольуем тестовый ЛК, а у него стоят лимиты по суммам
         currency: "RUB",
       },
       // payment_method_data: {
@@ -42,11 +59,11 @@ export class PaymentService {
       //Кассовый чек:
       receipt: {
         customer: { email: customerEmail },
-        items: items.map((item: any) => ({
-          description: item.motorcycle?.model || "Мотоцикл", // Название
+        items: items.map((item) => ({
+          description: item.motorcycleId || "Мотоцикл", // Название
           quantity: item.quantity.toFixed(2), // Кол-во (строкой)
           amount: {
-            value: ((item.priceAtOrder || item.price) / 1000).toFixed(2), // Цена за 1 шт, деленная на 1000 (т.к. лимиты тестовой юкассы ограничивают большие суммы)
+            value: (item.priceAtOrder / 1000).toFixed(2), // Цена за 1 шт, деленная на 1000 (т.к. лимиты тестовой юкассы ограничивают большие суммы)
             currency: "RUB",
           },
           vat_code: 1, //1 — без НДС (для тестов)
@@ -70,27 +87,33 @@ export class PaymentService {
     }
   }
 
-  //Осуществляем возврат:
-  async createRefund(paymentId: string, amount: number) {
+  //Инициируем возврат:
+  async initiateRefund(paymentId: string, amount: number, orderId: string) {
     const idempotenceKey = uuidv4();
 
     try {
-      const refund = await checkout.createRefund(
-        {
-          payment_id: paymentId,
-          amount: {
-            value: amount.toFixed(2),
-            currency: "RUB",
-          },
+      const refundPayload: ICreateRefundWithMetadata = {
+        payment_id: paymentId,
+        amount: {
+          value: amount.toFixed(2),
+          currency: "RUB",
         },
-        idempotenceKey,
-      );
+        metadata: {
+          orderId: orderId,
+        },
+      };
+      const refund = await checkout.createRefund(refundPayload, idempotenceKey);
 
       return refund;
     } catch (error) {
       console.error("Ошибка возврата:", error);
       throw error;
     }
+  }
+
+  //Осуществляем возврат остатков и изменение статуса заказа:
+  async finishRefundOrCancel(orderId: string) {
+    return orderService.cancelUserOrder(orderId);
   }
 
   //Изменяем статус заказа на PAID и списываем товар со склада (после успешной оплаты):

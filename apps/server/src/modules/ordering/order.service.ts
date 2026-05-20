@@ -107,7 +107,7 @@ export class OrderService {
         order.id,
         totalPrice,
         order.items, //Передаем товары
-        user?.email || "test@test.ru", //Передаем email юзера
+        user?.email || "test@example.com", //Передаем email юзера
         `Оплата заказа №${order.orderNumber}`,
       );
 
@@ -232,40 +232,108 @@ export class OrderService {
   }
 
   //Убрать товар из зарезервированного (при отмене заказа), а также сменить статус:
-  async cancelUserOrder(orderId: string, order: OrderWithItems) {
+  // async cancelUserOrder(orderId: string, order: OrderWithItems) {
+  //   //Транзакция (смена статуса + возврат резерва на склад):
+  //   return await prisma.$transaction(async (tx) => {
+  //     // Меняем статус заказа:
+  //     const updated = await tx.order.update({
+  //       where: { id: orderId },
+  //       data: { status: "CANCELED", paymentStatus: "canceled" },
+  //     });
+
+  //     //Возвращаем товар в доступные остатки (уменьшаем резерв):
+  //     for (const item of order.items) {
+  //       await tx.stock.update({
+  //         where: {
+  //           motorcycleId_warehouseId: {
+  //             motorcycleId: item.motorcycleId,
+  //             warehouseId: order.warehouseId,
+  //           },
+  //         },
+  //         data: {
+  //           // Если заказ был PAID, значит quantity уже было списано (в вебхуке); если заказ был PENDING, значит списан только reserved:
+  //           ...(order.status === "PAID"
+  //             ? { quantity: { increment: item.quantity } }
+  //             : { reserved: { decrement: item.quantity } }),
+  //         },
+  //       });
+  //     }
+
+  //     return updated;
+  //   });
+  // }
+
+  async cancelUserOrder(orderId: string) {
     //Транзакция (смена статуса + возврат резерва на склад):
     return await prisma.$transaction(async (tx) => {
-      // Меняем статус заказа:
-      const updated = await tx.order.update({
+      //Находим заказ, чтобы узнать его текущий статус:
+      const currentOrder = await tx.order.findUnique({
         where: { id: orderId },
-        data: { status: "CANCELED", paymentStatus: "canceled" },
+        include: { items: true },
       });
 
+      if (!currentOrder) {
+        throw new Error(`Заказ с order.id "${orderId}" не найден`);
+      }
+
+      // Идемпотентность: если он уже отменен или возвращен:
+      if (currentOrder.status === "CANCELED") {
+        return currentOrder;
+      }
+
+      //2.Определяем, как менять данные на складе, опираясь на текущий статус:
+      //Если заказ был PAID — восстанавливаем физическое количество (quantity).
+      //Если заказ был PENDING — убираем бронь (reserved):
+      const isPaid = currentOrder.status === "PAID";
+
       //Возвращаем товар в доступные остатки (уменьшаем резерв):
-      for (const item of order.items) {
+      for (const item of currentOrder.items) {
         await tx.stock.update({
           where: {
             motorcycleId_warehouseId: {
               motorcycleId: item.motorcycleId,
-              warehouseId: order.warehouseId,
+              warehouseId: currentOrder.warehouseId,
             },
           },
-          data: {
-            // Если заказ был PAID, значит quantity уже было списано (в вебхуке); если заказ был PENDING, значит списан только reserved:
-            ...(order.status === "PAID"
-              ? { quantity: { increment: item.quantity } }
-              : { reserved: { decrement: item.quantity } }),
-          },
+          data: isPaid
+            ? { quantity: { increment: item.quantity } }
+            : { reserved: { decrement: item.quantity } },
+          // Если заказ был PAID, значит quantity уже было списано (в вебхуке); если заказ был PENDING, значит списан только reserved:
         });
       }
 
-      return updated;
+      //Меняем статус самого заказа:
+      const updatedOrder = await tx.order.update({
+        where: { id: orderId },
+        data: {
+          status: "CANCELED",
+          paymentStatus: isPaid ? "refunded" : "canceled",
+        },
+        include: { items: true },
+      });
+
+      return updatedOrder;
     });
   }
 
   //Убрать товар из зарезервированного и остатков (при оплате заказа) (тестовый эндпоинт), а также сменить статус:
   async confirmUserOrder(orderId: string) {
     return await prisma.$transaction(async (tx) => {
+      //1.Смотрим текущий статус оплаты:
+      const currentOrder = await tx.order.findUnique({
+        where: { id: orderId },
+        select: { paymentStatus: true },
+      });
+
+      if (!currentOrder) {
+        throw new Error(`Заказ ${orderId} не найден`);
+      }
+
+      //2.Идемпотентность: если заказ уже оплачен, то помечаем флагом:
+      if (currentOrder.paymentStatus === "succeeded") {
+        return { alreadyProcessed: true, order: null };
+      }
+
       //Обновляем статус заказа:
       const order = await tx.order.update({
         where: { id: orderId },
@@ -289,7 +357,7 @@ export class OrderService {
         });
       }
 
-      return order;
+      return { alreadyProcessed: false, order };
     });
   }
 }

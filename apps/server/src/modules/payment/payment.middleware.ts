@@ -19,13 +19,13 @@ export const ipFilterMiddleware = (
   const cleanIp = requesterIp.replace(/^.*:/, "");
 
   //2) В режиме разработки разрешаем локальные запросы для тестов через Postman:
-  if (
-    process.env.NODE_ENV === "development" &&
-    (cleanIp === "127.0.0.1" || cleanIp === "localhost")
-  ) {
-    console.log("⚠️ [Webhook] Пропущен локальный запрос (Dev Mode)");
-    return next();
-  }
+  // if (
+  //   process.env.NODE_ENV === "development" &&
+  //   (cleanIp === "127.0.0.1" || cleanIp === "localhost")
+  // ) {
+  //   console.log("⚠️ [Webhook] Пропущен локальный запрос (Dev Mode)");
+  //   return next();
+  // }
 
   //3) Проверка соответствия IP диапазонам ответов от ЮKassa:
   const allowedIps = process.env.YOOKASSA_IPS

@@ -115,21 +115,43 @@ export const cancelOrder = catchAsync(
       );
     }
 
-    //Логика возврата денег через ЮKassа (если заказ оплачен, инициируем возврат перед транзакцией в БД):
+    //А) Логика для оплаченного заказа (возврат денег через ЮKassа):
     if (order.paymentStatus === "succeeded" && order.paymentId) {
       try {
         const refundAmount = order.totalPrice / 1000; //Используем ту же логику /1000, что и при оплате, чтобы суммы совпали
 
-        await paymentService.createRefund(order.paymentId, refundAmount);
+        await paymentService.initiateRefund(
+          order.paymentId,
+          refundAmount,
+          orderId,
+        );
         console.log(`Возврат средств инициирован для заказа: ${order.id}`);
+        return res.json({
+          message: "Запрос на отмену и возврат средств отправлен в банк",
+        });
       } catch (refundError) {
         console.error("Ошибка при возврате в ЮKassa:", refundError);
         throw new AppError(500, "Ошибка при оформлении возврата средств");
       }
     }
 
-    //Транзакция (отмена + возврат резерва на склад):
-    const canceledOrder = await orderService.cancelUserOrder(orderId, order);
+    //Б) Логика для неоплаченного заказа:
+    if (!order.paymentId) {
+      throw new AppError(
+        400,
+        "У данного заказа отсутствует идентификатор платежа",
+      );
+    }
+    const canceledOrder = await orderService.cancelUserOrder(order.id);
+
+    //Обновляем Elastic, так как снялась бронь (reserved):
+    try {
+      for (const item of canceledOrder.items) {
+        await searchService.updateStockInElastic(item.motorcycleId);
+      }
+    } catch (error) {
+      console.error("Ошибка Elastic при отмене:", error);
+    }
 
     res.json(canceledOrder);
   },

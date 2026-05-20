@@ -2,7 +2,7 @@ import { Router } from "express";
 //Основной контроллер модуля Payment:
 import * as paymentController from "./payment.controller.js";
 //Middleware:
-import { ipFilterMiddleware } from "./payment.middleware.js"; //Фильтрация IP-адресов, с которых может приходить запрос
+import { ipFilterMiddleware } from "./payment.middleware.js"; //Фильтрация IP-адресов, с которых может приходить запрос от ЮКассы
 
 const router = Router();
 
