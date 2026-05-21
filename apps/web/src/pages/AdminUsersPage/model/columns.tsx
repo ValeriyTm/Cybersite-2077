@@ -61,8 +61,7 @@ export const getUserColumns = (
             {!isSelf && (
               <button
                 type="button"
-                //@ts-ignore: 
-                cursor="pointer"
+                style={{ cursor: 'pointer' }}
                 title={`Удалить пользователя ${row.original.email}`}
                 className={`${styles.deleteBtn}`}
                 onClick={() => {

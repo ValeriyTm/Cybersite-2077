@@ -847,6 +847,101 @@ export type ChangeStatusOfTicketAdminParamsArgs =
 export type ChangeStatusOfTicketAdminBodyArgs =
   ChangeStatusOfTicketAdminInput["body"];
 
+//----------------------------13.19) Схема для создания новости:-------------------------------------//
+export const CreateNewsSchema = z.object({
+  body: z.object({
+    title: z.string().min(1).max(50), //Заголовок новости
+    excerpt: z.string().min(1).max(100), //Краткое превью
+    content: z.any(),
+    status: z.preprocess(
+      //Если с фронтенда придет пустая строка, то превратим её в undefined:
+      (val) => (val === "" ? undefined : val),
+      z.enum(["DRAFT"]),
+    ),
+    tags: z
+      .array(
+        z
+          .string()
+          .min(1, { message: "tag не должен быть пустой строкой" })
+          .max(36, "Максимум 36 символов для tag"),
+      )
+      .optional(),
+  }),
+});
+
+type CreateNewsInput = z.infer<typeof CreateNewsSchema>;
+//Чистый тип для сервиса:
+export type CreateNewsArgs = CreateNewsInput["body"];
+
+//----------------------------13.20) Схема для обновления новости:-------------------------------------//
+export const UpdateNewsSchema = z.object({
+  body: z.object({
+    title: z.string().min(1).max(50), //Заголовок новости
+    excerpt: z.string().min(1).max(100), //Краткое превью
+    content: z.any(),
+    status: z.preprocess(
+      //Если с фронтенда придет пустая строка, то превратим её в undefined:
+      (val) => (val === "" ? undefined : val),
+      z.enum(["DRAFT"]),
+    ),
+    tags: z
+      .array(
+        z
+          .string()
+          .min(1, { message: "tag не должен быть пустой строкой" })
+          .max(36, "Максимум 36 символов для tag"),
+      )
+      .optional(),
+  }),
+  params: z.object({
+    id: z
+      .string()
+      .min(1, "id новости обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+
+type UpdateNewsInput = z.infer<typeof UpdateNewsSchema>;
+//Чистый тип для сервиса:
+export type UpdateNewsBodyArgs = UpdateNewsInput["body"];
+export type UpdateNewsParamsArgs = UpdateNewsInput["params"];
+
+//----------------------------13.21) Схема для удаления новости:-------------------------------------//
+export const DeleteNewsSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .min(1, "id новости обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+
+type DeleteNewsInput = z.infer<typeof DeleteNewsSchema>;
+//Чистый тип для сервиса:
+export type DeleteNewsArgs = DeleteNewsInput["params"];
+
+//----------------------------13.22) Схема для обновления статуса новости:-------------------------------------//
+export const UpdateStatusNewsSchema = z.object({
+  body: z.object({
+    status: z.preprocess(
+      //Если с фронтенда придет пустая строка, то превратим её в undefined:
+      (val) => (val === "" ? undefined : val),
+      z.enum(["DRAFT", "PUBLISHED"]),
+    ),
+  }),
+  params: z.object({
+    id: z
+      .string()
+      .min(1, "id новости обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+
+type UpdateStatusNewsInput = z.infer<typeof UpdateStatusNewsSchema>;
+//Чистый тип для сервиса:
+export type UpdateStatusNewsBodyArgs = UpdateStatusNewsInput["body"];
+export type UpdateStatusNewsParamsArgs = UpdateStatusNewsInput["params"];
+
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------4) Модуль Traparamsing-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////

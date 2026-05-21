@@ -1,2 +1,2 @@
 //---------------Вход в модуль Content----------//
-export { NewsModel } from "./news.model.js";
+export { newsService } from "./news.service.js";

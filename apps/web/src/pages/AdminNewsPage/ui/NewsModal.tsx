@@ -4,23 +4,44 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 //Иконки:
 import { FaTrash, FaMotorcycle, FaAlignLeft } from 'react-icons/fa';
+//Типы:
+import type { NewsFromServer } from '@/entities/admin/types/types';
 //Стили:
 import styles from './AdminNewsPage.module.scss';
 
-export const NewsModal = ({ news, onClose, onSubmit }: any) => {
-  const { register, handleSubmit } = useForm({
+interface NewsModalProps {
+  news: NewsFromServer;
+  onClose: () => void;
+  onSubmit: (formData: FormData) => void;
+}
+
+//Структура полей формы:
+interface NewsFormFields {
+  title: string;
+  excerpt: string;
+  status: NewsStatus;
+  tags?: string[];
+}
+
+enum NewsStatus {
+  "DRAFT",
+  "PUBLISHED"
+}
+
+export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
+  const { register, handleSubmit } = useForm<NewsFormFields>({
     defaultValues: news || { title: '', excerpt: '', status: 'DRAFT', tags: [] }
   });
 
   // Локальный стейт для блоков контента
-  const [blocks, setBlocks] = useState<any[]>(news?.content || []);
+  const [blocks, setBlocks] = useState<NewsFromServer['content'] | []>(news?.content || []);
   const [mainImage, setMainImage] = useState<File | null>(null);
 
   const addBlock = (type: 'text' | 'image' | 'motorcycle') => {
     setBlocks([...blocks, { type, value: '' }]);
   };
 
-  const updateBlock = (index: number, value: any) => {
+  const updateBlock = (index: number, value: string) => {
     const newBlocks = [...blocks];
     newBlocks[index].value = value;
     setBlocks(newBlocks);
@@ -30,11 +51,11 @@ export const NewsModal = ({ news, onClose, onSubmit }: any) => {
     setBlocks(blocks.filter((_, i) => i !== index));
   };
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: NewsFormFields) => {
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('excerpt', data.excerpt);
-    formData.append('status', data.status);
+    formData.append('status', String(data.status));
     formData.append('content', JSON.stringify(blocks)); //Массив блоков в JSON
     if (mainImage) formData.append('mainImage', mainImage);
 

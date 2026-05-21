@@ -8,6 +8,8 @@ import { newsColumns } from '../model/columns';
 import { $api } from '@/shared/api';
 //Компоненты:
 import { NewsModal } from './NewsModal';
+//Типы:
+import type { NewsFromServer } from '@/entities/admin/types/types';
 //Уведомления:
 import toast from 'react-hot-toast';
 //Стили:
@@ -15,19 +17,18 @@ import styles from './AdminNewsPage.module.scss';
 
 export const AdminNewsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingNews, setEditingNews] = useState(null);
+  const [editingNews, setEditingNews] = useState<NewsFromServer | null>(null);
   const queryClient = useQueryClient();
 
   const { data: news } = useQuery({
     queryKey: ['admin-news'],
-    queryFn: () => $api.get('/admin/news').then(res => res.data)
+    queryFn: () => $api.get<NewsFromServer[]>('/admin/news').then(res => res.data)
   });
 
   const saveMutation = useMutation({
     mutationFn: (formData: FormData) =>
 
       editingNews
-        //@ts-ignore:
         ? $api.patch(`/admin/news/${editingNews._id}`, formData)
         : $api.post('/admin/news', formData),
     onSuccess: () => {
@@ -87,7 +88,7 @@ export const AdminNewsPage = () => {
 
       {isModalOpen && (
         <NewsModal
-          news={editingNews}
+          news={editingNews as NewsFromServer}
           onClose={() => setIsModalOpen(false)}
           onSubmit={(formData: FormData) => saveMutation.mutate(formData)}
         />

@@ -13,8 +13,10 @@ import {
   ChangeStatusOfTicketAdminSchema,
   CreateBrandAdminSchema,
   createMotorcycleAdminSchema,
+  CreateNewsSchema,
   DeleteBrandAdminSchema,
   DeleteMotoAdminSchema,
+  DeleteNewsSchema,
   GetBrandsAdminSchema,
   GetMotosAdminSchema,
   GetOrdersAdminSchema,
@@ -26,6 +28,8 @@ import {
   SearchBrandsAdminSchema,
   UpdateBrandAdminSchema,
   updateMotorcycleAdminSchema,
+  UpdateNewsSchema,
+  UpdateStatusNewsSchema,
   UpdateStocksAdminSchema,
 } from "@repo/validation";
 
@@ -231,6 +235,7 @@ router.post(
   "/news",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
   productUpload.single("mainImage"),
+  validate(CreateNewsSchema),
   adminController.createNews,
 );
 
@@ -239,6 +244,7 @@ router.patch(
   "/news/:id",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
   productUpload.single("mainImage"),
+  validate(UpdateNewsSchema),
   adminController.updateNews,
 );
 
@@ -246,6 +252,7 @@ router.patch(
 router.delete(
   "/news/:id",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
+  validate(DeleteNewsSchema),
   adminController.deleteNews,
 );
 
@@ -253,6 +260,7 @@ router.delete(
 router.patch(
   "/news/:id/status",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
+  validate(UpdateStatusNewsSchema),
   adminController.updateNewsStatus,
 );
 

@@ -2,15 +2,17 @@
 import { type ColumnDef } from '@tanstack/react-table';
 //Работа с датами:
 import { format } from 'date-fns';
+//Типы:
+import type { NewsFromServer } from '@/entities/admin/types/types';
 //Иконки:
 import { FaEdit, FaTrash } from 'react-icons/fa';
 //Стили:
 import styles from './columns.module.scss';
 
 
-export const newsColumns = (onEdit: (item: any) => void,
+export const newsColumns = (onEdit: (item: NewsFromServer) => void,
   onDelete: (id: string) => void,
-  onStatusUpdate: (id: string, status: string) => void): ColumnDef<any>[] => [
+  onStatusUpdate: (id: string, status: string) => void): ColumnDef<NewsFromServer>[] => [
     {
       accessorKey: 'title',
       header: 'Заголовок',
@@ -55,8 +57,7 @@ export const newsColumns = (onEdit: (item: any) => void,
         <div style={{ display: 'flex', gap: '15px', color: '#f39c12' }}>
           <button
             type="button"
-            //@ts-ignore:
-            cursor="pointer"
+            style={{ cursor: 'pointer' }}
             title={`Редактировать новость ${row.original.title}`}
             className={`${styles.editBtn}`}
             onClick={() => onEdit(row.original)}
@@ -66,8 +67,7 @@ export const newsColumns = (onEdit: (item: any) => void,
 
           <button
             type="button"
-            //@ts-ignore:
-            cursor="pointer"
+            style={{ cursor: 'pointer' }}
             title={`Удалить новость ${row.original.title}`}
             className={`${styles.deleteBtn}`}
             onClick={(e) => {

@@ -27,8 +27,7 @@ export const getMotoColumns = (
             <button
               type="button"
               title={`Скопировать id товара для модели ${row.original.model}`}
-              //@ts-ignore:
-              cursor="pointer"
+              style={{ cursor: 'pointer' }}
               className={styles.copyBtn}
               onClick={(e) => {
                 e.stopPropagation();
@@ -70,8 +69,7 @@ export const getMotoColumns = (
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
             <button
               type="button"
-              //@ts-ignore:
-              cursor="pointer"
+              style={{ cursor: 'pointer' }}
               title={`Редактировать модель ${row.original.model}`}
               className={`${styles.editBtn}`}
               onClick={() => onEdit(row.original)}
@@ -82,8 +80,7 @@ export const getMotoColumns = (
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
             <button
               type="button"
-              //@ts-ignore:
-              cursor="pointer"
+              style={{ cursor: 'pointer' }}
               title={`Удалить модель ${row.original.model}`}
               className={`${styles.deleteBtn}`}
               onClick={() => onDelete(row.original.id)}
@@ -103,8 +100,7 @@ export const getMotoColumns = (
             {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
               <button
                 type="button"
-                //@ts-ignore:
-                cursor="pointer"
+                style={{ cursor: 'pointer' }}
                 title={`Редактировать остатки для модели ${row.original.model}`}
                 className={`${styles.stockBtn}`}
                 onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)}

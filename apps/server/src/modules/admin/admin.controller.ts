@@ -9,8 +9,10 @@ import {
   ChangeStatusOfTicketAdminBodyArgs,
   ChangeStatusOfTicketAdminParamsArgs,
   CreateBrandAdminArgs,
+  CreateNewsArgs,
   DeleteBrandAdminParamArgs,
   DeleteMotoAdminArgs,
+  DeleteNewsArgs,
   GetOrdersAdminArgs,
   GetPersonalDiscountsArgs,
   GetReportsAdminArgs,
@@ -26,6 +28,10 @@ import {
   UpdateBrandAdminParamArgs,
   updateMotoAdminBodyArgs,
   updateMotoAdminParamsArgs,
+  UpdateNewsBodyArgs,
+  UpdateNewsParamsArgs,
+  UpdateStatusNewsBodyArgs,
+  UpdateStatusNewsParamsArgs,
 } from "@repo/validation";
 import { Statistics } from "../reports/types.js";
 //Главный сервис модуля Admin:
@@ -44,10 +50,16 @@ import { catalogService } from "../catalog/index.js";
 import { orderService } from "../ordering/index.js";
 //Главный сервис модуля Discount:
 import { discountService } from "../discount/index.js";
+//Главный сервис модуля Content:
+import { newsService } from "../content/index.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
+
+type ContentFull = UpdateNewsBodyArgs & {
+  mainImage?: string;
+};
 
 //---------------------Работа с брендами:-------------
 //Метод для получения списка брендов:
@@ -477,47 +489,47 @@ export const updateTicketStatus = catchAsync(
 //---------------------Контент:-------------
 //Получить список новостей:
 export const getNews = catchAsync(async (_req: AuthRequest, res: Response) => {
-  const news = await adminService.getNews();
+  const news = await newsService.getNews();
   res.json(news);
 });
 
 //Создать новость:
 export const createNews = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { title, excerpt, content, status, tags } = req.body;
+    const { title, excerpt, content, status, tags } =
+      req.body as CreateNewsArgs;
     const userId = req.user?.id;
     const file = req.file;
 
-    const news = await adminService.createNews(
+    const news = await newsService.createNews({
       title,
       excerpt,
       content,
       status,
-      tags,
       file,
+      tags,
       userId,
-    );
+    });
 
     res.status(201).json(news);
   },
 );
 
-//Обновить новость:
+//Изменить новость:
 export const updateNews = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { content, ...updateData } = req.body;
+    const { id } = req.params as UpdateNewsParamsArgs;
+    const { content, ...updateData } = req.body as UpdateNewsBodyArgs;
     const file = req.file;
 
-    const preparedData = {
+    const preparedData: ContentFull = {
       ...updateData,
       content: typeof content === "string" ? JSON.parse(content) : content,
     };
 
     if (file) preparedData.mainImage = file.filename;
 
-    //@ts-ignore:
-    const updated = await adminService.updateNews(id, preparedData);
+    const updated = await newsService.updateNews(id, preparedData);
     res.json(updated);
   },
 );
@@ -525,9 +537,9 @@ export const updateNews = catchAsync(
 //Удалить новость:
 export const deleteNews = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const id = req.params.id;
-    //@ts-ignore:
-    await adminService.deleteNews(id);
+    const { id } = req.params as DeleteNewsArgs;
+
+    await newsService.deleteNews(id);
     res.json({ message: "Новость удалена" });
   },
 );
@@ -535,11 +547,10 @@ export const deleteNews = catchAsync(
 //Изменить статус новости:
 export const updateNewsStatus = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { status } = req.body;
+    const { id } = req.params as UpdateStatusNewsParamsArgs;
+    const { status } = req.body as UpdateStatusNewsBodyArgs;
 
-    //@ts-ignore:
-    const updatedNews = await adminService.updateNewsStatus(id, status);
+    const updatedNews = await newsService.updateNewsStatus(id, status);
 
     if (!updatedNews) {
       throw new AppError(404, "Новость не найдена");
