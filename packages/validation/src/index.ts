@@ -315,7 +315,7 @@ export const GetMotorcyclesQuerySchema = z.object({
 export type MotorcyclesQueryInput = z.infer<typeof GetMotorcyclesQuerySchema>;
 export type MotorcyclesServiceArgs = MotorcyclesQueryInput["query"];
 
-//----------------------------2.3) Схема для получения конкретного мотоцикла:--------------------------------------------//
+//----------------------------2.3) Схема для получения конкретного мотоцикла по slug:--------------------------------------------//
 export const GetMotoBySlugSchema = z.object({
   params: z.object({
     brandSlug: z.string().min(1, "Бренд обязателен"),
@@ -344,6 +344,18 @@ export const GetSuggestionsQuerySchema = z.object({
 type SuggestionsInput = z.infer<typeof GetSuggestionsQuerySchema>;
 //Чистый тип для сервиса:
 export type GetSuggestionsArgs = SuggestionsInput["query"];
+
+//----------------------------2.6) Схема для получения конкретного мотоцикла по id:--------------------------------------------//
+export const GetMotoByIdSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .min(1, "id мотоцикла обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+export type MotoByIdInput = z.infer<typeof GetMotoByIdSchema>;
+export type MotoByIdServiceArgs = MotoByIdInput["params"];
 
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------3) Модуль Admin-------------------------------------------------------////
@@ -1181,3 +1193,18 @@ export type createTicketServiceArgs = createTicketInput["body"];
 
 //Плоская (без body) схема для фронтенда:
 export const createTicketFrontendSchema = createTicketSchema.shape.body;
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------10) Модуль Content-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------10.1) Схема для получения конкретной новости:-------------------------------------//
+export const GetNewsSchema = z.object({
+  params: z.object({
+    slug: z
+      .string()
+      .min(1, "slug мотоцикла обязателен")
+      .max(50, "Максимум 50 символов для slug"),
+  }),
+});
+export type GetNewsInput = z.infer<typeof GetNewsSchema>;
+export type GetNewsServiceArgs = GetNewsInput["params"];

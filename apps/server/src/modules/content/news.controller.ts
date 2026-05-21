@@ -6,20 +6,21 @@ import { newsService } from "./news.service.js";
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
+import { GetNewsServiceArgs } from "@repo/validation";
 
 //Получить все опубликованные новости:
 export const getAllPublished = catchAsync(
   async (_req: Request, res: Response) => {
     const news = await newsService.getAllPublished();
-    console.log("hoho");
+
     res.json(news);
   },
 );
 
 //Получить конкретную новость:
 export const getBySlug = catchAsync(async (req: Request, res: Response) => {
-  const { slug } = req.params;
-  //@ts-ignore:
+  const { slug } = req.params as GetNewsServiceArgs;
+
   const article = await newsService.getBySlug(slug);
 
   if (!article) {

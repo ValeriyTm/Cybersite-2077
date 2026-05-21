@@ -38,18 +38,28 @@ import { excelService } from "../reports/index.js";
 import { searchService } from "../catalog/index.js";
 //Главный сервис модуля Support:
 import { supportService } from "../support/index.js";
+//Главный сервис модуля Catalog:
+import { catalogService } from "../catalog/index.js";
+//Главный сервис модуля Ordering:
+import { orderService } from "../ordering/index.js";
+//Главный сервис модуля Discount:
+import { discountService } from "../discount/index.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 
 //---------------------Работа с брендами:-------------
-// Универсальный метод для получения списка брендов:
+//Метод для получения списка брендов:
 export const getBrands = catchAsync(async (req: AuthRequest, res: Response) => {
   const { page, limit, search = "" } = req.query as unknown as BrandsAdminArgs;
   const skip = (Number(page) - 1) * Number(limit);
 
-  const { brands, total } = await adminService.getBrands(search, skip, limit);
+  const { brands, total } = await catalogService.getBrandsAdmin(
+    search,
+    skip,
+    limit,
+  );
 
   res.json({
     data: brands,
@@ -68,7 +78,7 @@ export const deleteBrand = catchAsync(
 
     //Находим все связанные модели мотоциклов перед удалением, а также производим удаление:
     //@ts-ignore:
-    const affectedMotos = await adminService.deleteBrand(id);
+    const affectedMotos = await catalogService.deleteBrand(id);
 
     //После удаления бренда и байков (каскадно) — чистим индекс Elastic:
     const deletePromises = affectedMotos.map((m) =>
@@ -84,7 +94,7 @@ export const deleteBrand = catchAsync(
 export const createBrand = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { name, country, slug } = req.body as CreateBrandAdminArgs;
-    const brand = await adminService.createBrand(name, country, slug);
+    const brand = await catalogService.createBrand(name, country, slug);
 
     // При создании нового бренда мотоциклов еще нет,
     // поэтому синхронизация не требуется, пока не создадут первый байк.
@@ -98,7 +108,7 @@ export const updateBrand = catchAsync(
     const { id } = req.params as UpdateBrandAdminParamArgs;
     const { name, country, slug } = req.body as UpdateBrandAdminBodyArgs;
 
-    const brands = await adminService.updateBrand(id, name, country, slug);
+    const brands = await catalogService.updateBrand(id, name, country, slug);
 
     //Если изменился slug или name — синхронизируем все байки этого бренда в Elastic:
     if (
@@ -126,7 +136,7 @@ export const searchBrands = catchAsync(
       return res.json([]);
     }
 
-    const brands = await adminService.searchBrands(query);
+    const brands = await catalogService.searchBrands(query);
 
     res.json(brands);
   },
@@ -140,8 +150,6 @@ export const getMotorcycles = catchAsync(
       limit = 10,
       search = "",
     } = req.query as unknown as MotosAdminArgs;
-    const p = Number(page);
-    const l = Number(limit);
     const searchQuery = String(search).trim();
 
     let ids: string[] = [];
@@ -151,8 +159,8 @@ export const getMotorcycles = catchAsync(
       //Elastic должен вернуть ID именно для текущей страницы:
       const esResult = await searchService.searchMotorcyclesAdmin(
         searchQuery,
-        p,
-        l,
+        page,
+        limit,
       );
       ids = esResult.ids;
       totalCount = esResult.total;
@@ -160,12 +168,12 @@ export const getMotorcycles = catchAsync(
       if (ids.length === 0) {
         return res.json({
           data: [],
-          meta: { total: 0, page: p, lastPage: 0 },
+          meta: { total: 0, page, lastPage: 0 },
         });
       }
 
       //Prisma тянет данные только по тем ID, что выдал Elastic для этой страницы:
-      const motorcycles = await adminService.getMotorcycles(ids);
+      const motorcycles = await catalogService.getMotorcycles(ids);
 
       //Сортируем результат Prisma в том порядке, в котором их вернул Elastic (по релевантности):
       const sortedMotorcycles = ids
@@ -176,8 +184,8 @@ export const getMotorcycles = catchAsync(
         data: sortedMotorcycles,
         meta: {
           total: totalCount,
-          page: p,
-          lastPage: Math.ceil(totalCount / l),
+          page,
+          lastPage: Math.ceil(totalCount / limit),
         },
       });
     }
@@ -190,7 +198,7 @@ export const createMotorcycle = catchAsync(
     const data = req.body;
     const files = req.files as Express.Multer.File[];
 
-    const motorcycle = await adminService.createMotorcycle(data, files);
+    const motorcycle = await catalogService.createMotorcycle(data, files);
 
     //Обновление данных в Elasticsearch:
     await searchService.indexMotorcycle(motorcycle.id);
@@ -206,7 +214,7 @@ export const updateMotorcycle = catchAsync(
     const { id } = req.params as unknown as updateMotoAdminParamsArgs;
     const files = req.files as Express.Multer.File[];
 
-    const motorcycle = await adminService.updateMotorcycle(data, files, id);
+    const motorcycle = await catalogService.updateMotorcycle(data, files, id);
 
     //Обновляем данные в Elastic:
     await searchService.indexMotorcycle(id);
@@ -218,7 +226,7 @@ export const updateMotorcycle = catchAsync(
 export const deleteMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { id } = req.params as unknown as DeleteMotoAdminArgs;
-    await adminService.deleteMotorcycle(id);
+    await catalogService.deleteMotorcycle(id);
 
     //Удаляем из Elastic
     await searchService.deleteFromIndex(id);
@@ -263,7 +271,7 @@ export const getOrders = catchAsync(async (req: AuthRequest, res: Response) => {
   const skip = (page - 1) * limit;
   console.log("status: ", status);
 
-  const [orders, total] = await adminService.getOrders(
+  const [orders, total] = await orderService.getOrders(
     skip,
     limit,
     status,
@@ -286,7 +294,7 @@ export const updateOrderStatus = catchAsync(
     const { id } = req.params as unknown as ChangeOrderStatusAdminParamsArgs;
     const { status } = req.body as ChangeOrderStatusAdminBodyArgs;
 
-    const order = await adminService.updateOrderStatus(id, status);
+    const order = await orderService.updateOrderStatus(id, status);
 
     res.json(order);
   },
@@ -365,7 +373,7 @@ export const globalSearchSync = catchAsync(
 //Получаем промокоды:
 export const getPromoCodes = catchAsync(
   async (_req: AuthRequest, res: Response) => {
-    const promos = await adminService.getPromoCodes();
+    const promos = await discountService.getPromoCodes();
     res.json(promos);
   },
 );
@@ -375,7 +383,7 @@ export const getPersonalDiscounts = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { email } = req.query as GetPersonalDiscountsArgs;
 
-    const discounts = await adminService.getPersonalDiscounts(email);
+    const discounts = await discountService.getPersonalDiscounts(email);
 
     res.json(discounts);
   },

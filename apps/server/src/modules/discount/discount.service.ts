@@ -162,6 +162,33 @@ export class DiscountService {
       orderBy: { createdAt: "desc" },
     });
   }
+
+  //Получить все промокоды:
+  async getPromoCodes() {
+    return await prisma.promoCode.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+  }
+
+  //Получить персональные скидки:
+  async getPersonalDiscounts(email: string) {
+    return await prisma.personalDiscount.findMany({
+      where: email
+        ? {
+            user: {
+              email: { contains: String(email), mode: "insensitive" }, // Поиск без учета регистра
+            },
+          }
+        : {},
+      include: {
+        user: { select: { email: true } },
+        motorcycle: { select: { model: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
 }
 
 export const discountService = new DiscountService();

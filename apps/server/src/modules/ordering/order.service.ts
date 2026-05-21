@@ -271,6 +271,7 @@ export class OrderService {
   //   });
   // }
 
+  //Отменить заказ:
   async cancelUserOrder(orderId: string) {
     //Транзакция (смена статуса + возврат резерва на склад):
     return await prisma.$transaction(async (tx) => {
@@ -366,6 +367,51 @@ export class OrderService {
       }
 
       return { alreadyProcessed: false, order };
+    });
+  }
+
+  //Получить вообще все заказы:
+  async getOrders(
+    skip: number,
+    limit: number,
+    status?: string,
+    email?: string,
+  ) {
+    //Формируем фильтры:
+    const where: any = {};
+    if (status) where.status = status;
+    if (email) {
+      where.user = {
+        email: { contains: String(email), mode: "insensitive" },
+      };
+    }
+
+    return await Promise.all([
+      prisma.order.findMany({
+        where,
+        include: {
+          user: {
+            select: { name: true, email: true, phone: true },
+          },
+          items: {
+            include: {
+              motorcycle: { select: { model: true } },
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.order.count({ where }),
+    ]);
+  }
+
+  //Изменить статус заказа:
+  async updateOrderStatus(id: string, status: OrderStatus) {
+    return await prisma.order.update({
+      where: { id },
+      data: { status },
     });
   }
 }

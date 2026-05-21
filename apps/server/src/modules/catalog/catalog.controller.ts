@@ -6,11 +6,12 @@ import { catalogService } from "./catalog.service.js";
 import { searchService } from "./search.service.js";
 import { sitemapService } from "./sitemap.service.js";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
-// import { discountLogic } from "../discount/index.js";
+import { discountLogic } from "../discount/index.js";
 //Схемы валидации Zod:
 import {
   GetBrandsArgs,
   GetSuggestionsArgs,
+  MotoByIdServiceArgs,
   MotoBySlugServiceArgs,
   MotorcyclesServiceArgs,
   RelatedBySlugServiceArgs,
@@ -19,8 +20,8 @@ import {
 import { MotorcycleFullServer } from "@repo/types";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
-//Используем свой класс для выбрасывания ошибок:
-// import { AppError } from "../../shared/utils/app-error.js";
+// Используем свой класс для выбрасывания ошибок:
+import { AppError } from "../../shared/utils/app-error.js";
 
 //Получение главных категорий:
 export const getCategories = catchAsync(
@@ -92,6 +93,36 @@ export const getMotorcycle = catchAsync(
     }
 
     res.status(200).json(motorcycle);
+  },
+);
+
+//Получение информации о конкретном мотоцикле по его id:
+export const getMotorcycleById = catchAsync(
+  async (req: AuthRequest, res: Response) => {
+    const { id } = req.params as MotoByIdServiceArgs;
+    const userId = req.user.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
+
+    const motorcycle = await catalogService.getMotorcycleById(id);
+
+    if (!motorcycle) {
+      throw new AppError(404, "Мотоцикл не найден");
+    }
+
+    // Считаем общее доступное количество для фронтенда
+    const totalInStock = motorcycle.stocks.reduce(
+      (acc, s) => acc + (s.quantity - s.reserved),
+      0,
+    );
+
+    //Считаем скидку:
+    const discountData = await discountLogic.calculateFinalPrice(
+      motorcycle,
+      userId,
+    );
+
+    const result = { ...motorcycle, totalInStock, discountData };
+
+    res.json(result);
   },
 );
 
