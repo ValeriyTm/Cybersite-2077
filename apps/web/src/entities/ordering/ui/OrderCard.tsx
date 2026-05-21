@@ -11,19 +11,21 @@ import { $api, API_URL } from "@/shared/api";
 //Компоненты:
 import { ReviewModal } from "@/features/reviews";
 import { PaymentModal } from "@/shared/ui";
+//Типы:
+import type { Order, OrderItem } from "../types/types";
 //Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from "./OrderCard.module.scss";
 
-export const OrderCard = ({ order }: { order: any }) => {
+export const OrderCard = ({ order }: { order: Order }) => {
   //Определяем статус заказа:
   const isDelivered = order.status === "DELIVERED";
   const isCompleted = order.status === "COMPLETED";
   const canCancel = ["PENDING", "PAID"].includes(order.status);
   //Для реализации открытия модалки отзыва:
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<OrderItem | null>(null);
   //Состояние для pre-payment модалки:
   const [isModalOpen, setIsModalOpen] = useState(false);
   //Состояние для модалки отмены заказа:
@@ -80,7 +82,8 @@ export const OrderCard = ({ order }: { order: any }) => {
 
   //---------------Оставляем отзыв на заказ:-------------------------------//
   //Для реализации модалки отзыва:
-  const handleOpenReview = (item: any) => {
+  const handleOpenReview = (item: OrderItem) => {
+    console.log('item review: ', item);
     setSelectedItem(item);
     setIsReviewModalOpen(true);
   };
@@ -157,9 +160,9 @@ export const OrderCard = ({ order }: { order: any }) => {
 
         {/*Правая панель (товары):*/}
         <div className={styles.itemsList}>
-          {order.items.map((item: any) => {
-            const imageUrl = item.motorcycle.images?.[0]
-              ? `${API_URL}/static/motorcycles/${item.motorcycle.images?.[0]?.url}`
+          {order.items.map((item) => {
+            const imageUrl = Object.keys(item.motorcycle.images).length > 0
+              ? `${API_URL}/static/motorcycles/${item.motorcycle.images.find((img) => img.isMain)!.url}`
               : defaultMotoImage;
 
             return (
@@ -218,7 +221,6 @@ export const OrderCard = ({ order }: { order: any }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={() => {
-          // window.location.href = order.paymentUrl;
           window.open(order.paymentUrl, "_blank");
         }}
         totalPrice={order.totalPrice}

@@ -325,6 +325,14 @@ enum OrderStatus {
   COMPLETED //Подтверждено получение юзером
 }
 
+//Статус оплаты заказа:
+enum PaymentStatus {
+  pending
+  succeeded
+  canceled
+  refunded
+}
+
 //Заказы:
 model Order {
   id          String @id @default(uuid())
@@ -345,8 +353,8 @@ model Order {
   totalPrice Float // Сумма товаров + доставка
 
   // Данные о платежах:
-  paymentId     String? @unique //ID транзакции в системе ЮKassa (напр. "24b1...")
-  paymentStatus String? @default("pending") //pending, succeeded, canceled, refunded
+  paymentId     String?        @unique //ID транзакции в системе ЮKassa (напр. "24b1...")
+  paymentStatus PaymentStatus? @default(pending) //pending, succeeded, canceled, refunded
   paymentUrl    String? //Ссылка на оплату (на случай, если юзер закроет вкладку и захочет оплатить позже)
 
   // Связь со складом отгрузки (который определил сервер)

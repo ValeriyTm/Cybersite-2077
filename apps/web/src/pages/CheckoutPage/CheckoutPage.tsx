@@ -14,33 +14,60 @@ import { useEffect, useMemo, useState } from "react";
 import { useTradingStore } from "@/entities/trading";
 import { PaymentModal } from "@/shared/ui";
 import { DeliveryMapModal } from "@/features/ordering";
+//Типы:
+import type { Warehouse } from "@repo/database/generated/prisma/client";
+import type { MotorcycleCart } from "@/entities/catalog";
+import type { DeliveryResponse } from "@/entities/ordering/types/types";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
 import styles from "./CheckoutPage.module.scss";
 
+interface CreateOrderPayload {
+  items: {
+    id: string;
+    model: string;
+    price: number;
+    quantity: number;
+  }[];
+  address: string;
+  coords: { lat: number; lng: number } | null;
+  deliveryInfo: {
+    warehouse: {
+      id: string;
+      name: string;
+      city: string;
+      lat: number;
+      lng: number;
+    };
+    cost: number;
+    days: number;
+    estimatedDate: string;
+    distanceKm: number;
+  } | null
+  promoCode: string | null;
+  totalPrice: number;
+  shouldPay: boolean;
+}
+
 export const CheckoutPage = () => {
   const { cartItems, fetchCart } = useTradingStore();
   const [address, setAddress] = useState("");
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null,
-  );
-
-  //Состояние для pre-payment модалки:
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); //Состояние для pre-payment модалки:
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const { user } = useProfile();
-
   const { fetchActiveCount } = useOrderStore();
 
   //Информация о промокоде:
   const promoFromCart = location.state?.promo;
 
   //Отбираем только выбранные юзером в корзине товары:
-  const legalSelectedItems = useMemo(
+  const legalSelectedItems: MotorcycleCart[] = useMemo(
     () =>
       cartItems.filter(
         (item) =>
@@ -51,44 +78,18 @@ export const CheckoutPage = () => {
     [cartItems],
   );
 
+  console.log('legalSelectedItems: ', legalSelectedItems);
+
   //Стейт для хранения ответа от "/api/warehouse/calculate":
   const [deliveryInfo, setDeliveryInfo] = useState<{
-    warehouse: any;
+    warehouse: Warehouse;
     cost: number;
     days: number;
     estimatedDate: string;
     distanceKm: number;
   } | null>(null);
 
-  //Подставляем дефолтный адрес доставки из БД для юзера:
-  useEffect(() => {
-    //Проверяем, есть ли юзер, есть ли легальные товары и подгружены ли остатки:
-    const hasStockData = legalSelectedItems.every(
-      (item) => item.totalInStock !== undefined,
-    );
-
-    if (user?.defaultLat && legalSelectedItems.length > 0 && hasStockData) {
-      const savedCoords = { lat: user.defaultLat, lng: user.defaultLng };
-
-      setAddress(user.defaultAddress || "");
-      //@ts-ignore:
-      setCoords(savedCoords);
-
-      //Запускаем расчет только когда данные "прогреты":
-      calculateMutation.mutate({
-        lat: savedCoords.lat,
-        //@ts-ignore:
-        lng: savedCoords.lng,
-        items: legalSelectedItems.map((i) => ({
-          id: i.id,
-          quantity: i.quantity,
-        })),
-      });
-    }
-  }, [user, legalSelectedItems]); //Сработает, как только данные юзера загрузятся
-
-  //Карта:
-  const [isMapOpen, setIsMapOpen] = useState(false);
+  //Получаем склады с сервера:
   const { data: warehouses } = useQuery({
     queryKey: ["warehouses"],
     queryFn: () => $api.get("/warehouse").then((res) => res.data),
@@ -97,10 +98,12 @@ export const CheckoutPage = () => {
 
   //Создаем мутацию для расчета доставки:
   const calculateMutation = useMutation({
-    mutationFn: async (data: { lat: number; lng: number; items: any[] }) => {
-      return $api.post("/warehouse/calculate", data).then((res) => res.data);
+    mutationFn: async (data: { lat: number; lng: number; items: { id: string; quantity: number }[] }) => {
+      return $api.post<DeliveryResponse>("/warehouse/calculate", data).then((res) => res.data);
     },
     onSuccess: (data) => {
+      console.log("Данные расчета доставки с сервера:", data);
+
       //Сохраняем данные от бэкенда в стейт страницы:
       setDeliveryInfo(data);
     },
@@ -111,8 +114,9 @@ export const CheckoutPage = () => {
     },
   });
 
+
   const createOrderMutation = useMutation({
-    mutationFn: (orderData: any) => $api.post("/orders", orderData),
+    mutationFn: (orderData: CreateOrderPayload) => $api.post("/orders", orderData),
     onSuccess: (res, variables) => {
       // variables — это данные, которые мы передали в mutate()
 
@@ -135,12 +139,43 @@ export const CheckoutPage = () => {
     onError: () => toast.error("Ошибка при создании заказа"),
   });
 
+  // Флаг готовности остатков по товарам
+  const hasStockData = useMemo(() => {
+    return legalSelectedItems.length > 0 && legalSelectedItems.every(
+      (item) => item.totalInStock != undefined,
+    );
+  }, [legalSelectedItems]);
+
+  //Подставляем дефолтный адрес доставки из БД для юзера:
+  useEffect(() => {
+    //Если адрес уже установлен вручную или через этот же хук — выходим, чтобы не зацикливать:
+    if (address || coords) return;
+
+    if (user?.defaultLat && hasStockData) {
+      const savedCoords = { lat: user.defaultLat, lng: user.defaultLng! };
+
+      setTimeout(() => {
+        setAddress(user.defaultAddress || "");
+        setCoords(savedCoords);
+
+        calculateMutation.mutate({
+          lat: savedCoords.lat,
+          lng: savedCoords.lng!,
+          items: legalSelectedItems.map((i) => ({
+            id: i.id,
+            quantity: i.quantity,
+          })),
+        });
+      }, 0);
+    }
+  }, [user?.defaultLat, user?.defaultLng, user?.defaultAddress, hasStockData, address, coords, calculateMutation, legalSelectedItems]); //Сработает, как только данные юзера загрузятся
+
   //Если пользователь вручную ввел адрес /checkout, но у него в корзине только «нелегальные» товары или вообще ничего не выбрано, его нужно выкинуть обратно в корзину:
   useEffect(() => {
     if (legalSelectedItems.length === 0) {
       navigate("/cart");
     }
-  }, [legalSelectedItems, navigate]);
+  }, [legalSelectedItems.length, navigate]);
 
   const handleAddressSelect = (
     coords: { lat: number; lng: number },
@@ -275,7 +310,7 @@ export const CheckoutPage = () => {
                     <span>
                       {item.model} x {item.quantity} шт, {item.year} г
                     </span>
-                    {/*@ts-ignore: */}
+
                     <span>{(item.discountData.finalPrice * item.quantity).toLocaleString()} ₽</span>
                   </div>
                 ))}

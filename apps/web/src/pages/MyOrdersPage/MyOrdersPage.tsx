@@ -11,6 +11,7 @@ import { OrderCard } from "@/entities/ordering";
 import { SelectFilter } from "@/features/catalog-filter";
 //Стили:
 import styles from "./MyOrdersPage.module.scss";
+import type { Order } from "@/entities/ordering/types/types";
 
 
 export const MyOrdersPage = () => {
@@ -24,7 +25,7 @@ export const MyOrdersPage = () => {
     data: orders,
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<Order[]>({
     queryKey: ["my-orders", statusFilter],
     queryFn: () =>
       //Получаем список заказов юзера:
@@ -39,6 +40,7 @@ export const MyOrdersPage = () => {
     //Также обновлять, когда окно браузера снова становится активным:
     refetchOnWindowFocus: true,
   });
+
 
   if (isLoading) {
     return <div className={`${styles.infoState} ${styles.loading}`}>Загрузка ваших заказов... 🏍️</div>;
@@ -89,7 +91,7 @@ export const MyOrdersPage = () => {
 
         <div className={styles.list}>
           {orders && orders.length > 0 ? (
-            orders.map((order: any) => <OrderCard key={order.id} order={order} />)
+            orders.map((order) => <OrderCard key={order.id} order={order} />)
           ) : (
             <div className={styles.empty}>
               <p>У вас пока нет оформленных заказов.</p>

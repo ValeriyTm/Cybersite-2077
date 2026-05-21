@@ -137,6 +137,12 @@
 
   @include mobile {
     flex-direction: column;
+    padding-bottom: 10px;
+
+    &:not(:last-child) {
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--auxiliary-text-color);
+    }
 
     h4 {
       margin-top: 0;

@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+//Типы:
+import type { MotorcycleCart } from "@/entities/catalog";
+import type { OrderItem } from "@/entities/ordering/types/types";
 //Изображения:
 import yookassaLogo from '@/shared/assets/images/logos/yookassa_logo.png'
 //Стили:
@@ -9,7 +12,7 @@ interface PaymentModalProps {
   onClose: () => void;
   onConfirm: () => void;
   totalPrice: number;
-  items: any[];
+  items: MotorcycleCart[] | OrderItem[];
   createdAt?: string; // Передаем только для уже созданных заказов
 }
 
@@ -43,6 +46,7 @@ export const PaymentModal = ({
 
     return () => clearInterval(timer);
   }, [createdAt]);
+
 
   if (!isOpen) return null;
 
@@ -83,12 +87,18 @@ export const PaymentModal = ({
         <div className={styles.orderSummary}>
           <h4>Состав заказа:</h4>
           <ul>
-            {items.map((item, i) => (
-              <li key={i}>
-                {item.motorcycle?.model || item.model}{" "}
-                <span>{item.quantity} шт</span>
-              </li>
-            ))}
+            {items.map((item, i) => {
+              const motoModel = 'motorcycle' in item
+                ? item.motorcycle?.model
+                : item.model;
+
+              return (
+                <li key={i}>
+                  {motoModel}{" "}
+                  <span>{item.quantity} шт</span>
+                </li>
+              )
+            })}
           </ul>
         </div>
 
