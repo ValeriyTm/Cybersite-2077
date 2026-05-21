@@ -6,13 +6,18 @@ import {
   BrandsAdminArgs,
   ChangeOrderStatusAdminBodyArgs,
   ChangeOrderStatusAdminParamsArgs,
+  ChangeStatusOfTicketAdminBodyArgs,
+  ChangeStatusOfTicketAdminParamsArgs,
   CreateBrandAdminArgs,
   DeleteBrandAdminParamArgs,
   DeleteMotoAdminArgs,
   GetOrdersAdminArgs,
   GetPersonalDiscountsArgs,
   GetReportsAdminArgs,
+  GetTicketsAdminArgs,
   MotosAdminArgs,
+  ReplyOnTicketAdminBodyArgs,
+  ReplyOnTicketAdminParamsArgs,
   SearchBrandsAdminArgs,
   StocksAdminArgs,
   StocksUpdateAdminBodyArgs,
@@ -22,6 +27,7 @@ import {
   updateMotoAdminBodyArgs,
   updateMotoAdminParamsArgs,
 } from "@repo/validation";
+import { Statistics } from "../reports/types.js";
 //Главный сервис модуля Admin:
 import { adminService } from "./admin.service.js";
 //Сервисы модуля Reports:
@@ -30,11 +36,12 @@ import { pdfService } from "../reports/index.js";
 import { excelService } from "../reports/index.js";
 //Поисковый сервис модуля Catalog:
 import { searchService } from "../catalog/index.js";
+//Главный сервис модуля Support:
+import { supportService } from "../support/index.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
-import { Statistics } from "../reports/types.js";
 
 //---------------------Работа с брендами:-------------
 // Универсальный метод для получения списка брендов:
@@ -410,25 +417,27 @@ export const downloadSalesReport = catchAsync(
 //Получение всех тикетов:
 export const getTickets = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { page = 1, limit = 10, status, email } = req.query;
-    const p = Number(page);
-    const l = Number(limit);
-    const skip = (p - 1) * l;
+    const {
+      page = 1,
+      limit = 10,
+      status = "",
+      email = "",
+    } = req.query as unknown as GetTicketsAdminArgs;
+    const skip = (page - 1) * limit;
 
-    const [tickets, total] = await adminService.getTickets(
-      //@ts-ignore:
+    const [tickets, total] = await supportService.getTickets(
+      skip,
+      limit,
       status,
       email,
-      skip,
-      l,
     );
 
     res.json({
       data: tickets,
       meta: {
         total,
-        page: p,
-        lastPage: Math.ceil(total / l),
+        page,
+        lastPage: Math.ceil(total / limit),
       },
     });
   },
@@ -437,11 +446,10 @@ export const getTickets = catchAsync(
 //Дать ответ на тикет:
 export const replyToTicket = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { answer } = req.body;
+    const { id } = req.params as ReplyOnTicketAdminParamsArgs;
+    const { answer } = req.body as ReplyOnTicketAdminBodyArgs;
 
-    // @ts-ignore:
-    const ticket = await adminService.replyToTicket(id, answer);
+    const ticket = await supportService.replyToTicket(id, answer);
     res.json(ticket);
   },
 );
@@ -449,11 +457,10 @@ export const replyToTicket = catchAsync(
 //Изменить статус тикета:
 export const updateTicketStatus = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { status } = req.body;
+    const { id } = req.params as ChangeStatusOfTicketAdminParamsArgs;
+    const { status } = req.body as ChangeStatusOfTicketAdminBodyArgs;
 
-    //@ts-ignore:
-    const ticket = await adminService.updateTicketStatus(id, status);
+    const ticket = await supportService.updateTicketStatus(id, status);
 
     res.json(ticket);
   },

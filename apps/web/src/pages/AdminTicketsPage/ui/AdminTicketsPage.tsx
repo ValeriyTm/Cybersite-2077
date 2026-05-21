@@ -10,13 +10,15 @@ import { getTicketColumns } from '../model/columns';
 import { FaPaperclip, FaTimes } from 'react-icons/fa';
 //Дебаунс поиска:
 import { debounce } from 'lodash';
+//Типы:
+import type { Ticket } from '@/entities/support/types/types';
 //Уведомления:
 import toast from 'react-hot-toast';
 //Стили:
 import styles from './AdminTicketsPage.module.scss';
 
 export const AdminTicketsPage = () => {
-  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [page, setPage] = useState(1);
   const [answer, setAnswer] = useState('');
   const [emailValue, setEmailValue] = useState(''); //Для мгновенного ввода
@@ -64,7 +66,7 @@ export const AdminTicketsPage = () => {
 
   //Мутация отправки ответа:
   const replyMutation = useMutation({
-    mutationFn: () => $api.patch(`/admin/tickets/${selectedTicket.id}/reply`, { answer }),
+    mutationFn: () => $api.patch(`/admin/tickets/${selectedTicket!.id}/reply`, { answer }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-tickets'] });
       setSelectedTicket(null);
@@ -95,6 +97,13 @@ export const AdminTicketsPage = () => {
     OTHER: 'Другое'
   };
 
+  //Формируем текст для кнопки:
+  let submitButtonText = 'Отправить ответ';
+  if (replyMutation.isPending) {
+    submitButtonText = 'Отправка...';
+  } else if (!selectedTicket?.userId) {
+    submitButtonText = 'Ответ невозможен (гость)';
+  }
 
   return (
     <div className={styles.pageWrapper}>
@@ -142,9 +151,6 @@ export const AdminTicketsPage = () => {
 
         <DataTable columns={columns} data={data?.data || []} />
       )}
-
-
-
 
       {/*Блок пагинации:*/}
       {data?.meta && data.meta.lastPage > 1 && (
@@ -198,7 +204,7 @@ export const AdminTicketsPage = () => {
                 <div className={styles.attachmentsBlock}>
                   <strong>Прикрепленные файлы:</strong>
                   <div className={styles.fileList}>
-                    {selectedTicket.attachments.map((file: any) => {
+                    {selectedTicket.attachments.map((file) => {
 
                       return (
                         <a
@@ -244,12 +250,7 @@ export const AdminTicketsPage = () => {
                   !selectedTicket.userId //Блокируем, если нет привязки к аккаунту (вопрос оставил не зарегистрированный пользователь)
                 }
               >
-                {replyMutation.isPending
-                  ? 'Отправка...'
-                  : !selectedTicket.userId
-                    ? 'Ответ невозможен (гость)'
-                    : 'Отправить ответ'
-                }
+                {submitButtonText}
               </button>
             </div>
           </div>

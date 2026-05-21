@@ -10,6 +10,7 @@ import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
 import {
   ChangeOrderStatusAdminSchema,
+  ChangeStatusOfTicketAdminSchema,
   CreateBrandAdminSchema,
   createMotorcycleAdminSchema,
   DeleteBrandAdminSchema,
@@ -20,6 +21,8 @@ import {
   GetPersonalDiscountsSchema,
   GetReportsAdminSchema,
   GetStocksAdminSchema,
+  GetTicketsAdminSchema,
+  ReplyOnTicketAdminSchema,
   SearchBrandsAdminSchema,
   UpdateBrandAdminSchema,
   updateMotorcycleAdminSchema,
@@ -195,6 +198,7 @@ router.get(
 router.get(
   "/tickets",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(GetTicketsAdminSchema),
   adminController.getTickets,
 );
 
@@ -202,6 +206,7 @@ router.get(
 router.patch(
   "/tickets/:id/reply",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(ReplyOnTicketAdminSchema),
   adminController.replyToTicket,
 );
 
@@ -209,6 +214,7 @@ router.patch(
 router.patch(
   "/tickets/:id/status",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(ChangeStatusOfTicketAdminSchema),
   adminController.updateTicketStatus,
 );
 
@@ -242,6 +248,7 @@ router.delete(
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
   adminController.deleteNews,
 );
+
 //Обновить статус новости:
 router.patch(
   "/news/:id/status",

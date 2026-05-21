@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 //API:
 import { $api } from "@/shared/api";
 //SEO:
+//Типы:
+import type { Ticket } from "@/entities/support/types/types";
 import { Helmet } from "react-helmet-async";
 //Стили:
 import styles from "./UserTicketsPage.module.scss";
@@ -12,6 +14,28 @@ export const UserTicketsPage = () => {
     queryKey: ["my-tickets"],
     queryFn: () => $api.get("/support/my-tickets").then((res) => res.data),
   });
+
+
+  function convertToRussian(status: string) {
+    let textStatus;
+    switch (status) {
+      case 'OPEN':
+        textStatus = 'Ожидает';
+        break;
+      case 'IN_PROGRESS':
+        textStatus = 'В работе';
+        break;
+      case 'RESOLVED':
+        textStatus = 'Получен ответ';
+        break;
+      case 'CLOSED':
+        textStatus = 'Отменен';
+        break;
+    }
+    return textStatus;
+  }
+
+
 
   if (isLoading) return <div>Загрузка...</div>;
 
@@ -24,12 +48,12 @@ export const UserTicketsPage = () => {
       <div className={styles.container}>
         <h1>Мои обращения</h1>
         <div className={styles.list}>
-          {tickets?.map((ticket: any) => (
+          {tickets?.map((ticket: Ticket) => (
             <div key={ticket.id} className={styles.ticketCard}>
               <div className={styles.header}>
                 <span className={styles.category}>{ticket.category}</span>
                 <span className={`${styles.status} ${styles[ticket.status]}`}>
-                  {ticket.status}
+                  {convertToRussian(ticket.status)}
                 </span>
               </div>
 

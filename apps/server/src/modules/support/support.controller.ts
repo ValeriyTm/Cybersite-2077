@@ -11,8 +11,6 @@ import { createTicketServiceArgs } from "@repo/validation";
 import { supportService } from "./support.service.js";
 //Сервис для reCaptcha v3:
 import { recaptchaService } from "../../shared/services/recaptcha.service.js";
-//Очередь для удаления закрытых тикетов:
-import { scheduleTicketCleanup } from "./support.queue.js";
 //Для генерации события:
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Для удаления прикрепленных файлов:
@@ -88,29 +86,10 @@ export const createTicket = catchAsync(
   },
 );
 
-//Обновление статуса тикета:
-export const updateTicketStatus = catchAsync(
-  async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    //Обновляем статус тикета в БД:
-    // @ts-ignore:
-    const ticket = await supportService.updateTicketStatus(id, status);
-
-    //Если статус CLOSED или RESOLVED — ставим задачу на удаление в очередь:
-    if (status === "CLOSED" || status === "RESOLVED") {
-      await scheduleTicketCleanup(ticket.id);
-    }
-
-    res.json(ticket);
-  },
-);
-
 //Получить тикеты поддержки текущего юзера:
 export const getUserTickets = catchAsync(
-  async (req: Request, res: Response) => {
-    const userId = (req as any).user.id;
+  async (req: AuthRequest, res: Response) => {
+    const userId = req.user.id;
 
     //Получаем тикеты юзера из БД:
     const tickets = await supportService.getUserTickets(userId);

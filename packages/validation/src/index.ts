@@ -773,6 +773,68 @@ type GetReportsAdminInput = z.infer<typeof GetReportsAdminSchema>;
 //Чистый тип для сервиса:
 export type GetReportsAdminArgs = GetReportsAdminInput["query"];
 
+//----------------------------13.16) Схема для получения всех тикетов:-------------------------------------//
+export const GetTicketsAdminSchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().max(100).default(10),
+    status: z.preprocess(
+      //Если с фронтенда придет пустая строка, то превратим её в undefined:
+      (val) => (val === "" ? undefined : val),
+      z.enum(["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"]).optional(),
+    ),
+    email: z.string().optional(),
+  }),
+});
+
+type GetTicketsAdminInput = z.infer<typeof GetTicketsAdminSchema>;
+//Чистый тип для сервиса:
+export type GetTicketsAdminArgs = GetTicketsAdminInput["query"];
+
+//----------------------------13.17) Схема для создания ответа на тикет:-------------------------------------//
+export const ReplyOnTicketAdminSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .min(1, { message: "id не должен быть пустой строкой" })
+      .max(36, "Максимум 36 символов для id"),
+  }),
+  body: z.object({
+    answer: z.string().min(1).max(2000),
+  }),
+});
+
+type ReplyOnTicketAdminInput = z.infer<typeof ReplyOnTicketAdminSchema>;
+//Чистый тип для сервиса:
+export type ReplyOnTicketAdminParamsArgs = ReplyOnTicketAdminInput["params"];
+export type ReplyOnTicketAdminBodyArgs = ReplyOnTicketAdminInput["body"];
+
+//----------------------------13.18) Схема для изменения статуса тикета:-------------------------------------//
+export const ChangeStatusOfTicketAdminSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .min(1, { message: "id не должен быть пустой строкой" })
+      .max(36, "Максимум 36 символов для id"),
+  }),
+  body: z.object({
+    status: z.preprocess(
+      //Если с фронтенда придет пустая строка, то превратим её в undefined:
+      (val) => (val === "" ? undefined : val),
+      z.enum(["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"]),
+    ),
+  }),
+});
+
+type ChangeStatusOfTicketAdminInput = z.infer<
+  typeof ChangeStatusOfTicketAdminSchema
+>;
+//Чистый тип для сервиса:
+export type ChangeStatusOfTicketAdminParamsArgs =
+  ChangeStatusOfTicketAdminInput["params"];
+export type ChangeStatusOfTicketAdminBodyArgs =
+  ChangeStatusOfTicketAdminInput["body"];
+
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------4) Модуль Traparamsing-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////

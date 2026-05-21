@@ -1,5 +1,5 @@
 //Клиент призмы для работы с PostgreSQL:
-import { OrderStatus, prisma } from "@repo/database";
+import { OrderStatus, prisma, TicketStatus } from "@repo/database";
 //Модель взаимодействия с MongoDB (из модуля Content):
 import { NewsModel } from "../content/index.js";
 //Типы:
@@ -423,53 +423,6 @@ export class AdminService {
         motorcycle: { select: { model: true } },
       },
       orderBy: { createdAt: "desc" },
-    });
-  }
-
-  //---------------------Тикеты поддержки:-------------
-  //Получение всех тикетов:
-  async getTickets(status: string, email: string, skip: number, l: number) {
-    //@ts-ignore:
-    const where: any = {};
-    if (status) where.status = status;
-    if (email) {
-      where.email = { contains: String(email), mode: "insensitive" };
-    }
-
-    return await Promise.all([
-      prisma.supportTicket.findMany({
-        where,
-        include: {
-          attachments: true,
-          user: { select: { email: true, name: true } },
-        },
-        skip,
-        take: l,
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.supportTicket.count({ where }),
-    ]);
-  }
-
-  //Дать ответ на тикет:
-  async replyToTicket(id: string, answer: string) {
-    return await prisma.supportTicket.update({
-      where: { id },
-      data: {
-        answer,
-        status: "RESOLVED",
-        answeredAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-  }
-
-  //Изменить статус тикета:
-  async updateTicketStatus(id: string, status: string) {
-    return await prisma.supportTicket.update({
-      where: { id },
-      //@ts-ignore:
-      data: { status },
     });
   }
 

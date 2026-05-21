@@ -1,5 +1,7 @@
 //Клиент призмы для работы с PostgreSQL:
 import { prisma, TicketCategory, TicketStatus } from "@repo/database";
+//Очередь для удаления закрытых тикетов:
+import { scheduleTicketCleanup } from "./support.queue.js";
 
 interface CreateTicketDto {
   firstName: string;
@@ -51,20 +53,68 @@ export class SupportService {
     });
   }
 
-  //Обновление статуса тикета:
-  async updateTicketStatus(id: string, status: TicketStatus) {
-    return await prisma.supportTicket.update({
-      where: { id },
-      data: { status },
-    });
-  }
-
   //Получить тикеты поддержки текущего юзера:
   async getUserTickets(userId: string) {
     return await prisma.supportTicket.findMany({
       where: { userId },
       include: { attachments: true },
       orderBy: { createdAt: "desc" },
+    });
+  }
+
+  //Изменить статус тикета:
+  async updateTicketStatus(id: string, status: TicketStatus) {
+    const ticket = await prisma.supportTicket.update({
+      where: { id },
+      data: { status },
+    });
+
+    //Если статус CLOSED или RESOLVED — ставим задачу на удаление в очередь:
+    if (status === "CLOSED" || status === "RESOLVED") {
+      await scheduleTicketCleanup(ticket.id);
+    }
+
+    return ticket;
+  }
+
+  //Получение всех тикетов:
+  async getTickets(
+    skip: number,
+    limit: number,
+    status?: string,
+    email?: string,
+  ) {
+    const where: any = {};
+    if (status) where.status = status;
+    if (email) {
+      where.email = { contains: String(email), mode: "insensitive" };
+    }
+
+    return await Promise.all([
+      prisma.supportTicket.findMany({
+        where,
+        include: {
+          attachments: true,
+          user: { select: { email: true, name: true } },
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.supportTicket.count({ where }),
+    ]);
+  }
+
+  //Дать ответ на тикет:
+  async replyToTicket(id: string, answer: string) {
+    return await prisma.supportTicket.update({
+      where: { id },
+      data: {
+        answer,
+        status: "RESOLVED",
+        answeredAt: new Date(),
+        updatedAt: new Date(),
+      },
     });
   }
 }
