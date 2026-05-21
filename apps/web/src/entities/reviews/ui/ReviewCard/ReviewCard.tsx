@@ -4,17 +4,26 @@ import { useState } from "react";
 import { API_URL } from "@/shared/api";
 //Компоненты:
 import { ImageModal } from "@/shared/ui";
+//Типы:
+import type { MotorcycleReview } from "@/entities/catalog";
 //Изображения:
 import defaultAvatar from '@/shared/assets/images/defaults/default-avatar.png'
 //Стили:
 import styles from "./ReviewCard.module.scss";
+
+interface ReviewCardProps {
+  review: MotorcycleReview;
+  onDelete: (data: string) => void;
+  currentUserId?: string;
+  isAdmin: boolean;
+}
 
 export const ReviewCard = ({
   review,
   onDelete,
   currentUserId,
   isAdmin,
-}: any) => {
+}: ReviewCardProps) => {
   //"Раскрыт" текст комментария или нет:
   const [isExpanded, setIsExpanded] = useState(false);
   //Состояние для открытия прикрепленного фото в модалке:
@@ -87,7 +96,7 @@ export const ReviewCard = ({
       {/*Компонент галереи: */}
       {photoIndex !== null && (
         <ImageModal
-          images={review.images.map((img: any) => `${API_URL}${img}`)}
+          images={review.images.map((img: string) => `${API_URL}${img}`)}
           startIndex={photoIndex}
           onClose={() => setPhotoIndex(null)}
         />

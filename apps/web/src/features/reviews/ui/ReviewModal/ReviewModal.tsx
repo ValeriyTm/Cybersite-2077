@@ -9,6 +9,8 @@ import { RatingInput } from "@/shared/ui";
 import { FocusTrap } from 'focus-trap-react';
 //Порталы для модалки:
 import { createPortal } from "react-dom";
+//Типы:
+import type { OrderItem } from "@/entities/ordering/types/types";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стил:
@@ -21,7 +23,7 @@ export const ReviewModal = ({
   isReviewModalOpen,
 }: {
   orderId: string;
-  item: any;
+  item: OrderItem;
   onClose: () => void;
   isReviewModalOpen: boolean;
 }) => {

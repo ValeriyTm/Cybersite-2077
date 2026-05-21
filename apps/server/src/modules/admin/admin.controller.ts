@@ -11,6 +11,7 @@ import {
   DeleteMotoAdminArgs,
   GetOrdersAdminArgs,
   GetPersonalDiscountsArgs,
+  GetReportsAdminArgs,
   MotosAdminArgs,
   SearchBrandsAdminArgs,
   StocksAdminArgs,
@@ -33,6 +34,7 @@ import { searchService } from "../catalog/index.js";
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
+import { Statistics } from "../reports/types.js";
 
 //---------------------Работа с брендами:-------------
 // Универсальный метод для получения списка брендов:
@@ -371,14 +373,14 @@ export const getPersonalDiscounts = catchAsync(
     res.json(discounts);
   },
 );
+
 //---------------------Отчеты:-------------
 //Скачать отчеты:
 export const downloadSalesReport = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    console.log("req.query: ", req.query);
-    const { format, days = 30 } = req.query; // Получаем формат (pdf/xlsx) и период
-    console.log("Запрошенный формат:", format);
-    const stats = await reportsService.getStatistics(Number(days));
+    const { format, days = 30 } = req.query as unknown as GetReportsAdminArgs; // Получаем формат (pdf/xlsx) и период
+
+    const stats = (await reportsService.getStatistics(days)) as Statistics;
 
     if (format === "xlsx") {
       const filePath = await excelService.generateSalesRepo(stats);

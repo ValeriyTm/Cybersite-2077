@@ -6,6 +6,9 @@ import { optionalAuth } from "../../shared/middlewares/optionalAuthMiddleware.js
 import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //Проверка авторизации
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 import { supportUpload } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
+import { validate } from "src/shared/middlewares/validate.js";
+//Схемы валидации:
+import { createTicketSchema } from "@repo/validation";
 
 const router = Router();
 
@@ -14,6 +17,7 @@ router.post(
   "/create",
   optionalAuth, //Чтобы подтянуть userId, если юзер залогинен
   supportUpload.array("files", 5), //Загружаем файлы при помощи Multer (files - это имя ключа (поля), которое  фронтенд в FormData использует для отправки файлов; 5 - это лимит на количество файлов)
+  // validate(createTicketSchema),
   supportController.createTicket,
 );
 

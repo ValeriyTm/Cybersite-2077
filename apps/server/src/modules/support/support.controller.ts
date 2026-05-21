@@ -21,7 +21,7 @@ import fs from "fs/promises";
 //Создание тикета поддержки от юзера:
 export const createTicket = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    //1) Процесс валидации Zod:
+    // 1) Процесс валидации Zod:
     const validation = createTicketSchema.safeParse(req.body);
     if (!validation.success) {
       console.log("Валидация провалилась!");

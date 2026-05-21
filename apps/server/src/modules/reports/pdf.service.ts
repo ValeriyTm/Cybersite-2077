@@ -3,9 +3,11 @@ import puppeteer from "puppeteer";
 //Для взаимодействия с файлами и путями:
 import path from "path";
 import fs from "fs";
+//Типы:
+import { Statistics } from "./types.js";
 
 export class PdfService {
-  async generateSalesPdf(stats: any): Promise<string> {
+  async generateSalesPdf(stats: Statistics): Promise<string> {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
@@ -53,7 +55,7 @@ export class PdfService {
               <tr><th>Модель</th><th>Кол-во</th></tr>
             </thead>
             <tbody>
-              ${stats.topSellers.map((s: any) => `<tr><td>${s.model}</td><td>${s.quantity} шт.</td></tr>`).join("")}
+              ${stats.topSellers.map((s) => `<tr><td>${s.model}</td><td>${s.quantity} шт.</td></tr>`).join("")}
             </tbody>
           </table>
 

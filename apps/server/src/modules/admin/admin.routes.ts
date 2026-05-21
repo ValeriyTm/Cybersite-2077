@@ -18,6 +18,7 @@ import {
   GetMotosAdminSchema,
   GetOrdersAdminSchema,
   GetPersonalDiscountsSchema,
+  GetReportsAdminSchema,
   GetStocksAdminSchema,
   SearchBrandsAdminSchema,
   UpdateBrandAdminSchema,
@@ -142,12 +143,14 @@ router.patch(
 //---------------------Управление доступом:-------------
 //Получить роли юзера:
 router.get("/users/", roleMiddleware(["SUPERADMIN"]), adminController.getUsers);
+
 //Изменить роль юзера:
 router.patch(
   "/users/:id/role",
   roleMiddleware(["SUPERADMIN"]),
   adminController.updateUserRole,
 );
+
 //Удалить юзера:
 router.delete(
   "/users/:id",
@@ -183,6 +186,7 @@ router.get(
 router.get(
   "/reports/download",
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  validate(GetReportsAdminSchema),
   adminController.downloadSalesReport,
 );
 

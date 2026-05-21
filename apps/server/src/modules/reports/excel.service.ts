@@ -3,9 +3,11 @@ import ExcelJS from "exceljs";
 //Для взаимодействия с файлами и путями:
 import path from "path";
 import fs from "fs";
+//Типы:
+import { Statistics } from "./types.js";
 
 export class ExcelService {
-  async generateSalesRepo(stats: any): Promise<string> {
+  async generateSalesRepo(stats: Statistics): Promise<string> {
     const workbook = new ExcelJS.Workbook();
     workbook.creator = "CyberSite Admin";
 
@@ -50,7 +52,7 @@ export class ExcelService {
       { header: "Склад", key: "wh", width: 20 },
     ];
 
-    stats.lowStock.forEach((s: any) => {
+    stats.lowStock.forEach((s) => {
       sheet3.addRow({
         id: s.motorcycleId,
         model: s.motorcycle.model,
