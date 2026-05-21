@@ -83,7 +83,7 @@ export const OrderCard = ({ order }: { order: Order }) => {
   //---------------Оставляем отзыв на заказ:-------------------------------//
   //Для реализации модалки отзыва:
   const handleOpenReview = (item: OrderItem) => {
-    console.log('item review: ', item);
+
     setSelectedItem(item);
     setIsReviewModalOpen(true);
   };

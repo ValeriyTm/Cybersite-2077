@@ -1051,3 +1051,48 @@ export const CancelOrderSchema = z.object({
 });
 export type CancelOrderInput = z.infer<typeof CancelOrderSchema>;
 export type CancelOrderParamArgs = CancelOrderInput["params"];
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------8) Модуль Review-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------8.1) Схема для создания отзыва:-------------------------------------//
+export const CreateReviewSchema = z.object({
+  body: z.object({
+    orderId: z
+      .string()
+      .min(1, "id заказа обязателен")
+      .max(36, "Максимум 36 символов для id"),
+    motorcycleId: z
+      .string()
+      .min(1, "id мотоцикла обязателен")
+      .max(36, "Максимум 36 символов для id"),
+    rating: z.coerce.number().int().min(1).max(5).default(5),
+    comment: z.string().min(5).max(2000),
+  }),
+});
+export type CreateReviewInput = z.infer<typeof CreateReviewSchema>;
+export type CreateReviewServiceArgs = CreateReviewInput["body"];
+
+//----------------------------8.2) Схема для получения отзывов на товар:-------------------------------------//
+export const GetReviewSchema = z.object({
+  params: z.object({
+    motorcycleId: z
+      .string()
+      .min(1, "id мотоцикла обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+export type GetReviewInput = z.infer<typeof GetReviewSchema>;
+export type GetReviewServiceArgs = GetReviewInput["params"];
+
+//----------------------------8.3) Схема для удаления отзыва:-------------------------------------//
+export const DeleteReviewSchema = z.object({
+  params: z.object({
+    reviewId: z
+      .string()
+      .min(1, "id заказа обязателен")
+      .max(36, "Максимум 36 символов для id"),
+  }),
+});
+export type DeleteReviewInput = z.infer<typeof DeleteReviewSchema>;
+export type DeleteReviewServiceArgs = DeleteReviewInput["params"];

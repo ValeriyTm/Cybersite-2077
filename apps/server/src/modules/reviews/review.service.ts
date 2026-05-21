@@ -6,21 +6,21 @@ import { prisma } from "@repo/database";
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Для работы с путями и файлами:
 import path from "path";
-import * as fs from "node:fs";
+import { promises as fs } from "fs";
 //Санитайзинг пользовательсих данных:
 import sanitizeHtml from "sanitize-html";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 //Импортируем поисковый сервис из модуля Catalog:
 import { searchService } from "../catalog/index.js";
+//Типы:
+import { CreateReviewServiceArgs } from "@repo/validation";
 
 export class ReviewService {
   //Создание отзыва:
   async createReview(
     userId: string,
-    // @ts-ignore:
-    userName: string,
-    data: any,
+    data: CreateReviewServiceArgs,
     files: string[],
   ) {
     const { motorcycleId, orderId, rating, comment } = data;
@@ -51,8 +51,7 @@ export class ReviewService {
     const review = await ReviewModel.create({
       userId,
       userName: user?.name,
-      // @ts-ignore:
-      userAvatar: user?.avatarUrl,
+      userAvatar: user?.avatarUrl ?? "",
       motorcycleId,
       orderId,
       rating: Number(rating),
@@ -109,10 +108,19 @@ export class ReviewService {
 
     //Удаляем файлы изображений из отзыва:
     if (review.images && review.images.length > 0) {
-      review.images.forEach((imagePath) => {
-        const fullPath = path.join(process.cwd(), imagePath);
-        if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-      });
+      await Promise.all(
+        review.images.map(async (imagePath) => {
+          const fullPath = path.join(process.cwd(), imagePath);
+          try {
+            //Наш путь безопасен, поэтому можем успокоить линтер
+            // eslint-disable-next-line
+            await fs.unlink(fullPath);
+          } catch (error: any) {
+            // Игнорируем ошибку, если файл уже удален с диска
+            if (error.code !== "ENOENT") throw error;
+          }
+        }),
+      );
     }
 
     //Логика пересчета рейтинга:
