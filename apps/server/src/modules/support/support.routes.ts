@@ -17,7 +17,7 @@ router.post(
   "/create",
   optionalAuth, //Чтобы подтянуть userId, если юзер залогинен
   supportUpload.array("files", 5), //Загружаем файлы при помощи Multer (files - это имя ключа (поля), которое  фронтенд в FormData использует для отправки файлов; 5 - это лимит на количество файлов)
-  // validate(createTicketSchema),
+  validate(createTicketSchema),
   supportController.createTicket,
 );
 

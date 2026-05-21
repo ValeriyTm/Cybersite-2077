@@ -6,7 +6,7 @@ import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Схемы валидации Zod:
-import { createTicketSchema } from "@repo/validation";
+import { createTicketServiceArgs } from "@repo/validation";
 //Главный сервис модуля Support:
 import { supportService } from "./support.service.js";
 //Сервис для reCaptcha v3:
@@ -21,53 +21,38 @@ import fs from "fs/promises";
 //Создание тикета поддержки от юзера:
 export const createTicket = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    // 1) Процесс валидации Zod:
-    const validation = createTicketSchema.safeParse(req.body);
-    if (!validation.success) {
-      console.log("Валидация провалилась!");
+    const {
+      captchaToken,
+      firstName,
+      lastName,
+      email,
+      phone,
+      category,
+      description,
+    } = req.body as createTicketServiceArgs;
+    const userId = req.user?.id; // Если юзер авторизован
+    const files = req.files as Express.Multer.File[];
 
-      //Если есть прикрепленные файлы, а валидация не прошла — удаляем их, чтобы не засорять сервер:
-      if (req.files) {
-        const files = req.files as Express.Multer.File[]; //Явно типизируем
-
-        //Запускаем все удаления параллельно и не блокируем поток:
-        const deletePromises = files.map((file) =>
-          // eslint-disable-next-line security/detect-non-literal-fs-filename
-          fs
-            .unlink(file.path)
-            // Используем catch, чтобы ошибка удаления одного файла не обвалила весь процесс
-            .catch((err) =>
-              console.error(
-                `Ошибка удаления временного файла: ${file.path}`,
-                err,
+    // Функция-хелпер для очистки файлов внутри контроллера при бизнес-ошибках
+    const cleanUploadedFiles = async () => {
+      if (files && files.length > 0) {
+        await Promise.all(
+          files.map((file) =>
+            //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
+            //eslint-disable-next-line security/detect-non-literal-fs-filename
+            fs
+              .unlink(file.path)
+              .catch((err) =>
+                console.error(`Ошибка удаления файла: ${file.path}`, err),
               ),
-            ),
+          ),
         );
-        // Ждем завершения удалений перед ответом (или можно не ждать, если файлы не критичны)
-        await Promise.all(deletePromises);
       }
+    };
 
-      return res.status(400).json({
-        errors: validation.error.flatten((issue) => issue.message).fieldErrors,
-      });
-    }
-
-    //2) Извлекаем данные для проверки капчи и необходимости удаления файлов:
-    const { captchaToken } = validation.data;
-    const userId = (req as any).user?.id; // Если юзер авторизован
-
-    //3) Работаем с файлами:
-    const files = req.files as Express.Multer.File[]; //Явно типизируем
     //Удаляем прикрепленные файлы, если юзер не авторизован:
     if (files && files.length > 0 && !userId) {
-      //Удаляем прикрепленные файлы:
-      (req.files as Express.Multer.File[]).forEach((file) => {
-        // eslint-disable-next-line security/detect-non-literal-fs-filename
-        fs.unlink(file.path).catch((err) =>
-          console.error(`Ошибка удаления временного файла: ${file.path}`, err),
-        );
-      });
-
+      await cleanUploadedFiles();
       return res.status(403).json({
         message: "Загрузка файлов доступна только авторизованным пользователям",
       });
@@ -84,14 +69,14 @@ export const createTicket = catchAsync(
 
     //5) Записываем данные тикета в БД:
     const ticket = await supportService.createTicket({
-      userId: req.user?.id, // Если авторизован
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      phone: req.body.phone, // Опционально
-      category: req.body.category,
-      description: req.body.description,
-      files: req.files as Express.Multer.File[], // Опционально
+      userId,
+      firstName,
+      lastName,
+      email,
+      phone,
+      category,
+      description,
+      files,
     });
 
     //6) Отправляем событие в EventBus (для уведомления в Telegram):

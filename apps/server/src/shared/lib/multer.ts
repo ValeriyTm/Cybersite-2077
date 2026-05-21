@@ -1,9 +1,10 @@
 /////--------------------------------Конструктор для создания middleware на основе Multer-----------------------/////
-import multer from "multer";
+import multer, { Field } from "multer";
 import path from "path";
 import fs from "fs";
 import sharp from "sharp";
 import { AppError } from "../utils/app-error.js";
+import { NextFunction, Request, Response } from "express";
 
 interface MulterOptions {
   dest: string; //Папка, в которую будут сохраняться загружаемые файлы
@@ -24,9 +25,8 @@ export const createMulter = ({
   errorMsg = "Недопустимый тип файла или слишком большой размер",
   width,
 }: MulterOptions) => {
-  if (!fs.existsSync(dest)) {
-    fs.mkdirSync(dest, { recursive: true });
-  }
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  fs.mkdirSync(dest, { recursive: true }); //Не переводим на async версию, т.к. вызов происходит всего один раз - в момент инициализации приложения, а также нам нужно создать папку до того, как инициализируется объект multer и сервер начнет слушчать порт
 
   //Используем RAM для временного хранения:
   const storage = multer.memoryStorage();
@@ -41,31 +41,50 @@ export const createMulter = ({
   });
 
   //Кастомный мидлвар для обработки:
-  const processImages = async (req: any, _res: any, next: any) => {
+  const processImages = async (
+    req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     if (!req.files && !req.file) return next();
 
-    const files = req.files
-      ? Array.isArray(req.files)
+    let files: Express.Multer.File[] = [];
+    //Если пришли множественные файлы (объект или массив):
+    if (req.files) {
+      files = Array.isArray(req.files)
         ? req.files
-        : Object.values(req.files).flat()
-      : [req.file];
+        : Object.values(req.files).flat();
+    }
+    //Если пришел один файл:
+    else if (req.file) {
+      files = [req.file];
+    }
 
     try {
       await Promise.all(
-        files.map(async (file: any) => {
+        files.map(async (file: Express.Multer.File) => {
           const uniqueSuffix =
+            // eslint-disable-next-line
             Date.now() + "-" + Math.round(Math.random() * 1e9);
-          //Конвертируем всё в .webp для максимальной минификации
-          const fileName = `${prefix ? prefix + "-" : ""}${uniqueSuffix}.webp`;
+
+          //Проверка на то, является ли файл изображением:
+          const isImage = file.mimetype.startsWith("image/");
+          //Изображения конвертируем в webp, документы оставляем как есть:
+          const ext = isImage ? ".webp" : path.extname(file.originalname);
+          const fileName = `${prefix ? prefix + "-" : ""}${uniqueSuffix}${ext}`;
           const filePath = path.join(dest, fileName);
 
-          let transform = sharp(file.buffer).webp({ quality: 80 }); // Сжатие 80% без видимой потери качества
-
-          if (width) {
-            transform = transform.resize(width); //Если указана ширина — ресайзим
+          if (isImage) {
+            //Обработка изображений через Sharp:
+            let transform = sharp(file.buffer).webp({ quality: 80 }); // Сжатие 80% без видимой потери качества
+            if (width) transform = transform.resize(width);
+            await transform.toFile(filePath);
+          } else {
+            //Сохранение документов напрямую из буфера памяти:
+            //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
+            //eslint-disable-next-line security/detect-non-literal-fs-filename
+            await fs.promises.writeFile(filePath, file.buffer);
           }
-
-          await transform.toFile(filePath);
 
           //Обновляем данные файла, чтобы контроллер знал новое имя:
           file.filename = fileName;
@@ -75,6 +94,7 @@ export const createMulter = ({
       next();
     } catch (error) {
       next(new AppError(500, "Ошибка при обработке изображений"));
+      console.error("Ошибка: ", error);
     }
   };
 
@@ -85,6 +105,6 @@ export const createMulter = ({
       upload.array(name, max),
       processImages,
     ],
-    fields: (fields: any) => [upload.fields(fields), processImages],
+    fields: (fields: Field[]) => [upload.fields(fields), processImages],
   };
 };

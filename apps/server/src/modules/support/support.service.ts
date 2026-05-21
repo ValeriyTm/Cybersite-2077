@@ -1,13 +1,5 @@
 //Клиент призмы для работы с PostgreSQL:
-import { prisma } from "@repo/database";
-
-enum TicketCategory {
-  TECHNICAL,
-  ORDER,
-  COOPERATION,
-  COMPLAINT,
-  OTHER,
-}
+import { prisma, TicketCategory, TicketStatus } from "@repo/database";
 
 interface CreateTicketDto {
   firstName: string;
@@ -42,7 +34,6 @@ export class SupportService {
           lastName,
           email,
           phone, // Присвоится только если есть
-          // @ts-ignore:
           category,
           description,
           attachments: {
@@ -61,10 +52,9 @@ export class SupportService {
   }
 
   //Обновление статуса тикета:
-  async updateTicketStatus(id: string, status: string) {
+  async updateTicketStatus(id: string, status: TicketStatus) {
     return await prisma.supportTicket.update({
       where: { id },
-      // @ts-ignore:
       data: { status },
     });
   }

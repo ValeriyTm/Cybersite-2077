@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useProfile } from "@/features/auth";
 //Валидация:
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createTicketSchema } from "@repo/validation";
+import { createTicketFrontendSchema, type createTicketServiceArgs } from "@repo/validation";
 //API:
 import { API_URL, $api } from "@/shared/api";
 //SEO:
@@ -35,10 +35,10 @@ export const SupportPage = () => {
     reset,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(createTicketSchema),
+    resolver: zodResolver(createTicketFrontendSchema),
     defaultValues: {
       //Инициализируем значения по умолчанию:
-      captchaToken: "",
+      captchaToken: "1",
       email: user?.email || "",
       phone: user?.phone || "",
     },
@@ -86,7 +86,7 @@ export const SupportPage = () => {
   };
 
   //----------------------Отправка формы:------------------------------------
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: createTicketServiceArgs) => {
     if (!executeRecaptcha) return;
 
     try {
@@ -97,7 +97,9 @@ export const SupportPage = () => {
       const formData = new FormData();
       //Добавляем основные данные:
       Object.keys(data).forEach((key) => {
-        if (data[key]) formData.append(key, data[key]);
+        const typedKey = key as keyof createTicketServiceArgs;
+
+        if (data[typedKey]) formData.append(key, data[typedKey]);
       });
       //Добавляем токен капчи:
       formData.set("captchaToken", captchaToken);
@@ -122,6 +124,7 @@ export const SupportPage = () => {
       toast.success("Ваше обращение принято! Мы ответим в ближайшее время.");
     } catch (e) {
       toast.error("Ошибка при отправке. Попробуйте позже.");
+      console.log(`Произошла ошибка ${e}`)
     }
   };
 
@@ -137,7 +140,13 @@ export const SupportPage = () => {
 
       <div className={styles.supportWrapper}>
         <h1>Служба поддержки</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        <form
+          onSubmit={handleSubmit(
+            onSubmit,
+            (errors) => console.log("Ошибки валидации формы:", errors)
+          )}
+          className={styles.form}
+        >
           <div className={styles.row}>
             <div className={styles.inputGroup}>
               <label className={styles.nameLabel}>
