@@ -1,5 +1,5 @@
 //React Hook Form:
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler, type FieldErrors } from "react-hook-form";
 //Роутер:
 import { useNavigate } from "react-router";
 //Библиотека для всплывающих уведомлений:
@@ -11,8 +11,6 @@ import { LoginFrontendSchema, type LoginFormType } from "@repo/validation";
 //Состояния:
 import { useState } from "react";
 import { useAuthSubmit, useAuthStore } from "@/features/auth";
-import { useTradingStore } from "@/entities/trading";
-import { useOrderStore } from "@/entities/ordering";
 //API:
 import { $api } from "@/shared/api/api";
 //Компоненты:
@@ -30,17 +28,12 @@ interface Props {
 export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   const navigate = useNavigate();
 
-  //С клиентского стора:
-  const { setAuth, setTempUserId } = useAuthStore();
+
+  const { setAuth, setTempUserId, tempUserId } = useAuthStore();
 
   const { handleAuthSubmit } = useAuthSubmit<LoginFormType>();
 
-  //Локальные:
-  const [localUserId, setLocalUserId] = useState<string | null>(null);
   const [show2FA, setShow2FA] = useState(false);
-
-  const { fetchCart, fetchFavoritesIds } = useTradingStore();
-  const { fetchActiveCount } = useOrderStore();
 
   const {
     register,
@@ -58,6 +51,18 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
     },
   });
 
+  //Функция для обработки ошибок валидации Zod на клиенте:
+  const onFormError = (errors: FieldErrors<LoginFormType>) => {
+    //Берем первую ошибку из объекта:
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message, {
+        id: "login-validation-error", // редотвращает спам — новое уведомление заменит старое
+      });
+    }
+  };
+
+
   //Отправка формы:
   const onSubmit: SubmitHandler<LoginFormType> = async (data: LoginFormType) => {
     //Добавляем await, чтобы сработало переключение isSubmitting:
@@ -71,7 +76,6 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
           if (res.data.requires2FA) {
             const id = res.data.userId;
 
-            setLocalUserId(id); // Для мгновенного показа
             setTempUserId(id); // Для истории в сторе
             setShow2FA(true); // Переключаем интерфейс на ввод кода (устанавливаем переменную необходимости показа окна 2FA как true)
 
@@ -85,11 +89,6 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
             toast.success("С возвращением!");
             navigate("/profile");
           }
-
-          //Сразу подтягиваем данные о корзине, избранном и заказах:
-          fetchCart(); //Данные о корзине
-          fetchActiveCount(); //Данные о активных заказах
-          fetchFavoritesIds();
         },
       },
       data,
@@ -100,14 +99,14 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   if (show2FA) {
     return (
       <TwoFactorVerifyForm
-        userId={localUserId}
+        userId={tempUserId}
         onSuccess={onVerify2FA || onSuccess} // Если 2FA успешно — вызываем колбэк
       />
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form onSubmit={handleSubmit(onSubmit, onFormError)} className={styles.form}>
       {/*Поле ввода email:*/}
       <div className={styles.field}>
         <label>Email</label>

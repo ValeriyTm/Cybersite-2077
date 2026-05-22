@@ -101,10 +101,10 @@ export const Header = () => {
       fetchFavoritesIds(); //Данные о избранном
       fetchActiveCount(); //Данные о активных заказах
     } else {
-      clearTrading();
-      resetOrders();
+      clearTrading(); //Очистка счетчика корзины и избранного
+      resetOrders(); //Очистка счетчика активных заказов
     }
-  }, [isAuth]);
+  }, [isAuth, fetchCart, fetchActiveCount, fetchFavoritesIds, clearTrading, resetOrders]);
   //Если пользователь логинится, то грузим инфу о заказах и т.п. Если логаут - обнуляем.
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
