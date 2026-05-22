@@ -12,8 +12,8 @@ import {
   ChangePasswordSchema,
   DeleteAccountSchema,
   type UpdateProfileInput,
-  type ChangePasswordInput,
-  type DeleteAccountInput,
+  type ChangePasswordType,
+  type DeleteAccountType,
 } from "@repo/validation";
 //Состояния:
 import { useState } from "react";
@@ -42,7 +42,6 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   //----------------Инициализация форм------------
   ////Основная форма профиля:
   const profileForm = useForm<UpdateProfileInput>({
-    // @ts-ignore
     resolver: zodResolver(UpdateProfileSchema),
     values: {
       name: user?.name || "",
@@ -54,7 +53,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   });
 
   ////Форма смены пароля:
-  const passForm = useForm<ChangePasswordInput>({
+  const passForm = useForm<ChangePasswordType>({
     resolver: zodResolver(ChangePasswordSchema),
   });
 
@@ -62,10 +61,10 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   const { reset: resetPass } = passForm;
 
   ////Форма удаления аккаунта:
-  const deleteForm = useForm<DeleteAccountInput>({
+  const deleteForm = useForm<DeleteAccountType>({
     resolver: zodResolver(DeleteAccountSchema),
     defaultValues: {
-      confirmPassword: "",
+      password: "",
     },
   });
 
@@ -165,7 +164,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   };
 
   //--------Для смены пароля:
-  const onChangePassword = async (data: ChangePasswordInput) => {
+  const onChangePassword = async (data: ChangePasswordType) => {
     try {
       await $api.post("/identity/auth/change-password", data);
       toast.success("Пароль успешно изменен");
@@ -176,10 +175,10 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   };
 
   // -------Для удаления аккаунта:
-  const onDeleteAccount = async (data: DeleteAccountInput) => {
+  const onDeleteAccount = async (data: DeleteAccountType) => {
     try {
       await $api.delete("/identity/auth/delete-account", {
-        data: { password: data.confirmPassword },
+        data: { password: data.password },
       });
 
       toast.success("Ваш аккаунт удален");

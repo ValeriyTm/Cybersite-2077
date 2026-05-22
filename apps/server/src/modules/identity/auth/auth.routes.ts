@@ -9,6 +9,8 @@ import { validate } from "src/shared/middlewares/validate.js";
 //Схемы валидации:
 import {
   ActivationSchema,
+  BackendChangePasswordSchema,
+  BackendDeleteAccountSchema,
   LoginSchema,
   RegisterSchema,
 } from "@repo/validation";
@@ -53,6 +55,7 @@ router.post(
   "/change-password",
   authMiddleware,
   noCacheMiddleware,
+  validate(BackendChangePasswordSchema),
   AuthController.changePassword,
 );
 
@@ -61,6 +64,7 @@ router.delete(
   "/delete-account",
   authMiddleware,
   noCacheMiddleware,
+  validate(BackendDeleteAccountSchema),
   AuthController.deleteAccount,
 );
 

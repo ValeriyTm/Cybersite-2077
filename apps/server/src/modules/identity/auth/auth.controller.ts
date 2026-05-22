@@ -12,6 +12,8 @@ import {
   RegisterArgs,
   LoginArgs,
   ActivationParamArgs,
+  ChangePasswordType,
+  DeleteAccountType,
 } from "@repo/validation";
 //Сервис для взаимодействия с БД для подмодуля auth:
 import { authService } from "./auth.service.js";
@@ -246,19 +248,13 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-//Контроллер смены паролей в ЛК пользователя:
+//Контроллер смены пароля в ЛК пользователя:
 export const changePassword = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    //1) Валидируем входящие данные при помощи Zod:
-    const result = ChangePasswordSchema.safeParse(req.body);
-    if (!result.success) {
-      throw new AppError(400, "Ошибка валидации данных");
-    }
+    const data = req.body as ChangePasswordType;
 
-    //2) Вызываем сервис (req.user.id берем из мидлвара авторизации) для смены пароля в БД:
-    await authService.changePassword(req.user!.id, result.data);
+    await authService.changePassword(req.user!.id, data);
 
-    //3) Посылаем ответ:
     res.status(200).json({ message: "Пароль успешно изменен" });
   },
 );
@@ -267,11 +263,11 @@ export const changePassword = catchAsync(
 export const deleteAccount = catchAsync(
   async (req: AuthRequest, res: Response) => {
     //1) Извлекаем пароль из запроса:
-    const { password } = req.body;
+    const { password } = req.body as DeleteAccountType;
     if (!password) throw new AppError(400, "Введите пароль для подтверждения");
 
     //2) Удаляем аккаунт в БД:
-    await authService.deleteAccount(req.user!.id, password);
+    await authService.deleteAccount(req.user.id, password);
 
     //3) Обнуляем куки клиенту:
     res.clearCookie("refreshToken", { path: "/api/identity/auth" });

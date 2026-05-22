@@ -113,6 +113,55 @@ export const ActivationSchema = z.object({
 export type ActivationInput = z.infer<typeof ActivationSchema>;
 export type ActivationParamArgs = ActivationInput["params"];
 
+//----------------------------1.4) Схема для смены пароля в профиле:--------------------------------------------//
+export const ChangePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(1, "Введите текущий пароль"),
+    newPassword: z
+      .string()
+      .trim()
+      .min(8, "Пароль должен иметь минимум 8 символов")
+      .max(32, "Пароль должен иметь максимум 32 символа")
+      // Хотя бы одна заглавная буква
+      .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
+      // Хотя бы одна строчная буква
+      .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
+      // Хотя бы одна цифра
+      .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
+      // Хотя бы один спецсимвол
+      .regex(
+        /[^a-zA-Z0-9]/,
+        "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
+      ),
+    confirmPassword: z.string(),
+  })
+  .strict()
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
+
+//Тип:
+export type ChangePasswordType = z.infer<typeof ChangePasswordSchema>;
+
+// Схема для бэкенда:
+export const BackendChangePasswordSchema = z.object({
+  body: ChangePasswordSchema,
+});
+
+//----------------------------1.5) Схема для удаления аккаунта из профиля:--------------------------------------------//
+export const DeleteAccountSchema = z.object({
+  password: z.string().min(1, "Введите пароль для подтверждения"),
+});
+
+//Тип:
+export type DeleteAccountType = z.infer<typeof DeleteAccountSchema>;
+
+// Схема для бэкенда:
+export const BackendDeleteAccountSchema = z.object({
+  body: DeleteAccountSchema,
+});
+
 //---------------------------------------------------------
 //-----------------Прочие схемы:---------------------//
 //Схема для добавления дополнительных данных о пользователе:
@@ -153,36 +202,6 @@ export const UpdateProfileSchema = z
   .strict();
 
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
-
-//Схема для смены пароля:
-export const ChangePasswordSchema = z
-  .object({
-    oldPassword: z.string().min(1, "Введите текущий пароль"),
-    newPassword: z
-      .string()
-      .trim()
-      .min(8, "Пароль должен иметь минимум 8 символов")
-      .max(32, "Пароль должен иметь максимум 32 символа")
-      // Хотя бы одна заглавная буква
-      .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
-      // Хотя бы одна строчная буква
-      .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
-      // Хотя бы одна цифра
-      .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
-      // Хотя бы один спецсимвол
-      .regex(
-        /[^a-zA-Z0-9]/,
-        "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
-      ),
-    confirmPassword: z.string(),
-  })
-  .strict()
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Пароли не совпадают",
-    path: ["confirmPassword"],
-  });
-
-export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>;
 
 //Схема для валидации введенного email (Forgot Password):
 export const ForgotPasswordSchema = z.object({
@@ -237,13 +256,6 @@ export const Verify2FASchema = z
       .regex(/^\d+$/, "Код должен состоять только из цифр"),
   })
   .strict(); // Обязательно strict, чтобы не пролезло лишнего
-
-///////Схема для удаления аккаунта:
-export const DeleteAccountSchema = z.object({
-  confirmPassword: z.string().min(1, "Введите пароль для подтверждения"),
-});
-
-export type DeleteAccountInput = z.infer<typeof DeleteAccountSchema>;
 
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------2) Модуль Catalog-------------------------------------------------------////

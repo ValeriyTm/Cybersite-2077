@@ -407,8 +407,8 @@ export const ProfilePage = () => {
               isOpen={showDeleteModal}
               onClose={() => setShowDeleteModal(false)}
               onSubmit={handleDeleteSubmit(onDeleteAccount)}
-              registration={regDelete("confirmPassword")}
-              error={deleteErrors.confirmPassword}
+              registration={regDelete("password")}
+              error={deleteErrors.password}
               isLoading={isDeleting}
             />
           )}
