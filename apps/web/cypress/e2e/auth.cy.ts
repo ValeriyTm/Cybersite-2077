@@ -60,7 +60,7 @@ describe("Проверка фунцкионала аутентификации �
 
     //2) Интерцепторы:
     cy.intercept("PATCH", "**/identity/profile/update").as("updateUser");
-    cy.intercept("GET", "**/identity/auth/refresh").as("refreshProfile");
+    cy.intercept("POST", "**/identity/auth/refresh").as("refreshProfile");
 
     //3) Авторизуемся в профиль:
     cy.contains("button", /вход/i).click();
@@ -121,7 +121,7 @@ describe("Проверка фунцкионала аутентификации �
   it("Должно успешно загрузить новый аватар", () => {
     // 1. Перехватываем запросы (загрузка и рефетч профиля):
     cy.intercept("POST", "**/identity/profile/avatar").as("uploadAvatar");
-    cy.intercept("GET", "**/identity/auth/refresh").as("refreshProfile");
+    cy.intercept("POST", "**/identity/auth/refresh").as("refreshProfile");
 
     //2) Авторизация (входим в аккаунт):
     cy.contains("button", /вход/i).click();

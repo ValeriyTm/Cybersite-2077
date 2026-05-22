@@ -19,14 +19,16 @@ export type UserGender = "MALE" | "FEMALE" | null; //null, т.к. поле оп�
 
 //Типизируем данные юзера:
 export interface IUser {
-  id: string;
   email: string;
   name: string;
-  role: UserRole;
-  avatarUrl: string | null;
+  id: string;
   phone: string | null;
   birthday: string | null; //Сервер отправляет Date | null, но Date будет преобразовано в string
   gender: UserGender;
+  role: UserRole;
+  isActivated: boolean;
+  avatarUrl: string | null;
+  createdAt: string;
   is2FAEnabled: boolean;
   defaultAddress: string | null;
   defaultLat: number | null;

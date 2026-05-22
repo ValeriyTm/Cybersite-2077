@@ -11,7 +11,11 @@ import { type IUser } from "@repo/types";
 
 export const useProfile = () => {
   //Извлекаем состояние авторизации и функции управления из Zustand:
-  const { isAuth, setAuth, clearAuth } = useAuthStore();
+  const isAuth = useAuthStore((state) => state.isAuth);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  //Не использовал деструктуризацию во избежание лишних ререндеров
+
   //Получаем доступ к управлению всем кэшем React Query:
   const queryClient = useQueryClient();
 
@@ -19,39 +23,36 @@ export const useProfile = () => {
   const { clearTrading } = useTradingStore();
 
   const query = useQuery<IUser>({
-    queryKey: ["profile"], //Имя, под которым сохраним данные в кэше.
-    //Функция, описывающая, как будем получать данные из кэша:
+    queryKey: ["profile"],
     queryFn: async () => {
       try {
-        //Осуществляем запрос к серверу:
-        const res = await $api.get("/identity/auth/refresh");
-        //Устанавливаем access токен из ответа в клиентское хранилище:
-        setAuth(res.data.accessToken);
-        //Возвращаем полученные данные о юзере:
-        return res.data.user;
+        const res = await $api.get("/identity/profile/me");
+        return res.data;
       } catch (e) {
         //Если сервер ответил 401, значит сессии нет, поэтому чистим localStorage:
         clearAuth();
         throw e; // Пробрасываем ошибку дальше в React Query
       }
     },
-    enabled: isAuth, // Запрос идет только если isAuth === true (запрос не уйдет, если пользователь не авторизован)
+    enabled: isAuth && !!accessToken, // Запрос идет только если isAuth === true (запрос не уйдет, если пользователь не авторизован)
     staleTime: 1000 * 60 * 5, //Кэшируем данные на 5 минут (время, когда данные "свежие")
     retry: false, //Отключаем повторные запросы при ошибке (например, нет куки).
   });
+
+  //Общая логика очистки клиента:
+  const localLogoutCleanup = () => {
+    clearAuth(); // Чистим состояние авторизации
+    queryClient.removeQueries({ queryKey: ["profile"] }); // Сбрасываем кэш профиля
+    clearTrading(); // Очищаем корзину
+    resetOrders(); // Очищаем заказы
+  };
 
   const logout = async () => {
     try {
       //Уведомляем сервер о закрытии сессии, чтобы тот удалил токен из БД:
       await $api.post("/identity/auth/logout");
     } finally {
-      //Чистим localStorage:
-      clearAuth();
-      //Чистим кэш, чтобы следующий вошедший пользователь не увидел данные предыдущего на долю секунды:
-      queryClient.removeQueries({ queryKey: ["profile"] });
-      //Очищаем корзину и заказы::
-      clearTrading();
-      resetOrders();
+      localLogoutCleanup();
     }
   };
 
@@ -60,13 +61,7 @@ export const useProfile = () => {
       //Уведомляем сервер о закрытии всех сессий, чтобы тот удалил токен из БД:
       await $api.post("/identity/auth/logout-all");
     } finally {
-      //Чистим localStorage:
-      clearAuth();
-      //Удаляем данные профиля из кэша, чтобы следующий вошедший пользователь не увидел данные предыдущего на долю секунды:
-      queryClient.removeQueries({ queryKey: ["profile"] });
-      //Очищаем корзину и заказы::
-      clearTrading();
-      resetOrders();
+      localLogoutCleanup();
     }
   };
 
@@ -74,7 +69,7 @@ export const useProfile = () => {
     user: query.data, //Объект пользователя
     isLoading: isAuth && query.isLoading && !query.isError, //Мы показываем состояние загрузки только если мы авторизованы и данные реально качаются.
     isError: query.isError,
-    logout: logout,
+    logout,
     logoutAll,
     refetch: query.refetch, //Позволяет вручную обновить данные профиля (например, после смены аватарки).
   };

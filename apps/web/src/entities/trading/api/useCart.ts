@@ -1,11 +1,14 @@
 //Состояния:
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTradingStore } from "@/entities/trading/model";
+import { useShallow } from "zustand/react/shallow"; // Для стабильности ссылок
 //API:
 import { $api } from "@/shared/api";
 //Уведомления:
 import toast from "react-hot-toast";
+//Типы:
 import { type MotorcycleCart } from "@/entities/catalog";
+import { useEffect } from "react";
 
 export const useCart = () => {
   //Достаем методы из Zustand. Это позволяет нам мгновенно менять UI, не дожидаясь ответа от сервера (концепция Optimistic UI):
@@ -16,19 +19,33 @@ export const useCart = () => {
     removeSelectedLocally,
     toggleSelectItem,
     toggleSelectAll,
-  } = useTradingStore();
+  } = useTradingStore(
+    useShallow((state) => ({
+      setCart: state.setCart,
+      addToCartLocally: state.addToCartLocally,
+      updateItemQuantity: state.updateItemQuantity,
+      removeSelectedLocally: state.removeSelectedLocally,
+      toggleSelectItem: state.toggleSelectItem,
+      toggleSelectAll: state.toggleSelectAll,
+    })),
+  );
 
   //1) Загрузка корзины:
-  const { isLoading } = useQuery({
+  const query = useQuery({
     queryKey: ["cart"], //Уникальный идентификатор данных корзины в кэше.
     queryFn: async () => {
       const { data } = await $api.get<MotorcycleCart[]>("/trading/cart");
-      setCart(data);
       return data;
-      //Запрос идет на бэкенд (/trading/cart), получает массив товаров и сразу прокидывает его в Zustand через setCart(data), чтобы цифры в хедере и список товаров обновились.
     },
     staleTime: Infinity, //Вечное время жизни кэша. Мы сами будем управлять обновлением корзины через мутации, поэтому лишние автоматические перезапросы нам не нужны.
   });
+
+  // Синхронизируем первоначальный кэш React Query с Zustand:
+  useEffect(() => {
+    if (query.data) {
+      setCart(query.data);
+    }
+  }, [query.data, setCart]);
 
   //2) Добавление в корзину:
   const { mutate: addToCart } = useMutation({
@@ -91,6 +108,7 @@ export const useCart = () => {
     onSuccess: (data) => setCart(data),
   });
 
+  //5) Удаление выбранных товаров из корзины:
   const { mutate: removeSelected } = useMutation({
     mutationFn: async (ids: string[]) => {
       //Отправляем запрос на массовое удаление
@@ -108,7 +126,7 @@ export const useCart = () => {
     },
   });
 
-  //Мутация переключения одного товара
+  //6) Мутация переключения одного товара:
   const { mutate: toggleSelect } = useMutation({
     mutationFn: async ({ id, selected }: { id: string; selected: boolean }) => {
       // Optimistic UI: меняем галочку в Zustand мгновенно
@@ -123,7 +141,7 @@ export const useCart = () => {
     onSuccess: (data) => setCart(data), // Синхронизируем с Redis
   });
 
-  //Мутация "Выбрать всё"
+  //7) Мутация "Выбрать всё"
   const { mutate: selectAll } = useMutation({
     mutationFn: async (isSelected: boolean) => {
       toggleSelectAll(isSelected); // Optimistic UI
@@ -141,7 +159,7 @@ export const useCart = () => {
     updateQuantity,
     removeItem,
     removeSelected,
-    isLoading,
+    isLoading: query.isLoading,
     toggleSelect,
     selectAll,
   };

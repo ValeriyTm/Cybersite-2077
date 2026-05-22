@@ -9,12 +9,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 //Google reCAPTCHA v3:
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+//Состояние:
+import { useAuthStore } from "@/features/auth";
 //React Helmet для SEO:
 import { HelmetProvider } from "react-helmet-async";
 //Компонент, который отобразится при глобальной ошибке:
 import { GlobalErrorFallback } from "@/shared/ui";
 //Глобальные стили:
 import "./styles/index.scss";
+import axios from "axios";
+import { useEffect } from "react";
 
 // Создаем клиент React Query:
 const queryClient = new QueryClient({
@@ -27,6 +31,25 @@ const queryClient = new QueryClient({
 });
 
 export const App = () => {
+  const isAuth = useAuthStore((state) => state.isAuth);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAuth = useAuthStore((state) => state.setAuth);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+  //Не использовал деструктуризацию во избежание лишних ререндеров в компоненте такого высокого уровня
+
+  useEffect(() => {
+    //Если по данным localStorage юзер залогинен, но токена в памяти нет (была перезагрузка):
+    if (isAuth && !accessToken) {
+      axios
+        .post(`${import.meta.env.VITE_API_URL}/api/identity/auth/refresh`, {}, { withCredentials: true })
+        .then((res) => {
+          setAuth(res.data.accessToken);
+        })
+        .catch(() => {
+          clearAuth(); // Если кука протухла — разлогиниваем
+        });
+    }
+  }, [accessToken, clearAuth, isAuth, setAuth]);
 
   return (
     <GoogleReCaptchaProvider

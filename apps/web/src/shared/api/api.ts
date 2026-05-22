@@ -29,15 +29,22 @@ $api.interceptors.request.use((config) => {
 
 //Обработка ошибки 401:
 const refreshAuthLogic = (failedRequest: any) => {
-  const url = failedRequest.response.config.url;
+  const url = failedRequest.response?.config?.url || "";
+  const token = useAuthStore.getState().accessToken;
 
-  //1) Защита от бесконечного цикла:
+  //1) Защита от бесконечного цикла рефреша:
   //Если сам запрос на обновление токена упал с 401, мы не пытаемся обновиться еще раз, а прекращаем:
-  if (failedRequest.response.config.url.includes("/identity/auth/refresh")) {
+  if (url.includes("/identity/auth/refresh")) {
     return Promise.reject(failedRequest);
   }
 
-  //2) Исключения для публичных форм:
+  // 2) Если упал запрос профиля, но у нас в памяти пустой токен,
+  // значит рефрешить нечего, это просто неавторизованный запрос при первой загрузке.
+  if (url.includes("/identity/profile/me") && !token) {
+    return Promise.reject(failedRequest);
+  }
+
+  //3) Исключения для публичных форм:
   //(если ошибка 401 пришла при попытке входа (неверный пароль), мы не должны запускать обновление токена, так как его еще просто нет)
   if (
     url.includes("/identity/auth/login") ||
@@ -47,7 +54,7 @@ const refreshAuthLogic = (failedRequest: any) => {
     return Promise.reject(failedRequest);
   }
 
-  //3) Логика обновления:
+  //4) Логика обновления:
   return (
     //Используем чистый axios, а не $api, т.к. не нужно прикреплять просроченный access токен
     axios

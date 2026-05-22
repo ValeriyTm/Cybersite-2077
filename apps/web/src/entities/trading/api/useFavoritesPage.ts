@@ -8,7 +8,7 @@ export const useFavoritesPage = () => {
   const { favoriteIds } = useTradingStore();
 
   return useInfiniteQuery({
-    queryKey: ["favorites-full", favoriteIds],
+    queryKey: ["favorites-full"],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
       //Отправляем массив ID мотоциклов из избранного на сервер, чтобы получить все данные о мотоциклах в избранном:

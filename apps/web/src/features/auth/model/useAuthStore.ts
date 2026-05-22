@@ -42,8 +42,7 @@ export const useAuthStore = create<AuthState>()(
         name: "auth-storage", //Имя ключа для данных в localStorage
         //Используем функцию partialize, чтобы не сохранять временные данные и флаги загрузки в localStorage:
         partialize: (state) => ({
-          //Тут указываем, что нужно сохранять в localStorage:
-          accessToken: state.accessToken,
+          // accessToken: state.accessToken,
           isAuth: state.isAuth,
         }),
       },

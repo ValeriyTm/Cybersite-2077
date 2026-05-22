@@ -49,10 +49,13 @@ export const Header = () => {
   const [suggestions, setSuggestions] = useState<MotorcycleShort[]>([]);
   const searchRef = useRef<HTMLFormElement>(null);
 
-  const { activeOrdersCount, fetchActiveCount } = useOrderStore();
+  const { activeOrdersCount } = useOrderStore();
 
-  const { resetOrders } = useOrderStore();
-  const { clearTrading, fetchCart, fetchFavoritesIds } = useTradingStore();
+  const resetOrders = useOrderStore((state) => state.resetOrders);
+  const fetchActiveCount = useOrderStore((state) => state.fetchActiveCount);
+  const fetchCart = useTradingStore((state) => state.fetchCart);
+  const fetchFavoritesIds = useTradingStore((state) => state.fetchFavoritesIds);
+  const clearTrading = useTradingStore((state) => state.clearTrading);
 
 
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -104,7 +107,7 @@ export const Header = () => {
       clearTrading(); //Очистка счетчика корзины и избранного
       resetOrders(); //Очистка счетчика активных заказов
     }
-  }, [isAuth, fetchCart, fetchActiveCount, fetchFavoritesIds, clearTrading, resetOrders]);
+  }, [isAuth]);
   //Если пользователь логинится, то грузим инфу о заказах и т.п. Если логаут - обнуляем.
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
