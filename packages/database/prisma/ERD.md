@@ -118,7 +118,7 @@ erDiagram
 "Order" {
   String id PK
   Int orderNumber UK
-  String userId FK
+  String userId FK "nullable"
   OrderStatus status
   String address
   Float deliveryLat
@@ -131,6 +131,9 @@ erDiagram
   PaymentStatus paymentStatus "nullable"
   String paymentUrl "nullable"
   String warehouseId FK
+  String customerEmail
+  String customerName
+  String customerPhone "nullable"
   DateTime createdAt
   DateTime updatedAt
 }
@@ -160,7 +163,8 @@ erDiagram
 }
 "UsedPromo" {
   String id PK
-  String userId FK
+  String userId FK "nullable"
+  String customerEmail
   String promoCodeId FK
   DateTime usedAt
 }
@@ -195,13 +199,13 @@ erDiagram
 "Favorite" }o--|| "Motorcycle" : motorcycle
 "Stock" }o--|| "Motorcycle" : motorcycle
 "Stock" }o--|| "Warehouse" : warehouse
-"Order" }o--|| "users" : user
+"Order" }o--o| "users" : user
 "Order" }o--|| "Warehouse" : warehouse
 "OrderItem" }o--|| "Order" : order
 "OrderItem" }o--|| "Motorcycle" : motorcycle
 "PersonalDiscount" }o--|| "users" : user
 "PersonalDiscount" }o--|| "Motorcycle" : motorcycle
-"UsedPromo" }o--|| "users" : user
+"UsedPromo" }o--o| "users" : user
 "UsedPromo" }o--|| "PromoCode" : promoCode
 "support_tickets" }o--o| "users" : user
 "support_attachments" }o--|| "support_tickets" : ticket
@@ -360,6 +364,9 @@ Properties as follows:
 - `paymentStatus`:
 - `paymentUrl`:
 - `warehouseId`:
+- `customerEmail`:
+- `customerName`:
+- `customerPhone`:
 - `createdAt`:
 - `updatedAt`:
 
@@ -402,6 +409,7 @@ Properties as follows:
 
 - `id`:
 - `userId`:
+- `customerEmail`:
 - `promoCodeId`:
 - `usedAt`:
 

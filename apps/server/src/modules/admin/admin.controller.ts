@@ -281,7 +281,6 @@ export const getOrders = catchAsync(async (req: AuthRequest, res: Response) => {
   const { page, limit, status, email } =
     req.query as unknown as GetOrdersAdminArgs;
   const skip = (page - 1) * limit;
-  console.log("status: ", status);
 
   const [orders, total] = await orderService.getOrders(
     skip,

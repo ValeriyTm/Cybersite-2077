@@ -1327,3 +1327,75 @@ export const GetNewsSchema = z.object({
 });
 export type GetNewsInput = z.infer<typeof GetNewsSchema>;
 export type GetNewsServiceArgs = GetNewsInput["params"];
+
+////-----------------------------------------------------------------------------------------------////
+////--------------------------11) Прочее-------------------------------------------------------////
+////-----------------------------------------------------------------------------------------------////
+//----------------------------11.1) Схема для валидации .env на сервере:-------------------------------------//
+// Вспомогательный валидатор для безопасной проверки нативных URL-адресов:
+const safeUrl = z.string().refine(
+  (val) => {
+    try {
+      new URL(val);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  { message: "Должен быть валидным URL-адресом (например, http://localhost)" },
+);
+
+export const serverEnvSchema = z.object({
+  //Основные домены и порты:
+  API_URL: safeUrl,
+  PORT: z
+    .string()
+    .default("3001")
+    .transform((val) => parseInt(val, 10)),
+  CLIENT_URL: safeUrl,
+  //Подключение к Базам Данных:
+  POSTGRES_USER: z.string().min(1, "POSTGRES_USER обязателен"),
+  POSTGRES_PASSWORD: z.string().min(1, "POSTGRES_PASSWORD обязателен"),
+  POSTGRES_DB: z.string().min(1, "POSTGRES_DB обязателен"),
+  DATABASE_URL: z.string().min(1, "DATABASE_URL обязателен"),
+  REDIS_HOST: z.string().min(1, "REDIS_HOST обязателен"),
+  REDIS_PORT: z
+    .string()
+    .default("6379")
+    .transform((val) => parseInt(val, 10)),
+
+  MONGO_URI: z.string().min(1, "MONGO_URI обязателен"),
+  //Системные сервисы (Elastic, Loki):
+  ELASTIC_NODE: safeUrl,
+  LOKI_URL: safeUrl,
+  //Почтовый сервис (SMTP):
+  SMTP_HOST: z.string().min(1, "SMTP_HOST обязателен"),
+  SMTP_PORT: z
+    .string()
+    .default("587")
+    .transform((val) => parseInt(val, 10)),
+  SMTP_USER: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .pipe(z.email({ message: "SMTP_USER должен быть валидным email-адресом" })),
+  SMTP_PASSWORD: z.string().min(8, "SMTP_PASSWORD слишком короткий"),
+  //Аутентификация (JWT):
+  JWT_ACCESS_SECRET: z.string().min(10, "JWT_ACCESS_SECRET слишком короткий"),
+  JWT_REFRESH_SECRET: z.string().min(10, "JWT_REFRESH_SECRET слишком короткий"),
+  //OAuth Google & reCaptcha:
+  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID обязателен"),
+  GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET обязателен"),
+  GOOGLE_CALLBACK_URL: safeUrl,
+  GOOGLE_RECAPTCHA_SECRET_KEY: z
+    .string()
+    .min(1, "GOOGLE_RECAPTCHA_SECRET_KEY обязателен"),
+  //ЮKassa:
+  YOOKASSA_SHOP_ID: z.string().min(1, "YOOKASSA_SHOP_ID обязателен"),
+  YOOKASSA_SECRET_KEY: z.string().min(1, "YOOKASSA_SECRET_KEY обязателен"),
+  YOOKASSA_RETURN_URL: safeUrl,
+  YOOKASSA_IPS: z.string().min(1, "YOOKASSA_IPS обязателен"),
+  //Telegram:
+  TG_BOT_TOKEN: z.string().min(1, "TG_BOT_TOKEN обязателен"),
+  TG_ADMIN_CHAT_ID: z.string().min(1, "TG_ADMIN_CHAT_ID обязателен"),
+});

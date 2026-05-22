@@ -22,6 +22,21 @@ export class OrderService {
   async createOrder(userId: string, data: CreateOrderServiceArgs) {
     const { items, address, coords, deliveryInfo, totalPrice } = data;
 
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        email: true,
+        name: true,
+        phone: true,
+      },
+    });
+
+    if (!user) {
+      throw new AppError(404, "Пользователь не найден");
+    }
+
     //1.Транзакция в БД:
     const order = await prisma.$transaction(async (tx) => {
       //1.1.Создаем запись заказа и товаров в нем:
@@ -30,6 +45,9 @@ export class OrderService {
           userId,
           status: "PENDING", //Резерв на 1 час
           address,
+          customerEmail: user.email,
+          customerName: user.name,
+          customerPhone: user.phone!,
           deliveryLat: coords.lat,
           deliveryLng: coords.lng,
           distance: deliveryInfo.distanceKm,
@@ -88,6 +106,7 @@ export class OrderService {
           await tx.usedPromo.create({
             data: {
               userId,
+              customerEmail: user.email,
               promoCodeId: promo.id,
             },
           });
@@ -381,18 +400,16 @@ export class OrderService {
     const where: any = {};
     if (status) where.status = status;
     if (email) {
-      where.user = {
+      where.customerEmail = {
         email: { contains: String(email), mode: "insensitive" },
       };
     }
 
-    return await Promise.all([
+    //Берем данные из БД:
+    const [orders, count] = await Promise.all([
       prisma.order.findMany({
         where,
         include: {
-          user: {
-            select: { name: true, email: true, phone: true },
-          },
           items: {
             include: {
               motorcycle: { select: { model: true } },
@@ -405,6 +422,20 @@ export class OrderService {
       }),
       prisma.order.count({ where }),
     ]);
+
+    // 3) Форматируем ответ, чтобы фронтенд получил привычную структуру { user: { name, email, phone } }
+    const formattedOrders = orders.map((order) => {
+      return {
+        ...order,
+        user: {
+          name: order.customerName,
+          email: order.customerEmail,
+          phone: order.customerPhone || "—",
+        },
+      };
+    });
+
+    return [formattedOrders, count] as const;
   }
 
   //Изменить статус заказа:

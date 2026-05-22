@@ -123,19 +123,36 @@ export class DiscountService {
 
   //Применение промокода:
   async applyPromoCode(code: string, userId: string) {
-    const promo = await prisma.promoCode.findUnique({
-      where: { code: code.toUpperCase(), isActive: true },
-      include: { usedPromos: { where: { userId } } }, //Подтягиваем использование этим юзером
-    });
+    //Параллельно ищем промокод и email пользователя:
+    const [promo, user] = await Promise.all([
+      prisma.promoCode.findUnique({
+        where: { code: code.toUpperCase(), isActive: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { email: true }, // Берем только email, чтобы не грузить лишние данные
+      }),
+    ]);
+
+    if (!user) {
+      throw new AppError(404, "Пользователь не найден");
+    }
 
     if (!promo || promo.expiresAt < new Date()) {
       throw new AppError(400, "Промокод не найден или истек");
     }
 
     //Если промокод уже использован юзером - отказ
-    const alreadyUsed = await prisma.usedPromo.findFirst({
-      where: { userId, promoCodeId: promo.id },
+    const alreadyUsed = await prisma.usedPromo.findUnique({
+      where: {
+        //Составной ключ используем:
+        customerEmail_promoCodeId: {
+          customerEmail: user.email,
+          promoCodeId: promo.id,
+        },
+      },
     });
+
     if (alreadyUsed) {
       throw new AppError(400, "Вы уже использовали этот промокод");
     }

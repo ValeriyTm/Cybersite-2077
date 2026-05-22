@@ -39,26 +39,30 @@ export class TokenService {
   //Метод для валидации (расшифровка, проверка подписи и срока жизни) access токена:
   validateAccessToken(token: string) {
     try {
-      return jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as UserPayload;
+      return jwt.verify(
+        token,
+        process.env.JWT_ACCESS_SECRET!,
+      ) as unknown as UserPayload;
       //Для проверки подписи используем JWT_ACCESS_SECRET
-    } catch (error: any) {
-      // Дифференцируем ошибки в консоли сервера для удобства отладки
-      if (error.name === "TokenExpiredError") {
-        console.log(
-          "ℹ️ [JWT Access]: Срок действия токена истек (обычное явление)",
-        );
-      } else if (error.name === "JsonWebTokenError") {
-        console.error(
-          "🚨 [JWT Access]: Критическая ошибка! Подпись токена невалидна или токен изменен:",
-          error.message,
-        );
-      } else {
-        console.error(
-          "❓ [JWT Access]: Непредвиденная ошибка валидации токена:",
-          error,
-        );
+    } catch (error) {
+      if (error instanceof Error) {
+        // Дифференцируем ошибки в консоли сервера для удобства отладки
+        if (error.name === "TokenExpiredError") {
+          console.log(
+            "ℹ️ [JWT Access]: Срок действия токена истек (обычное явление)",
+          );
+        } else if (error.name === "JsonWebTokenError") {
+          console.error(
+            "🚨 [JWT Access]: Критическая ошибка! Подпись токена невалидна или токен изменен:",
+            error.message,
+          );
+        } else {
+          console.error(
+            "❓ [JWT Access]: Непредвиденная ошибка валидации токена:",
+            error,
+          );
+        }
       }
-
       return null;
     }
   }
@@ -69,16 +73,18 @@ export class TokenService {
       const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!);
 
       return payload;
-    } catch (error: any) {
-      if (error.name === "TokenExpiredError") {
-        console.log(
-          "ℹ️ [JWT Refresh]: Refresh-токен протух. Сессия окончательно завершена.",
-        );
-      } else {
-        console.error(
-          "🚨 [JWT Refresh]: Попытка подделки Refresh-токена или ротация секретных ключей:",
-          error.message,
-        );
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name === "TokenExpiredError") {
+          console.log(
+            "ℹ️ [JWT Refresh]: Refresh-токен протух. Сессия окончательно завершена.",
+          );
+        } else {
+          console.error(
+            "🚨 [JWT Refresh]: Попытка подделки Refresh-токена или ротация секретных ключей:",
+            error.message,
+          );
+        }
       }
       return null;
     }
