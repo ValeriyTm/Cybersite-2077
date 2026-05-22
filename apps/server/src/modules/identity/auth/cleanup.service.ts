@@ -19,8 +19,20 @@ export class CleanupService {
         jobId: "daily-cleanup",
       },
     );
-    console.log(
-      "🧹 Cleanup Service (BullMQ): Scheduled daily task initialized",
+
+    await cleanupQueue.add(
+      "delete-expired-tokens",
+      {},
+      {
+        repeat: {
+          pattern: "0 * * * *", // Запуск раз в час
+        },
+        jobId: "daily-tokens-cleanup",
+        removeOnComplete: true, // Подчищаем историю выполнения в Redis
+        removeOnFail: true,
+      },
     );
+
+    console.log("🧹 Сервис очистки БД на основе BullMQ запущен");
   }
 }

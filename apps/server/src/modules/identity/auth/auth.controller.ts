@@ -197,16 +197,28 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   //4) Ищем этот конкретный токен в нашей базе данных:
   const tokenFromDb = await sessionService.findToken(refreshToken);
 
-  //Если подпись валидна, но в БД токена нет, то это повторное использование (может быть взлом):
-  if (userData && !tokenFromDb) {
-    //Если токена нет в базе
-    await sessionService.removeAllUserSessions(userData.id);
+  //Если токен в БД есть, но он уже отозван:
+  if (tokenFromDb && tokenFromDb.isRevoked) {
+    // Считаем разницу во времени между текущим запросом и моментом отзыва токена:
+    const timeSinceRevocation =
+      Date.now() - new Date(tokenFromDb.revokedAt!).getTime();
 
-    res.clearCookie("refreshToken", cookieOptions);
-    throw new AppError(
-      401,
-      "Попытка повторного использования токена. Все сессии сброшены.",
-    );
+    if (timeSinceRevocation < 4000) {
+      //Борьба с состоянием гонки:
+      //Прошло меньше 4 секунд, то возвращаем ошибку 401, чтобы клиентский Axios прервал этот дублирующий запрос.
+      throw new AppError(
+        401,
+        "Параллельный дублирующий запрос. Пожалуйста, игнорируйте.",
+      );
+    } else {
+      //Если прошло более 4 сек — это может быть реальное повторное использование токена злоумышленником:
+      await sessionService.removeAllUserSessions(userData.id);
+      res.clearCookie("refreshToken", cookieOptions);
+      throw new AppError(
+        401,
+        "Попытка повторного использования токена. Все сессии сброшены.",
+      );
+    }
   }
 
   //5) Идем в базу за самыми свежими данными о пользователе:

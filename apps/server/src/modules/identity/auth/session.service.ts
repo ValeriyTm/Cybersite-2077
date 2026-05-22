@@ -74,16 +74,19 @@ export class SessionService {
 
     //Выполняем удаление старого и запись нового токена в единой транзакции:
     await prisma.$transaction([
-      prisma.token.deleteMany({
+      //Помечаем старый токен как отозванный:
+      prisma.token.update({
         where: { refreshToken: dto.refreshToken },
+        data: {
+          isRevoked: true,
+          revokedAt: new Date(),
+        },
       }),
 
       prisma.token.create({
         data: {
           refreshToken: tokens.refreshToken,
-          user: {
-            connect: { id: dto.id },
-          },
+          userId: dto.id,
         },
       }),
     ]);

@@ -24,7 +24,7 @@ export class TelegramService {
         .launch()
         .catch((err) => console.error("Ошибка запуска TG бота:", err));
 
-      console.log("🤖Telegram Bot успешно инициализирован");
+      console.log("🤖 Telegram Bot успешно инициализирован");
 
       //Через команду "/stats" в боте получим количество всех заказов:
       this.bot.command("stats", async (ctx) => {

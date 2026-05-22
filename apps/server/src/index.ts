@@ -21,7 +21,7 @@ import "./modules/discount/discount.worker.js"; //Воркер скидок, ч�
 import "./modules/identity/auth/cleanup.worker.js"; //Воркер сервиса очистки аккаунтов, чтобы он начал слушать задачи.
 import "./modules/reports/reports.worker.js"; //Воркер отчетов.
 
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 async function bootstrap() {
@@ -50,16 +50,15 @@ async function bootstrap() {
     await initDiscountCron(); //Запускаем планировщик задач для скидок и промокодов
 
     TelegramService.init(); //Подключаемся к ТГ-боту
-    console.log("К ТГ-боту подключение завершено");
+    console.log("✉  К ТГ-боту подключение завершено");
 
     initNotificationListeners(); //Запускаем слушателя событий для сервиса оповещений
     initReportsSchedule(); //Запускаем работу очереди для сервиса отчетов
 
     await CleanupService.init(); //Запускаем сервис удаления неподтвержденных аккаунтов спустя 7 дней
-    console.log("Сервис очистки неподтвержденных аккаунтов запущен");
 
     //3.Только после успеха запускаем сервер:
-    // @ts-ignore:
+
     const server = app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
     });

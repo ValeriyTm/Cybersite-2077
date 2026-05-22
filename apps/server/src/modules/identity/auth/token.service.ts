@@ -42,7 +42,7 @@ export class TokenService {
       return jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as UserPayload;
       //Для проверки подписи используем JWT_ACCESS_SECRET
     } catch (error) {
-      logger.error(`Проблемы валидации токена: `, error);
+      console.error(`Проблемы валидации токена: `, error);
       return null;
     }
   }

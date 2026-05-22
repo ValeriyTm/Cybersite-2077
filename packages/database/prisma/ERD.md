@@ -38,6 +38,8 @@ erDiagram
   String refreshToken UK
   String userId FK
   DateTime createdAt
+  Boolean isRevoked
+  DateTime revokedAt "nullable"
 }
 "Brand" {
   String id PK
@@ -241,6 +243,8 @@ Properties as follows:
 - `refreshToken`:
 - `userId`:
 - `createdAt`:
+- `isRevoked`:
+- `revokedAt`:
 
 ### `Brand`
 

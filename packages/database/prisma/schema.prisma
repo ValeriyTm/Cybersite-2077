@@ -100,11 +100,15 @@ model User {
 
 //Таблица Refresh-токенов для пользователя:
 model Token {
-  id           String   @id @default(uuid())
-  refreshToken String   @unique @db.Text // Используем Text для длинных строк
+  id           String @id @default(uuid())
+  refreshToken String @unique @db.Text // Используем Text для длинных строк
   userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  isRevoked Boolean   @default(false)
+  revokedAt DateTime?
 
   @@index([userId]) // Индекс для быстрого поиска всех сессий юзера
   @@map("tokens")
