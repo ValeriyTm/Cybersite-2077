@@ -4,13 +4,13 @@ import { CookieOptions, Request, Response } from "express";
 import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js"; //Интерфейс получаемых данных от пользователя:
 //Схемы валидации Zod:
 import {
-  LoginSchema,
   ChangePasswordSchema,
   ResetPasswordSchema,
   Verify2FASchema,
   ForgotPasswordSchema,
   RegisterArgs,
   LoginArgs,
+  ActivationParamArgs,
 } from "@repo/validation";
 //Сервис для взаимодействия с БД для подмодуля auth:
 import { authService } from "./auth.service.js";
@@ -54,7 +54,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
 //Контроллер для работы с активацией аккаунта:
 export const activate = catchAsync(async (req: Request, res: Response) => {
   //Извлекаем токен из запроса пользователя:
-  const { token } = req.params;
+  const { token } = req.params as ActivationParamArgs;
   //Указываем пользователя как активировавшего свой аккаунт:
 
   await authService.activate(token);

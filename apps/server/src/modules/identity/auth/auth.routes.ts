@@ -7,7 +7,11 @@ import { authLimiter } from "../../../shared/middlewares/rateLimiter.js"; //rate
 import { noCacheMiddleware } from "../../../shared/middlewares/noCacheMiddleware.js"; //Middleware для запрета кэширования данных на стороне клиента
 import { validate } from "src/shared/middlewares/validate.js";
 //Схемы валидации:
-import { LoginSchema, RegisterSchema } from "@repo/validation";
+import {
+  ActivationSchema,
+  LoginSchema,
+  RegisterSchema,
+} from "@repo/validation";
 
 const router = Router();
 
@@ -21,7 +25,11 @@ router.post(
 );
 
 //Роут активации аккаунта по ссылке:
-router.get("/activate/:token", AuthController.activate);
+router.get(
+  "/activate/:token",
+  validate(ActivationSchema),
+  AuthController.activate,
+);
 
 //Роут входа в аккаунт:
 router.post("/login", authLimiter, validate(LoginSchema), AuthController.login);

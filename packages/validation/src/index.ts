@@ -103,6 +103,16 @@ export type LoginArgs = LoginInput["body"];
 export const LoginFrontendSchema = LoginSchema.shape.body;
 //Чистый тип для фронтенда:
 export type LoginFormType = z.output<typeof LoginFrontendSchema>; //Использую output, т.к. с infer получили бы для rememberMe тип boolean | undefined из-за default()
+
+//----------------------------1.3) Схема для активации аккаунта:--------------------------------------------//
+export const ActivationSchema = z.object({
+  params: z.object({
+    token: z.uuid({ message: "Неверный формат токена" }),
+  }),
+});
+export type ActivationInput = z.infer<typeof ActivationSchema>;
+export type ActivationParamArgs = ActivationInput["params"];
+
 //---------------------------------------------------------
 //-----------------Прочие схемы:---------------------//
 //Схема для добавления дополнительных данных о пользователе:
