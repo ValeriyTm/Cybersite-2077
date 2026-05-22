@@ -14,12 +14,7 @@ import { sessionService } from "./session.service.js";
 //Мой сервис для реазилации 2FA:
 import { twoFactorService } from "./two-factor.service.js";
 //Схемы валидации Zod:
-import {
-  RegisterInput,
-  LoginInput,
-  ChangePasswordInput,
-  ResetPasswordInput,
-} from "@repo/validation";
+import { ChangePasswordInput, ResetPasswordInput } from "@repo/validation";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
 //Для работы с путями и файлами:
@@ -145,21 +140,8 @@ export class AuthService {
       throw new AppError(401, "Неверный email или пароль");
     }
 
-    //4) Проверяем, нужно ли требовать 2FA:
-    const isAdmin = user.role === "ADMIN" || user.role === "SUPERADMIN";
-    //Если пользователь имеет роль админ/суперадмин и у него включена 2FA, то возвращаем в контроллер поле "requires2FA: true", которое заставит пользователя проходить 2FA:
-    if (isAdmin && user.is2FAEnabled) {
-      return {
-        requires2FA: true,
-        userId: user.id,
-      };
-    }
-
-    console.log("user: ", user);
     //Возвращаем все необходимые для работы клиента поля:
-    const result = formatUserResponse(user);
-    console.log("login result: ", result);
-    return result;
+    return formatUserResponse(user);
   }
 
   async getUserData(userId: string) {

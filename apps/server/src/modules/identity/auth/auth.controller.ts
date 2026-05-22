@@ -1,6 +1,6 @@
 //--Тут связь с HTTP. Этот код принимает запросы от клиентов, направляет их в сервис (где осуществляется взаимодействие с БД), получает ответ от сервиса, затем отправляет ответ клиентам--
 //Типы:
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js"; //Интерфейс получаемых данных от пользователя:
 //Схемы валидации Zod:
 import {
@@ -76,35 +76,31 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   }
 
   //Передаём данные сервису для проверки на корректность введенных данных, активирован ли пользователь и не является ли запрос ботом. А тот нам передаёт ответ (ошибку или данные пользователя с полем необходимости пройти 2FA):
-  const loginResult = await authService.login(data);
+  const user = await authService.login(data);
 
   //Проверка на необходимость 2FA:
-  if ("requires2FA" in loginResult && loginResult.requires2FA) {
+  if (user.is2FAEnabled) {
     return res.status(200).json({
       requires2FA: true,
-      userId: loginResult.userId,
+      userId: user.id,
     });
-  }
-  //Если сервис вернул { requires2FA: true }, контроллер прерывает обычный вход и отправляет клиенту сигнал: «Пароль верный, но теперь введи 6 цифр из приложения»
+  } //Если сервис вернул { requires2FA: true }, контроллер прерывает обычный вход и отправляет клиенту сигнал, что пароль верный, но теперь нужно ввести 6 цифр из приложения
 
   //Если 2FA не нужна, идем далее:
-
-  //Извлекаем из ответа от сервиса данные о пользователе и поле rememberMe:
-  const { ...user } = loginResult;
 
   //Генерируем токены:
   const tokens = tokenService.generateTokens({
     id: user.id,
     email: user.email,
     role: user.role,
-    name: user.name, //05.04.2026
+    name: user.name,
   });
 
   //Записываем сессию в БД:
-  await sessionService.saveToken(user.id as string, tokens.refreshToken);
+  await sessionService.saveToken(user.id, tokens.refreshToken);
 
   //Задаём настройки куки:
-  const cookieOptions: any = {
+  const cookieOptions: CookieOptions = {
     httpOnly: true, // Защита от XSS
     secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
     sameSite: "lax",
@@ -113,14 +109,12 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     //Если rememberMe - false, то undefined сделает куку сессионной.
     //Если rememberMe - true, то задаём 7 дней для куки
   };
-  //Посылаем куки:
-  res.cookie("refreshToken", tokens.refreshToken, cookieOptions);
 
-  //Посылаем ответ пользователю:
+  res.cookie("refreshToken", tokens.refreshToken, cookieOptions);
   res.status(200).json({
     message: "Вход выполнен успешно",
-    accessToken: tokens.accessToken, //Отправляю пользователю Access токен
-    user: user,
+    accessToken: tokens.accessToken,
+    user,
   });
 });
 

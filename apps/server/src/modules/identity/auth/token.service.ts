@@ -3,6 +3,8 @@
 import jwt from "jsonwebtoken";
 //Логгер Grafana Loki:
 import { logger } from "../../../shared/lib/logger.js";
+//Типы:
+import { Role } from "@repo/database/generated/prisma";
 
 // Определяем форму данных в токене
 export interface UserPayload {
@@ -14,9 +16,16 @@ export interface UserPayload {
   exp: number;
 }
 
+interface Payload {
+  id: string;
+  email: string;
+  role: Role;
+  name: string;
+}
+
 export class TokenService {
   //Метод для генерации пары "access token - refresh token":
-  generateTokens(payload: any) {
+  generateTokens(payload: Payload) {
     const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
       expiresIn: "10m", //Срок жизни 5 минут
     });
