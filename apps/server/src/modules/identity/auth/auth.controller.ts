@@ -2,6 +2,7 @@
 //Типы:
 import { CookieOptions, Request, Response } from "express";
 import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js"; //Интерфейс получаемых данных от пользователя:
+import { Role } from "@repo/database";
 //Схемы валидации Zod:
 import {
   ChangePasswordSchema,
@@ -26,6 +27,14 @@ import { recaptchaService } from "../../../shared/services/recaptcha.service.js"
 import { AppError } from "../../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../../shared/utils/catch-async.js";
+
+interface RefreshValidationResult {
+  id: string;
+  role: Role;
+  name: string;
+  iat: number;
+  exp: number;
+}
 
 //Контроллер регистрации нового пользователя:
 export const register = catchAsync(async (req: Request, res: Response) => {
@@ -140,66 +149,10 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
   return res.status(200).json({ message: "Выход выполнен успешно" });
 });
 
-//Контроллер обновления токенов:
-export const refresh = catchAsync(async (req: Request, res: Response) => {
-  //1) Извлекаем refresh-токен из запроса пользователя:
-  const { refreshToken } = req.cookies;
-  if (!refreshToken) {
-    throw new AppError(401, "Сессия не найдена");
-  }
-
-  //2) Проверяем подпись токена (не протух ли он криптографически):
-  const userData = tokenService.validateRefreshToken(refreshToken) as any;
-  //3) Ищем этот конкретный токен в нашей базе данных:
-  const tokenFromDb = await sessionService.findToken(refreshToken);
-  // Если токена нет в базе или он не валиден по подписи — сессия скомпрометирована:
-  if (!userData || !tokenFromDb) {
-    // На всякий случай чистим куку на клиенте, чтобы не гонять битый токен:
-    res.clearCookie("refreshToken", { path: "/api/identity/auth" });
-    throw new AppError(401, "Сессия не действительна или отозвана");
-  }
-
-  //4) Идем в базу за самыми свежими данными о пользователе:
-  const freshUser = await authService.getUserData(userData.id);
-  if (!freshUser) {
-    throw new AppError(404, "Пользователь не найден");
-  }
-
-  //5) Осуществляем ротацию токенов (Refresh Token Rotation):
-  //Удаляем старый токен:
-  await sessionService.removeToken(refreshToken);
-  //Генерируем новую пару токенов:
-  const tokens = tokenService.generateTokens({
-    id: freshUser.id,
-    email: freshUser.email,
-    role: freshUser.role,
-    name: freshUser.name,
-  });
-
-  //6) Сохраняем новый токен в БД:
-  await sessionService.saveToken(freshUser.id, tokens.refreshToken);
-
-  //7) Обновляем куку:
-  res.cookie("refreshToken", tokens.refreshToken, {
-    maxAge: 7 * 24 * 60 * 60 * 1000, //7 дней
-    httpOnly: true, // Защита от XSS
-    secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
-    sameSite: "lax",
-    //Куки с refresh-токеном будут отправляться клиентом только по этому пути:
-    path: "/api/identity/auth",
-  });
-
-  //8) Отправляем новый Access токен фронтенду:
-  return res.json({
-    accessToken: tokens.accessToken,
-    user: freshUser, //Тут акутальные данные о юзере
-  });
-});
-
 //Контроллер выхода со всех сессий:
 export const logoutAll = catchAsync(async (req: AuthRequest, res: Response) => {
   //1) Если в запросе нет ID пользователя (например, middleware не сработал или токен пуст), мы выбрасываем ошибку (нельзя «разлогинить» того, кто не вошел):
-  if (!req.user?.id) {
+  if (!req.user.id) {
     throw new AppError(401, "Пользователь не авторизован");
   }
   //2) Удаляем из БД все сессии пользователя:
@@ -210,6 +163,75 @@ export const logoutAll = catchAsync(async (req: AuthRequest, res: Response) => {
 
   //4) Отправляем ответ:
   return res.status(200).json({ message: "Выход со всех устройств выполнен" });
+});
+
+//Контроллер обновления токенов:
+export const refresh = catchAsync(async (req: Request, res: Response) => {
+  //1) Извлекаем refresh-токен из запроса пользователя:
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    throw new AppError(401, "Сессия не найдена");
+  }
+
+  //2) Задаём обобщенные настройки куки:
+  const cookieOptions: CookieOptions = {
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true, // Защита от XSS
+    secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
+    sameSite: "lax",
+    //Куки с refresh-токеном будут отправляться клиентом только по этому пути:
+    path: "/api/identity/auth",
+  };
+
+  //3) Проверяем подпись токена (не протух ли он криптографически):
+  const userData = tokenService.validateRefreshToken(
+    refreshToken,
+  ) as RefreshValidationResult;
+
+  //Если токен не валиден по подписи:
+  if (!userData) {
+    res.clearCookie("refreshToken", cookieOptions);
+    throw new AppError(401, "Сессия просрочена");
+  }
+
+  //4) Ищем этот конкретный токен в нашей базе данных:
+  const tokenFromDb = await sessionService.findToken(refreshToken);
+
+  //Если подпись валидна, но в БД токена нет, то это повторное использование (может быть взлом):
+  if (userData && !tokenFromDb) {
+    //Если токена нет в базе
+    await sessionService.removeAllUserSessions(userData.id);
+
+    res.clearCookie("refreshToken", cookieOptions);
+    throw new AppError(
+      401,
+      "Попытка повторного использования токена. Все сессии сброшены.",
+    );
+  }
+
+  //5) Идем в базу за самыми свежими данными о пользователе:
+  const freshUser = await authService.getUserData(userData.id);
+  if (!freshUser) {
+    throw new AppError(404, "Пользователь не найден");
+  }
+
+  //6) Осуществляем ротацию токенов (Refresh Token Rotation):
+  const tokens = await sessionService.rotateTokens({
+    refreshToken,
+    id: freshUser.id,
+    email: freshUser.email,
+    role: freshUser.role,
+    name: freshUser.name,
+  });
+
+  //7) Обновляем куку:
+  res.cookie("refreshToken", tokens.refreshToken, cookieOptions);
+
+  //8) Отправляем новый Access токен фронтенду:
+  return res.json({
+    accessToken: tokens.accessToken,
+    user: freshUser, //Тут акутальные данные о юзере
+  });
 });
 
 //Контроллер смены паролей в ЛК пользователя:

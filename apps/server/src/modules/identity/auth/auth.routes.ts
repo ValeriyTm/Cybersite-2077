@@ -46,7 +46,7 @@ router.post(
 );
 
 //Роут для обновления токенов:
-router.get("/refresh", AuthController.refresh);
+router.post("/refresh", AuthController.refresh);
 
 //Роут для замены пароля (из профиля):
 router.post(

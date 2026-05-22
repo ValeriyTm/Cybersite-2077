@@ -49,9 +49,14 @@ const refreshAuthLogic = (failedRequest: any) => {
 
   //3) Логика обновления:
   return (
+    //Используем чистый axios, а не $api, т.к. не нужно прикреплять просроченный access токен
     axios
       //Обращаемся к refresh-эндпоинту:
-      .get(`${API_URL}/api/identity/auth/refresh`, { withCredentials: true })
+      .post(
+        `${API_URL}/api/identity/auth/refresh`, //URL
+        {}, //Body
+        { withCredentials: true }, //Config (настройки)
+      )
       .then((tokenRefreshResponse) => {
         //Извлекаем данные об access token из ответа:
         const { accessToken } = tokenRefreshResponse.data;
@@ -60,14 +65,13 @@ const refreshAuthLogic = (failedRequest: any) => {
         useAuthStore.getState().setAuth(accessToken);
 
         //Берем изначальный упавший запрос (failedRequest) и вставляем в него уже новый токен:
-        failedRequest.response.config.headers["Authorization"] =
-          `Bearer ${accessToken}`;
+        failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
 
         return Promise.resolve();
       })
       .catch((err) => {
         //Если обновить не удалось (сессия истекла везде), то разлогиниваем пользователя:
-        useAuthStore.getState().setAuth(null);
+        useAuthStore.getState().clearAuth();
         return Promise.reject(err);
       })
   );

@@ -1,6 +1,8 @@
 //---------------Сервис для управления сессиями пользователей в базе данных через Prisma---
 //Клиент призмы для работы с PostgreSQL:
-import { prisma } from "@repo/database";
+import { prisma, Role } from "@repo/database";
+//Сервисы работы с токенами:
+import { tokenService } from "./token.service.js";
 
 export class SessionService {
   // Сохраняем новую сессию (токен) в базу:
@@ -47,6 +49,46 @@ export class SessionService {
     return prisma.token.deleteMany({
       where: { userId },
     });
+  }
+
+  // Осуществляем ротацию токенов (Refresh Token Rotation):
+  async rotateTokens(dto: {
+    refreshToken: string;
+    id: string;
+    email: string;
+    role: Role;
+    name: string;
+  }) {
+    //Генерируем новую пару токенов:
+    const tokens = tokenService.generateTokens({
+      id: dto.id,
+      email: dto.email,
+      role: dto.role,
+      name: dto.name,
+    });
+
+    if (!dto.id) {
+      console.error("SessionService: Попытка сохранить токен без userId!");
+      throw new Error("Наличие userId обязательно для сохранения токена в БД");
+    }
+
+    //Выполняем удаление старого и запись нового токена в единой транзакции:
+    await prisma.$transaction([
+      prisma.token.deleteMany({
+        where: { refreshToken: dto.refreshToken },
+      }),
+
+      prisma.token.create({
+        data: {
+          refreshToken: tokens.refreshToken,
+          user: {
+            connect: { id: dto.id },
+          },
+        },
+      }),
+    ]);
+
+    return tokens;
   }
 }
 

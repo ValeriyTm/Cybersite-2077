@@ -50,9 +50,11 @@ export class TokenService {
   //Метод для валидации (расшифровка, проверка подписи и срока жизни) refresh токена:
   validateRefreshToken(token: string) {
     try {
-      return jwt.verify(token, process.env.JWT_REFRESH_SECRET!);
-      //Для проверки подписи используем JWT_REFRESH_SECRET
+      const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!);
+
+      return payload;
     } catch (e) {
+      console.log(`Ошибка обновления токенов ${e}`);
       return null;
     }
   }
