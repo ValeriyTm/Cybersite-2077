@@ -4,12 +4,13 @@ import { Request, Response } from "express";
 import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js"; //Интерфейс получаемых данных от пользователя:
 //Схемы валидации Zod:
 import {
-  RegisterSchema,
   LoginSchema,
   ChangePasswordSchema,
   ResetPasswordSchema,
   Verify2FASchema,
   ForgotPasswordSchema,
+  RegisterArgs,
+  LoginArgs,
 } from "@repo/validation";
 //Сервис для взаимодействия с БД для подмодуля auth:
 import { authService } from "./auth.service.js";
@@ -28,22 +29,11 @@ import { catchAsync } from "../../../shared/utils/catch-async.js";
 
 //Контроллер регистрации нового пользователя:
 export const register = catchAsync(async (req: Request, res: Response) => {
-  //1) Валидация запроса при помощи Zod:
-  const result = RegisterSchema.safeParse(req.body);
-  //safeParse возвращает объект,который будет иметь поле success (true/false), отвечающее за то, успешно ли прошла валидация данных. Если success: true, то будет также поле data, содержащее данные от пользователя (поля, указанные в схеме). Если success: false, то будет поле error, содержащее разлиные поля и методы.
+  const { captchaToken, ...data } = req.body as RegisterArgs;
 
-  //Если поле success получяенного объекта имеет false, то данные не прошли валидацию:
-  if (!result.success) {
-    //Если данные не прошли проверку (например, email некорректен), сервер сразу возвращает
-    //статус 400 (Bad Request) и список ошибок по конкретным полям:
-    return res.status(400).json({
-      errors: result.error.flatten((issue) => issue.message).fieldErrors,
-    });
-  }
-
-  //2) Проверяем капчу (до того, как лезть в БД и проверять пароль):
+  //Проверяем капчу (до того, как лезть в БД и проверять пароль):
   //Отправляем токен капчи в Google, и получаем true или false:
-  const isHuman = await recaptchaService.verify(result.data.captchaToken);
+  const isHuman = await recaptchaService.verify(captchaToken);
   if (!isHuman) {
     throw new AppError(
       403,
@@ -52,7 +42,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
   }
 
   //Если все проверки пройдены, то вызываем наш сервис работы с БД:
-  const user = await authService.register(result.data);
+  const user = await authService.register(data);
   //Ответ от нашего сервиса пересылаем пользователю:
   res.status(201).json({
     message: "Пользователь создан!",
@@ -66,7 +56,7 @@ export const activate = catchAsync(async (req: Request, res: Response) => {
   //Извлекаем токен из запроса пользователя:
   const { token } = req.params;
   //Указываем пользователя как активировавшего свой аккаунт:
-  // @ts-ignore:
+
   await authService.activate(token);
   //После редиректим пользователя на фронтенд:
   return res.redirect(`${process.env.CLIENT_URL}/auth?activated=true`);
@@ -74,14 +64,10 @@ export const activate = catchAsync(async (req: Request, res: Response) => {
 
 //Контроллер логина (для пользователей без 2FA):
 export const login = catchAsync(async (req: Request, res: Response) => {
-  //1) Валидация Zod:
-  const result = LoginSchema.safeParse(req.body);
-  if (!result.success) {
-    throw new AppError(400, "Ошибка валидации");
-  }
+  const { captchaToken, rememberMe, ...data } = req.body as LoginArgs;
 
-  //2) Проверяем капчу (до того, как лезть в БД и проверять пароль):
-  const isHuman = await recaptchaService.verify(result.data.captchaToken);
+  //Проверяем капчу (до того, как лезть в БД и проверять пароль):
+  const isHuman = await recaptchaService.verify(captchaToken);
   if (!isHuman) {
     throw new AppError(
       403,
@@ -89,13 +75,10 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     );
   }
 
-  //3) Извлекаем значение rememberMe из запроса клиента:
-  const { rememberMe } = result.data;
+  //Передаём данные сервису для проверки на корректность введенных данных, активирован ли пользователь и не является ли запрос ботом. А тот нам передаёт ответ (ошибку или данные пользователя с полем необходимости пройти 2FA):
+  const loginResult = await authService.login(data);
 
-  //4) Передаём данные сервису для проверки на корректность введенных данных, активирован ли пользователь и не является ли запрос ботом. А тот нам передаёт ответ (ошибку или данные пользователя с полем необходимости пройти 2FA):
-  const loginResult = await authService.login(result.data);
-
-  //5) Проверка на необходимость 2FA:
+  //Проверка на необходимость 2FA:
   if ("requires2FA" in loginResult && loginResult.requires2FA) {
     return res.status(200).json({
       requires2FA: true,
@@ -106,26 +89,21 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 
   //Если 2FA не нужна, идем далее:
 
-  //6) Извлекаем из ответа от сервиса данные о пользователе и поле rememberMe:
+  //Извлекаем из ответа от сервиса данные о пользователе и поле rememberMe:
   const { ...user } = loginResult;
 
-  //7) Генерируем токены:
+  //Генерируем токены:
   const tokens = tokenService.generateTokens({
-    // @ts-ignore:
     id: user.id,
-    // @ts-ignore:
     email: user.email,
-    // @ts-ignore:
     role: user.role,
-    // @ts-ignore:
     name: user.name, //05.04.2026
   });
 
-  //8) Записываем сессию в БД:
-  // @ts-ignore:
+  //Записываем сессию в БД:
   await sessionService.saveToken(user.id as string, tokens.refreshToken);
 
-  //9) Задаём настройки куки:
+  //Задаём настройки куки:
   const cookieOptions: any = {
     httpOnly: true, // Защита от XSS
     secure: process.env.NODE_ENV === "production", //Отправлять куки только по HTTPS (в продакшене)
@@ -135,11 +113,10 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     //Если rememberMe - false, то undefined сделает куку сессионной.
     //Если rememberMe - true, то задаём 7 дней для куки
   };
-
   //Посылаем куки:
   res.cookie("refreshToken", tokens.refreshToken, cookieOptions);
 
-  //10) Посылаем ответ пользователю:
+  //Посылаем ответ пользователю:
   res.status(200).json({
     message: "Вход выполнен успешно",
     accessToken: tokens.accessToken, //Отправляю пользователю Access токен

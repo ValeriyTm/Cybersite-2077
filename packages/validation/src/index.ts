@@ -1,62 +1,59 @@
-import { optional, z } from "zod";
+import { z } from "zod";
 
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------1) Модуль Auth-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////
 //----------------------------1.1) Схема для регистрации:--------------------------------------------//
-//----------------------------1.1.1)Схема для регистрации, которая будет использоваться на бэкенде:
-export const RegisterSchema = z
-  .object({
-    //Валидируем email:
-    email: z
-      .string()
-      .trim()
-      .toLowerCase()
-      //Моя оптимальная регулярка для email:
-      .regex(
-        /^[a-zA-Z0-9][a-zA-Z0-9._+-]*[a-zA-Z0-9]@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
-        "Введите корректный адрес электронной почты",
-      ),
+export const RegisterSchema = z.object({
+  body: z
+    .object({
+      email: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .regex(
+          /^[a-zA-Z0-9][a-zA-Z0-9._+-]*[a-zA-Z0-9]@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/, //Моя оптимальная регулярка для email:
+          "Введите корректный адрес электронной почты",
+        ),
+      password: z
+        .string()
+        .trim()
+        .min(8, "Пароль должен иметь минимум 8 символов")
+        .max(32, "Пароль должен иметь максимум 32 символа")
+        .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
+        .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
+        .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
+        .regex(
+          /[^a-zA-Z0-9]/,
+          "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
+        ),
+      name: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(3, { message: "Имя слишком короткое" })
+        .max(20, "Максимум 20 символов для имени")
+        .regex(
+          /^[a-z0-9_]+$/,
+          "Для имени используйте только латиницу, цифры и нижнее подчеркивание",
+        ),
+      captchaToken: z.string().min(1, { message: "captcha не валидна" }),
+    })
+    .strict(),
+});
 
-    //Валидируем пароль:
-    password: z
-      .string()
-      .trim()
-      .min(8, "Пароль должен иметь минимум 8 символов")
-      .max(32, "Пароль должен иметь максимум 32 символа")
-      // Хотя бы одна заглавная буква
-      .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
-      // Хотя бы одна строчная буква
-      .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
-      // Хотя бы одна цифра
-      .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
-      // Хотя бы один спецсимвол
-      .regex(
-        /[^a-zA-Z0-9]/,
-        "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
-      ),
+type RegisterInput = z.infer<typeof RegisterSchema>;
+//Чистый тип для сервиса:
+export type RegisterArgs = RegisterInput["body"];
 
-    //Валидируем имя (логин):
-    name: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .min(3, { message: "Имя слишком короткое" })
-      .max(20, "Максимум 20 символов для имени")
-      .regex(
-        /^[a-z0-9_]+$/,
-        "Для имени используйте только латиницу, цифры и нижнее подчеркивание",
-      ),
-    //@ts-ignore:
-    captchaToken: z.string({ required_error: "Ошибка безопасности" }), // Добавляем обязательное поле для токена
-  })
-  .strict();
-
-//----------------------1.1.2)Схема для регистрации, которая будет использоваться на фронтенде:
-export const RegisterFormSchema = RegisterSchema.extend({
+//-------------------------------------------------
+//Плоская (без body) схема-заготовка для фронтенда:
+export const RegisterFrontendSchema = RegisterSchema.shape.body;
+//Схема для фронтенда:
+export const RegisterFormSchema = RegisterFrontendSchema.extend({
   confirmPassword: z.string().min(1, "Подтвердите пароль"),
   acceptTerms: z.literal(true, {
-    message: "Нужно ваше согласие на обработку данных", // Просто меняем errorMap на message
+    message: "Нужно ваше согласие на обработку данных",
   }),
 })
   .strict()
@@ -75,32 +72,37 @@ export const RegisterFormSchema = RegisterSchema.extend({
     }
   });
 
-//Создаём тип для регистрации на основе схемы (для backend):
-export type RegisterInput = z.infer<typeof RegisterSchema>;
 //Создаём тип для регистрации на основе схемы (для frontend):
-export type RegisterFormInput = z.infer<typeof RegisterFormSchema>;
+export type RegisterFormType = z.infer<typeof RegisterFormSchema>;
 
 //----------------------------1.2) Схема для логина:--------------------------------------------//
-//Схема для логина:
-export const LoginSchema = z
-  .object({
-    email: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .email({ message: "Некорректный email или пароль" }),
-    //При входе в систему нам не нужна строгая регулярка (которую мы ставили на регистрацию). Нам достаточно встроенной проверки Zod, чтобы просто отсечь совсем некорректные строки.
+export const LoginSchema = z.object({
+  body: z
+    .object({
+      email: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .pipe(z.email({ message: "Некорректный email или пароль" })),
+      password: z
+        .string()
+        .min(8, { message: "Некорректный email или пароль" })
+        .max(32, { message: "Некорректный email или пароль" }),
+      rememberMe: z.boolean(),
+      captchaToken: z.string().min(1, { message: "captcha не валидна" }),
+    })
+    .strict(),
+});
 
-    password: z.string().min(8, { message: "Некорректный email или пароль" }),
+type LoginInput = z.infer<typeof LoginSchema>;
+//Чистый тип для сервиса:
+export type LoginArgs = LoginInput["body"];
 
-    rememberMe: z.boolean().optional().default(false), // Поле для чекбокса "Запомнить меня"
-    //@ts-ignore:
-    captchaToken: z.string({ required_error: "Ошибка безопасности" }), // Добавляем обязательное поле для токена
-  })
-  .strict();
-
-//Создаём тип для входа на основе схемы:
-export type LoginInput = z.infer<typeof LoginSchema>;
+//--------------------
+//Плоская (без body) схема для фронтенда:
+export const LoginFrontendSchema = LoginSchema.shape.body;
+//Чистый тип для фронтенда:
+export type LoginFormType = z.output<typeof LoginFrontendSchema>; //Использую output, т.к. с infer получили бы для rememberMe тип boolean | undefined из-за default()
 //---------------------------------------------------------
 //-----------------Прочие схемы:---------------------//
 //Схема для добавления дополнительных данных о пользователе:

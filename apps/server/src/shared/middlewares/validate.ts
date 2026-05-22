@@ -9,6 +9,11 @@ export const validate = (schema: ZodType) => {
     next: NextFunction,
   ): Promise<void> => {
     try {
+      //Для отладки:
+      console.log("Отладка, req.body: ", req.body);
+      console.log("Отладка, req.query: ", req.query);
+      console.log("Отладка, req.params: ", req.params);
+
       //1.Валидируем данные запроса:
       const parsed = await schema.parseAsync({
         body: req.body,
@@ -16,10 +21,11 @@ export const validate = (schema: ZodType) => {
         params: req.params,
       });
 
+      //Для отладки:
       const safeParsed = parsed as any;
 
       //Для отладки:
-      console.log("Отладка, safeParsed: ", safeParsed);
+      console.log("Отвалидированные данные, safeParsed: ", safeParsed);
 
       //2.Безопасная перезапись через дескрипторы свойств:
       if (safeParsed.query) {

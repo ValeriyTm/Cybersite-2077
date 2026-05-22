@@ -55,7 +55,7 @@ export interface IGoogleUser {
 
 export class AuthService {
   //Записываем нового пользователя в БД:
-  async register(data: RegisterInput) {
+  async register(data: { email: string; password: string; name: string }) {
     //1) Проверяем email по БД (вдруг такой уже зарегистрирован):
     const existingEmail = await prisma.user.findUnique({
       where: { email: data.email },
@@ -123,7 +123,7 @@ export class AuthService {
     });
   }
 
-  async login(data: LoginInput) {
+  async login(data: { email: string; password: string }) {
     //1) Ищем пользователя в БД по email:
     const user = await prisma.user.findUnique({ where: { email: data.email } });
     if (!user || !user.passwordHash) {
@@ -158,7 +158,7 @@ export class AuthService {
     console.log("user: ", user);
     //Возвращаем все необходимые для работы клиента поля:
     const result = formatUserResponse(user);
-    console.log("result: ", result);
+    console.log("login result: ", result);
     return result;
   }
 

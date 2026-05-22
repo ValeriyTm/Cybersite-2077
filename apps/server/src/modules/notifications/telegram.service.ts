@@ -7,6 +7,8 @@ import { pdfService } from "../reports/index.js";
 import { excelService } from "../reports/index.js";
 //Для работы с файлами:
 import fs from "fs/promises";
+//Типы:
+import { Statistics } from "../reports/types.js";
 
 export class TelegramService {
   private static bot: Telegraf;
@@ -42,7 +44,7 @@ export class TelegramService {
         await ctx.reply("⏳ Формирую отчет за последние 30 дней, подождите...");
 
         try {
-          const stats = await reportsService.getStatistics(30);
+          const stats = (await reportsService.getStatistics(30)) as Statistics;
           const pdfPath = await pdfService.generateSalesPdf(stats);
 
           await ctx.replyWithDocument(
@@ -69,7 +71,7 @@ export class TelegramService {
 
         try {
           // Собираем данные за последние 30 дней
-          const stats = await reportsService.getStatistics(30);
+          const stats = (await reportsService.getStatistics(30)) as Statistics;
 
           // Генерируем оба формата
           const pdfPath = await pdfService.generateSalesPdf(stats);

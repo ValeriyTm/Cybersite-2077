@@ -140,7 +140,6 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
             <LoginForm onSuccess={handleSuccess} onVerify2FA={handleSuccess} />
           ) : (
             <RegisterForm onSuccess={() => setMode("login")} />
-            //onSuccess={() => setMode("login")} — это пропс для регистрации: если юзер успешно создал аккаунт, карточка сама переключит его на экран входа.
           )}
         </div>
       </div>

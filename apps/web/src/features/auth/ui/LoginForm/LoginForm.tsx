@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
 //Схемы валидации Zod:
-import { LoginSchema, type LoginInput } from "@repo/validation";
+import { LoginFrontendSchema, type LoginFormType } from "@repo/validation";
 //Состояния:
 import { useState } from "react";
 import { useAuthSubmit, useAuthStore } from "@/features/auth";
@@ -33,7 +33,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   //С клиентского стора:
   const { setAuth, setTempUserId } = useAuthStore();
 
-  const { handleAuthSubmit } = useAuthSubmit<LoginInput>();
+  const { handleAuthSubmit } = useAuthSubmit<LoginFormType>();
 
   //Локальные:
   const [localUserId, setLocalUserId] = useState<string | null>(null);
@@ -46,21 +46,20 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginInput>({
-    //@ts-ignore
-    resolver: zodResolver(LoginSchema),
+  } = useForm<LoginFormType>({
+    resolver: zodResolver(LoginFrontendSchema),
     mode: "onBlur",
     defaultValues: {
       // Инициализируем значения по умолчанию
       email: "",
       password: "",
       rememberMe: false,
-      captchaToken: "",
+      captchaToken: "1",
     },
   });
 
   //Отправка формы:
-  const onSubmit: SubmitHandler<LoginInput> = async (data: LoginInput) => {
+  const onSubmit: SubmitHandler<LoginFormType> = async (data: LoginFormType) => {
     //Добавляем await, чтобы сработало переключение isSubmitting:
     await handleAuthSubmit(
       {
@@ -108,7 +107,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit as any)} className={styles.form}>
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       {/*Поле ввода email:*/}
       <div className={styles.field}>
         <label>Email</label>

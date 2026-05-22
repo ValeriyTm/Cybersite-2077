@@ -1,5 +1,5 @@
 //React Hook Form:
-import { useForm } from "react-hook-form";
+import { useForm, type FieldErrors } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
 //Библиотека всплывающих уведомлений:
@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 //API:
 import { $api } from "@/shared/api";
 //Схемы валидации Zod:
-import { RegisterFormSchema, type RegisterFormInput } from "@repo/validation";
+import { RegisterFormSchema, type RegisterFormType } from "@repo/validation";
 //Компоненты:
 import { Button, Input, PasswordField } from "@/shared/ui";
 //Состояния:
@@ -18,27 +18,27 @@ import styles from "../AuthCard/AuthCard.module.scss";
 export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   //Кастомный хук:
-  const { handleAuthSubmit } = useAuthSubmit<RegisterFormInput>();
+  const { handleAuthSubmit } = useAuthSubmit<RegisterFormType>();
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterFormInput>({
+  } = useForm<RegisterFormType>({
     //Подключаем схему Zod (форма не отправится, пока данные не пройдут все проверки):
     resolver: zodResolver(RegisterFormSchema),
     mode: "onBlur", //валидация срабатывает, когда пользователь убирает курсор из поля.
     defaultValues: {
-      captchaToken: "",
+      captchaToken: "1",
       //Устанавливаем начальное значение для токена капчи как отсутствующее
     },
   });
 
   // Функция, которая сработает, если Zod найдет ошибки (когда пользователь нажал «Зарегистрироваться», но ввел данные неверно):
-  const onFormError = (errors: any) => {
+  const onFormError = (errors: FieldErrors<RegisterFormType>) => {
     // Берем первую попавшуюся ошибку и выводим её в Toast
-    const firstError = Object.values(errors)[0] as any;
+    const firstError = Object.values(errors)[0];
     if (firstError?.message) {
       toast.error(firstError.message, {
         id: "form-validation-error", //Предотвращает спам уведомлениями - новое сообщение просто заменит старое.
@@ -46,14 +46,15 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
     }
   };
 
-  const onSubmit = async (data: RegisterFormInput) => {
+  const onSubmit = async (data: RegisterFormType) => {
     await handleAuthSubmit(
       {
         action: "register",
         apiCall: (payload) => {
-          //Очищаем данные прямо в вызове API:
-          const { confirmPassword, acceptTerms, ...registerData } =
-            payload as any;
+          //ESLint настроен в режиме максимальной строгости, поэтому заткнем его, чтобы не ругался на неиспользуемые переменные:
+          //eslint-disable-next-line @typescript-eslint/no-unused-vars, sonarjs/no-unused-vars
+          const { confirmPassword, acceptTerms, ...registerData } = payload;
+
           return $api.post("/identity/auth/register", registerData);
         },
         successMessage:
