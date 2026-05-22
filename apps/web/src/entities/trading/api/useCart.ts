@@ -1,7 +1,8 @@
 //Состояния:
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTradingStore } from "@/entities/trading/model";
 import { useShallow } from "zustand/react/shallow"; // Для стабильности ссылок
+import { useAuthStore } from "@/features/auth";
 //API:
 import { $api } from "@/shared/api";
 //Уведомления:
@@ -11,6 +12,11 @@ import { type MotorcycleCart } from "@/entities/catalog";
 import { useEffect } from "react";
 
 export const useCart = () => {
+  const queryClient = useQueryClient();
+
+  const isAuth = useAuthStore((state) => state.isAuth);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
   //Достаем методы из Zustand. Это позволяет нам мгновенно менять UI, не дожидаясь ответа от сервера (концепция Optimistic UI):
   const {
     setCart,
@@ -37,6 +43,7 @@ export const useCart = () => {
       const { data } = await $api.get<MotorcycleCart[]>("/trading/cart");
       return data;
     },
+    enabled: isAuth && !!accessToken,
     staleTime: Infinity, //Вечное время жизни кэша. Мы сами будем управлять обновлением корзины через мутации, поэтому лишние автоматические перезапросы нам не нужны.
   });
 
@@ -78,7 +85,10 @@ export const useCart = () => {
       return data;
     },
     //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
-    onSuccess: (data) => setCart(data),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["cart"], data);
+      setCart(data);
+    },
   });
 
   //3) Обновление количества в корзине (PATCH):
@@ -94,7 +104,10 @@ export const useCart = () => {
       return data;
     },
     //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
-    onSuccess: (data) => setCart(data),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["cart"], data);
+      setCart(data);
+    },
   });
 
   //4) Удаление одного товара из корзины:
@@ -105,7 +118,11 @@ export const useCart = () => {
       //Сервер возвращает актуальный состав корзины:
       return data;
     },
-    onSuccess: (data) => setCart(data),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["cart"], data);
+      setCart(data);
+      toast.success("Выбранный товар удален");
+    },
   });
 
   //5) Удаление выбранных товаров из корзины:
@@ -118,9 +135,8 @@ export const useCart = () => {
       return data;
     },
     onSuccess: (data) => {
-      //Синхронизируем корзину с сервером
+      queryClient.setQueryData(["cart"], data);
       setCart(data);
-      //Очищаем локальное состояние чекбоксов
       removeSelectedLocally();
       toast.success("Выбранные товары удалены");
     },
@@ -138,7 +154,10 @@ export const useCart = () => {
       });
       return data;
     },
-    onSuccess: (data) => setCart(data), // Синхронизируем с Redis
+    onSuccess: (data) => {
+      queryClient.setQueryData(["cart"], data);
+      setCart(data);
+    },
   });
 
   //7) Мутация "Выбрать всё"
@@ -150,7 +169,10 @@ export const useCart = () => {
       });
       return data;
     },
-    onSuccess: (data) => setCart(data),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["cart"], data);
+      setCart(data);
+    },
   });
 
   //Возвращаем объект со всеми методами мутаций и состоянием загрузки:

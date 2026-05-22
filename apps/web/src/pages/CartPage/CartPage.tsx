@@ -1,6 +1,6 @@
 //Состояния:
 import { useTradingStore, useCart } from "@/entities/trading";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useProfile } from "@/features/auth";
 import { useQueryClient } from "@tanstack/react-query";
 //Навигация:
@@ -17,8 +17,6 @@ import toast from "react-hot-toast";
 //Стили:
 import styles from "./CartPage.module.scss";
 
-
-
 export const CartPage = () => {
   const { user } = useProfile(); // Достаем данные профиля
 
@@ -28,14 +26,6 @@ export const CartPage = () => {
     removeSelected,
     selectAll,
   } = useCart();
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    // Заставляем React Query заново сходить на сервер за корзиной при каждом монтировании
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
-  }, [queryClient]);
-
 
   //Проверяем, выбраны ли все товары сейчас:
   const isAllSelected =
@@ -107,29 +97,33 @@ export const CartPage = () => {
     setIsBulkDeleteOpen(false);
   };
 
-  //--------------Проверяем допустимо ли юзеру нажать кнопку оформления заказа:-----//
+  //--------------Проверяем допустимо ли юзеру перейти к оформлению заказа:-----//
   //Проверяем заполненность профиля
-  const isProfileIncomplete = !user?.phone || !user?.birthday;
+  const isProfileIncomplete = user ? (!user.phone || !user.birthday) : false;
 
   //Проверяем остатки среди выбранных товаров:
   const hasStockErrorInSelected = selectedItems.some(
     (item) => item.quantity > item.totalInStock,
   );
 
-  //Итог - доступна ли кнопка оформления заказа:
-  const isCheckoutDisabled =
-    selectedItems.length === 0 || //Ничего не выбрано
-    hasStockErrorInSelected || //Выбран товар, которого нет на складе (или кол-во не соответствует)
-    isProfileIncomplete; //Профиль не заполнен
-
-
   ////------Работа с Я.Метрикой:-----///
   const handleOrder = () => {
-    const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
+    //Проверяем профиль в момент клика:
+    if (!user?.phone || !user?.birthday) {
+      toast.error("Для оформления заказа необходимо указать телефон и дату рождения в профиле!");
+      return; // Прерываем выполнение, дальше код не идет
+    }
 
+    //Фиксируем метрику:
+    const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
     if (typeof window !== 'undefined' && (window as any).ym) {
       (window as any).ym(metricaId, 'reachGoal', 'ORDER_CLICK');
     }
+
+    //Редирект на оформление заказа:
+    navigate("/checkout", {
+      state: { promo: appliedPromo },
+    });
   };
   ///--------------------------При отсутствии товаров:------------------------//
   if (cartItems.length === 0) {
@@ -223,13 +217,10 @@ export const CartPage = () => {
             <button
               type="button"
               className={styles.checkoutBtn}
-              disabled={isCheckoutDisabled}
+              disabled={selectedItems.length === 0 || hasStockErrorInSelected}
               onClick={(e) => {
                 e.stopPropagation(); //Останавливаем "шум" для других компонентов
                 handleOrder();
-                navigate("/checkout", {
-                  state: { promo: appliedPromo }, //Передаём промокод в state
-                });
               }}
             >
               Перейти к оформлению

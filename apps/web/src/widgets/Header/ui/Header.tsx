@@ -1,7 +1,7 @@
 //Состояния:
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useAuthStore, useProfile, useProfileActions } from "@/features/auth";
-import { useTradingStore } from "@/entities/trading";
+import { useCart, useFavorites, useTradingStore } from "@/entities/trading";
 import { useOrderStore } from "@/entities/ordering";
 import { useThemeStore } from "@/entities/session";
 //Роутинг:
@@ -52,11 +52,12 @@ export const Header = () => {
   const { activeOrdersCount } = useOrderStore();
 
   const resetOrders = useOrderStore((state) => state.resetOrders);
-  const fetchActiveCount = useOrderStore((state) => state.fetchActiveCount);
-  const fetchCart = useTradingStore((state) => state.fetchCart);
-  const fetchFavoritesIds = useTradingStore((state) => state.fetchFavoritesIds);
+  const fetchActiveCount = useOrderStore((state) => state.fetchActiveCount); //Получаем актуальные данные по активным заказам
+
   const clearTrading = useTradingStore((state) => state.clearTrading);
 
+  useCart(); //Получаем актуальные данные по корзине
+  useFavorites(); //Получаем актуальные данные по избранному
 
   const isAuth = useAuthStore((state) => state.isAuth);
   const { user, isLoading } = useProfile();
@@ -100,9 +101,9 @@ export const Header = () => {
 
   useEffect(() => {
     if (isAuth) {
-      fetchCart(); //Данные о корзине
-      fetchFavoritesIds(); //Данные о избранном
-      fetchActiveCount(); //Данные о активных заказах
+      // fetchCart(); //Данные о корзине
+      // fetchFavoritesIds(); //Данные о избранном
+      fetchActiveCount(); //Данные об активных заказах
     } else {
       clearTrading(); //Очистка счетчика корзины и избранного
       resetOrders(); //Очистка счетчика активных заказов

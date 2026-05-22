@@ -28,9 +28,9 @@ interface TradingState {
   toggleSelectAll: (isSelected: boolean) => void;
   updateItemQuantity: (id: string, quantity: number) => void;
   removeSelectedLocally: () => void; //Локальное удаление из корзины товаров (выбранных)
-  fetchCart: () => void;
+  // fetchCart: () => void;
 
-  fetchFavoritesIds: () => void;
+  // fetchFavoritesIds: () => void;
 
   favoritesCount: number;
 
@@ -151,26 +151,26 @@ export const useTradingStore = create<TradingState>()(
 
     //Метод для простого получения (обновления) данных корзины:
     //(просто делаем запрос к серверу, а затем синхронизируем при помощи вызова setCart)
-    fetchCart: async () => {
-      try {
-        const response = await $api.get("/trading/cart"); //Эндпоинт корзины
-        //Используем твой готовый метод для записи и расстановки selected
-        get().setCart(response.data);
-      } catch (error) {
-        console.error("Ошибка при обновлении корзины:", error);
-      }
-    },
+    // fetchCart: async () => {
+    //   try {
+    //     const response = await $api.get("/trading/cart"); //Эндпоинт корзины
+    //     //Используем твой готовый метод для записи и расстановки selected
+    //     get().setCart(response.data);
+    //   } catch (error) {
+    //     console.error("Ошибка при обновлении корзины:", error);
+    //   }
+    // },
 
     //Метод получения списка id избранных товаров:
-    fetchFavoritesIds: async () => {
-      try {
-        //Получаем с сервера список id избранных товаров:
-        const { data } = await $api.get<string[]>("/trading/favorites/ids");
-        get().setFavorites(data); // Используем уже готовый setFavorites, который обновит и count
-      } catch (e) {
-        console.error(e);
-      }
-    },
+    // fetchFavoritesIds: async () => {
+    //   try {
+    //     //Получаем с сервера список id избранных товаров:
+    //     const { data } = await $api.get<string[]>("/trading/favorites/ids");
+    //     get().setFavorites(data); // Используем уже готовый setFavorites, который обновит и count
+    //   } catch (e) {
+    //     console.error(e);
+    //   }
+    // },
 
     //Очистка корзины и счетчика избранных (при логауте вызываем):
     clearTrading: () =>

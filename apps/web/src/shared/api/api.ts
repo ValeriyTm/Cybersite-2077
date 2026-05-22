@@ -79,6 +79,9 @@ const refreshAuthLogic = (failedRequest: any) => {
       .catch((err) => {
         //Если обновить не удалось (сессия истекла везде), то разлогиниваем пользователя:
         useAuthStore.getState().clearAuth();
+
+        delete $api.defaults.headers.common.Authorization; // Стираем заголовки и кэш, чтобы прервать любые зависшие запросы очереди
+
         return Promise.reject(err);
       })
   );

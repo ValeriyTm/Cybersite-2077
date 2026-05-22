@@ -41,10 +41,12 @@ export const useProfile = () => {
 
   //Общая логика очистки клиента:
   const localLogoutCleanup = () => {
-    clearAuth(); // Чистим состояние авторизации
-    queryClient.removeQueries({ queryKey: ["profile"] }); // Сбрасываем кэш профиля
+    clearAuth(); //Чистим состояние авторизации в Zustand
+    queryClient.clear(); //Удаляем весь кэш React Query
     clearTrading(); // Очищаем корзину
     resetOrders(); // Очищаем заказы
+
+    delete $api.defaults.headers.common.Authorization; // Стираем старый токен из дефолтных настроек Axios
   };
 
   const logout = async () => {

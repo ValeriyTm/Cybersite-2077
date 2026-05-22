@@ -15,8 +15,8 @@ import type { MotorcycleFull } from "@repo/types";
 export const FavoritesPage = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useFavoritesPage();
-  //Массив id избранных моделей:
-  const { favoriteIds } = useTradingStore();
+
+  const favoritesCount = useTradingStore((state) => state.favoritesCount);
 
   //-----------------------Подъем наверх экрана:--------------------//
   //Показывать кнопку подъема наверх страницы или нет:
@@ -25,17 +25,16 @@ export const FavoritesPage = () => {
   //Следим за прокруткой экрана, чтобы понять, выводить кнопку подъема или ещё рано:
   useEffect(() => {
     const checkScroll = () => {
-      if (!showScroll && window.pageYOffset > 400) {
-        setShowScroll(true);
-      } else if (showScroll && window.pageYOffset <= 400) {
-        setShowScroll(false);
+      const scrolled = window.scrollY > 400;
+
+      // Меняем стейт только, если текущее значение showScroll не совпадает с реальностью.
+      if (scrolled !== showScroll) {
+        setShowScroll(scrolled);
       }
     };
 
-    window.addEventListener("scroll", checkScroll); //Браузер начинает «слушать» прокрутку сразу после монтирования компонента
-    //Теперь функция checkScroll вызывается при каждом событии скролла.
-
-    return () => window.removeEventListener("scroll", checkScroll); //Когда пользователь уйдет с этой страницы (компонент размонтируется), мы удаляем слушатель.
+    window.addEventListener("scroll", checkScroll);
+    return () => window.removeEventListener("scroll", checkScroll);
   }, [showScroll]);
 
   //Обработчик для плавного скролла экрана наверх:
@@ -43,8 +42,8 @@ export const FavoritesPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  //---------------------------------------
-  if (favoriteIds.length === 0)
+  //-----------------------------------------------------------
+  if (favoritesCount === 0)
     return (
       <div className={styles.empty}>У вас пока нет избранных моделей 🤍</div>
     );
@@ -57,7 +56,7 @@ export const FavoritesPage = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <main className={styles.Page}>
-        <h1>Моё избранное ({favoriteIds.length})</h1>
+        <h1>Моё избранное ({favoritesCount})</h1>
 
         <div className={styles.list}>
           {data?.pages.map((group, i) => (

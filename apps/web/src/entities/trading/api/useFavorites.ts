@@ -1,12 +1,15 @@
 //Состояния:
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTradingStore } from "@/entities/trading/model";
-
+import { useAuthStore } from "@/features/auth";
 //API:
 import { $api } from "@/shared/api";
 import { useEffect } from "react";
 
 export const useFavorites = () => {
+  const isAuth = useAuthStore((state) => state.isAuth);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
   const setFavorites = useTradingStore((state) => state.setFavorites);
   const toggleFavoriteLocally = useTradingStore(
     (state) => state.toggleFavoriteLocally,
@@ -22,6 +25,7 @@ export const useFavorites = () => {
       const { data } = await $api.get<string[]>("/trading/favorites/ids");
       return data;
     },
+    enabled: isAuth && !!accessToken,
     staleTime: Infinity, //Данные "вечные", пока не сами не нажмем на кнопку добавления в избранное
   });
 
