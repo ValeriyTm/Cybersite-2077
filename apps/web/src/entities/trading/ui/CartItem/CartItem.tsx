@@ -28,6 +28,7 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
   const favoriteIds = useTradingStore((state) => state.favoriteIds);
   const { toggleFavorite } = useFavorites();
 
+  console.log('data cart:', data);
 
   //Ошибка, если товара на складе осталось меньше, чем у нас в корзине:
   const isError = data.quantity > data.totalInStock;
@@ -148,7 +149,7 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
               <>
                 {/*Старая цена:*/}
                 <span className={styles.oldPrice}>
-                  {data.price?.toLocaleString() ?? 0} ₽ / шт.
+                  {data.price.toLocaleString() ?? 0} ₽ / шт.
                 </span>
                 {/*Новая цена:*/}
                 <span className={styles.currentPrice}>

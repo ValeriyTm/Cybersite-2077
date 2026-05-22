@@ -267,7 +267,8 @@
     .oldPrice {
       text-decoration: line-through;
       font-size: 0.7rem;
-      color: var(--auxiliary-text-color);
+      // color: var(--auxiliary-text-color);
+      color: var(--color-danger);
     }
 
     .totalItemPrice {

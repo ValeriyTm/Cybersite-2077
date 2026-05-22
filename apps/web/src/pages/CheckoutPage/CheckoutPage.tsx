@@ -1,7 +1,7 @@
 //Роутинг:
 import { useNavigate } from "react-router";
 //Состояния:
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "react-router";
 import { useOrderStore } from "@/entities/ordering";
 import { useProfile } from "@/features/auth";
@@ -51,7 +51,7 @@ interface CreateOrderPayload {
 }
 
 export const CheckoutPage = () => {
-  const { cartItems, fetchCart } = useTradingStore();
+  const { cartItems } = useTradingStore();
   const [address, setAddress] = useState("");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -62,6 +62,8 @@ export const CheckoutPage = () => {
 
   const { user } = useProfile();
   const { fetchActiveCount } = useOrderStore();
+
+  const queryClient = useQueryClient();
 
   //Информация о промокоде:
   const promoFromCart = location.state?.promo;
@@ -118,10 +120,12 @@ export const CheckoutPage = () => {
   const createOrderMutation = useMutation({
     mutationFn: (orderData: CreateOrderPayload) => $api.post("/orders", orderData),
     onSuccess: (res, variables) => {
+      const setCart = useTradingStore.getState().setCart;
+      queryClient.setQueryData(["cart"], []);
       // variables — это данные, которые мы передали в mutate()
 
-      //Обновляем корзину в Zustand (она уже очищена на бэкенде в Redis):
-      fetchCart();
+      //Чистим корзину:
+      setCart([]);
       //Обновляем счётчик в Header:
       fetchActiveCount();
 
@@ -168,7 +172,7 @@ export const CheckoutPage = () => {
         });
       }, 0);
     }
-  }, [user?.defaultLat, user?.defaultLng, user?.defaultAddress, hasStockData, address, coords, calculateMutation, legalSelectedItems]); //Сработает, как только данные юзера загрузятся
+  }, [user?.defaultLat, user?.defaultLng, user?.defaultAddress, hasStockData]); //Сработает, как только данные юзера загрузятся
 
   //Если пользователь вручную ввел адрес /checkout, но у него в корзине только «нелегальные» товары или вообще ничего не выбрано, его нужно выкинуть обратно в корзину:
   useEffect(() => {
@@ -199,7 +203,7 @@ export const CheckoutPage = () => {
 
   //Сумма товаров с учетом их индивидуальных скидок:
   const itemsTotal = legalSelectedItems.reduce((acc, item) => {
-    const price = item.discountData?.finalPrice ?? item.price; //Если указана цена с учетом скидки - берем её. Если не указана - берем просто цену
+    const price = item.discountData.finalPrice ?? item.price; //Если указана цена с учетом скидки - берем её. Если не указана - берем просто цену
     return acc + price * item.quantity;
   }, 0);
 
@@ -219,7 +223,7 @@ export const CheckoutPage = () => {
       items: legalSelectedItems.map((item) => ({
         id: item.id,
         model: item.model,
-        price: item.discountData?.finalPrice ?? item.price, //Фиксируем цену со скидкой на момент покупки
+        price: item.discountData.finalPrice ?? item.price, //Фиксируем цену со скидкой на момент покупки
         quantity: item.quantity,
       })),
       address,
