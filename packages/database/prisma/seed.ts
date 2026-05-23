@@ -168,6 +168,9 @@ async function main() {
   const motoStream = fs.createReadStream(motoPath).pipe(csv());
 
   let count = 0;
+  const motosToCreate: any[] = [];
+  const BATCH_SIZE = 5000;
+
   for await (const row of motoStream) {
     // console.log("Текущая строка:", row); // отображение того, как компьютер считывает построчно CSV-файл.
     const brandId = brandsMap.get(row.brand.trim());
@@ -185,52 +188,61 @@ async function main() {
             .filter((item: any) => item.length > 0) // Удаляем пустые элементы, если они есть
         : [];
 
-      // console.log(processedColors);
-
-      await prisma.motorcycle.upsert({
-        where: { slug: row.slug }, // Ищем по уникальному слагу
-        update: {
-          price: parseInt(row.price) || 0, // Можно обновить только цены
-        },
-        create: {
-          //Слева - название в модели Prisma, справа - название столбца в CSV файле.
-          model: row.model,
-          slug: row.slug,
-          brandId: brandId,
-          siteCategoryId: motoCategory.id,
-          year: parseInt(row.year) || 0,
-          displacement: parseInt(row.displacement) || 0,
-          power: parseFloat(row.power) || null,
-          topSpeed: parseInt(row.topSpeed) || null,
-          fuelConsumption: parseFloat(row.fuelConsumption) || null,
-          price: parseInt(row.price) || 0,
-          rating: parseFloat(row.rating) || 0,
-          //Маппинг ENUMS:
-          category: categoryMap[row.category] || undefined,
-          coolingSystem: coolingMap[row.coolingSystem] || undefined,
-          starter: starterMap[row.starter] || undefined,
-          transmission: row.transmission
-            ? row.transmission.toUpperCase()
-            : undefined,
-          gearbox: gearboxMap[row.gearbox] || undefined,
-          //Текстовые поля:
-          engineType: row.engineType || null,
-          fuelSystem: row.fuelSystem || null,
-          frontTyre: row.frontTyre || null,
-          rearTyre: row.rearTyre || null,
-          frontBrakes: row.frontBrakes || null,
-          rearBrakes: row.rearBrakes || null,
-          comments: row.comments || null,
-          //Обработка цветов:
-          colors: processedColors,
-        },
+      motosToCreate.push({
+        model: row.model,
+        slug: row.slug,
+        brandId: brandId,
+        siteCategoryId: motoCategory.id,
+        year: parseInt(row.year, 10) || 0,
+        displacement: parseInt(row.displacement, 10) || 0,
+        power: parseFloat(row.power) || null,
+        topSpeed: parseInt(row.topSpeed, 10) || null,
+        fuelConsumption: parseFloat(row.fuelConsumption) || null,
+        price: parseInt(row.price, 10) || 0,
+        rating: parseFloat(row.rating) || 0,
+        // Маппинг ENUMS:
+        category: categoryMap[row.category] || undefined,
+        coolingSystem: coolingMap[row.coolingSystem] || undefined,
+        starter: starterMap[row.starter] || undefined,
+        transmission: row.transmission
+          ? row.transmission.toUpperCase()
+          : undefined,
+        gearbox: gearboxMap[row.gearbox] || undefined,
+        // Текстовые поля:
+        engineType: row.engineType || null,
+        fuelSystem: row.fuelSystem || null,
+        frontTyre: row.frontTyre || null,
+        rearTyre: row.rearTyre || null,
+        frontBrakes: row.frontBrakes || null,
+        rearBrakes: row.rearBrakes || null,
+        comments: row.comments || null,
+        colors: processedColors,
       });
+
       count++;
+
+      // Записываем пачками:
+      if (motosToCreate.length === BATCH_SIZE) {
+        await prisma.motorcycle.createMany({
+          data: motosToCreate,
+          skipDuplicates: true, // Игнорирует дубликаты по уникальному полю slug
+        });
+        motosToCreate.length = 0; // Очищаем массив
+        console.log(`⏳ Загружено ${count} моделей мотоциклов...`);
+      }
     } catch (e: any) {
       //Пропускаем дубликаты slug, если они образуются:
       console.error(`⚠️Пропущен ${row.Model}: ${e.message}`);
     }
   }
+  // Дозаписываем оставшиеся мотоциклы, которые не вошли в ровный батч
+  if (motosToCreate.length > 0) {
+    await prisma.motorcycle.createMany({
+      data: motosToCreate,
+      skipDuplicates: true,
+    });
+  }
+
   console.log(
     `✅ Успешно! Создано ${brandsMap.size} брендов и ${count} моделей.`,
   );
