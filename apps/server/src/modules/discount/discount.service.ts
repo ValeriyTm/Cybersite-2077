@@ -36,17 +36,26 @@ export class DiscountService {
     await prisma.promoCode.updateMany({ data: { isActive: false } });
 
     const promos = [];
+    const promoDataToInsert = [];
+
+    //Генерируем данные в оперативной памяти (без запросов к БД):
     for (let i = 0; i < 5; i++) {
       const code = faker.word.adjective().toUpperCase();
       promos.push(code);
+
       const amount = Math.floor(Math.random() * (200000 - 100000 + 1)) + 100000;
 
-      await prisma.promoCode.create({
-        data: {
-          code,
-          discountAmount: amount,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        },
+      promoDataToInsert.push({
+        code,
+        discountAmount: amount,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+    }
+
+    //Вставляем все промокоды одним запросом в БД:
+    if (promoDataToInsert.length > 0) {
+      await prisma.promoCode.createMany({
+        data: promoDataToInsert,
       });
     }
 
@@ -55,9 +64,11 @@ export class DiscountService {
 
   //Генерация персональных скидкок:
   async generatePersonalDiscounts() {
+    const now = new Date();
+
     //Чистим просроченные скидки в БД перед началом:
     await prisma.personalDiscount.deleteMany({
-      where: { expiresAt: { lt: new Date() } },
+      where: { expiresAt: { lt: now } },
     });
 
     //Находим всех пользователей, подтвердивших email:
@@ -66,58 +77,86 @@ export class DiscountService {
       select: { id: true, email: true, name: true },
     });
 
-    //Получаем общее количество мотоциклов для эффективного рандома:
-    const bikesCount = await prisma.motorcycle.count();
+    if (users.length === 0) return { personalCount: 0 };
+
+    //Получаем данные всех мотоциклов:
+    const allBikes = await prisma.motorcycle.findMany({
+      select: {
+        id: true,
+        model: true,
+        price: true,
+        slug: true,
+        brand: {
+          select: { name: true },
+        },
+      },
+    });
+
+    if (allBikes.length === 0) return { personalCount: 0 };
+
+    const bikesCount = allBikes.length;
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 3); // Скидка на 3 дня
+
+    //Удаляем существующие скидки для пользователей:
+    const userIds = users.map((u) => u.id);
+    await prisma.personalDiscount.deleteMany({
+      where: { userId: { in: userIds } },
+    });
+
+    const discountsToInsert = [];
+    const emailEvents = [];
 
     for (const user of users) {
-      //Выбираем случайный пропуск (skip), чтобы получить рандомный байк:
-      const skip = Math.floor(Math.random() * bikesCount);
-      const randomBike = await prisma.motorcycle.findFirst({
-        skip: skip,
-        include: { brand: true },
+      // Выбираем случайный байк из массива в памяти:
+      const randomIndex = Math.floor(Math.random() * bikesCount);
+      const randomBike = allBikes[randomIndex];
+
+      //Формируем данные для пакетной вставки:
+      discountsToInsert.push({
+        userId: user.id,
+        motorcycleId: randomBike.id,
+        discountPercent: 20,
+        expiresAt,
       });
 
-      if (randomBike) {
-        const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 3); //Скидка на 3 дня
+      //Собираем данные для отправки писем:
+      const oldPrice = randomBike.price;
+      const newPrice = Math.round(oldPrice * 0.8);
 
-        //Записываем скидку в БД (обновляем старую или создаем новую):
-        await prisma.personalDiscount.upsert({
-          where: {
-            userId_motorcycleId: {
-              userId: user.id,
-              motorcycleId: randomBike.id,
-            },
-          },
-          update: { expiresAt, discountPercent: 20 },
-          create: {
-            userId: user.id,
-            motorcycleId: randomBike.id,
-            discountPercent: 20,
-            expiresAt,
-          },
-        });
-
-        //Шлем письмо на почту о персональной скидке:
-        const oldPrice = randomBike.price;
-        const newPrice = Math.round(oldPrice * 0.8); // -20%
-
-        //Генерируем событие для отправки письма:
-        eventBus.emit(
-          EVENTS.DISCOUNTS_GENERATED,
-          user.email,
-          randomBike.model,
-          randomBike.brand.name,
-          randomBike.slug,
-          oldPrice,
-          newPrice,
-        );
-      }
+      emailEvents.push({
+        email: user.email,
+        model: randomBike.model,
+        brandName: randomBike.brand.name,
+        slug: randomBike.slug,
+        oldPrice,
+        newPrice,
+      });
     }
-    console.log(
-      `Персональные скидки для ${users.length} пользователей сгенерированы.`,
-    );
 
+    //Вставляем все скидки:
+    if (discountsToInsert.length > 0) {
+      await prisma.personalDiscount.createMany({
+        data: discountsToInsert,
+      });
+    }
+
+    //Отправляем события в EventBus:
+    for (const ev of emailEvents) {
+      eventBus.emit(
+        EVENTS.DISCOUNTS_GENERATED,
+        ev.email,
+        ev.model,
+        ev.brandName,
+        ev.slug,
+        ev.oldPrice,
+        ev.newPrice,
+      );
+    }
+
+    console.log(
+      `Персональные скидки для ${users.length} пользователей сгенерированы пакетно.`,
+    );
     return { personalCount: users.length };
   }
 
@@ -179,6 +218,7 @@ export class DiscountService {
       orderBy: { createdAt: "desc" },
     });
   }
+  //В будущем можно будет добавить индекс на поле isActive в схему Prisma, если промокодов станет много
 
   //Получить все промокоды:
   async getPromoCodes() {
@@ -195,7 +235,9 @@ export class DiscountService {
       where: email
         ? {
             user: {
-              email: { contains: String(email), mode: "insensitive" }, // Поиск без учета регистра
+              is: {
+                email: { contains: String(email), mode: "insensitive" },
+              },
             },
           }
         : {},
