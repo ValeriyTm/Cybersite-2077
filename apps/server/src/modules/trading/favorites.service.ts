@@ -42,10 +42,10 @@ export class FavoritesService {
     ids: string[],
     limit: number = 20,
     skip: number = 0,
-    userId?: string, //Для расчёта скидок
+    userId?: string,
   ) {
     const motorcycles = await prisma.motorcycle.findMany({
-      where: { id: { in: ids } }, //Ищем только те, что в массиве избранного
+      where: { id: { in: ids } },
       include: {
         brand: true,
         images: { where: { isMain: true }, take: 1 },
@@ -57,30 +57,33 @@ export class FavoritesService {
       skip,
     });
 
-    //Рассчитываем остатки (totalInStock) и скидки для каждого мотоцикла:
-    const items = await Promise.all(
-      motorcycles.map(async (moto) => {
-        const totalInStock = moto.stocks.reduce(
-          (acc, s) => acc + (s.quantity - s.reserved),
-          0,
-        );
+    if (motorcycles.length === 0) {
+      return { items: [], hasMore: false };
+    }
 
-        const discountData = await discountLogic.calculateFinalPrice(
-          moto,
-          userId,
-        );
-
-        return {
-          ...moto,
-          totalInStock,
-          discountData,
-        };
-      }),
+    //Получаем скидки:
+    const allDiscountData = await discountLogic.calculateFinalPricesBulk(
+      motorcycles,
+      userId,
     );
+
+    //Склеиваем остатки и скидки в памяти:
+    const items = motorcycles.map((moto, index) => {
+      const totalInStock = moto.stocks.reduce(
+        (acc, s) => acc + (s.quantity - s.reserved),
+        0,
+      );
+
+      return {
+        ...moto,
+        totalInStock,
+        discountData: allDiscountData[index], // Берем данные из пакетного ответа по индексу
+      };
+    });
 
     return {
       items,
-      hasMore: skip + limit < ids.length, //Есть ли, что подгружать дальше
+      hasMore: skip + limit < ids.length,
     };
   }
 

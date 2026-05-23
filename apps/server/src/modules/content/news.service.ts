@@ -1,5 +1,7 @@
 //Модель для взаимодействия с MongoDB:
 import { NewsModel } from "../content/news.model.js";
+//Типы:
+import { UpdateNewsBodyArgs } from "@repo/validation";
 
 type ContentFull = UpdateNewsBodyArgs & {
   mainImage?: string;

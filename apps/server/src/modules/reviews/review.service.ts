@@ -26,7 +26,7 @@ export class ReviewService {
     const { motorcycleId, orderId, rating, comment } = data;
 
     //1.Проверяем, был ли такой заказ и завершен ли он:
-    const order = await prisma.order.findUnique({
+    const order = await prisma.order.findFirst({
       where: { id: orderId, userId, status: "COMPLETED" }, //Статус должен быть COMPLETED
     });
     if (!order) {
@@ -55,33 +55,38 @@ export class ReviewService {
       motorcycleId,
       orderId,
       rating: Number(rating),
-      comment: cleanComment, //Сохраняем в БД имено очищенный коммент
+      comment: cleanComment, //Сохраняем в БД именно очищенный коммент
       images: files,
     });
 
     //6.Обновляем рейтинг в PostgreSQ:
-    const moto = await prisma.motorcycle.findUnique({
+    const currentMoto = await prisma.motorcycle.findUnique({
       where: { id: motorcycleId },
+      select: { rating: true },
     });
-    if (moto) {
-      let newRating = moto.rating;
-      const userRating = Number(rating);
 
-      //Если юзер выставил рейтинг меньше того, что сейчас в БД, то понижаем его на 0.1:
-      if (userRating < moto.rating) {
-        newRating = Math.max(1, moto.rating - 0.1);
-      } else if (userRating > moto.rating) {
-        newRating = Math.min(5, moto.rating + 0.1);
-        //Если юзер выставил рейтинг выше того, что сейчас в БД, то повышаем его на 0.1:
+    let updatedMoto = null;
+
+    if (currentMoto) {
+      if (rating > currentMoto.rating && currentMoto.rating < 5) {
+        // Атомарно повышаем рейтинг на 0.1 прямо в базе данных
+        updatedMoto = await prisma.motorcycle.update({
+          where: { id: motorcycleId },
+          data: { rating: { increment: 0.1 } },
+        });
+      } else if (rating < currentMoto.rating && currentMoto.rating > 0) {
+        updatedMoto = await prisma.motorcycle.update({
+          where: { id: motorcycleId },
+          data: { rating: { decrement: 0.1 } },
+        });
       }
 
-      await prisma.motorcycle.update({
-        where: { id: motorcycleId },
-        data: { rating: newRating },
-      });
-
       //7.Синхронизируем новый рейтинг с ElasticSearch:
-      await searchService.updateRatingInElastic(motorcycleId, newRating);
+      const finalRating = updatedMoto
+        ? updatedMoto.rating
+        : currentMoto?.rating || 0;
+
+      await searchService.updateRatingInElastic(motorcycleId, finalRating);
     }
 
     //8.Создаём событие для генерации оповещения в ТГ:
@@ -97,7 +102,7 @@ export class ReviewService {
 
   //Удаление отзыва:
   async deleteReview(reviewId: string, userId: string, isAdmin: boolean) {
-    //Ищем отзыв:
+    //Ищем отзыв в MongoDB:
     const review = await ReviewModel.findById(reviewId);
     if (!review) throw new Error("Отзыв не найден");
 
@@ -108,7 +113,8 @@ export class ReviewService {
 
     //Удаляем файлы изображений из отзыва:
     if (review.images && review.images.length > 0) {
-      await Promise.all(
+      await Promise.allSettled(
+        // Используем Promise.allSettled вместо Promise.all, чтобы падение удаления одного файла не прерывало удаление остальных файлов и самого отзыва
         review.images.map(async (imagePath) => {
           const fullPath = path.join(process.cwd(), imagePath);
           try {
@@ -124,28 +130,36 @@ export class ReviewService {
     }
 
     //Логика пересчета рейтинга:
-    const moto = await prisma.motorcycle.findUnique({
+    const currentMoto = await prisma.motorcycle.findUnique({
       where: { id: review.motorcycleId },
+      select: { rating: true },
     });
 
-    if (moto) {
-      let newRating = moto.rating;
-      if (review.rating < moto.rating) {
-        newRating = Math.min(5, moto.rating + 0.1);
-      } else if (review.rating > moto.rating) {
-        newRating = Math.max(1, moto.rating - 0.1);
+    let updatedMoto = null;
+
+    if (currentMoto) {
+      //Через инкремент/декремент мы уходим от состояния race condition, которое могло бы возникнуть, если бы вели пересчет рейтинга в памяти, а затем записывали новое значение в БД
+      if (review.rating < currentMoto.rating && currentMoto.rating < 5) {
+        updatedMoto = await prisma.motorcycle.update({
+          where: { id: review.motorcycleId },
+          data: { rating: { increment: 0.1 } },
+        });
+      } else if (review.rating > currentMoto.rating && currentMoto.rating > 0) {
+        updatedMoto = await prisma.motorcycle.update({
+          where: { id: review.motorcycleId },
+          data: { rating: { decrement: 0.1 } },
+        });
       }
-
-      await prisma.motorcycle.update({
-        where: { id: review.motorcycleId },
-        data: { rating: newRating },
-      });
-
-      //Синхронизация с ElasticSearch:
-      await searchService.updateRatingInElastic(review.motorcycleId, newRating);
     }
 
-    //Удаляем из MongoDB:
+    const finalRating = updatedMoto
+      ? updatedMoto.rating
+      : currentMoto?.rating || 0;
+
+    //Синхронизация с ElasticSearch:
+    await searchService.updateRatingInElastic(review.motorcycleId, finalRating);
+
+    //Удаляем отзыв из MongoDB:
     return await ReviewModel.findByIdAndDelete(reviewId);
   }
 }

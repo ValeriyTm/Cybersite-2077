@@ -15,7 +15,7 @@ interface CreateTicketDto {
 }
 
 export class SupportService {
-  //Создание тикета и сохранение файлов в транзакции:
+  //Создание тикета и сохранение файлов:
   async createTicket(dto: CreateTicketDto) {
     const {
       userId,
@@ -28,28 +28,26 @@ export class SupportService {
       files,
     } = dto;
 
-    return await prisma.$transaction(async (tx) => {
-      return await tx.supportTicket.create({
-        data: {
-          userId, // Присвоится только если есть
-          firstName,
-          lastName,
-          email,
-          phone, // Присвоится только если есть
-          category,
-          description,
-          attachments: {
-            create:
-              files?.map((file) => ({
-                fileUrl: file.filename,
-                fileType: file.mimetype,
-                originalName: file.originalname,
-                size: file.size,
-              })) || [], // Присвоится только если есть
-          },
+    return await prisma.supportTicket.create({
+      data: {
+        userId, // Присвоится только если есть
+        firstName,
+        lastName,
+        email,
+        phone, // Присвоится только если есть
+        category,
+        description,
+        attachments: {
+          create:
+            files?.map((file) => ({
+              fileUrl: file.filename,
+              fileType: file.mimetype,
+              originalName: file.originalname,
+              size: file.size,
+            })) || [], // Присвоится только если есть
         },
-        include: { attachments: true },
-      });
+      },
+      include: { attachments: true },
     });
   }
 

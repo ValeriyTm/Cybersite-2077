@@ -35,18 +35,30 @@ export class WarehouseService {
     const totalUniqueItems = itemIds.length;
 
     const warehouses: DeliveryInfo[] = await prisma.$queryRaw`
-        SELECT 
-          w.id, w.name, w.city, w.lat, w.lng,
-          ST_DistanceSphere(ST_MakePoint(w.lng, w.lat), ST_MakePoint(${lng}, ${lat})) / 1000 as "distanceKm" 
-        FROM "Warehouse" w
-        JOIN "Stock" s ON s."warehouseId" = w.id
-        WHERE s."motorcycleId" IN (${Prisma.join(itemIds)}) 
-         AND (s.quantity - s.reserved) >= 1 -- Проверяем, что хотя бы 1 есть (упрощенно)
-        GROUP BY w.id
-        HAVING COUNT(DISTINCT s."motorcycleId") = ${totalUniqueItems} -- Склад должен иметь все типы товаров из корзины
-        ORDER BY "distanceKm" ASC
-      `;
-    //Используем ST_DistanceSphere для расчета расстояния в метрах по дуге сферы (Земли). Делим на 1000, чтобы получить километры.
+    SELECT 
+      w.id, 
+      w.name, 
+      w.city, 
+      w.lat, 
+      w.lng, 
+      ST_DistanceSphere(ST_MakePoint(w.lng, w.lat), ST_MakePoint(${lng}, ${lat})) / 1000 as "distanceKm"
+    -- Используем ST_DistanceSphere для расчета расстояния в метрах по дуге сферы (Земли). Делим на 1000, чтобы получить километры.
+    FROM "Warehouse" w
+    JOIN "Stock" s ON s."warehouseId" = w.id
+    -- Соединяем остатки с запрошенным количеством из корзины:
+    JOIN (
+      VALUES 
+        ${Prisma.join(
+          items.map((item) => Prisma.sql`(${item.id}, ${item.quantity}::int)`),
+        )}
+    ) AS req(motorcycle_id, required_qty) ON s."motorcycleId" = req.motorcycle_id
+    -- Проверяем, что доступный остаток покрывает всё запрошенное количество:
+    WHERE (s.quantity - s.reserved) >= req.required_qty
+    GROUP BY w.id, w.name, w.city, w.lat, w.lng
+    -- Убеждаемся, что на складе совпали все позиции из корзины:
+    HAVING COUNT(DISTINCT s."motorcycleId") = ${totalUniqueItems}
+    ORDER BY "distanceKm" ASC
+  `;
 
     //Возвращаем ближайший из подходящих или null:
     return warehouses.length > 0 ? warehouses[0] : null;

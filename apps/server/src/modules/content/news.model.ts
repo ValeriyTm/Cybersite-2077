@@ -50,4 +50,5 @@ const NewsSchema = new Schema<INews>(
   },
 );
 
+NewsSchema.index({ status: 1, createdAt: -1 });
 export const NewsModel = model<INews>("News", NewsSchema);
