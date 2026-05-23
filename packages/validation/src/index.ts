@@ -297,10 +297,6 @@ export const UpdateProfileSchema = z.object({
     })
     .max(new Date(), "Дата не может быть в будущем")
     .nullable(),
-  // gender: z
-  //   .union([z.enum(["MALE", "FEMALE"]), z.literal("")])
-  //   .transform((val) => (val === "" ? null : val))
-  //   .nullable(),
   gender: z.enum(["MALE", "FEMALE"]).nullable(),
 });
 
@@ -1018,6 +1014,54 @@ type UpdateStatusNewsInput = z.infer<typeof UpdateStatusNewsSchema>;
 //Чистый тип для сервиса:
 export type UpdateStatusNewsBodyArgs = UpdateStatusNewsInput["body"];
 export type UpdateStatusNewsParamsArgs = UpdateStatusNewsInput["params"];
+
+//----------------------------3.23) Схема для получения юзеров:-------------------------------------//
+export const GetUsersAdminSchema = z.object({
+  query: z.object({
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().max(100).default(10),
+    role: z
+      .preprocess(
+        (val) => (val === "" ? null : val),
+        z
+          .enum(["USER", "MANAGER", "CONTENT_EDITOR", "ADMIN", "SUPERADMIN"])
+          .nullable(),
+      )
+      .default(null),
+    email: z.string().optional(),
+  }),
+});
+
+type GetUsersAdminInput = z.infer<typeof GetUsersAdminSchema>;
+//Чистый тип для сервиса:
+export type GetUsersAdminArgs = GetUsersAdminInput["query"];
+
+//----------------------------3.24) Схема для изменения роли юзеру:-------------------------------------//
+export const UpdateUserStatusAdminSchema = z.object({
+  body: z.object({
+    role: z.enum(["USER", "MANAGER", "CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
+  }),
+  params: z.object({
+    id: z.uuid({ message: "Неверный формат id" }),
+  }),
+});
+
+type UpdateUserStatusAdminInput = z.infer<typeof UpdateUserStatusAdminSchema>;
+//Чистый тип для сервиса:
+export type UpdateUserStatusAdminBodyArgs = UpdateUserStatusAdminInput["body"];
+export type UpdateUserStatusAdminParamsArgs =
+  UpdateUserStatusAdminInput["params"];
+
+//----------------------------3.25) Схема для удаления юзера:-------------------------------------//
+export const DeleteUserAdminSchema = z.object({
+  params: z.object({
+    id: z.uuid({ message: "Неверный формат id" }),
+  }),
+});
+
+type DeleteUserAdminInput = z.infer<typeof DeleteUserAdminSchema>;
+//Чистый тип для сервиса:
+export type DeleteUserAdminArgs = DeleteUserAdminInput["params"];
 
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------4) Модуль Traparamsing-------------------------------------------------------////

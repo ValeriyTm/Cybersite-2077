@@ -1,5 +1,5 @@
 //Клиент призмы для работы с PostgreSQL:
-import { prisma } from "@repo/database";
+import { prisma, Role } from "@repo/database";
 
 export class AdminService {
   //---------------------Работа с остатками:-------------
@@ -28,7 +28,15 @@ export class AdminService {
 
   //---------------------Управление доступом:-------------
   //Получить данные о юзерах:
-  async getUsers(role: string, email: string, skip: number, limit: number) {
+  async getUsers(data: {
+    role: Role | null;
+    email?: string;
+    skip: number;
+    limit: number;
+  }) {
+    const { role, email, skip, limit } = data;
+
+    //Настройка фильтров:
     const where: any = {};
     if (role) where.role = role;
     if (email) where.email = { contains: String(email), mode: "insensitive" };
@@ -37,7 +45,6 @@ export class AdminService {
       prisma.user.findMany({
         where,
         select: {
-          //  Не берем пароли и секреты
           id: true,
           email: true,
           name: true,
@@ -55,10 +62,9 @@ export class AdminService {
   }
 
   //Изменить роль юзеру:
-  async updateUserRole(id: string, role: string) {
+  async updateUserRole(id: string, role: Role) {
     return await prisma.user.update({
       where: { id },
-      //@ts-ignore:
       data: { role },
     });
   }

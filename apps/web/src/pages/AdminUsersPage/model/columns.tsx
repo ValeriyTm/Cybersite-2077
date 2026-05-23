@@ -1,15 +1,26 @@
 //Типы:
 import { type ColumnDef } from '@tanstack/react-table';
+import type { Role } from '@repo/database/generated/prisma/client';
 //Иконки:
 import { FaTrash } from 'react-icons/fa';
 //Стили:
 import styles from './columns.module.scss';
 
+interface UserData {
+  createdAt: string;
+  email: string;
+  id: string;
+  isActivated: boolean;
+  name: string;
+  phone: string;
+  role: Role;
+}
+
 export const getUserColumns = (
-  currentAdminId: string | undefined,
-  onRoleChange: (id: string, role: string) => void,
+  currentAdminId: string,
+  onRoleChange: (id: string, role: Role) => void,
   onDelete: (id: string) => void
-): ColumnDef<any>[] => [
+): ColumnDef<UserData>[] => [
     { accessorKey: 'email', header: 'Email' },
     { accessorKey: 'name', header: 'Имя', meta: { className: styles.hideOnMobile }, },
     { accessorKey: 'phone', header: 'Телефон', meta: { className: styles.hideOnMobile }, cell: (info) => info.getValue() || '—' },
@@ -38,7 +49,7 @@ export const getUserColumns = (
               value={String(getValue())}
               disabled={isSelf} //Блокируем выбор для себя
               style={{ opacity: isSelf ? 0.5 : 1 }}
-              onChange={(e) => onRoleChange(userId, e.target.value)}
+              onChange={(e) => onRoleChange(userId, e.target.value as Role)}
               className={styles.statusSelect}
             >
               <option value="USER">USER</option>

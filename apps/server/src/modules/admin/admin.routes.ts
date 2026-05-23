@@ -17,6 +17,7 @@ import {
   DeleteBrandAdminSchema,
   DeleteMotoAdminSchema,
   DeleteNewsSchema,
+  DeleteUserAdminSchema,
   GetBrandsAdminSchema,
   GetMotosAdminSchema,
   GetOrdersAdminSchema,
@@ -24,6 +25,7 @@ import {
   GetReportsAdminSchema,
   GetStocksAdminSchema,
   GetTicketsAdminSchema,
+  GetUsersAdminSchema,
   ReplyOnTicketAdminSchema,
   SearchBrandsAdminSchema,
   UpdateBrandAdminSchema,
@@ -31,6 +33,7 @@ import {
   UpdateNewsSchema,
   UpdateStatusNewsSchema,
   UpdateStocksAdminSchema,
+  UpdateUserStatusAdminSchema,
 } from "@repo/validation";
 
 const router = Router();
@@ -149,12 +152,18 @@ router.patch(
 );
 //---------------------Управление доступом:-------------
 //Получить роли юзера:
-router.get("/users/", roleMiddleware(["SUPERADMIN"]), adminController.getUsers);
+router.get(
+  "/users/",
+  roleMiddleware(["SUPERADMIN"]),
+  validate(GetUsersAdminSchema),
+  adminController.getUsers,
+);
 
 //Изменить роль юзера:
 router.patch(
   "/users/:id/role",
   roleMiddleware(["SUPERADMIN"]),
+  validate(UpdateUserStatusAdminSchema),
   adminController.updateUserRole,
 );
 
@@ -162,6 +171,7 @@ router.patch(
 router.delete(
   "/users/:id",
   roleMiddleware(["SUPERADMIN"]),
+  validate(DeleteUserAdminSchema),
   adminController.deleteUser,
 );
 //---------------------Статистика:-------------

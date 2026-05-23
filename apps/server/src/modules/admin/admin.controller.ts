@@ -13,10 +13,12 @@ import {
   DeleteBrandAdminParamArgs,
   DeleteMotoAdminArgs,
   DeleteNewsArgs,
+  DeleteUserAdminArgs,
   GetOrdersAdminArgs,
   GetPersonalDiscountsArgs,
   GetReportsAdminArgs,
   GetTicketsAdminArgs,
+  GetUsersAdminArgs,
   MotosAdminArgs,
   ReplyOnTicketAdminBodyArgs,
   ReplyOnTicketAdminParamsArgs,
@@ -32,6 +34,8 @@ import {
   UpdateNewsParamsArgs,
   UpdateStatusNewsBodyArgs,
   UpdateStatusNewsParamsArgs,
+  UpdateUserStatusAdminBodyArgs,
+  UpdateUserStatusAdminParamsArgs,
 } from "@repo/validation";
 import { Statistics } from "../reports/types.js";
 //Главный сервис модуля Admin:
@@ -314,11 +318,20 @@ export const updateOrderStatus = catchAsync(
 //---------------------Управление доступом:-------------
 //Получить данные о юзерах:
 export const getUsers = catchAsync(async (req: AuthRequest, res: Response) => {
-  const { page = 1, limit = 10, role, email } = req.query;
-  const skip = (Number(page) - 1) * Number(limit);
+  const {
+    page = 1,
+    limit = 10,
+    role,
+    email,
+  } = req.query as unknown as GetUsersAdminArgs;
+  const skip = (page - 1) * limit;
 
-  //@ts-ignore:
-  const [users, total] = await adminService.getUsers(role, email, skip, limit);
+  const [users, total] = await adminService.getUsers({
+    role,
+    email,
+    skip,
+    limit,
+  });
 
   res.json({
     data: users,
@@ -329,18 +342,16 @@ export const getUsers = catchAsync(async (req: AuthRequest, res: Response) => {
 //Изменить роль юзеру:
 export const updateUserRole = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const { role } = req.body;
-    const adminId = (req as any).user.id; //ID текущего админа из мидлвара
+    const { id } = req.params as UpdateUserStatusAdminParamsArgs;
+    const { role } = req.body as UpdateUserStatusAdminBodyArgs;
+    const adminId = req.user.id;
 
-    //Защита - нельзя менять роль самому себе
     if (id === adminId) {
       return res
         .status(403)
         .json({ message: "Вы не можете изменить роль самому себе" });
     }
 
-    //@ts-ignore:
     const user = await adminService.updateUserRole(id, role);
     res.json(user);
   },
@@ -349,8 +360,8 @@ export const updateUserRole = catchAsync(
 //Удалить юзера:
 export const deleteUser = catchAsync(
   async (req: AuthRequest, res: Response) => {
-    const { id } = req.params;
-    const adminId = (req as any).user.id;
+    const { id } = req.params as DeleteUserAdminArgs;
+    const adminId = req.user.id;
 
     if (id === adminId) {
       return res.status(403).json({
@@ -358,7 +369,6 @@ export const deleteUser = catchAsync(
       });
     }
 
-    //@ts-ignore:
     await adminService.deleteUser(id);
 
     res.json({ message: "Пользователь успешно удален" });

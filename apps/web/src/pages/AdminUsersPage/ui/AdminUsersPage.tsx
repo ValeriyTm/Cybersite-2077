@@ -7,29 +7,45 @@ import { getUserColumns } from "../model/columns";
 import { DataTable } from "@/shared/ui";
 //API:
 import { $api } from "@/shared/api";
+//Типы:
+import type { Role } from "@repo/database/generated/prisma/client";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
 import styles from './AdminUsersPage.module.scss'
 
+// Структура стандартной ошибки от сервера:
+interface ApiErrorResponse {
+	response?: {
+		data?: {
+			message?: string;
+		};
+	};
+}
+
 export const AdminUsersPage = () => {
-	const [role, setRole] = useState('');
+	const [role, setRole] = useState<Role | ''>('');
 	const [email, setEmail] = useState('');
 	const { user: currentUser } = useProfile();
 	const queryClient = useQueryClient();
 
+	const ROLE = role.toLocaleUpperCase();
+
 	const { data } = useQuery({
 		queryKey: ['admin-users', role, email],
-		queryFn: () => $api.get('/admin/users', { params: { role, email } }).then(res => res.data)
+		queryFn: () => $api.get('/admin/users', { params: { role: ROLE, email } }).then(res => res.data)
 	});
 
 	const roleMutation = useMutation({
-		mutationFn: ({ id, role }: any) => $api.patch(`/admin/users/${id}/role`, { role }),
+		mutationFn: ({ id, role }: { id: string; role: Role }) => $api.patch(`/admin/users/${id}/role`, { role }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['admin-users'] });
 			toast.success('Роль обновлена');
 		},
-		onError: (err: any) => toast.error(err.response?.data?.message || 'Ошибка')
+		onError: (err: unknown) => {
+			const error = err as ApiErrorResponse
+			toast.error(error.response?.data?.message || 'Ошибка')
+		}
 	});
 
 	const deleteMutation = useMutation({
@@ -38,11 +54,14 @@ export const AdminUsersPage = () => {
 			queryClient.invalidateQueries({ queryKey: ['admin-users'] });
 			toast.success('Пользователь удален');
 		},
-		onError: (err: any) => toast.error(err.response?.data?.message || 'Ошибка при удалении')
+		onError: (err: unknown) => {
+			const error = err as ApiErrorResponse
+			toast.error(error.response?.data?.message || 'Ошибка при удалении')
+		}
 	});
 
 	const columns = getUserColumns(
-		currentUser?.id,
+		currentUser!.id,
 		(id, role) => roleMutation.mutate({ id, role }),
 		(id) => deleteMutation.mutate(id)
 	);
@@ -55,7 +74,7 @@ export const AdminUsersPage = () => {
 				<input id='email-search-for-users' type='search' placeholder="Поиск по email..." onChange={(e) => setEmail(e.target.value)} />
 
 				<label htmlFor="user-role" className='visually-hidden'>Выбор роли для пользователя</label>
-				<select onChange={(e) => setRole(e.target.value)} id='user-role'>
+				<select onChange={(e) => setRole(e.target.value as Role)} id='user-role'>
 					<option value="">Все роли</option>
 					<option value="USER">USER</option>
 					<option value="MANAGER">MANAGER</option>
