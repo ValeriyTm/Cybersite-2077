@@ -85,6 +85,18 @@ export const orderWorker = new Worker(
       //Генерируем событие для отправки юзеру письма, что заказ доставлен:
       eventBus.emit(EVENTS.ORDER_DELIVERY_END, order);
     }
+
+    //Задача обновления остатко в Elasticsearch:
+    if (job.name === "sync-elastic-stocks") {
+      const { motorcycleIds } = job.data as { motorcycleIds: string[] };
+
+      // Вызываем новый пакетный метод (Bulk) вместо цикла
+      await searchService.updateStocksInElasticBulk(motorcycleIds);
+
+      console.log(
+        `[Worker] Успешно синхронизировано товаров в Elastic: ${motorcycleIds.length}`,
+      );
+    }
   },
   { connection: redis }, //Указываем воркеру, к какому именно экземпляру Redis ему нужно
   //подключиться, чтобы «слушать» задачи.

@@ -411,6 +411,51 @@ export class SearchService {
     });
   }
 
+  //
+  async updateStocksInElasticBulk(motorcycleIds: string[]) {
+    if (!motorcycleIds || motorcycleIds.length === 0) return;
+
+    //Забираем остатки для всех переданных мотоциклов:
+    const stocks = await prisma.stock.findMany({
+      where: {
+        motorcycleId: { in: motorcycleIds },
+      },
+      select: {
+        motorcycleId: true,
+        quantity: true,
+        reserved: true,
+      },
+    });
+
+    //Группируем остатки по мотоциклам (вычисляем totalInStock для каждого) (итог будет в виде: { "id-1": 5, "id-2": 12 }):
+    const stockMap: Record<string, number> = {};
+
+    for (const s of stocks) {
+      if (!stockMap[s.motorcycleId]) {
+        stockMap[s.motorcycleId] = 0;
+      }
+      stockMap[s.motorcycleId] += s.quantity - s.reserved;
+    }
+
+    //Формируем тело для Bulk-запроса в Elasticsearch (для каждого документа Elastic требует две строки: метаданные операции и сами данные)
+    const bulkOperations = motorcycleIds.flatMap((id) => {
+      const totalInStock = stockMap[id] || 0;
+
+      return [
+        { update: { _index: this.indexName, _id: id } },
+        { doc: { totalInStock: Math.max(0, totalInStock) } },
+      ];
+    });
+
+    //Отправляем всё одним сетевым запросом:
+    if (bulkOperations.length > 0) {
+      await esClient.bulk({
+        refresh: true, //Делает изменения видимыми для поиска сразу
+        operations: bulkOperations,
+      });
+    }
+  }
+
   //Обновляем данные по рейтингу:
   async updateRatingInElastic(id: string, rating: number) {
     await esClient.update({

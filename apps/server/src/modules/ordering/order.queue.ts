@@ -48,3 +48,21 @@ export const addDeliveredTask = async (
     `Заказ ${orderId} будет помечен как DELIVERED через ${Math.round(delay / 1000 / 60)} мин.`,
   );
 };
+
+// Функция для добавления задачи обновления остатков в Elastic:
+export const addElasticSyncTask = async (motorcycleIds: string[]) => {
+  await orderQueue.add(
+    "sync-elastic-stocks",
+    { motorcycleIds },
+    {
+      attempts: 3,
+      backoff: {
+        type: "exponential",
+        delay: 5000,
+      },
+    },
+  );
+  console.log(
+    `Задача на синхронизацию ${motorcycleIds.length} товаров в Elastic добавлена в очередь.`,
+  );
+};

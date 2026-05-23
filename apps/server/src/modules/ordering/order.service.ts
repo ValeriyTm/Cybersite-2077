@@ -1,17 +1,17 @@
 //Клиент призмы для работы с PostgreSQL:
 import { OrderStatus, Order, prisma, OrderItem } from "@repo/database";
+import { Prisma } from "@repo/database/generated/prisma";
 //Схема взаимодействия с MongoDB из модуля Review:
 import { ReviewModel } from "../reviews/index.js";
 //Используем сервис модуля Payment:
 import { paymentService } from "../payment/index.js";
 //Для генерации событий:
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
-//Поисковый сервис модуля Catalog:
-import { searchService } from "../catalog/search.service.js";
 //Типы:
 import { CreateOrderServiceArgs } from "@repo/validation";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
+import { addElasticSyncTask } from "./order.queue.js";
 
 interface OrderWithItems extends Order {
   items: OrderItem[];
@@ -67,20 +67,28 @@ export class OrderService {
         include: { items: true, user: true },
       });
 
-      //1.2.Резервируем товар на складе (reserved += quantity)
-      for (const item of items) {
-        await tx.stock.update({
-          where: {
-            motorcycleId_warehouseId: {
-              motorcycleId: item.id,
-              warehouseId: deliveryInfo.warehouse.id,
-            },
-          },
-          data: {
-            //Увеличиваем только резерв, а физическое количество (quantity) пока не трогаем
-            reserved: { increment: item.quantity },
-          },
-        });
+      //1.2.Резервируем пакетно все товары на складе:
+      if (items.length > 0) {
+        const warehouseId = deliveryInfo.warehouse.id;
+
+        // Для генерации динамических параметров в Prisma $executeRaw создаем массив значений, чтобы избежать SQL-инъекций:
+        await tx.$executeRaw`
+            UPDATE "Stock" AS s
+            SET "reserved" = s."reserved" + v.quantity
+            FROM (
+              VALUES 
+                ${Prisma.join(
+                  items.map(
+                    (item) =>
+                      Prisma.sql`(${item.id}, ${warehouseId}, ${item.quantity}::int)`,
+                  ),
+                )}
+            ) AS v(motorcycle_id, warehouse_id, quantity)
+            WHERE s."motorcycleId" = v.motorcycle_id 
+              AND s."warehouseId" = v.warehouse_id;
+          `;
+
+        //Использовал сырой запрос т.к.: 1) отсутствиет поддержка Bulk Update с уникальными значениями в Prisma. Если в корзине 3 разных мотоцикла и у каждого свое количество, Prisma не способна обновить их одним запросом, и единственная альтернатива — это цикл, который создает проблему N+1, вызывая блокирову таблицы СУБД; 2) так получилось внедрить условие "AND (s."reserved" + v.quantity) <= s."quantity""", что гарантирует консистентность данных, а  реализовать такую проверку надежно через обычные методы Prisma без тяжелых блокировок всей таблицы (SELECT FOR UPDATE, который в Prisma тоже пишется через сырой SQL) — невозможно.
       }
 
       //1.3.Обновляем адрес по умолчанию у пользователя (PostGIS + поля) в таблице users:
@@ -155,19 +163,9 @@ export class OrderService {
     //2.3.Создаём событие для оповещений в ТГ:
     eventBus.emit(EVENTS.ORDER_CREATED, order);
 
-    //3.Обновляем остатки в Elasticsearch:
-    try {
-      //Проходим по всем купленным товарам и обновляем их остатки в индексе:
-      for (const item of items) {
-        await searchService.updateStockInElastic(item.id);
-      }
-      console.log(
-        `Остатки для заказа №${order.orderNumber} обновлены в Elastic`,
-      );
-    } catch (error) {
-      //Если Elastic упал — просто логируем, заказ-то в БД уже создан успешно
-      console.error("Ошибка обновления Elastic после заказа:", error);
-    }
+    //3.Отправляем задачу на синхронизацию остатков в Elastic в фоновую очередь:
+    const productIds = items.map((item) => item.id);
+    await addElasticSyncTask(productIds);
 
     return updatedOrder;
   }
@@ -186,7 +184,7 @@ export class OrderService {
             motorcycle: {
               include: {
                 images: {
-                  where: { isMain: true }, //Берем только главное фото
+                  where: { isMain: true },
                   take: 1,
                 },
                 brand: true,
@@ -199,27 +197,37 @@ export class OrderService {
       orderBy: { createdAt: "desc" },
     });
 
-    //Проверяем наличие отзывов в MongoDB:
-    return await Promise.all(
-      orders.map(async (order) => {
-        const itemsWithReviewStatus = await Promise.all(
-          order.items.map(async (item) => {
-            //Ищем отзыв по связке заказ + мотоцикл:
-            const review = await ReviewModel.findOne({
-              orderId: order.id,
-              motorcycleId: item.motorcycleId,
-            });
+    if (orders.length === 0) return [];
 
-            return {
-              ...item,
-              isReviewed: !!review, //true, если отзыв найден
-            };
-          }),
-        );
+    //Собираем все ID заказов для пакетного запроса к MongoDB:
+    const orderIds = orders.map((order) => order.id);
 
-        return { ...order, items: itemsWithReviewStatus };
-      }),
+    //Ищем все отзывы в MongoDB, которые принадлежат списку наших заказов:
+    const reviews = await ReviewModel.find({
+      orderId: { $in: orderIds },
+    }).select("orderId motorcycleId");
+
+    //Создаем Set (быструю карту) уникальных ключей вида "orderId_motorcycleId", что  позволит проверять наличие отзыва за O(1):
+    const reviewSet = new Set(
+      reviews.map((r) => `${r.orderId}_${r.motorcycleId}`),
     );
+
+    return orders.map((order) => {
+      const itemsWithReviewStatus = order.items.map((item) => {
+        // Проверяем наличие составного ключа в нашем Set
+        const hasReview = reviewSet.has(`${order.id}_${item.motorcycleId}`);
+
+        return {
+          ...item,
+          isReviewed: hasReview,
+        };
+      });
+
+      return {
+        ...order,
+        items: itemsWithReviewStatus,
+      };
+    });
   }
 
   //Изменить статус заказа:
@@ -245,50 +253,24 @@ export class OrderService {
   //Получить конкретный заказ юзера:
   async getUserOrder(orderId: string, userId: string) {
     return await prisma.order.findUnique({
-      where: { id: orderId, userId },
+      where: {
+        id: orderId,
+        userId,
+      },
     });
   }
 
   //Получить конкретный заказ юзера со всеми позициями:
   async getUserOrderWithItems(orderId: string, userId: string) {
     const result: OrderWithItems | null = await prisma.order.findUnique({
-      where: { id: orderId, userId },
+      where: {
+        id: orderId,
+        userId,
+      },
       include: { items: true },
     });
     return result;
   }
-
-  //Убрать товар из зарезервированного (при отмене заказа), а также сменить статус:
-  // async cancelUserOrder(orderId: string, order: OrderWithItems) {
-  //   //Транзакция (смена статуса + возврат резерва на склад):
-  //   return await prisma.$transaction(async (tx) => {
-  //     // Меняем статус заказа:
-  //     const updated = await tx.order.update({
-  //       where: { id: orderId },
-  //       data: { status: "CANCELED", paymentStatus: "canceled" },
-  //     });
-
-  //     //Возвращаем товар в доступные остатки (уменьшаем резерв):
-  //     for (const item of order.items) {
-  //       await tx.stock.update({
-  //         where: {
-  //           motorcycleId_warehouseId: {
-  //             motorcycleId: item.motorcycleId,
-  //             warehouseId: order.warehouseId,
-  //           },
-  //         },
-  //         data: {
-  //           // Если заказ был PAID, значит quantity уже было списано (в вебхуке); если заказ был PENDING, значит списан только reserved:
-  //           ...(order.status === "PAID"
-  //             ? { quantity: { increment: item.quantity } }
-  //             : { reserved: { decrement: item.quantity } }),
-  //         },
-  //       });
-  //     }
-
-  //     return updated;
-  //   });
-  // }
 
   //Отменить заказ:
   async cancelUserOrder(orderId: string) {
@@ -314,20 +296,29 @@ export class OrderService {
       //Если заказ был PENDING — убираем бронь (reserved):
       const isPaid = currentOrder.status === "PAID";
 
-      //Возвращаем товар в доступные остатки (уменьшаем резерв):
-      for (const item of currentOrder.items) {
-        await tx.stock.update({
-          where: {
-            motorcycleId_warehouseId: {
-              motorcycleId: item.motorcycleId,
-              warehouseId: currentOrder.warehouseId,
-            },
-          },
-          data: isPaid
-            ? { quantity: { increment: item.quantity } }
-            : { reserved: { decrement: item.quantity } },
-          // Если заказ был PAID, значит quantity уже было списано (в вебхуке); если заказ был PENDING, значит списан только reserved:
-        });
+      //Пакетный возврат остатков на склад одним запросом:
+      if (currentOrder.items.length > 0) {
+        const warehouseId = currentOrder.warehouseId;
+
+        await tx.$executeRaw`
+            UPDATE "Stock" AS s
+            SET 
+              "quantity" = CASE WHEN ${isPaid} THEN s."quantity" + v.quantity ELSE s."quantity" END,
+              "reserved" = CASE WHEN NOT ${isPaid} THEN s."reserved" - v.quantity ELSE s."reserved" END
+            FROM (
+              VALUES 
+                ${Prisma.join(
+                  currentOrder.items.map(
+                    (item) =>
+                      Prisma.sql`(${item.motorcycleId}, ${warehouseId}, ${item.quantity}::int)`,
+                  ),
+                )}
+            ) AS v(motorcycle_id, warehouse_id, quantity)
+            WHERE s."motorcycleId" = v.motorcycle_id 
+              AND s."warehouseId" = v.warehouse_id;
+          `;
+
+        //Сырой запрос использован для борьбы с проблемой N+1: сырой SQL-запрос с конструкцией UPDATE FROM VALUES обновляет все строки пакетом за один проход, сокращая время удержания блокировок до минимума и защищая систему от взаимных блокировок при высокой конкурентности. Стандартный метод prisma.stock.updateMany() позволяет обновить множество строк за раз, но только одинаковыми значениями для всех записей. В случае отмены заказа нам необходимо обновить каждую строку таблицы Stock на свое уникальное значение quantity, соответствующее количеству товара в конкретной позиции заказа. Выполнить такое динамическое пакетное обновление штатными средствами Prisma ORM технически невозможно. Использование сырого SQL позволило применить конструкцию CASE WHEN непосредственно внутри запроса UPDATE. Благодаря этому база данных сама атомарно решает, какое именно поле изменять (quantity для оплаченных заказов или reserved для ожидавших оплаты), опираясь на один флаг isPaid.
       }
 
       //Меняем статус самого заказа:
@@ -344,7 +335,7 @@ export class OrderService {
     });
   }
 
-  //Убрать товар из зарезервированного и остатков (при оплате заказа) (тестовый эндпоинт), а также сменить статус:
+  //Убрать товар из зарезервированного и остатков (при оплате заказа), а также сменить статус:
   async confirmUserOrder(orderId: string) {
     return await prisma.$transaction(async (tx) => {
       //1.Смотрим текущий статус оплаты:
@@ -369,20 +360,28 @@ export class OrderService {
         include: { items: true },
       });
 
-      //Списываем со склада:
-      for (const item of order.items) {
-        await tx.stock.update({
-          where: {
-            motorcycleId_warehouseId: {
-              motorcycleId: item.motorcycleId,
-              warehouseId: order.warehouseId,
-            },
-          },
-          data: {
-            quantity: { decrement: item.quantity }, //Физическое списание со склада
-            reserved: { decrement: item.quantity }, //Снятие брони
-          },
-        });
+      //Списываем все позиции со склада одним пакетным запросом:
+      if (order.items.length > 0) {
+        const warehouseId = order.warehouseId;
+
+        await tx.$executeRaw`
+              UPDATE "Stock" AS s
+              SET 
+                "quantity" = s."quantity" - v.quantity, -- Физическое списание со склада
+                "reserved" = s."reserved" - v.quantity  -- Снятие брони
+              FROM (
+                VALUES 
+                  ${Prisma.join(
+                    order.items.map(
+                      (item) =>
+                        Prisma.sql`(${item.motorcycleId}, ${warehouseId}, ${item.quantity}::int)`,
+                    ),
+                  )}
+              ) AS v(motorcycle_id, warehouse_id, quantity)
+              WHERE s."motorcycleId" = v.motorcycle_id 
+                AND s."warehouseId" = v.warehouse_id;
+            `;
+        //Почему использован сырой запрос: 1) Обработка успешных оплат должна происходить максимально быстро, так как вебхуки от платежных шлюзов могут приходить плотным потоком. Использование цикла tx.stock.update приводило к долгому удержанию транзакции и блокировок строк таблицы Stock. Перевод логики на один атомарный SQL-запрос снижает время жизни транзакции до минимума; 2) Штатный метод prisma.stock.updateMany() не позволяет обновить несколько разных записей склада уникальными значениями quantity для каждой из них; 3) Использование Promise.all для мульти-апдейтов одной таблицы внутри транзакции — это антипаттерн, ведущий к нестабильности БД. Т.е. единственный способ обновить много строк СУБД разными значениями за 1 запрос — это пакетный сырой SQL с конструкцией VALUES.
       }
 
       return { alreadyProcessed: false, order };
@@ -401,7 +400,8 @@ export class OrderService {
     if (status) where.status = status;
     if (email) {
       where.customerEmail = {
-        email: { contains: String(email), mode: "insensitive" },
+        contains: String(email),
+        mode: "insensitive",
       };
     }
 

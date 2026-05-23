@@ -57,14 +57,4 @@ router.patch(
   orderController.cancelOrder,
 );
 
-//-----------------------Тестовые эндпоинты---------------
-//Тестовый эндпоинт для оплаты (если модуль Payment недоступен):
-// router.patch(
-//   "/:orderId/pay-test",
-//   authMiddleware,
-//   roleMiddleware(["SUPERADMIN"]),
-//   orderController.payOrderTest,
-// );
-// PATCH http://localhost:3001/api/orders/тут-id-заказа/pay-test - после этого заказ из pending переходит в paid, а затем в delivery
-
 export default router;
