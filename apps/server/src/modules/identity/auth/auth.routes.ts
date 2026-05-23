@@ -11,6 +11,8 @@ import {
   ActivationSchema,
   BackendChangePasswordSchema,
   BackendDeleteAccountSchema,
+  BackendForgotPasswordSchema,
+  BackendResetPasswordSchema,
   LoginSchema,
   RegisterSchema,
 } from "@repo/validation";
@@ -68,11 +70,21 @@ router.delete(
   AuthController.deleteAccount,
 );
 
-//Роут для замены пароля (Forgot password):
-router.post("/forgot-password", authLimiter, AuthController.forgotPassword);
+//Роут для ввода пароля (Forgot password):
+router.post(
+  "/forgot-password",
+  authLimiter,
+  validate(BackendForgotPasswordSchema),
+  AuthController.forgotPassword,
+);
 
-//Роут для сброса пароля (Forgot password):
-router.post("/reset-password", authLimiter, AuthController.resetPassword);
+//Роут для замены пароля (Reset password):
+router.post(
+  "/reset-password",
+  authLimiter,
+  validate(BackendResetPasswordSchema),
+  AuthController.resetPassword,
+);
 
 //-------Роуты для OAuth:
 //Роут входа в аккаунт Google (перенаправление в Google) [OAuth]:

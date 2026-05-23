@@ -14,6 +14,9 @@ import {
   ActivationParamArgs,
   ChangePasswordType,
   DeleteAccountType,
+  ForgotPasswordType,
+  ResetPasswordType,
+  ResetPasswordQueryType,
 } from "@repo/validation";
 //Сервис для взаимодействия с БД для подмодуля auth:
 import { authService } from "./auth.service.js";
@@ -276,22 +279,12 @@ export const deleteAccount = catchAsync(
   },
 );
 
-//Контроллер восстановления пароля (Forgot Password):
+//Контроллер восстановления пароля (обработка email и отправка письма со ссылкой на форму восстановления):
 export const forgotPassword = catchAsync(
   async (req: Request, res: Response) => {
-    //1) Валидируем данные при помощи Zod:
-    const result = ForgotPasswordSchema.safeParse(req.body);
-    if (!result.success) {
-      return res.status(400).json({
-        errors: result.error.flatten((issue) => issue.message).fieldErrors,
-      });
-    }
+    const { email, captchaToken } = req.body as ForgotPasswordType;
 
-    //2) Извлекаем из запроса email и токен капчи:
-    const { email, captchaToken } = result.data;
-    if (!email) throw new AppError(400, "Email обязателен");
-
-    //3) Проверка капчи:
+    //Проверка капчи:
     const isHuman = await recaptchaService.verify(captchaToken);
     if (!isHuman) {
       throw new AppError(
@@ -300,10 +293,10 @@ export const forgotPassword = catchAsync(
       );
     }
 
-    //4) Вызываем сервис для отправки клиенту ссылки на форму восстановления пароля:
+    //Вызываем сервис для отправки клиенту ссылки на форму восстановления пароля:
     await authService.forgotPassword(email);
 
-    //5) Всегда отвечаем 200, даже если email нет в базе (защита от сканирования базы):
+    //Всегда отвечаем 200, даже если email нет в базе (защита от сканирования базы):
     return res.status(200).json({
       message:
         "Если такой email зарегистрирован, письмо со ссылкой отправлено.",
@@ -313,17 +306,11 @@ export const forgotPassword = catchAsync(
 
 //Контроллер восстановления пароля (замена пароля):
 export const resetPassword = catchAsync(async (req: Request, res: Response) => {
-  //1) Валидируем пароли через Zod:
-  const validation = ResetPasswordSchema.safeParse(req.body);
-  if (!validation.success) {
-    return res.status(400).json({
-      errors: validation.error.flatten((issue) => issue.message).fieldErrors,
-    });
-  }
+  //Проверяем капчу (до того, как лезть в БД и проверять пароль)
+  const { captchaToken, password } = req.body as ResetPasswordType;
+  const { token } = req.query as ResetPasswordQueryType;
 
-  //2) Проверяем капчу (до того, как лезть в БД и проверять пароль)
-  // @ts-ignore:
-  const { captchaToken, ...passwordData } = validation.data;
+  //Проверка капчи:
   const isHuman = await recaptchaService.verify(captchaToken);
   if (!isHuman) {
     throw new AppError(
@@ -332,19 +319,16 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
     );
   }
 
-  //3) Извлекаем токен из запроса:
-  const { token } = req.query; // Ожидаем ?token=abc в URL
   if (!token || typeof token !== "string") {
     throw new AppError(400, "Токен сброса не передан или некорректен");
   }
 
-  //4) Вызываем сервис, передав в него токен и данные:
+  //Вызываем сервис, передав в него токен и данные:
   await authService.resetPassword({
-    ...validation.data,
+    password,
     token,
   });
 
-  //5) Возвращаем ответ:
   return res
     .status(200)
     .json({ message: "Пароль успешно изменен. Теперь вы можете войти." });

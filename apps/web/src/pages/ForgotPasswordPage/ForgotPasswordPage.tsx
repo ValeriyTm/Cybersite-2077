@@ -1,13 +1,15 @@
 //Работа с формами:
-import { useForm } from "react-hook-form";
+import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; //Библиотека для связывания Zod и React Hook Form
 //Схемы валидации Zod:
 import {
   ForgotPasswordSchema,
-  type ForgotPasswordInput,
+  type ForgotPasswordType,
 } from "@repo/validation";
 //API:
 import { $api } from "@/shared/api";
+//Библиотека для всплывающих уведомлений:
+import { toast } from "react-hot-toast";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Роутинг:
@@ -20,21 +22,33 @@ import { Button, Input } from "@/shared/ui";
 import styles from "./ForgotPasswordPage.module.scss";
 
 export const ForgotPasswordPage = () => {
-  const { handleAuthSubmit } = useAuthSubmit<ForgotPasswordInput>();
+  const { handleAuthSubmit } = useAuthSubmit<ForgotPasswordType>();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<ForgotPasswordInput>({
+  } = useForm<ForgotPasswordType>({
     resolver: zodResolver(ForgotPasswordSchema),
+    mode: "onBlur",
     defaultValues: {
-      captchaToken: "",
+      captchaToken: "1",
     },
   });
 
-  const onSubmit = async (data: ForgotPasswordInput) => {
+  //Функция для обработки ошибок валидации Zod:
+  const onFormError = (errors: FieldErrors<ForgotPasswordType>) => {
+    //Берем первую ошибку из объекта:
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message, {
+        id: "forgot-password-validation-error", // Предотвращает спам — новое уведомление заменит старое
+      });
+    }
+  };
+
+  const onSubmit = async (data: ForgotPasswordType) => {
     await handleAuthSubmit(
       {
         action: "forgot_password",
@@ -62,7 +76,7 @@ export const ForgotPasswordPage = () => {
         <div className={styles.card}>
           <h1>Восстановление</h1>
           <p>Введите Email, указанный при регистрации</p>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit, onFormError)}>
             <Input
               label="Email"
               type="email"

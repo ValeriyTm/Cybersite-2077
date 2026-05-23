@@ -5,12 +5,22 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 
-interface AuthSubmitOptions<T> {
+//Структура ожидаемой ошибки от сервера:
+interface ApiErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+interface AuthSubmitOptions<T, R = unknown> {
+  //R — тип данных, возвращаемых сервером
   action: string; // Название действия для Google (login, register...)
-  apiCall: (data: T & { captchaToken: string }) => Promise<any>; // Функция запроса
+  apiCall: (data: T & { captchaToken: string }) => Promise<R>; // Функция запроса
   successMessage?: string; // Текст при успехе
   redirectPath?: string; // Куда слать юзера после успеха
-  onSuccess?: (response: any) => void; // Доп. действия (например, setAuth)
+  onSuccess?: (response: R) => void; // Доп. действия (например, setAuth)
 }
 
 export const useAuthSubmit = <T>() => {
@@ -18,7 +28,10 @@ export const useAuthSubmit = <T>() => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const navigate = useNavigate();
 
-  const handleAuthSubmit = async (options: AuthSubmitOptions<T>, data: T) => {
+  const handleAuthSubmit = async <R>(
+    options: AuthSubmitOptions<T, R>,
+    data: T,
+  ): Promise<R | undefined> => {
     //Вернуть в проде (отключить в тесте):
     //1) Ждем токен от Google.  Если сервис капчи не прогрузился, регистрация блокируется.
     if (!executeRecaptcha) {
@@ -44,9 +57,10 @@ export const useAuthSubmit = <T>() => {
       if (options.redirectPath) navigate(options.redirectPath);
 
       return res;
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Произошла ошибка");
-      throw e; // Прокидываем ошибку дальше для formState
+    } catch (e: unknown) {
+      const error = e as ApiErrorResponse;
+      toast.error(error.response?.data?.message || "Произошла ошибка");
+      throw error; // Прокидываем ошибку дальше для formState
     }
   };
 

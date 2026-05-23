@@ -232,6 +232,7 @@ export class AuthService {
     return prisma.user.delete({ where: { id: userId } });
   }
 
+  //Метод восстановления пароля (обработка email и отправка письма со ссылкой на форму восстановления):
   async forgotPassword(email: string) {
     //1) Ищем юзера в БД по его email:
     const user = await prisma.user.findUnique({ where: { email } });
@@ -252,13 +253,13 @@ export class AuthService {
     eventBus.emit(EVENTS.FORGOT_PASSWORD, email, link);
   }
 
-  async resetPassword(data: ResetPasswordInput & { token: string }) {
-    // 1) Ищем юзера, у которого совпадает токен и срок жизни ещё не истек:
+  async resetPassword(data: { password: string; token: string }) {
+    //1) Ищем юзера, у которого совпадает токен и срок жизни ещё не истек:
     const user = await prisma.user.findFirst({
       where: {
         resetPasswordToken: data.token,
         resetPasswordExpires: {
-          gt: new Date(), // "Greater Than" — срок действия еще не истек
+          gt: new Date(),
         },
       },
     });

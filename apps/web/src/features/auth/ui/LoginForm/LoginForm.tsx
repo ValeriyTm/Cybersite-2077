@@ -27,12 +27,8 @@ interface Props {
 
 export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   const navigate = useNavigate();
-
-
   const { setAuth, setTempUserId, tempUserId } = useAuthStore();
-
   const { handleAuthSubmit } = useAuthSubmit<LoginFormType>();
-
   const [show2FA, setShow2FA] = useState(false);
 
   const {
@@ -61,7 +57,6 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
       });
     }
   };
-
 
   //Отправка формы:
   const onSubmit: SubmitHandler<LoginFormType> = async (data: LoginFormType) => {

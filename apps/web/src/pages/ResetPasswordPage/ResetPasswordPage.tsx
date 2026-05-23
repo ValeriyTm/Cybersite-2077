@@ -1,11 +1,11 @@
 //Роутер:
 import { useSearchParams } from "react-router";
 //React Hook Form:
-import { useForm } from "react-hook-form";
+import { useForm, type FieldErrors } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
 //Схемы валидации Zod:
-import { ResetPasswordSchema, type ResetPasswordInput } from "@repo/validation";
+import { ResetPasswordSchema, type ResetPasswordType } from "@repo/validation";
 //API:
 import { $api } from "@/shared/api";
 //SEO:
@@ -25,20 +25,32 @@ export const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
-  const { handleAuthSubmit } = useAuthSubmit<ResetPasswordInput>();
+  const { handleAuthSubmit } = useAuthSubmit<ResetPasswordType>();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ResetPasswordInput>({
+  } = useForm<ResetPasswordType>({
     resolver: zodResolver(ResetPasswordSchema),
+    mode: "onBlur",
     defaultValues: {
-      captchaToken: "",
+      captchaToken: "1",
     },
   });
 
-  const onSubmit = async (data: ResetPasswordInput) => {
+  //Функция для обработки ошибок валидации Zod:
+  const onFormError = (errors: FieldErrors<ResetPasswordType>) => {
+    //Берем первую ошибку из объекта:
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message, {
+        id: "reset-password-validation-error", // Предотвращает спам — новое уведомление заменит старое
+      });
+    }
+  };
+
+  const onSubmit = async (data: ResetPasswordType) => {
     //Если в параметрах адресной строки нет токена сброса:
     if (!token) return toast.error("Токен отсутствует");
 
@@ -75,7 +87,7 @@ export const ResetPasswordPage = () => {
             Придумайте сложный пароль для защиты аккаунта
           </p>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit, onFormError)}>
             {/* Используем PasswordField для основного пароля */}
             <PasswordField
               label="Новый пароль"

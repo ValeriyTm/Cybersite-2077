@@ -162,6 +162,70 @@ export const BackendDeleteAccountSchema = z.object({
   body: DeleteAccountSchema,
 });
 
+//----------------------------1.6) Схема для ввода email (Forgot Password):--------------------------------------------//
+export const ForgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    //Моя оптимальная регулярка для email:
+    .regex(
+      /^[a-zA-Z0-9][a-zA-Z0-9._+-]*[a-zA-Z0-9]@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
+      "Введите корректный адрес электронной почты",
+    ),
+  captchaToken: z.string().min(1, { message: "captcha не валидна" }),
+});
+
+//Тип:
+export type ForgotPasswordType = z.infer<typeof ForgotPasswordSchema>;
+
+// Схема для бэкенда:
+export const BackendForgotPasswordSchema = z.object({
+  body: ForgotPasswordSchema,
+});
+
+//----------------------------1.7) Схема для замены пароля (Reset Password):--------------------------------------------//
+export const ResetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .trim()
+      .min(8, "Пароль должен иметь минимум 8 символов")
+      .max(32, "Пароль должен иметь максимум 32 символа")
+      // Хотя бы одна заглавная буква
+      .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
+      // Хотя бы одна строчная буква
+      .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
+      // Хотя бы одна цифра
+      .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
+      // Хотя бы один спецсимвол
+      .regex(
+        /[^a-zA-Z0-9]/,
+        "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
+      ),
+    confirmPassword: z.string(),
+    //@ts-ignore:
+    captchaToken: z.string({ required_error: "Ошибка безопасности" }),
+  })
+  .strict()
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordType = z.infer<typeof ResetPasswordSchema>;
+
+// Схема для бэкенда:
+export const BackendResetPasswordSchema = z.object({
+  body: ResetPasswordSchema,
+  query: z.object({
+    token: z.string().min(1).max(64),
+  }),
+});
+
+export type ResetPasswordQueryType = z.infer<
+  typeof BackendResetPasswordSchema
+>["query"];
 //---------------------------------------------------------
 //-----------------Прочие схемы:---------------------//
 //Схема для добавления дополнительных данных о пользователе:
@@ -202,49 +266,6 @@ export const UpdateProfileSchema = z
   .strict();
 
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
-
-//Схема для валидации введенного email (Forgot Password):
-export const ForgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .email({ message: "Некорректный email или пароль" }),
-  //@ts-ignore:
-  captchaToken: z.string({ required_error: "Ошибка безопасности" }),
-});
-
-//Схема для обновления пароля (Forgot Password):
-export const ResetPasswordSchema = z
-  .object({
-    password: z
-      .string()
-      .trim()
-      .min(8, "Пароль должен иметь минимум 8 символов")
-      .max(32, "Пароль должен иметь максимум 32 символа")
-      // Хотя бы одна заглавная буква
-      .regex(/[A-Z]/, "В пароле нужна хотя бы одна заглавная буква")
-      // Хотя бы одна строчная буква
-      .regex(/[a-z]/, "В пароле нужна хотя бы одна строчная буква")
-      // Хотя бы одна цифра
-      .regex(/[0-9]/, "В пароле нужна хотя бы одна цифра")
-      // Хотя бы один спецсимвол
-      .regex(
-        /[^a-zA-Z0-9]/,
-        "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
-      ),
-    confirmPassword: z.string(),
-    //@ts-ignore:
-    captchaToken: z.string({ required_error: "Ошибка безопасности" }),
-  })
-  .strict()
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Пароли не совпадают",
-    path: ["confirmPassword"],
-  });
-
-export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>;
-export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>;
 
 ///////Схема для валидации 2FA кода:
 export const Verify2FASchema = z
