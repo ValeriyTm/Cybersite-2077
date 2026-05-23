@@ -1,5 +1,6 @@
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
+import { Statistics } from "./types.js";
 
 export class ReportsService {
   //Метод сбора статистики за указанный период:
@@ -17,18 +18,33 @@ export class ReportsService {
     });
 
     //Обогащаем данными о моделях:
-    const enrichedTopSellers = await Promise.all(
-      topSellers.map(async (item) => {
-        const moto = await prisma.motorcycle.findUnique({
-          where: { id: item.motorcycleId },
-          select: { model: true, brand: { select: { name: true } } },
-        });
+    let enrichedTopSellers = [] as any;
+
+    if (topSellers.length > 0) {
+      const topBikeIds = topSellers.map((item) => item.motorcycleId);
+
+      const motorcycles = await prisma.motorcycle.findMany({
+        where: { id: { in: topBikeIds } },
+        select: {
+          id: true,
+          model: true,
+          brand: { select: { name: true } },
+        },
+      });
+
+      //Создаем карту в памяти для моментального поиска по ID за O(1):
+      const bikeMap = new Map(motorcycles.map((m) => [m.id, m]));
+
+      enrichedTopSellers = topSellers.map((item) => {
+        const moto = bikeMap.get(item.motorcycleId);
         return {
-          model: `${moto?.brand.name} ${moto?.model}`,
-          quantity: item._sum.quantity,
+          model: moto
+            ? `${moto.brand.name} ${moto.model}`
+            : "Неизвестная модель",
+          quantity: item._sum.quantity || 0,
         };
-      }),
-    );
+      });
+    }
 
     //2) Складской отчет (критические остатки):
     const lowStock = await prisma.stock.findMany({
@@ -49,7 +65,7 @@ export class ReportsService {
       totalRevenue: finance._sum.totalPrice || 0,
       ordersCount: finance._count.id,
       period: days,
-    };
+    } as Statistics;
   }
 }
 

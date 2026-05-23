@@ -574,6 +574,20 @@ export class SearchService {
       `Успешно обновлен бренд для ${motorcycles.length} моделей мотоциклов.`,
     );
   }
+
+  //Удаление связанных мотоциклов при удалении бренда:
+  async deleteFromIndexBulk(motorcycleIds: string[]) {
+    if (!motorcycleIds || motorcycleIds.length === 0) return;
+
+    const bulkDeleteOperations = motorcycleIds.map((id) => ({
+      delete: { _index: this.indexName, _id: id },
+    }));
+
+    await esClient.bulk({
+      refresh: true,
+      operations: bulkDeleteOperations,
+    });
+  }
 }
 
 export const searchService = new SearchService();

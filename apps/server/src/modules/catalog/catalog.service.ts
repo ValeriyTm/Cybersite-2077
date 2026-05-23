@@ -2,6 +2,8 @@
 import { prisma } from "@repo/database";
 //Логика расчёта цены с учетом скидок (из модуля Discount):
 import { discountLogic } from "../discount/index.js";
+//Сервис поиска:
+import { searchService } from "./search.service.js";
 //Схемы валидации Zod:
 import {
   createMotorcycleAdminArgs,
@@ -108,7 +110,23 @@ export class CatalogService {
 
   //Удаление модели мотоцикла:
   async deleteMotorcycle(id: string) {
-    await prisma.motorcycle.delete({ where: { id } });
+    //Сначала удаляем мотоцикл из поискового индекса Elasticsearch:
+    try {
+      await searchService.deleteFromIndex(id);
+      console.log(
+        `[Elasticsearch] Модель ID ${id} успешно удалена из поискового индекса.`,
+      );
+    } catch (error) {
+      console.error(
+        `[Elasticsearch] Ошибка при удалении модели ID ${id} из индекса:`,
+        error,
+      );
+    }
+
+    //Затем удаляем запись из реляционной базы данных PostgreSQL:
+    return await prisma.motorcycle.delete({
+      where: { id },
+    });
   }
 
   //Создание новой модели мотоцикла:
@@ -161,7 +179,7 @@ export class CatalogService {
       select: { id: true },
     });
 
-    return await prisma.motorcycle.create({
+    const newMotorcycle = await prisma.motorcycle.create({
       data: {
         ...newData,
         siteCategoryId: siteCategoryId!.id,
@@ -178,6 +196,22 @@ export class CatalogService {
       },
       include: { images: true, brand: true },
     });
+
+    //Синхронизируем созданную модель с Elasticsearch, чтобы она появилась в поиске:
+    try {
+      // Вызываем метод точечной индексации (который мы ранее исправили на esClient.update)
+      await searchService.indexMotorcycle(newMotorcycle.id);
+      console.log(
+        `[Elasticsearch] Новая модель ${newMotorcycle.model} успешно добавлена в поисковый индекс.`,
+      );
+    } catch (error) {
+      console.error(
+        `[Elasticsearch] Ошибка индексации новой модели ID ${newMotorcycle.id}:`,
+        error,
+      );
+    }
+
+    return newMotorcycle;
   }
 
   //Обновление данных о модели мотоцикла:
@@ -241,6 +275,15 @@ export class CatalogService {
     const existingImagesCount = await prisma.productImage.count({
       where: { motorcycleId: id },
     });
+    //Проверяем, осталась ли в базе хоть одна главная картинка:
+    const hasMainImage = await prisma.productImage.count({
+      where: {
+        motorcycleId: id,
+        isMain: true, // Ищем именно главное фото
+      },
+    });
+    // Если главных картинок не осталось, то первая новая картинка станет главной:
+    const shouldAssignNewMain = hasMainImage === 0;
     //Добавляем новые файлы:
     const newImages = await Promise.all(
       files.map(async (file, index) => {
@@ -255,7 +298,9 @@ export class CatalogService {
         } catch {
           console.log("Ошибка перемещения");
         }
-        return { url: newFileName, isMain: false };
+        // Картинка станет главной (isMain: true), если старую обложку удалили И это самый первый файл в текущем цикле (index === 0)
+        const isMain = shouldAssignNewMain && index === 0;
+        return { url: newFileName, isMain };
       }),
     );
 
@@ -285,7 +330,7 @@ export class CatalogService {
       select: { id: true },
     });
 
-    return await prisma.motorcycle.update({
+    const updatedMotorcycle = await prisma.motorcycle.update({
       where: { id },
       data: {
         ...finalData,
@@ -295,6 +340,24 @@ export class CatalogService {
       },
       include: { images: true },
     });
+
+    //Синхронизируем Elasticsearch:
+    try {
+      // Вызываем точечную переиндексацию (метод esClient.update, который мы исправили ранее)
+      await searchService.indexMotorcycle(updatedMotorcycle.id);
+      console.log(
+        `[Elasticsearch] Данные мотоцикла ID ${updatedMotorcycle.id} успешно обновлены в индексе.`,
+      );
+    } catch (error) {
+      // Логируем ошибку, но не прерываем выполнение метода, чтобы изменения в Postgres сохранились
+      console.error(
+        `[Elasticsearch] Не удалось обновить поисковый индекс для мотоцикла ID ${updatedMotorcycle.id}:`,
+        error,
+      );
+    }
+
+    // Заменяем исходный return на возврат уже сохраненной переменной:
+    return updatedMotorcycle;
   }
 
   //Получение списка брендов:
@@ -361,7 +424,24 @@ export class CatalogService {
       select: { id: true },
     });
 
+    //Удаляем бренд из PostgreSQL (удалятся все связанные модели):
     await prisma.brand.delete({ where: { id } });
+
+    // 3)Удаляем все мотоциклы бренда из Elasticsearch:
+    if (affectedMotos.length > 0) {
+      try {
+        const motoIds = affectedMotos.map((m) => m.id);
+        await searchService.deleteFromIndexBulk(motoIds);
+        console.log(
+          `[Elasticsearch] Из индекса успешно удалено ${affectedMotos.length} моделей бренда ID: ${id}`,
+        );
+      } catch (error) {
+        console.error(
+          `[Elasticsearch] Ошибка при пакетном удалении моделей бренда ID ${id}:`,
+          error,
+        );
+      }
+    }
 
     return affectedMotos;
   }
@@ -376,10 +456,25 @@ export class CatalogService {
   //Обновление информации о бренде:
   async updateBrand(id: string, name: string, country: string, slug: string) {
     const oldBrand = await prisma.brand.findUnique({ where: { id } });
+
     const updatedBrand = await prisma.brand.update({
       where: { id },
       data: { name, country, slug },
     });
+
+    //Если slug или название бренда изменились, то обновляем данные о бренде во всех его мотоциклах в Elasticsearch:
+    if (oldBrand && (oldBrand.slug !== slug || oldBrand.name !== name)) {
+      try {
+        // Вызываем наш bulk-метод, который за 1 запрос обновит весь бренд в Elastic:
+        await searchService.syncBrandMotorcycles(id);
+      } catch (error) {
+        console.error(
+          `[Elasticsearch] Ошибка при синхронизации мотоциклов после обновления бренда ID ${id}:`,
+          error,
+        );
+      }
+    }
+
     return { oldBrand, updatedBrand };
   }
 }
