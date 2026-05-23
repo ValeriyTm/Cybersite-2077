@@ -67,17 +67,29 @@ export const CheckoutPage = () => {
 
   //Информация о промокоде:
   const promoFromCart = location.state?.promo;
+  //Информация, что  юзер попал на страницу /checkout именно с корзины:
+  const isAllowed = location.state?.allowed;
+  // Получаем товары из истории переходов
+  const itemsFromState = location.state?.itemsFromCart;
+
+  // Выбираем источник данных: приоритет у state, запасной вариант - стора:
+  const sourceItems = itemsFromState || cartItems; //!!!Новое
+
+  console.log("RAW cartItems from store:", cartItems);
+  //Брать его!
+  console.log("RAW items from state:", location.state?.itemsFromCart);
 
   //Отбираем только выбранные юзером в корзине товары:
   const legalSelectedItems: MotorcycleCart[] = useMemo(
     () =>
-      cartItems.filter(
+      sourceItems.filter(
+        //!!!Тут были cartItems
         (item) =>
           item.selected &&
           item.quantity <= item.totalInStock &&
           item.totalInStock > 0,
       ),
-    [cartItems],
+    [sourceItems], //!!!Тут были cartItems
   );
 
   console.log('legalSelectedItems: ', legalSelectedItems);
@@ -176,10 +188,10 @@ export const CheckoutPage = () => {
 
   //Если пользователь вручную ввел адрес /checkout, но у него в корзине только «нелегальные» товары или вообще ничего не выбрано, его нужно выкинуть обратно в корзину:
   useEffect(() => {
-    if (legalSelectedItems.length === 0) {
+    if (!isAllowed && legalSelectedItems.length === 0) {
       navigate("/cart");
     }
-  }, [legalSelectedItems.length, navigate]);
+  }, [isAllowed, legalSelectedItems.length, navigate]);
 
   const handleAddressSelect = (
     coords: { lat: number; lng: number },

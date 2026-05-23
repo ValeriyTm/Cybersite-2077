@@ -2,46 +2,38 @@
 //Zustand:
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-//API:
-import { $api } from "@/shared/api";
 //Типы:
 import type { MotorcycleCart } from "@/entities/catalog";
 import type { AddToCartLocally } from "../types/types";
 
 interface TradingState {
+  //1) Логика избранного
   favoriteIds: string[]; //Массив ID избранных моделей
-  cartItems: MotorcycleCart[]; //Массив объектов корзины
-
   setFavorites: (ids: string[]) => void;
-  setCart: (items: MotorcycleCart[]) => void;
-
-  //Логика избранного
   toggleFavoriteLocally: (motorcycleId: string) => void; //Локальное добавление в избранное (для Optimistic UI)
   isFavorite: (motorcycleId: string) => boolean; //Проверка: добавлена ли в избранное конкретная модель
+  favoritesCount: number;
 
-  //Логика корзины:
+  //2) Логика корзины:
+  cartItems: MotorcycleCart[]; //Массив объектов корзины
+  setCart: (items: MotorcycleCart[]) => void;
   addToCartLocally: (item: AddToCartLocally) => void; //Локальное добавление в корзину (для Optimistic UI)
   removeFromCartLocally: (id: string) => void; //Локальное удаление из корзины товара
-
   //Логика работы с чекбоксами в корзине:
   toggleSelectItem: (id: string) => void;
   toggleSelectAll: (isSelected: boolean) => void;
   updateItemQuantity: (id: string, quantity: number) => void;
   removeSelectedLocally: () => void; //Локальное удаление из корзины товаров (выбранных)
-  // fetchCart: () => void;
 
-  // fetchFavoritesIds: () => void;
-
-  favoritesCount: number;
-
+  //3) Общее:
   clearTrading: () => void; //Очистка при выходе из аккаунта
 }
 
 export const useTradingStore = create<TradingState>()(
   devtools((set, get) => ({
+    //1)----------------------Избранное:----------------
     favoritesCount: 0,
     favoriteIds: [],
-    cartItems: [],
 
     //Изменяем список id избранных товаров и счетчик их количества:
     setFavorites: (ids) =>
@@ -74,6 +66,8 @@ export const useTradingStore = create<TradingState>()(
     //Функция-селектор, которую вызывают карточки мотоциклов, чтобы понять, в каком цвете рисовать иконку лайка (закрашенная или контур):
     isFavorite: (id) => get().favoriteIds.includes(id),
     //С помощью метода get() мы достаем текущий массив favoriteIds из хранилища и проверяем, входит ли id текущего байка в массив избранных id
+    //2)----------------------Корзина:----------------
+    cartItems: [],
 
     //Добавление в корзину:
     addToCartLocally: (item: MotorcycleCart) => {
@@ -104,9 +98,32 @@ export const useTradingStore = create<TradingState>()(
         cartItems: get().cartItems.filter((item) => item.id !== id),
       }),
 
-    ////Чебоксы для корзины:
+    //Обновить количество товара в корзине локально (для мгновенного пересчета суммы):
+    updateItemQuantity: (id: string, quantity: number) =>
+      set((state) => ({
+        cartItems: state.cartItems.map((item) =>
+          item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item,
+        ),
+      })),
 
-    //1.Переключить выбор конкретного товара (чекбокс на карточке):
+    //Удалить выбранные товары из локальной корзины (после успешного запроса к Redis):
+    removeSelectedLocally: () =>
+      set((state) => ({
+        cartItems: state.cartItems.filter((item) => !item.selected),
+      })),
+    //Оставляет в корзине только те товары, у которых selected: false. Это «подчищает» интерфейс, оставляя пользователю то, что он решил не удалять/не покупать.
+
+    //Установить значение корзины целиком (синхронизация с ответом сервера):
+    setCart: (items: MotorcycleCart[]) =>
+      set({
+        cartItems: items.map((item) => ({
+          ...item,
+          // selected: item.selected,
+        })),
+      }),
+
+    ////Чебоксы для корзины:
+    //Переключить выбор конкретного товара (чекбокс на карточке):
     toggleSelectItem: (id: string) =>
       set((state) => ({
         //Перебираем все товары в корзине и создаем на основе этого новый массив.
@@ -116,7 +133,7 @@ export const useTradingStore = create<TradingState>()(
         ),
       })),
 
-    //2.Выбрать все или снять выбор со всех (главный чекбокс вверху компонента корзины):
+    //Выбрать все или снять выбор со всех (главный чекбокс вверху компонента корзины):
     toggleSelectAll: (isSelected: boolean) =>
       set((state) => ({
         cartItems: state.cartItems.map((item) => ({
@@ -125,53 +142,7 @@ export const useTradingStore = create<TradingState>()(
         })),
       })),
 
-    //3. Обновить количество товара в корзине локально (для мгновенного пересчета суммы):
-    updateItemQuantity: (id: string, quantity: number) =>
-      set((state) => ({
-        cartItems: state.cartItems.map((item) =>
-          item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item,
-        ),
-      })),
-
-    //4. Удалить выбранные товары из локальной корзины (после успешного запроса к Redis):
-    removeSelectedLocally: () =>
-      set((state) => ({
-        cartItems: state.cartItems.filter((item) => !item.selected),
-      })),
-    //Оставляет в корзине только те товары, у которых selected: false. Это «подчищает» интерфейс, оставляя пользователю то, что он решил не удалять/не покупать.
-
-    //5. Установить значения корзины целиком (синхронизация с ответом сервера):
-    setCart: (items: MotorcycleCart[]) =>
-      set({
-        cartItems: items.map((item) => ({
-          ...item,
-          selected: item.selected,
-        })),
-      }),
-
-    //Метод для простого получения (обновления) данных корзины:
-    //(просто делаем запрос к серверу, а затем синхронизируем при помощи вызова setCart)
-    // fetchCart: async () => {
-    //   try {
-    //     const response = await $api.get("/trading/cart"); //Эндпоинт корзины
-    //     //Используем твой готовый метод для записи и расстановки selected
-    //     get().setCart(response.data);
-    //   } catch (error) {
-    //     console.error("Ошибка при обновлении корзины:", error);
-    //   }
-    // },
-
-    //Метод получения списка id избранных товаров:
-    // fetchFavoritesIds: async () => {
-    //   try {
-    //     //Получаем с сервера список id избранных товаров:
-    //     const { data } = await $api.get<string[]>("/trading/favorites/ids");
-    //     get().setFavorites(data); // Используем уже готовый setFavorites, который обновит и count
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // },
-
+    //3)----------------------Общее:----------------
     //Очистка корзины и счетчика избранных (при логауте вызываем):
     clearTrading: () =>
       set({ cartItems: [], favoriteIds: [], favoritesCount: 0 }),

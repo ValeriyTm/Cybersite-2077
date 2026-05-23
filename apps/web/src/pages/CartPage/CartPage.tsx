@@ -1,8 +1,7 @@
 //Состояния:
 import { useTradingStore, useCart } from "@/entities/trading";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useProfile } from "@/features/auth";
-import { useQueryClient } from "@tanstack/react-query";
 //Навигация:
 import { useNavigate } from "react-router";
 //Компоненты:
@@ -26,6 +25,8 @@ export const CartPage = () => {
     removeSelected,
     selectAll,
   } = useCart();
+
+  console.log('cartItems on CartPage: ', cartItems);
 
   //Проверяем, выбраны ли все товары сейчас:
   const isAllSelected =
@@ -53,6 +54,8 @@ export const CartPage = () => {
       acc + (item.discountData?.finalPrice || item.price) * item.quantity,
     0,
   );
+
+  console.log('selectedItems on CartPage: ', selectedItems);
 
   const promoAmount = Number(appliedPromo?.amount || 0); //Уменьшение суммы от промокода
   const finalTotal = Math.max(0, subtotal - promoAmount); //Получаем конечную сумму
@@ -101,12 +104,13 @@ export const CartPage = () => {
   //Проверяем заполненность профиля
   const isProfileIncomplete = user ? (!user.phone || !user.birthday) : false;
 
-  //Проверяем остатки среди выбранных товаров:
+  //Если среди выбранных товаров есть такой, у которого количество указано больше, чем есть остатков, то получаем true:
   const hasStockErrorInSelected = selectedItems.some(
     (item) => item.quantity > item.totalInStock,
   );
 
-  ////------Работа с Я.Метрикой:-----///
+
+  //Переход к оформлению заказа:
   const handleOrder = () => {
     //Проверяем профиль в момент клика:
     if (!user?.phone || !user?.birthday) {
@@ -114,7 +118,7 @@ export const CartPage = () => {
       return; // Прерываем выполнение, дальше код не идет
     }
 
-    //Фиксируем метрику:
+    //Фиксируем Я.Метрику:
     const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
     if (typeof window !== 'undefined' && (window as any).ym) {
       (window as any).ym(metricaId, 'reachGoal', 'ORDER_CLICK');
@@ -122,7 +126,11 @@ export const CartPage = () => {
 
     //Редирект на оформление заказа:
     navigate("/checkout", {
-      state: { promo: appliedPromo },
+      state: {
+        promo: appliedPromo,
+        allowed: true, //Флаг, что юзер попал на страницу /checkout именно с корзины
+        itemsFromCart: selectedItems, //!!!Новое (как и allowed).
+      }
     });
   };
   ///--------------------------При отсутствии товаров:------------------------//

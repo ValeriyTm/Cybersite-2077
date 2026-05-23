@@ -41,13 +41,14 @@ export const useCart = () => {
     queryKey: ["cart"], //Уникальный идентификатор данных корзины в кэше.
     queryFn: async () => {
       const { data } = await $api.get<MotorcycleCart[]>("/trading/cart");
+      console.log("Пришло с сервера data: ", data);
       return data;
     },
     enabled: isAuth && !!accessToken,
     staleTime: Infinity, //Вечное время жизни кэша. Мы сами будем управлять обновлением корзины через мутации, поэтому лишние автоматические перезапросы нам не нужны.
   });
 
-  // Синхронизируем первоначальный кэш React Query с Zustand:
+  //Синхронизируем кэш React Query с Zustand:
   useEffect(() => {
     if (query.data) {
       setCart(query.data);
@@ -84,10 +85,10 @@ export const useCart = () => {
       //Сервер возвращает актуальный состав корзины:
       return data;
     },
-    //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
+    //Если сервер подтвердил добавление, то:
     onSuccess: (data) => {
-      queryClient.setQueryData(["cart"], data);
-      setCart(data);
+      queryClient.setQueryData(["cart"], data); //Обновляем кэш
+      setCart(data); //Актуальный состав корзины записываем в локальное состояние корзины
     },
   });
 

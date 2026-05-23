@@ -1,6 +1,8 @@
 ////---------------------------Сервис для работы с JWT-токенами
 //Библиотека для работы с JWT:
 import jwt from "jsonwebtoken";
+//Модуль для работы с криптографией:
+import crypto from "node:crypto";
 //Логгер Grafana Loki:
 import { logger } from "../../../shared/lib/logger.js";
 //Типы:
@@ -26,12 +28,24 @@ interface Payload {
 export class TokenService {
   //Метод для генерации пары "access token - refresh token":
   generateTokens(payload: Payload) {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
-      expiresIn: "10m", //Срок жизни 5 минут
-    });
-    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
-      expiresIn: "7d", //Срок жизни 7 дней
-    });
+    //Создаем уникальный идентификатор для конкретной пары токенов (даже если два метода запустятся в одну наносекунду, строки JWT гарантированно будут разными).
+    const jwtId = crypto.randomUUID(); //Соль
+
+    const accessToken = jwt.sign(
+      { ...payload, jti: jwtId },
+      process.env.JWT_ACCESS_SECRET!,
+      {
+        expiresIn: "10m", //Срок жизни 10 минут
+      },
+    );
+
+    const refreshToken = jwt.sign(
+      { ...payload, jti: jwtId },
+      process.env.JWT_REFRESH_SECRET!,
+      {
+        expiresIn: "7d", //Срок жизни 7 дней
+      },
+    );
 
     return { accessToken, refreshToken };
   }

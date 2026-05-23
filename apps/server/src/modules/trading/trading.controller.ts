@@ -73,6 +73,7 @@ export const getFavoritesCount = catchAsync(
 //Контроллер получения данных о товарах в корзине:
 export const getCart = catchAsync(async (req: AuthRequest, res: Response) => {
   const cart = await cartService.getCart(req.user.id);
+  console.log("Клиенту отправлен состав корзины getCart: ", cart);
   res.json(cart);
 });
 
@@ -82,6 +83,7 @@ export const addToCart = catchAsync(async (req: AuthRequest, res: Response) => {
 
   const cart = await cartService.addToCart(req.user.id, data);
 
+  console.log("Клиенту отправлен состав корзины addToCart: ", cart);
   res.json(cart);
 });
 
@@ -95,6 +97,7 @@ export const updateCartQuantity = catchAsync(
       motorcycleId,
       Number(quantity),
     );
+    console.log("Клиенту отправлен состав корзины updateCartQuantity: ", cart);
     res.json(cart);
   },
 );
@@ -105,6 +108,7 @@ export const removeFromCart = catchAsync(
     const { motorcycleId } = req.params as DeleteSingleFromCartServiceArgs;
 
     const cart = await cartService.removeItem(req.user.id, motorcycleId);
+    console.log("Клиенту отправлен состав корзины removeFromCart: ", cart);
     res.json(cart);
   },
 );
@@ -114,6 +118,10 @@ export const removeSelectedFromCart = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { ids } = req.body as DeleteMultipleFromCartArgs; //Массив ID выбранных чекбоксами товаров
     const cart = await cartService.removeMultiple(req.user.id, ids);
+    console.log(
+      "Клиенту отправлен состав корзины removeSelectedFromCart: ",
+      cart,
+    );
     res.json(cart);
   },
 );
@@ -129,7 +137,7 @@ export const toggleSelect = catchAsync(
       motorcycleId,
       selected,
     );
-
+    console.log("Клиенту отправлен состав корзины toggleSelect: ", updatedCart);
     res.status(200).json(updatedCart);
   },
 );
@@ -142,6 +150,10 @@ export const toggleSelectAll = catchAsync(
 
     const updatedCart = await cartService.toggleSelectAll(userId, isSelected);
 
+    console.log(
+      "Клиенту отправлен состав корзины toggleSelectAll: ",
+      updatedCart,
+    );
     res.status(200).json(updatedCart);
   },
 );

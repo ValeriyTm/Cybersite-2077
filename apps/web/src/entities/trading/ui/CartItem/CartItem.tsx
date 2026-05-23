@@ -87,10 +87,10 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
             </Link>
           </div>
 
-          {/*Избранное и удаление с корзины:*/}
+
           <div className={styles.actions}>
             <div className={styles.btnGroup}>
-
+              {/* Добавить/удалить из избранного: */}
               <button
                 className={`${styles.favIconBtn} ${favoriteIds.includes(data.id) ? styles.active : ""}`}
                 onClick={() => toggleFavorite(data.id)}
@@ -102,13 +102,15 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
               >
                 {favoriteIds.includes(data.id) ? "❤️" : "🤍"}
               </button>
+
+              {/* Удалить из корзины: */}
               <button title='Удалить из корзины' onClick={() => handleDeletingId(data.id)} className={styles.deleteBtn}>
                 Удалить
               </button>
 
             </div>
 
-            {/*Количество:*/}
+            {/*Изменить количество товара в корзине:*/}
             <div className={styles.quantityControl}>
               <button
                 title='Уменьшить количество товара в корзине'
