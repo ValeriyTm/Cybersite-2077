@@ -69,27 +69,17 @@ export const CheckoutPage = () => {
   const promoFromCart = location.state?.promo;
   //Информация, что  юзер попал на страницу /checkout именно с корзины:
   const isAllowed = location.state?.allowed;
-  // Получаем товары из истории переходов
-  const itemsFromState = location.state?.itemsFromCart;
-
-  // Выбираем источник данных: приоритет у state, запасной вариант - стора:
-  const sourceItems = itemsFromState || cartItems; //!!!Новое
-
-  console.log("RAW cartItems from store:", cartItems);
-  //Брать его!
-  console.log("RAW items from state:", location.state?.itemsFromCart);
 
   //Отбираем только выбранные юзером в корзине товары:
   const legalSelectedItems: MotorcycleCart[] = useMemo(
     () =>
-      sourceItems.filter(
-        //!!!Тут были cartItems
+      cartItems.filter(
         (item) =>
           item.selected &&
           item.quantity <= item.totalInStock &&
           item.totalInStock > 0,
       ),
-    [sourceItems], //!!!Тут были cartItems
+    [cartItems],
   );
 
   console.log('legalSelectedItems: ', legalSelectedItems);

@@ -1137,12 +1137,12 @@ export const CreateOrderSchema = z.object({
           .string()
           .min(1, "id мотоцикла обязателен")
           .max(36, "Максимум 36 символов для id"),
-        model: z.string().min(1).max(40),
+        model: z.string().min(1).max(70),
         price: z.number().int().nonnegative(),
         quantity: z.number().int().positive(),
       }),
     ),
-    address: z.string().min(1).max(200),
+    address: z.string().min(1).max(300),
     coords: z.object({
       lat: z.number().min(-90).max(90),
       lng: z.number().min(-180).max(180),
@@ -1150,7 +1150,7 @@ export const CreateOrderSchema = z.object({
     deliveryInfo: z.object({
       warehouse: z.object({
         id: z.string().min(1),
-        name: z.string().min(1).max(40),
+        name: z.string().min(1).max(50),
         city: z.string().min(1).max(20),
         lat: z.number().min(-90).max(90),
         lng: z.number().min(-180).max(180),

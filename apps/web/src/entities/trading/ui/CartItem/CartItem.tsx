@@ -140,9 +140,6 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
             </div>
           </div>
 
-
-
-
           {/*Цена:*/}
           <div className={styles.priceBlock}>
             {hasDiscount ? (

@@ -23,10 +23,14 @@ export class CartService {
 
   //Получить товары в корзине:
   async getCart(userId: string) {
-    //Получаем данные из корзины в Redis:
-    const data = await redis.get(this.getCartKey(userId));
-    const cartItems = data ? JSON.parse(data) : [];
-    if (cartItems.length === 0) return [];
+    const cartKey = this.getCartKey(userId);
+
+    //Получаем массив всех JSON-строк товаров из хэша Redis:
+    const rawItems = await redis.hvals(cartKey);
+    if (!rawItems || rawItems.length === 0) return [];
+
+    //Парсим каждую строку, чтобы получить массив объектов CartItem:
+    const cartItems: CartItem[] = rawItems.map((item) => JSON.parse(item));
 
     //Собираем все ID товаров из корзины:
     const ids = cartItems.map((item: CartItem) => item.id);
@@ -89,21 +93,24 @@ export class CartService {
   async addToCart(userId: string, item: AddToCartArgs) {
     //Ключ корзины пользователя:
     const cartKey = this.getCartKey(userId);
-    //Получаем всю корзину:
-    const cart = await redis.get(cartKey);
-    //Получаем все итемы корзины:
-    const cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
+    //id товара:
+    const itemId = item.motorcycleId;
 
-    //Получаем конкретный итем:
-    const existing = cartItems.find(
-      (i: CartItem) => i.id === item.motorcycleId,
-    );
+    //Получаем из хэша конкретный товар по его ID:
+    const existingItemRaw = await redis.hget(cartKey, itemId);
 
-    if (existing) {
-      existing.quantity += item.quantity;
+    let updatedItem: CartItem;
+
+    if (existingItemRaw) {
+      // Если товар есть, парсим только его и увеличиваем количество:
+      const existingItem: CartItem = JSON.parse(existingItemRaw);
+      updatedItem = {
+        ...existingItem,
+        quantity: existingItem.quantity + item.quantity,
+      };
     } else {
-      //Сохраняем все данные, нужные для отрисовки макета:
-      cartItems.push({
+      //Если товара нет, создаем новый объект:
+      updatedItem = {
         id: item.motorcycleId,
         model: item.model,
         price: item.price,
@@ -111,13 +118,18 @@ export class CartService {
         slug: item.slug,
         quantity: item.quantity,
         year: item.year,
-        selected: true, //Поле для чекбокса выбора
-      });
+        selected: true,
+      };
     }
 
-    //Метод setex устанавливает время хранения данных на 7 дней:
-    await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
-    return cartItems;
+    //Записываем обновленный товар обратно в хэш под своим ID:
+    await redis.hset(cartKey, itemId, JSON.stringify(updatedItem));
+
+    //Обновляем время жизни всей корзины (7 дней):
+    await redis.expire(cartKey, 60 * 60 * 24 * 7);
+
+    //Возвращаем актуальную корзину, обогащенную данными о остатках, скидках и хар-ках:
+    return this.getCart(userId);
   }
 
   //Изменить количество для конкретной позиции:
@@ -129,61 +141,57 @@ export class CartService {
 
     //Ключ корзины пользователя:
     const cartKey = this.getCartKey(userId);
-    //Получаем всю корзину:
-    const cart = await redis.get(cartKey);
-    //Получаем все итемы корзины:
-    const cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
-    if (cartItems.length === 0) return [];
 
-    //Получаем конкретный итем:
-    const targetCartItem = cartItems.find(
-      (item: CartItem) => item.id === itemId,
-    );
+    //Получаем из хэша конкретный товар по его ID:
+    const itemRaw = await redis.hget(cartKey, itemId);
+    if (!itemRaw) return []; // Если товара нет в корзине, возвращаем пустой массив (или можно выкинуть ошибку)
 
-    if (targetCartItem) {
-      //Не даем опуститься ниже 1:
-      targetCartItem.quantity = finalQuantity;
+    //Парсим этот один товар и обновляем у него количество:
+    const cartItem: CartItem = JSON.parse(itemRaw);
+    cartItem.quantity = finalQuantity;
 
-      //Метод setex устанавливает время хранения данных на 7 дней:
-      await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
-    }
-    return cartItems;
+    //Записываем обновленный товар обратно в хэш под своим ID:
+    await redis.hset(cartKey, itemId, JSON.stringify(cartItem));
+
+    //Обновляем время жизни всей корзины (7 дней):
+    await redis.expire(cartKey, 60 * 60 * 24 * 7);
+
+    //Возвращаем актуальную корзину, обогащенную данными о остатках, скидках и хар-ках:
+    return this.getCart(userId);
   }
 
   //Удалить позицию из корзины:
   async removeItem(userId: string, itemId: string) {
     //Ключ корзины пользователя:
     const cartKey = this.getCartKey(userId);
-    //Получаем всю корзину:
-    const cart = await redis.get(cartKey);
-    //Получаем все итемы корзины:
-    let cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
-    if (cartItems.length === 0) return [];
 
-    //Создаём новый отфильтрованный список товаров,  из которого исключен элемент с указанным itemId:
-    cartItems = cartItems.filter((i: CartItem) => i.id !== itemId);
+    //Удаляем конкретное поле (товар) из хэша Redis:
+    await redis.hdel(cartKey, itemId);
 
-    //Обновленный список (уже без удаленного товара) переводится в строку JSON и записывается обратно в Redis:
-    await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
-    //Метод setex устанавливает время хранения данных на 7 дней
+    //Обновляем время жизни всей корзины на 7 дней:
+    await redis.expire(cartKey, 60 * 60 * 24 * 7);
 
-    return cartItems;
+    //Возвращаем актуальную корзину, обогащенную данными о остатках, скидках и хар-ках:
+    return this.getCart(userId);
   }
 
-  //Удаление всех позиций из корзины:
+  //Удаление всех выбранных позиций из корзины:
   async removeMultiple(userId: string, itemIds: string[]) {
+    if (!itemIds || itemIds.length === 0) {
+      return this.getCart(userId);
+    }
+
     //Ключ корзины пользователя:
     const cartKey = this.getCartKey(userId);
-    //Получаем всю корзину:
-    const cart = await redis.get(cartKey);
-    //Получаем все итемы корзины:
-    let cartItems: CartItem[] = cart ? JSON.parse(cart) : [];
-    if (cartItems.length === 0) return [];
-    //Фильтруем (удаляем по id):
-    cartItems = cartItems.filter((i: CartItem) => !itemIds.includes(i.id));
 
-    await redis.setex(cartKey, 60 * 60 * 24 * 7, JSON.stringify(cartItems));
-    return cartItems;
+    //Удаление всех перечисленных в itemIds мотоциклов:
+    await redis.hdel(cartKey, ...itemIds);
+
+    //Обновляем время жизни корзины (7 дней):
+    await redis.expire(cartKey, 60 * 60 * 24 * 7);
+
+    //Возвращаем актуальную корзину, обогащенную данными о остатках, скидках и хар-ках:
+    return this.getCart(userId);
   }
 
   //Метод переключения одного товара в корзине:
@@ -192,35 +200,56 @@ export class CartService {
     motorcycleId: string,
     isSelected: boolean,
   ) {
+    //Ключ корзины пользователя:
     const cartKey = this.getCartKey(userId);
-    const data = await redis.get(cartKey); //Получаем данные по корзине из Redis
-    const cartItems = data ? JSON.parse(data) : [];
-    //Если данные есть, превращаем строку JSON обратно в массив объектов.
-    //Если данных нет (корзина пуста), создаем пустой массив.
 
-    const updatedCart = cartItems.map((item: CartItem) =>
-      item.id === motorcycleId ? { ...item, selected: isSelected } : item,
-    );
-    //Пробегаем по всем товарам в корзине. Если id товара совпадает с нужным motorcycleId, создаём
-    //копию этого товара с обновленным полем selected. Остальные товары оставляем без изменений.
+    //Получаем из хэша конкретный товар по его ID:
+    const itemRaw = await redis.hget(cartKey, motorcycleId);
 
-    await redis.set(cartKey, JSON.stringify(updatedCart)); //Сохраняем обновленный массив обратно в Redis, предварительно превратив его в строку
-    return this.getCart(userId); //Возвращаем полную корзину с данными из БД и скидками
+    //Если товара нет в корзине, просто возвращаем текущее состояние корзины:
+    if (!itemRaw) return this.getCart(userId);
+
+    //Парсим товар и обновляем у него поле selected:
+    const cartItem: CartItem = JSON.parse(itemRaw);
+    cartItem.selected = isSelected;
+
+    //Записываем обновленный товар обратно в хэш под своим ID:
+    await redis.hset(cartKey, motorcycleId, JSON.stringify(cartItem));
+
+    //Обновляем время жизни всей корзины (7 дней):
+    await redis.expire(cartKey, 60 * 60 * 24 * 7);
+
+    //Возвращаем актуальную корзину, обогащенную данными о остатках, скидках и хар-ках:
+    return this.getCart(userId);
   }
 
   //Метод для работы чекбокса "Выбрать всё / Снять всё" для товаров корзины:
   async toggleSelectAll(userId: string, isSelected: boolean) {
+    //Ключ корзины пользователя:
     const cartKey = this.getCartKey(userId);
-    const data = await redis.get(cartKey);
-    const cartItems = data ? JSON.parse(data) : [];
 
-    const updatedCart = cartItems.map((item: CartItem) => ({
-      ...item,
-      selected: isSelected,
-    }));
+    //Получаем все товары:
+    const rawItems = await redis.hvals(cartKey);
+    if (!rawItems || rawItems.length === 0) return [];
 
-    await redis.set(cartKey, JSON.stringify(updatedCart));
-    return this.getCart(userId); //Возвращаем полную корзину с данными из БД и скидками
+    //Открываем пайплайн для массовой записи в Redis за один сетевой запрос:
+    const pipeline = redis.pipeline();
+
+    rawItems.forEach((itemRaw) => {
+      const item: CartItem = JSON.parse(itemRaw);
+      item.selected = isSelected;
+      pipeline.hset(cartKey, item.id, JSON.stringify(item));
+    });
+
+    //Обновляем время жизни корзины (7 дней):
+    pipeline.expire(cartKey, 60 * 60 * 24 * 7);
+
+    //Выполняем все накопленные команды hset разом:
+    await pipeline.exec();
+    //Метод pipeline() собирает все вызовы .hset() в один пакет и отправляет их в Redis за один единственный сетевой запрос.
+
+    //Возвращаем актуальную корзину, обогащенную данными о остатках, скидках и хар-ках:
+    return this.getCart(userId);
   }
 }
 

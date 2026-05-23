@@ -26,8 +26,6 @@ export const CartPage = () => {
     selectAll,
   } = useCart();
 
-  console.log('cartItems on CartPage: ', cartItems);
-
   //Проверяем, выбраны ли все товары сейчас:
   const isAllSelected =
     cartItems.length > 0 && cartItems.every((item) => item.selected);
@@ -55,7 +53,6 @@ export const CartPage = () => {
     0,
   );
 
-  console.log('selectedItems on CartPage: ', selectedItems);
 
   const promoAmount = Number(appliedPromo?.amount || 0); //Уменьшение суммы от промокода
   const finalTotal = Math.max(0, subtotal - promoAmount); //Получаем конечную сумму
@@ -129,7 +126,6 @@ export const CartPage = () => {
       state: {
         promo: appliedPromo,
         allowed: true, //Флаг, что юзер попал на страницу /checkout именно с корзины
-        itemsFromCart: selectedItems, //!!!Новое (как и allowed).
       }
     });
   };
