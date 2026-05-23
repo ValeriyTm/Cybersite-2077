@@ -9,7 +9,7 @@ import { ReviewCardHome } from "@/shared/ui";
 import { MainCarousel } from "@/widgets/MainCarousel";
 import { ScrollableImageGallery } from "@/widgets/ScrollableImageGallery";
 //Анимация:
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 //API:
 import { API_URL } from "@/shared/api/api";
 //SEO:
@@ -41,7 +41,7 @@ export const HomePage = () => {
 
 
   //Создаем правила анимации
-  const wheelVariants = {
+  const wheelVariants: Variants = {
     moving: {
       rotate: 360,
       transition: { repeat: Infinity, duration: 0.4, ease: "linear" },
@@ -49,7 +49,7 @@ export const HomePage = () => {
     stopped: { rotate: 0 },
   };
 
-  const motoVariants = {
+  const motoVariants: Variants = {
     moving: {
       y: [0, -2, 0], // Легкая вибрация вверх-вниз
       transition: { repeat: Infinity, duration: 0.1 },
@@ -57,7 +57,7 @@ export const HomePage = () => {
     stopped: { y: 0 },
   };
 
-  const smokeVariants = {
+  const smokeVariants: Variants = {
     stopped: {
       opacity: 0,
       scale: 0.5,
@@ -198,19 +198,16 @@ export const HomePage = () => {
                 <motion.img
                   src={backWheelImage}
                   className={styles.backWheel}
-                  //@ts-ignore:
                   variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src={frontWheelImage}
                   className={styles.frontWheel}
-                  //@ts-ignore:
                   variants={shouldReduceMotion ? {} : wheelVariants}
                 />
                 <motion.img
                   src={smokeImage}
                   className={styles.smoke}
-                  //@ts-ignore:
                   variants={shouldReduceMotion ? {} : smokeVariants}
                 />
               </motion.div>

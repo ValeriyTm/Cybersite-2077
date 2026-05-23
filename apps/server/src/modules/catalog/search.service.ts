@@ -8,7 +8,8 @@ import { discountLogic } from "../discount/index.js";
 import { MotorcyclesServiceArgs } from "@repo/validation";
 //Типы:
 import { type MotorcycleFullServer } from "@repo/types";
-import { QueryDslQueryContainer } from "@elastic/elasticsearch/lib/api/types.js";
+
+import { estypes } from "@elastic/elasticsearch";
 
 //Подключаемся к контейнеру:
 export const esClient = new Client({ node: process.env.ELASTIC_NODE });
@@ -281,8 +282,8 @@ export class SearchService {
   ) {
     //[Отбор происходит по принципу «похожий класс + похожий объём».Мы ищем мотоциклы только из той же категории. Elastic старается в первую очередь выдать модели того же производителя. Мы ищем модели с объёмом +/- 30% от текущего.]
     //Собираем только те фильтры, которые реально существуют в объекте:
-    const must: QueryDslQueryContainer[] = [];
-    const should: QueryDslQueryContainer[] = [];
+    const must: estypes.QueryDslQueryContainer[] = [];
+    const should: estypes.QueryDslQueryContainer[] = [];
 
     if (motorcycle.category) {
       must.push({ term: { "category.keyword": motorcycle.category } });

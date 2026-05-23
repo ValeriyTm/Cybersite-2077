@@ -216,7 +216,7 @@ export const ProfilePage = () => {
                           control={control}
                           name="birthday"
                           render={({ field: { onChange, value } }) => (
-                            //@ts-ignore
+
                             <IMaskInput
                               id='birthday-input'
                               mask={Date} //Указываем, что работаем с типом данных "Дата"
@@ -233,7 +233,7 @@ export const ProfilePage = () => {
                                 },
                               }}
                               //При помощи format и value переводим объект Date в строку ДД.ММ.ГГГГ (которую видит юзер) и обратно:
-                              format={(date: Date) =>
+                              format={(date: Date | null) =>
                                 date ? date.toLocaleDateString("ru-RU") : ""
                               }
                               parse={(str: string) => {

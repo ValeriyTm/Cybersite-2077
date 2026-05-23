@@ -69,8 +69,11 @@ app.use(
           try {
             const logData = JSON.parse(message);
             logger.info("HTTP Request", logData); // Отправляем как объект
-          } catch (e) {
-            logger.info(message.trim()); // Если вдруг придет не JSON
+          } catch (e: any) {
+            logger.error("Morgan JSON parsing error", {
+              error: e.message,
+              rawMessage: message.trim(),
+            });
           }
         },
       },
@@ -152,6 +155,7 @@ app.use(xssClean);
 
 //Защита от атак типа «загрязнение параметров HTTP»:
 app.use(hpp()); // Защищает и req.query, и req.body (т.к. стоит после express.json)
+//Помещаю после всех парсеров, т.к. hpp анализирует уже заполненные объекты req.query и req.body
 
 //Извлекаем данные из кук:
 app.use(cookieParser());
@@ -159,11 +163,6 @@ app.use(cookieParser());
 //Открываем папку apps/server/uploads для раздачи по пути домен/static/:
 app.use("/static", express.static("uploads"));
 
-//Выводим в консоль данные, полученные от клиента:
-// app.use((req, res, next) => {
-//   console.log("Данные от пользователя:", req.body);
-//   next();
-// });
 //----------------------------Подключаем роуты модулей:--------
 //Роуты для модуля Identity:
 app.use("/api/identity", identityRouter);

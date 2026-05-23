@@ -12,22 +12,45 @@ const window = new JSDOM("").window;
 //Инициализация очистителя, привязанного к виртуальному окну:
 const DOMPurify = createDOMPurify(window as any);
 
-export const xssClean = (req: Request, _res: Response, next: NextFunction) => {
-  //Проверяем есть ли в запросе тело:
-  if (req.body) {
-    //Запуск цикла по всем полям, пришедшим в req.body:
-    for (const key in req.body) {
-      //Если значение в поле является строкой, его нужно обработать:
-      if (typeof req.body[key] === "string") {
-        // Очищаем строку от любых HTML тегов:
-        req.body[key] = DOMPurify.sanitize(req.body[key], {
-          //Все HTML-теги и атрибуты превращаем в пустую строку или простой текст:
-          ALLOWED_TAGS: [],
-          ALLOWED_ATTR: [],
-        });
-      }
-    }
+//Рекурсивная функция для глубокой очистки объектов и массивов:
+const sanitizeValue = (value: any): any => {
+  //1. Если это строка — очищаем её через DOMPurify:
+  if (typeof value === "string") {
+    return DOMPurify.sanitize(value, {
+      ALLOWED_TAGS: [],
+      ALLOWED_ATTR: [],
+    });
   }
-  //Передаём управление далее:
+
+  //2. Если это массив — рекурсивно очищаем каждый элемент:
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeValue(item));
+  }
+
+  //3. Если это объект (и не null) — рекурсивно очищаем его свойства:
+  if (typeof value === "object" && value !== null) {
+    const sanitizedObj: Record<string, any> = {};
+
+    Object.keys(value).forEach((key) => {
+      if (key === "__proto__" || key === "constructor") {
+        return;
+      }
+
+      //Отключаем на следующей стоке линтер, т.к. он не распознает, что у нас уже добавлена защита
+      // eslint-disable-next-line
+      sanitizedObj[key] = sanitizeValue(value[key]);
+    });
+
+    return sanitizedObj;
+  }
+
+  //4. Для всех остальных типов (number, boolean и т.д.) возвращаем как есть:
+  return value;
+};
+
+export const xssClean = (req: Request, _res: Response, next: NextFunction) => {
+  if (req.body && typeof req.body === "object") {
+    req.body = sanitizeValue(req.body);
+  }
   next();
 };

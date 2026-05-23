@@ -8,6 +8,10 @@ import { prisma } from "@repo/database";
 import fs from "fs/promises";
 import path from "path";
 
+interface ErrorType {
+  message?: string;
+}
+
 export const supportCleanupWorker = new Worker(
   "support-cleanup", //Имя отслеживаемой очереди
   async (job) => {
@@ -32,11 +36,11 @@ export const supportCleanupWorker = new Worker(
         // Удаляем файл асинхронно:
         // eslint-disable-next-line security/detect-non-literal-fs-filename
         await fs.unlink(filePath);
-      } catch (err) {
+      } catch (err: unknown) {
+        const error = err as ErrorType;
         // Если файла нет или ошибка доступа — просто логируем,
         // чтобы не прерывать удаление остальных файлов
-        // @ts-ignore:
-        console.error(`Не удалось удалить файл ${filePath}:`, err.message);
+        console.error(`Не удалось удалить файл ${filePath}:`, error.message);
       }
     });
     // Ждем завершения всех операций удаления

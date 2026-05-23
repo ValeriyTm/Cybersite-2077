@@ -15,8 +15,7 @@ export const logger = winston.createLogger({
 
     // 2. Настраиваем отправку на сервер Loki:
     new LokiTransport({
-      // @ts-ignore:
-      host: process.env.LOKI_URL,
+      host: process.env.LOKI_URL!,
       labels: { app: "cybersite-backend", env: "development" }, //Теги для фильтрации логов в Grafana
       json: true, //Указываем, что данные передаются в формате JSON
       format: winston.format.json(), // орматируем сам текст лога как JSON-объект

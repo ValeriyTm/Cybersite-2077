@@ -161,42 +161,40 @@ export const cancelOrder = catchAsync(
 
 //!Тестовый эндпоинт для оплаты (для проверки работы BullMQ)!:
 //(он меняет статус заказа на PAID и удаляет резерв и физический товар из БД)
-export const payOrderTest = catchAsync(
-  async (req: AuthRequest, res: Response) => {
-    const { orderId } = req.params;
-    const userId = req.user.id;
+// export const payOrderTest = catchAsync(
+//   async (req: AuthRequest, res: Response) => {
+//     const { orderId } = req.params;
+//     const userId = req.user.id;
 
-    //Достаем состав заказа, чтобы знать, что списывать:
-    // @ts-ignore:
-    const order = await orderService.getUserOrderWithItems(orderId, userId);
+//     //Достаем состав заказа, чтобы знать, что списывать:
+//     const order = await orderService.getUserOrderWithItems(orderId, userId);
 
-    if (!order || order.status !== "PENDING") {
-      return res
-        .status(400)
-        .json({ message: "Заказ не найден или уже оплачен/отменен" });
-    }
+//     if (!order || order.status !== "PENDING") {
+//       return res
+//         .status(400)
+//         .json({ message: "Заказ не найден или уже оплачен/отменен" });
+//     }
 
-    //Транзакция списания остатков (+ удаления зарезервироанного кол-ва) и изменения статуса:
-    // @ts-ignore:
-    await orderService.confirmUserOrder(orderId);
+//     //Транзакция списания остатков (+ удаления зарезервироанного кол-ва) и изменения статуса:
+//     await orderService.confirmUserOrder(orderId);
 
-    //Обновляем данные по остаткам в Elastic:
-    try {
-      for (const item of order.items) {
-        await searchService.updateStockInElastic(item.motorcycleId);
-      }
-      console.log(
-        `Остатки после оплаты заказа №${order.orderNumber} синхронизированы с Elastic`,
-      );
-    } catch (error) {
-      console.error("Ошибка синхронизации с Elastic при оплате:", error);
-    }
+//     //Обновляем данные по остаткам в Elastic:
+//     try {
+//       for (const item of order.items) {
+//         await searchService.updateStockInElastic(item.motorcycleId);
+//       }
+//       console.log(
+//         `Остатки после оплаты заказа №${order.orderNumber} синхронизированы с Elastic`,
+//       );
+//     } catch (error) {
+//       console.error("Ошибка синхронизации с Elastic при оплате:", error);
+//     }
 
-    //Запускаем BullMQ на доставку:
-    await addDeliveryStartTask(order.id);
+//     //Запускаем BullMQ на доставку:
+//     await addDeliveryStartTask(order.id);
 
-    res.json({
-      message: "Оплата прошла, остатки списаны, доставка запланирована!",
-    });
-  },
-);
+//     res.json({
+//       message: "Оплата прошла, остатки списаны, доставка запланирована!",
+//     });
+//   },
+// );

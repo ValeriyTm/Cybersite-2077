@@ -93,7 +93,6 @@ export const deleteBrand = catchAsync(
     const { id } = req.params as DeleteBrandAdminParamArgs;
 
     //Находим все связанные модели мотоциклов перед удалением, а также производим удаление:
-    //@ts-ignore:
     const affectedMotos = await catalogService.deleteBrand(id);
 
     //После удаления бренда и байков (каскадно) — чистим индекс Elastic:
