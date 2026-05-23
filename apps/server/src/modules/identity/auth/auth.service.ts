@@ -14,7 +14,7 @@ import { sessionService } from "./session.service.js";
 //Мой сервис для реазилации 2FA:
 import { twoFactorService } from "./two-factor.service.js";
 //Схемы валидации Zod:
-import { ChangePasswordInput, ResetPasswordInput } from "@repo/validation";
+import { ChangePasswordType } from "@repo/validation";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
 //Для работы с путями и файлами:
@@ -171,7 +171,7 @@ export class AuthService {
     });
   }
 
-  async changePassword(userId: string, data: ChangePasswordInput) {
+  async changePassword(userId: string, data: ChangePasswordType) {
     //1) Ищем пользователя в базе:
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user || !user.passwordHash) {
@@ -215,6 +215,8 @@ export class AuthService {
 
         const filePath = path.join(process.cwd(), relativePath);
 
+        //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
+        //eslint-disable-next-line security/detect-non-literal-fs-filename
         await fs.unlink(filePath); // Удаляем файл
 
         logger.info("Avatar Deleted", {
@@ -320,7 +322,7 @@ export class AuthService {
   //-----Реализуем 2FA:
   //Инициация настройки: генерация секрета и QR для клиента:
   async setup2FA(userId: string, email: string) {
-    //При помощи нашего сервиса генерируем секрет и QR-код и получаем их:
+    //Генерируем секрет и QR-код:
     const { secret, qrCodeUrl } = await twoFactorService.generateSecret(email);
 
     //Вносим секрет в БД:
@@ -329,7 +331,6 @@ export class AuthService {
       data: { twoFactorSecret: secret },
     });
 
-    //Возвращаем контроллеру QR-код:
     return { qrCodeUrl };
   }
 
@@ -337,8 +338,12 @@ export class AuthService {
   async enable2FA(userId: string, code: string) {
     //1) Ищем пользователя в БД:
     const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new AppError(404, "Пользователь не найден");
+    }
+
     //Если у пользователя в БД не записан секрет для 2FA, то ему не требуется 2FA:
-    if (!user?.twoFactorSecret) {
+    if (!user.twoFactorSecret) {
       throw new AppError(400, "Настройка 2FA не была инициирована");
     }
 

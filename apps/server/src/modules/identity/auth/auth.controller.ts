@@ -5,10 +5,6 @@ import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js"; //�
 import { Role } from "@repo/database";
 //Схемы валидации Zod:
 import {
-  ChangePasswordSchema,
-  ResetPasswordSchema,
-  Verify2FASchema,
-  ForgotPasswordSchema,
   RegisterArgs,
   LoginArgs,
   ActivationParamArgs,
@@ -18,6 +14,8 @@ import {
   ResetPasswordType,
   ResetPasswordQueryType,
   GoogleResponseArgs,
+  activate2FAArgs,
+  Verify2FAArgs,
 } from "@repo/validation";
 //Сервис для взаимодействия с БД для подмодуля auth:
 import { authService } from "./auth.service.js";
@@ -379,47 +377,39 @@ export const googleCallback = catchAsync(
 //1) Генерируем QR-код для клиента:
 export const setup2FA = catchAsync(async (req: AuthRequest, res: Response) => {
   //Получаем QR-код и передаём его пользователю:
-  const result = await authService.setup2FA(req.user!.id, req.user!.email);
-  return res.json(result);
+  const qrCodeUrl = await authService.setup2FA(req.user.id, req.user.email);
+  return res.json(qrCodeUrl);
 });
 
 //2) Включаем в профиле клиента 2FA на постоянку:
 export const enable2FA = catchAsync(async (req: AuthRequest, res: Response) => {
   //Получаем от клиента его введенный код:
-  const { code } = req.body;
+  const { code } = req.body as activate2FAArgs;
   //Передаём код в наш сервис:
-  await authService.enable2FA(req.user!.id, code);
+  await authService.enable2FA(req.user.id, code);
   //Сообщаем пользователю об успехе:
   return res.json({ message: "2FA успешно включена" });
 });
 
 //3) Контроллер логина (для пользователей со включенной 2FA):
 export const verify2FA = catchAsync(async (req: Request, res: Response) => {
-  //1) Валидация данных при помощи схемы Zod:
-  const result = Verify2FASchema.safeParse(req.body);
-  if (!result.success) {
-    return res.status(400).json({
-      errors: result.error.flatten((issue) => issue.message).fieldErrors,
-    });
-  }
+  const { userId, code } = req.body as Verify2FAArgs;
 
-  //2) Извлекаем введенный юзером 6-значный код и его id:
-  const { userId, code } = result.data;
-
-  //3) Проверяем код через наш сервис:
+  //Проверяем код:
   const user = await authService.verify2FA(userId, code);
 
-  //4) Генерируем токены:
+  //Генерируем токены:
   const tokens = tokenService.generateTokens({
     id: user.id,
     email: user.email,
     role: user.role,
+    name: user.name,
   });
 
-  //5) Записываем токены в БД:
+  //Записываем токены в БД:
   await sessionService.saveToken(user.id, tokens.refreshToken);
 
-  //6) Устанавливаем куки:
+  //Устанавливаем куки:
   res.cookie("refreshToken", tokens.refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true, // Защита от XSS
@@ -428,9 +418,8 @@ export const verify2FA = catchAsync(async (req: Request, res: Response) => {
     path: "/api/identity/auth",
   });
 
-  //7) Посылаем клиенту ответ:
   return res.json({
     accessToken: tokens.accessToken,
-    user: user,
+    user,
   });
 });

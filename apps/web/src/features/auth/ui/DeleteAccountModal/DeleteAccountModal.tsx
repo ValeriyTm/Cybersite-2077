@@ -8,7 +8,7 @@ import styles from "./DeleteAccountModal.module.scss";
 interface DeleteAccountModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: () => void; // Это будет handleSubmit(onDeleteAccount)
+  onSubmit: () => void;
   registration: UseFormRegisterReturn;
   error?: FieldError;
   isLoading: boolean;

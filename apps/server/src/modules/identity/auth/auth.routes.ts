@@ -8,11 +8,13 @@ import { noCacheMiddleware } from "../../../shared/middlewares/noCacheMiddleware
 import { validate } from "src/shared/middlewares/validate.js";
 //Схемы валидации:
 import {
+  activate2FASchema,
   ActivationSchema,
   BackendChangePasswordSchema,
   BackendDeleteAccountSchema,
   BackendForgotPasswordSchema,
   BackendResetPasswordSchema,
+  BackendVerify2FASchema,
   GoogleResponseSchema,
   LoginSchema,
   RegisterSchema,
@@ -21,7 +23,7 @@ import {
 const router = Router();
 
 //-------------Роуты подмодуля аутентификации----
-//Роут регистрации:
+//Роут (публичный) регистрации:
 router.post(
   "/register",
   authLimiter,
@@ -29,14 +31,14 @@ router.post(
   AuthController.register,
 );
 
-//Роут активации аккаунта по ссылке:
+//Роут (публичный) активации аккаунта по ссылке:
 router.get(
   "/activate/:token",
   validate(ActivationSchema),
   AuthController.activate,
 );
 
-//Роут входа в аккаунт:
+//Роут (публичный) входа в аккаунт:
 router.post("/login", authLimiter, validate(LoginSchema), AuthController.login);
 
 //Роут выхода из аккаунта:
@@ -71,7 +73,7 @@ router.delete(
   AuthController.deleteAccount,
 );
 
-//Роут для ввода пароля (Forgot password):
+//Роут (публичный) для ввода пароля (Forgot password):
 router.post(
   "/forgot-password",
   authLimiter,
@@ -79,7 +81,7 @@ router.post(
   AuthController.forgotPassword,
 );
 
-//Роут для замены пароля (Reset password):
+//Роут (публичный) для замены пароля (Reset password):
 router.post(
   "/reset-password",
   authLimiter,
@@ -99,7 +101,7 @@ router.get(
 );
 
 //-------Роуты для 2FA:
-//Роут для генерации данных для включения 2FA:
+//Роут для генерации QR-кода для включения 2FA:
 router.post(
   "/2fa/setup",
   authMiddleware,
@@ -112,10 +114,16 @@ router.post(
   "/2fa/enable",
   authMiddleware,
   noCacheMiddleware,
+  validate(activate2FASchema),
   AuthController.enable2FA,
 );
 
-//Роут для входа в аккаунт для тех, у кого включена 2FA:
-router.post("/2fa/verify", authLimiter, AuthController.verify2FA); // Этот роут публичный (используется на этапе логина)
+//Роут (публичный) для входа в аккаунт для тех, у кого включена 2FA:
+router.post(
+  "/2fa/verify",
+  authLimiter,
+  validate(BackendVerify2FASchema),
+  AuthController.verify2FA,
+);
 
 export { router as authRouter };

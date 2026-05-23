@@ -1,10 +1,12 @@
 //Работа с формам:
-import { useForm } from "react-hook-form";
+import { useForm, type FieldErrors } from "react-hook-form";
 //Валидация:
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+//Валидация:
+import { Verify2FASchema, type Verify2FAType } from "@repo/validation";
 //Состояния:
 import { useAuthStore } from "@/features/auth";
+import { useState } from "react";
 //API:
 import { $api } from "@/shared/api";
 //Компоненты:
@@ -14,15 +16,14 @@ import { toast } from "react-hot-toast";
 //Стили:
 import styles from "./TwoFactorVerifyFom.module.scss";
 
-// 1. Схема валидации только для кода
-const Verify2FASchema = z.object({
-  code: z
-    .string()
-    .length(6, "Код должен содержать ровно 6 цифр")
-    .regex(/^\d+$/, "Только цифры"),
-});
-
-type Verify2FAInput = z.infer<typeof Verify2FASchema>;
+//Структура ошибки от сервера:
+interface ApiErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 interface Props {
   userId: string | null;
@@ -32,22 +33,35 @@ interface Props {
 export const TwoFactorVerifyForm = ({ userId, onSuccess }: Props) => {
   const { setAuth } = useAuthStore();
 
+  const [localUserId] = useState<string | null>(userId);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<Verify2FAInput>({
+  } = useForm<Verify2FAType>({
     resolver: zodResolver(Verify2FASchema),
+    mode: "onBlur",
     defaultValues: { code: "" },
   });
 
-  const onSubmit = async (data: Verify2FAInput) => {
-    if (!userId) return toast.error("Ошибка идентификации пользователя");
+  //Функция для обработки ошибок валидации Zod:
+  const onFormError = (errors: FieldErrors<Verify2FAType>) => {
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message, {
+        id: "2fa-validation-error", // Предотвращает спам уведомлениями
+      });
+    }
+  };
+
+  const onSubmit = async (data: Verify2FAType) => {
+    if (!localUserId) return toast.error("Ошибка идентификации пользователя");
 
     try {
       const res = await $api.post("/identity/auth/2fa/verify", {
-        userId,
-        code: data.code,
+        userId: localUserId,
+        code: String(data.code),
       });
 
       if (res.data.accessToken) {
@@ -56,13 +70,14 @@ export const TwoFactorVerifyForm = ({ userId, onSuccess }: Props) => {
 
         onSuccess();
       }
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Неверный код подтверждения");
+    } catch (e: unknown) {
+      const error = e as ApiErrorResponse;
+      toast.error(error.response?.data?.message || "Неверный код подтверждения");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+    <form onSubmit={handleSubmit(onSubmit, onFormError)} className={styles.form}>
       <div className={styles.header}>
         <h3>Второй этап входа</h3>
         <p>

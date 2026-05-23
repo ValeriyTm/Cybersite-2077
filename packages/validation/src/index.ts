@@ -235,9 +235,46 @@ export const GoogleResponseSchema = z.object({
 });
 
 export type GoogleResponseArgs = z.infer<typeof GoogleResponseSchema>["query"];
-//---------------------------------------------------------
-//-----------------Прочие схемы:---------------------//
-//Схема для добавления дополнительных данных о пользователе:
+
+//----------------------------1.9) Схема для включения 2FA:--------------------------------------------//
+export const activate2FASchema = z.object({
+  body: z.object({
+    code: z
+      .string()
+      .length(6, "Код должен содержать 6 цифр")
+      .regex(/^\d+$/, "Код должен состоять только из цифр"),
+  }),
+});
+
+export type activate2FAArgs = z.infer<typeof activate2FASchema>["body"];
+
+//----------------------------1.10) Схема для входа с 2FA:--------------------------------------------//
+// Базовые поля для повторного использования
+const baseFields = {
+  userId: z.uuid({ message: "Неверный формат id" }),
+  code: z
+    .string()
+    .trim()
+    .length(6, "Код должен содержать 6 цифр")
+    .regex(/^\d+$/, "Код должен состоять только из цифр"),
+};
+
+// Схема для бэкенда:
+export const BackendVerify2FASchema = z.object({
+  body: z.object(baseFields), //Берем все поля из baseFields
+});
+// .strict();
+
+// Схема для фронтенда:
+export const Verify2FASchema = z.object(baseFields).pick({ code: true }); //Берем только поле code
+// .strict();
+
+//Тип для фронтенда:
+export type Verify2FAType = z.infer<typeof Verify2FASchema>;
+//Тип для бэкенда:
+export type Verify2FAArgs = z.infer<typeof BackendVerify2FASchema>["body"];
+
+//----------------------------1.11) Схема для обновления профиля:--------------------------------------------//
 export const UpdateProfileSchema = z
   .object({
     name: z
@@ -275,17 +312,6 @@ export const UpdateProfileSchema = z
   .strict();
 
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
-
-///////Схема для валидации 2FA кода:
-export const Verify2FASchema = z
-  .object({
-    userId: z.string().uuid("Некорректный формат ID"), // Проверяем, что это UUID
-    code: z
-      .string()
-      .length(6, "Код должен содержать 6 цифр")
-      .regex(/^\d+$/, "Код должен состоять только из цифр"),
-  })
-  .strict(); // Обязательно strict, чтобы не пролезло лишнего
 
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------2) Модуль Catalog-------------------------------------------------------////

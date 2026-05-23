@@ -202,6 +202,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       setQrCode(res.data.qrCodeUrl);
     } catch (e) {
       toast.error("Ошибка при генерации QR-кода");
+      console.log(`Произошла ошибка ${e}`);
     }
   };
 
