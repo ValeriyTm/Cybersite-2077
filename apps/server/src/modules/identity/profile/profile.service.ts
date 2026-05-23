@@ -2,7 +2,7 @@
 import { prisma } from "@repo/database";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
-import { UpdateProfileInput } from "@repo/validation";
+import { UpdateProfileType } from "@repo/validation";
 //Для работы с путями и файлами:
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -10,7 +10,6 @@ import path from "node:path";
 export class ProfileService {
   //Получаем данные о пользователе из БД:
   static async getProfile(userId: string) {
-    //1) Получаем данные из БД:
     const user = await prisma.user.findUnique({
       where: { id: userId },
       //Выбираем только нужные поля (пароль и токены светить нельзя):
@@ -33,12 +32,11 @@ export class ProfileService {
     });
     if (!user) throw new AppError(404, "Пользователь не найден");
 
-    //2) Передаём данные контроллеру:
     return user;
   }
 
   //Обновляем данные о пользователе в БД:
-  static async updateProfile(userId: string, data: UpdateProfileInput) {
+  static async updateProfile(userId: string, data: UpdateProfileType) {
     //1) Проверки:
     //Проверяем по уникальному номеру телефона:
     if (data.phone) {
@@ -90,6 +88,8 @@ export class ProfileService {
       //Старый путь к файлу: убираем начальный "/" и сопоставляем с папкой на сервере
       const oldPath = path.join(process.cwd(), user.avatarUrl);
       try {
+        //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
+        //eslint-disable-next-line security/detect-non-literal-fs-filename
         await fs.unlink(oldPath); //Удаляем старый путь
       } catch (e) {
         console.error("Не удалось удалить старый аватар:", e);

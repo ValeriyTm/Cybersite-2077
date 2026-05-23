@@ -6,40 +6,25 @@ import { catchAsync } from "../../../shared/utils/catch-async.js";
 //Сервис для взаимодействия с БД для подмодуля profule:
 import { ProfileService } from "./profile.service.js";
 //Схема валидации Zod для обновления профиля:
-import { UpdateProfileSchema } from "@repo/validation";
+import { UpdateProfileType } from "@repo/validation";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
 
 //Контроллер для получения данных о пользователе из БД:
 export const getMe = catchAsync(async (req: AuthRequest, res: Response) => {
-  //1) Извлекаем id пользователя из запроса:
-  const userId = req.user!.id;
-  //id пользователя мы берем из req.user, который туда положил authMiddleware
+  const userId = req.user.id;
 
-  //2) Получаем из БД данные о пользователе:
   const userProfile = await ProfileService.getProfile(userId);
 
-  //3) Посылаем клиенту ответ:
   res.status(200).json(userProfile);
 });
 
 //Контроллер для обновления данных о пользователе в БД:
 export const updateMe = catchAsync(async (req: AuthRequest, res: Response) => {
-  //1) Валидируем пришедшие данные при помощи схемы Zod:
-  const result = UpdateProfileSchema.safeParse(req.body);
-  if (!result.success) {
-    return res.status(400).json({
-      errors: result.error.flatten((issue) => issue.message).fieldErrors,
-    });
-  }
+  const data = req.body as UpdateProfileType;
 
-  //2) Обновляем данные в БД:
-  const updatedUser = await ProfileService.updateProfile(
-    req.user!.id,
-    result.data,
-  );
+  const updatedUser = await ProfileService.updateProfile(req.user.id, data);
 
-  //3) Отправляем клиенту ответ с обновленными данными:
   res.status(200).json({
     message: "Профиль успешно обновлен",
     user: updatedUser,

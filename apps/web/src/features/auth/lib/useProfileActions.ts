@@ -1,5 +1,5 @@
 //React Hook Form:
-import { useForm } from "react-hook-form";
+import { useForm, type FieldErrors } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
 //React Query:
@@ -11,7 +11,7 @@ import {
   UpdateProfileSchema,
   ChangePasswordSchema,
   DeleteAccountSchema,
-  type UpdateProfileInput,
+  type UpdateProfileType,
   type ChangePasswordType,
   type DeleteAccountType,
 } from "@repo/validation";
@@ -24,6 +24,15 @@ import { $api, API_URL } from "@/shared/api";
 import { toast } from "react-hot-toast";
 //Изображения:
 import defaultAvatar from "@/shared/assets/images/defaults/default-avatar.png";
+
+// Структура стандартной ошибки от сервера:
+interface ApiErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 export const useProfileActions = (user: IUser | null | undefined) => {
   //Почему добавил типы null и undefined - Zod/Prisma любят null, а React Query возвращает undefined, пока данные загружаются.
@@ -41,7 +50,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   const [verificationCode, setVerificationCode] = useState("");
   //----------------Инициализация форм------------
   ////Основная форма профиля:
-  const profileForm = useForm<UpdateProfileInput>({
+  const profileForm = useForm({
     resolver: zodResolver(UpdateProfileSchema),
     values: {
       name: user?.name || "",
@@ -72,15 +81,16 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   //-------Формируем правильный путь к аватару
   //Мы можем получать аватар либо с сервера Google, либо с нашего сервера, либо вообще дефолтное изображение возтмем
   //- из-за этого будет отличаться ссылка на аватар:
-  const avatarSrc = user?.avatarUrl
-    ? user.avatarUrl.startsWith("http")
+  let avatarSrc = defaultAvatar;
+  if (user?.avatarUrl) {
+    avatarSrc = user.avatarUrl.startsWith("http")
       ? user.avatarUrl
-      : `${API_URL}${user.avatarUrl}`
-    : defaultAvatar;
+      : `${API_URL}${user.avatarUrl}`;
+  }
 
   //-----------------Обработчики----------------
   //------Отправка формы для сохранения новых данных профиля:
-  const onSubmit = async (data: UpdateProfileInput) => {
+  const onSubmit = async (data: UpdateProfileType) => {
     try {
       // Инициализируем переменную. Если пользователь не ввел дату, на сервер уйдет null:
       let formattedBirthday = null;
@@ -113,18 +123,19 @@ export const useProfileActions = (user: IUser | null | undefined) => {
 
       toast.success("Профиль обновлен");
       setIsEditing(false);
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка обновления");
+    } catch (e: unknown) {
+      const error = e as ApiErrorResponse;
+      toast.error(error.response?.data?.message || "Ошибка обновления");
     }
   };
 
   //Функция-обработчик ошибок валидации:
-  const onFormError = (formErrors: any) => {
+  const onFormError = (formErrors: FieldErrors<UpdateProfileType>) => {
     //formErrors - объект со всеми ошибками полей, которые нашел Zod.
     // console.log("Ошибки валидации:", formErrors); //Убрать перед продакшеном
 
     //Берем первую ошибку из списка:
-    const fieldError = Object.values(formErrors)[0] as any;
+    const fieldError = Object.values(formErrors)[0];
     //Проверяем, есть ли у найденной ошибки текст сообщения:
     if (fieldError?.message) {
       toast.error(fieldError.message, { id: "validation-error" });
@@ -157,6 +168,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       setIsEditing(false);
     } catch (e) {
       toast.error("Ошибка загрузки файла");
+      console.log(`Произошла ошибка ${e}`);
     } finally {
       //Выключаем лоадер:
       setIsAvatarLoading(false);
@@ -169,8 +181,9 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       await $api.post("/identity/auth/change-password", data);
       toast.success("Пароль успешно изменен");
       resetPass(); // Очищаем поля после успеха
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка при смене пароля");
+    } catch (e: unknown) {
+      const error = e as ApiErrorResponse;
+      toast.error(error.response?.data?.message || "Ошибка при смене пароля");
     }
   };
 
@@ -187,8 +200,9 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       //Используем logout() из нашего хука useProfile.
       //Он сделает запрос на бэкенд, очистит Zustand и целиком сотрет кэш React Query,
       //чтобы данные удаленного юзера не "зависли" в памяти браузера.
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Ошибка при удалении");
+    } catch (e: unknown) {
+      const error = e as ApiErrorResponse;
+      toast.error(error.response?.data?.message || "Ошибка при удалении");
     }
   };
 
@@ -219,8 +233,9 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       //  Инвалидируем запрос профиля. React Query сам перекачает данные юзера,
       // и поле is2FAEnabled: true мгновенно обновит интерфейс (кнопка станет неактивной).
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-    } catch (e: any) {
-      toast.error(e.response?.data?.message || "Неверный код");
+    } catch (e: unknown) {
+      const error = e as ApiErrorResponse;
+      toast.error(error.response?.data?.message || "Неверный код");
     }
   };
 

@@ -263,11 +263,9 @@ const baseFields = {
 export const BackendVerify2FASchema = z.object({
   body: z.object(baseFields), //Берем все поля из baseFields
 });
-// .strict();
 
 // Схема для фронтенда:
 export const Verify2FASchema = z.object(baseFields).pick({ code: true }); //Берем только поле code
-// .strict();
 
 //Тип для фронтенда:
 export type Verify2FAType = z.infer<typeof Verify2FASchema>;
@@ -275,44 +273,43 @@ export type Verify2FAType = z.infer<typeof Verify2FASchema>;
 export type Verify2FAArgs = z.infer<typeof BackendVerify2FASchema>["body"];
 
 //----------------------------1.11) Схема для обновления профиля:--------------------------------------------//
-export const UpdateProfileSchema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .min(3, { message: "Имя слишком короткое" })
-      .max(20, "Максимум 20 символов для имени")
-      .regex(
-        /^[a-z0-9_]+$/,
-        "Для имени используйте только латиницу, цифры и нижнее подчеркивание",
-      ),
-    phone: z
-      .string()
-      .trim()
-      //Телефон: Необязательный "+"" в начале. Первая цифра от 1 до 9. Всего от 2 до 15 цифр (международный стандарт E.164):
-      .regex(
-        /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/,
-        "Введите корректный номер телефона",
-      )
-      .nullable(),
-
-    birthday: z.coerce
-      .date({
-        //@ts-ignore:
-        invalid_type_error: "Введите корректную дату",
-      })
-      .max(new Date(), "Дата не может быть в будущем")
-      .nullable(),
-    gender: z.preprocess(
-      (val) => (val === "" ? null : val), // Если пришла пустая строка — превращаем в null
-      z.enum(["MALE", "FEMALE"]).nullable(), // Разрешаем null
+export const UpdateProfileSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(3, { message: "Имя слишком короткое" })
+    .max(20, "Максимум 20 символов для имени")
+    .regex(
+      /^[a-z0-9_]+$/,
+      "Для имени используйте только латиницу, цифры и нижнее подчеркивание",
     ),
-  })
-  .strict();
+  phone: z
+    .string()
+    .trim()
+    .regex(
+      /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/,
+      "Введите корректный номер телефона",
+    ) //Телефон: Необязательный "+"" в начале. Первая цифра от 1 до 9. Всего от 2 до 15 цифр (международный стандарт E.164):
+    .nullable(),
+  birthday: z.coerce
+    .date({
+      message: "Введите корректную дату",
+    })
+    .max(new Date(), "Дата не может быть в будущем")
+    .nullable(),
+  // gender: z
+  //   .union([z.enum(["MALE", "FEMALE"]), z.literal("")])
+  //   .transform((val) => (val === "" ? null : val))
+  //   .nullable(),
+  gender: z.enum(["MALE", "FEMALE"]).nullable(),
+});
 
-export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;
+// Схема для бэкенда:
+export const BackendUpdateProfileSchema = z.object({
+  body: UpdateProfileSchema,
+});
 
+export type UpdateProfileType = z.infer<typeof UpdateProfileSchema>;
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------2) Модуль Catalog-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////

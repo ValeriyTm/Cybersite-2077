@@ -41,7 +41,6 @@ export const useCart = () => {
     queryKey: ["cart"], //Уникальный идентификатор данных корзины в кэше.
     queryFn: async () => {
       const { data } = await $api.get<MotorcycleCart[]>("/trading/cart");
-      console.log("Пришло с сервера data: ", data);
       return data;
     },
     enabled: isAuth && !!accessToken,
