@@ -3,6 +3,7 @@
 import { OAuth2Client } from "google-auth-library";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
+import { IGoogleUser } from "./auth.service.js";
 
 //Создание экземпляра клиента:
 const client = new OAuth2Client(
@@ -34,24 +35,20 @@ export class OAuthService {
       client.setCredentials(tokens);
 
       //Запрос к API Google, чтобы вытащить реальные данные профиля (имя, email, фото):
-      const userInfo = (await client.request({
+      const userInfo = await client.request({
         url: "https://www.googleapis.com/oauth2/v3/userinfo",
-      })) as any;
+      });
 
       //Возвращаем объект с данными пользователя нашему контроллеру:
-      return userInfo.data;
+      return userInfo.data as IGoogleUser;
     } catch (error) {
-      //Если Google отказал, мы увидим в консоли точную причину:
-      console.error(
-        "GOOGLE_AUTH_ERROR_DETAILS:",
-        // @ts-ignore:
-        error.response?.data || error.message,
-      );
-
-      throw new AppError(
-        401,
-        "Не удалось получить данные пользователя из Google",
-      );
+      if (error instanceof Error) {
+        //Если Google отказал, мы увидим в консоли точную причину:
+        console.error("GOOGLE_AUTH_ERROR_DETAILS:", error.message);
+      } else {
+        console.error("Неизвестная ошибка:", error);
+      }
+      throw new AppError(401, "Не удалось получить данные");
     }
   }
 }

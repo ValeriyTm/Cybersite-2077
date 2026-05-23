@@ -226,6 +226,15 @@ export const BackendResetPasswordSchema = z.object({
 export type ResetPasswordQueryType = z.infer<
   typeof BackendResetPasswordSchema
 >["query"];
+
+//----------------------------1.8) Схема для получения ответа от Google (OIDC):--------------------------------------------//
+export const GoogleResponseSchema = z.object({
+  query: z.object({
+    code: z.string().min(1),
+  }),
+});
+
+export type GoogleResponseArgs = z.infer<typeof GoogleResponseSchema>["query"];
 //---------------------------------------------------------
 //-----------------Прочие схемы:---------------------//
 //Схема для добавления дополнительных данных о пользователе:

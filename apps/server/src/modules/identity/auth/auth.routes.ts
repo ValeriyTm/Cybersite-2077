@@ -13,6 +13,7 @@ import {
   BackendDeleteAccountSchema,
   BackendForgotPasswordSchema,
   BackendResetPasswordSchema,
+  GoogleResponseSchema,
   LoginSchema,
   RegisterSchema,
 } from "@repo/validation";
@@ -91,7 +92,11 @@ router.post(
 router.get("/google", AuthController.googleAuth);
 
 //Роут получения и обработки ответа от Google [OAuth]:
-router.get("/google/callback", AuthController.googleCallback);
+router.get(
+  "/google/callback",
+  validate(GoogleResponseSchema),
+  AuthController.googleCallback,
+);
 
 //-------Роуты для 2FA:
 //Роут для генерации данных для включения 2FA:

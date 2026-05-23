@@ -17,6 +17,7 @@ import {
   ForgotPasswordType,
   ResetPasswordType,
   ResetPasswordQueryType,
+  GoogleResponseArgs,
 } from "@repo/validation";
 //Сервис для взаимодействия с БД для подмодуля auth:
 import { authService } from "./auth.service.js";
@@ -339,7 +340,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
 export const googleAuth = (_req: Request, res: Response) => {
   //Отправляем запрос в Google:
   const url = oAuthService.getGoogleAuthUrl();
-  console.log("Ссылка в гугл: ", url);
+
   //Редиректим пользователя на страницу Google для подтверждения входа:
   res.redirect(url);
 };
@@ -348,15 +349,14 @@ export const googleAuth = (_req: Request, res: Response) => {
 export const googleCallback = catchAsync(
   async (req: Request, res: Response) => {
     //1) Извлекаем код из запроса (от Google приходит код):
-    const { code } = req.query;
+    const { code } = req.query as GoogleResponseArgs;
     if (!code) throw new AppError(400, "Код авторизации не получен");
 
     //2) Обмениваем код на данные из Google через oAuthService:
-    const googleUser = await oAuthService.getGoogleUser(code as string);
+    const googleUser = await oAuthService.getGoogleUser(code);
 
     //3) Обрабатываем логин/регистрацию через authService:
-    //@ts-ignore:
-    const { user, tokens } = await authService.processGoogleUser(googleUser);
+    const { tokens } = await authService.processGoogleUser(googleUser);
 
     //4) Устанавливаем куку (используем те же настройки, что для обычного логина):
     res.cookie("refreshToken", tokens.refreshToken, {
