@@ -42,57 +42,89 @@ export class SearchService {
 
   //Метод для синхронизации всех данных из PostgreSQL в Elasticsearch:
   async syncAllMotorcycles() {
-    console.log("Начинаем синхронизацию с Elasticsearch...");
+    console.log("Начинаем порционную синхронизацию с Elasticsearch...");
 
-    //Выкачиваем все необходимые строки из PostgreSQL:
-    const motorcycles = await prisma.motorcycle.findMany({
-      include: {
-        brand: true,
-        siteCategory: true,
-        images: true,
-        stocks: {
-          select: { quantity: true, reserved: true },
+    const BATCH_SIZE = 1000; // Обрабатываем по 1000 моделей за раз
+    let skip = 0;
+    let totalIndexed = 0;
+
+    while (true) {
+      //Выкачиваем данные порциями (пагинация по skip/take):
+      const motorcycles = await prisma.motorcycle.findMany({
+        include: {
+          brand: true,
+          siteCategory: true,
+          images: true,
+          stocks: {
+            select: { quantity: true, reserved: true },
+          },
         },
-      },
-    });
+        skip: skip,
+        take: BATCH_SIZE,
+        orderBy: { id: "asc" }, //Сортировка обязательна для стабильной пагинации
+      });
 
-    //Формируем массив для bulk-загрузки большого кол-ва данных:
-    const operations = motorcycles.flatMap((doc) => {
-      //Считаем доступный остаток (общее кол-во - зарезервированное):
-      const totalInStock = doc.stocks.reduce(
-        (acc, s) => acc + (s.quantity - s.reserved),
-        0,
-      );
+      if (motorcycles.length === 0) {
+        break;
+      }
 
-      return [
-        { index: { _index: this.indexName, _id: doc.id } },
-        {
-          model: doc.model,
-          slug: doc.slug,
-          brand: doc.brand.name,
-          brandSlug: doc.brand.slug,
-          category: doc.category,
-          year: Number(doc.year) || 0,
-          price: Number(doc.price) || 0,
-          displacement: Number(doc.displacement) || 0,
-          createdAt: doc.createdAt,
-          power: Number(doc.power) || 0,
-          transmission: doc.transmission,
-          rating: Number(doc.rating) || 0,
-          mainImage: doc.images?.[0]?.url || "",
-          totalInStock: Math.max(0, totalInStock),
-        },
-      ];
-    });
+      //Формируем массив для bulk-загрузки текущей порции:
+      const operations = motorcycles.flatMap((doc) => {
+        const totalInStock = doc.stocks.reduce(
+          (acc, s) => acc + (s.quantity - s.reserved),
+          0,
+        );
 
-    //Отправляем всё в Elasticsearch:
-    const bulkResponse = await esClient.bulk({ refresh: true, operations });
+        return [
+          { index: { _index: this.indexName, _id: doc.id } },
+          {
+            model: doc.model,
+            slug: doc.slug,
+            brand: doc.brand.name,
+            brandSlug: doc.brand.slug,
+            category: doc.category,
+            year: Number(doc.year) || 0,
+            price: Number(doc.price) || 0,
+            displacement: Number(doc.displacement) || 0,
+            createdAt: doc.createdAt,
+            power: Number(doc.power) || 0,
+            transmission: doc.transmission,
+            rating: Number(doc.rating) || 0,
+            mainImage: doc.images?.[0]?.url || "",
+            totalInStock: Math.max(0, totalInStock),
+          },
+        ];
+      });
 
-    if (bulkResponse.errors) {
-      console.error("Ошибки при индексации:", bulkResponse.items);
-    } else {
-      console.log(`Успешно проиндексировано ${motorcycles.length} моделей`);
+      //Отправляем текущую порцию в Elasticsearch:
+      const bulkResponse = await esClient.bulk({
+        refresh: false, // Отключаем постоянный refresh во время массовой заливки для скорости
+        operations,
+      });
+
+      if (bulkResponse.errors) {
+        console.error(
+          `Ошибки при индексации порции со skip ${skip}:`,
+          bulkResponse.items,
+        );
+      }
+
+      totalIndexed += motorcycles.length;
+      console.log(`Проиндексировано порционно: ${totalIndexed} моделей...`);
+
+      //Если вернулось меньше, чем размер батча — значит, это была последняя страница:
+      if (motorcycles.length < BATCH_SIZE) {
+        break;
+      } else {
+        skip += BATCH_SIZE; //Переходим к следующей порции
+      }
     }
+
+    //Делаем финальный refresh один раз для всего индекса, когда всё готово:
+    await esClient.indices.refresh({ index: this.indexName });
+    console.log(
+      `Синхронизация завершена. Всего успешно проиндексировано ${totalIndexed} моделей`,
+    );
   }
 
   //Основной поиск/сортировка по моделям с фильтрами:
@@ -247,18 +279,14 @@ export class SearchService {
     }));
 
     //Прогоняем каждый товар через логику скидок; передаем userId, чтобы подтянулись персональные скидки:
-    const itemsWithDiscounts = await Promise.all(
-      rawItems.map(async (moto: any) => {
-        const discountData = await discountLogic.calculateFinalPrice(
-          moto,
-          userId,
-        );
-        return {
-          ...moto,
-          discountData, // Здесь будет { finalPrice, originalPrice, isPersonal, etc. }
-        };
-      }),
-    );
+    const allDiscountData = await discountLogic.calculateFinalPricesBulk(
+      rawItems,
+      userId,
+    ); //Получаем скидки одним пакетным запросом для всей страницы выдачи
+    const itemsWithDiscounts = rawItems.map((moto, index) => ({
+      ...moto,
+      discountData: allDiscountData[index],
+    })); //Синхронно склеиваем результаты в памяти Node.js
 
     //Считаем общее количество:
     const totalItems =
@@ -325,15 +353,16 @@ export class SearchService {
       id: hit._id,
     }));
 
-    return await Promise.all(
-      rawItems.map(async (moto) => {
-        const discountData = await discountLogic.calculateFinalPrice(
-          moto,
-          userId,
-        );
-        return { ...moto, discountData };
-      }),
+    //Получаем скидки одним пакетным запросом для всех рекомендаций сразу:
+    const allDiscountData = await discountLogic.calculateFinalPricesBulk(
+      rawItems,
+      userId,
     );
+
+    return rawItems.map((moto, index) => ({
+      ...moto,
+      discountData: allDiscountData[index],
+    }));
   }
 
   //Поиск с выводом предположений:
@@ -364,7 +393,7 @@ export class SearchService {
     const result = await esClient.search({
       index: this.indexName,
       from: (page - 1) * limit, //Пропуск записей для пагинации
-      size: limit, //Показываем только 7 лучших совпадений
+      size: limit,
       query: {
         match_phrase_prefix: {
           //Ищет по первым буквам слов:
@@ -411,7 +440,7 @@ export class SearchService {
     });
   }
 
-  //
+  //Обновляем данные в Elasticsearch при изменении остатков (пакетно):
   async updateStocksInElasticBulk(motorcycleIds: string[]) {
     if (!motorcycleIds || motorcycleIds.length === 0) return;
 
@@ -475,10 +504,10 @@ export class SearchService {
 
     if (!moto) return;
 
-    await esClient.index({
+    await esClient.update({
       index: this.indexName,
       id: moto.id,
-      document: {
+      doc: {
         model: moto.model,
         slug: moto.slug,
         brandSlug: moto.brand.slug,
@@ -501,17 +530,49 @@ export class SearchService {
 
   //Синхронизируем изменения в брендах (админка)
   async syncBrandMotorcycles(brandId: string) {
-    // Находим все мотоциклы, принадлежащие этому бренду
+    console.log(
+      `Начинаем пакетную переиндексацию мотоциклов для бренда ID: ${brandId}`,
+    );
+
+    // Находим все мотоциклы, принадлежащие этому бренду в PostgreSQL:
     const motorcycles = await prisma.motorcycle.findMany({
       where: { brandId },
-      select: { id: true },
+      include: {
+        brand: true,
+        images: true,
+      },
     });
 
-    // Переиндексируем каждый мотоцикл (информация о бренде подтянется автоматически внутри indexMotorcycle)
-    const syncPromises = motorcycles.map((moto) =>
-      this.indexMotorcycle(moto.id),
+    if (motorcycles.length === 0) return;
+
+    //Формируем один Bulk-запрос для всех моделей сразу:
+    const bulkOperations = motorcycles.flatMap((moto) => {
+      return [
+        { update: { _index: this.indexName, _id: moto.id } },
+        {
+          doc: {
+            model: moto.model,
+            slug: moto.slug,
+            brandSlug: moto.brand.slug,
+            year: moto.year,
+            mainImage: moto.images.find((img) => img.isMain)?.url || null,
+            price: moto.price,
+          },
+        },
+      ];
+    });
+
+    //Отправляем все изменения одним пакетом:
+    if (bulkOperations.length > 0) {
+      await esClient.bulk({
+        refresh: true, // Делаем изменения бренда сразу доступными в поиске
+        operations: bulkOperations,
+      });
+    }
+
+    console.log(
+      `Успешно обновлен бренд для ${motorcycles.length} моделей мотоциклов.`,
     );
-    await Promise.all(syncPromises);
   }
 }
 
