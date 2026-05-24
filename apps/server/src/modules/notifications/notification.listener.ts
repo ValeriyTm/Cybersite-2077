@@ -72,7 +72,7 @@ export const initNotificationListeners = () => {
     try {
       //Шлем письмо клиенту:
       await mailService.sendDeliveryMail(
-        order.user.email,
+        order.customerEmail,
         order.orderNumber,
         order.address,
       );

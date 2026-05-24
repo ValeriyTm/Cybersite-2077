@@ -78,7 +78,6 @@ export const orderWorker = new Worker(
       const order = await prisma.order.update({
         where: { id: orderId },
         data: { status: "DELIVERED" },
-        include: { user: true }, //Извлекаем данные о юзере
       });
       console.log(`Заказ ${orderId} прибыл в пункт назначения!`);
 

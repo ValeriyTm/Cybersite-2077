@@ -25,14 +25,8 @@ export const useProfile = () => {
   const query = useQuery<IUser>({
     queryKey: ["profile"],
     queryFn: async () => {
-      try {
-        const res = await $api.get("/identity/profile/me");
-        return res.data;
-      } catch (e) {
-        //Если сервер ответил 401, значит сессии нет, поэтому чистим localStorage:
-        clearAuth();
-        throw e; // Пробрасываем ошибку дальше в React Query
-      }
+      const res = await $api.get("/identity/profile/me");
+      return res.data;
     },
     enabled: isAuth && !!accessToken, // Запрос идет только если isAuth === true (запрос не уйдет, если пользователь не авторизован)
     staleTime: 1000 * 60 * 5, //Кэшируем данные на 5 минут (время, когда данные "свежие")

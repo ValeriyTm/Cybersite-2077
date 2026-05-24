@@ -77,11 +77,17 @@ const refreshAuthLogic = (failedRequest: any) => {
         return Promise.resolve();
       })
       .catch((err) => {
-        //Если обновить не удалось (сессия истекла везде), то разлогиниваем пользователя:
-        useAuthStore.getState().clearAuth();
-
-        delete $api.defaults.headers.common.Authorization; // Стираем заголовки и кэш, чтобы прервать любые зависшие запросы очереди
-
+        //Если сервер что-то ответил (например, 400, 403, 500) — это сбой сессии.
+        // Если err.response нет, значит сервер оффлайн или пропал интернет.
+        if (err.response) {
+          useAuthStore.getState().clearAuth(); //Разлогиниваем пользователя
+          if ($api.defaults.headers.common.Authorization) {
+            delete $api.defaults.headers.common.Authorization; // Стираем заголовки и кэш, чтобы прервать любые зависшие запросы очереди
+          }
+        } else {
+          // Сервер оффлайн — логируем, но clearAuth() НЕ ВЫЗЫВАЕМ!
+          console.warn("🌐 Сервер бэкенда недоступен. Ожидание сети...");
+        }
         return Promise.reject(err);
       })
   );
