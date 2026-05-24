@@ -100,7 +100,7 @@ export const CheckoutPage = () => {
     staleTime: 24 * 60 * 60 * 1000,
   });
 
-  //Создаем мутацию для расчета доставки:
+  //Расчёт доставки:
   const calculateMutation = useMutation({
     mutationFn: async (data: { lat: number; lng: number; items: { id: string; quantity: number }[] }) => {
       return $api.post<DeliveryResponse>("/warehouse/calculate", data).then((res) => res.data);
@@ -118,22 +118,26 @@ export const CheckoutPage = () => {
     },
   });
 
-
+  //Создание заказа:
   const createOrderMutation = useMutation({
     mutationFn: (orderData: CreateOrderPayload) => $api.post("/orders", orderData),
     onSuccess: (res, variables) => {
-      const setCart = useTradingStore.getState().setCart;
-      queryClient.setQueryData(["cart"], []);
       // variables — это данные, которые мы передали в mutate()
 
-      //Чистим корзину:
-      setCart([]);
+
+      const { cartItems, setCart } = useTradingStore.getState();
+
+      const remainingItems = cartItems.filter((item) => !item.selected);
+      queryClient.setQueryData(["cart"], remainingItems);
+
+      //Чистим корзину от заказанных товаров:
+      setCart(remainingItems);
+
       //Обновляем счётчик в Header:
       fetchActiveCount();
 
       if (variables.shouldPay && res.data.paymentUrl) {
         //Вариант 1: Редирект в ЮKassa (если создание заказа с оплатой):
-        // window.location.href = res.data.paymentUrl;
         window.open(res.data.paymentUrl, "_blank");
         navigate("/orders/my", { replace: true });
       } else {

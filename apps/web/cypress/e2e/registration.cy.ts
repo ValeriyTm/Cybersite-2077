@@ -1,8 +1,11 @@
 describe("Проверка функционала регистрации", () => {
   const testUser = {
+    // eslint-disable-next-line sonarjs/pseudo-random
     name: `user${Math.floor(Math.random() * 1000)}`,
     email: `test${Date.now()}@test.com`,
+    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
     password: "SafePassword123!",
+    // eslint-disable-next-line sonarjs/no-hardcoded-passwords
     confirmPassword: "SafePassword123!",
   };
 

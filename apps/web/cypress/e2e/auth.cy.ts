@@ -221,8 +221,8 @@ describe("Проверка фунцкионала аутентификации �
       const store = JSON.parse(
         win.localStorage.getItem("auth-storage") || "{}",
       );
-      expect(store.state.isAuth).to.be.false;
-      expect(store.state.accessToken).to.be.null;
+      expect(store.state.isAuth).to.equal(false);
+      expect(store.state.accessToken).to.equal(null);
     });
   });
 
@@ -252,8 +252,8 @@ describe("Проверка фунцкионала аутентификации �
       const store = JSON.parse(
         win.localStorage.getItem("auth-storage") || "{}",
       );
-      expect(store.state.isAuth).to.be.false;
-      expect(store.state.accessToken).to.be.null;
+      expect(store.state.isAuth).to.equal(false);
+      expect(store.state.accessToken).to.equal(null);
     });
   });
 
@@ -267,7 +267,6 @@ describe("Проверка фунцкионала аутентификации �
   //     );
   //     //2) Перехватываем выход из системы:
   //     cy.intercept("POST", "**/identity/auth/logout").as("logoutRequest");
-
   //     //3) Авторизация
   //     cy.contains("button", /вход/i).click();
   //     cy.get('input[name="email"]').type("test@example.com");
@@ -275,10 +274,8 @@ describe("Проверка фунцкионала аутентификации �
   //     cy.get('button[type="submit"]').click();
   //     // Ждем перехода в профиль:
   //     cy.url({ timeout: 10000 }).should("include", "/profile");
-
   //     //4) Ищем кнопку удаления:
   //     cy.contains("button", /удалить аккаунт/i).click();
-
   //     //5) Ищем модалку по заголовку и ограничиваем поиск внутри неё
   //     cy.contains("h2", "Удаление аккаунта")
   //       .closest('div[class*="modal"]') // Находим ближайший div с классом модалки
@@ -290,21 +287,17 @@ describe("Проверка фунцкионала аутентификации �
   //         //Нажимаем кнопку отправки формы (Submit)
   //         cy.get('button[type="submit"]').click();
   //       });
-
   //     //6) Ждем сетевой активности
   //     cy.wait("@deleteAccount", { timeout: 10000 });
   //     cy.wait("@logoutRequest", { timeout: 10000 });
-
   //     //7) Робот должен оказаться на странице авторизации
   //     cy.url().should("include", "/auth");
-
   //     //8) Проверяем, что в localStorage больше нет токена (Пункт 6.1 / 7.1)
   //     cy.window().then((win) => {
   //       expect(win.localStorage.getItem("auth-storage")).to.contain(
   //         '"isAuth":false',
   //       );
   //     });
-
   //     //9) Видим прощальный тост
   //     cy.contains("Ваш аккаунт удален").should("be.visible");
   //   });

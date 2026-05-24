@@ -101,8 +101,6 @@ export const Header = () => {
 
   useEffect(() => {
     if (isAuth) {
-      // fetchCart(); //Данные о корзине
-      // fetchFavoritesIds(); //Данные о избранном
       fetchActiveCount(); //Данные об активных заказах
     } else {
       clearTrading(); //Очистка счетчика корзины и избранного
@@ -118,7 +116,7 @@ export const Header = () => {
     else setSuggestions([]);
   };
 
-  const handleSearchSubmit = (e?: React.FormEvent) => {
+  const handleSearchSubmit = (e?: React.SubmitEvent) => {
     e?.preventDefault();
     if (searchQuery.trim().length >= 2) {
       //Переходим в общий каталог с активным поиском:
