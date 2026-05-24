@@ -11,21 +11,25 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 //Состояние:
 import { useAuthStore } from "@/features/auth";
+import { useEffect } from "react";
+//API:
+import axios from "axios";
+//Логирование:
+import * as Sentry from "@sentry/react";
 //React Helmet для SEO:
 import { HelmetProvider } from "react-helmet-async";
 //Компонент, который отобразится при глобальной ошибке:
 import { GlobalErrorFallback } from "@/shared/ui";
 //Глобальные стили:
 import "./styles/index.scss";
-import axios from "axios";
-import { useEffect } from "react";
+
 
 // Создаем клиент React Query:
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1, //Если запрос упал, пробуем еще 1 раз
-      refetchOnWindowFocus: false, //Отключаем авто-обновление при смене вкладок для разработки
+      refetchOnWindowFocus: !import.meta.env.DEV, //Отключаем авто-обновление при смене вкладок для разработки
     },
   },
 });
@@ -59,7 +63,17 @@ export const App = () => {
         <HelmetProvider>
           <ErrorBoundary
             FallbackComponent={GlobalErrorFallback}
-            onReset={() => (window.location.href = "/")} //Редирект на главную
+            //Логируем ошибку сразу в момент возникновения
+            onError={(error, info) => {
+              Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
+            }}
+            //Сбрасываем состояние при нажатии кнопки в Fallback:
+            onReset={() => {
+              queryClient.clear(); //Очищаем кэш запросов перед редиректом
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 150); //Небольшой таймаут гарантирует, что сетевой пакет Sentry успеет улететь
+            }}
           >
             <RouterProvider router={router} />
           </ErrorBoundary>
@@ -69,3 +83,4 @@ export const App = () => {
     </GoogleReCaptchaProvider>
   );
 };
+

@@ -1,6 +1,11 @@
 import styles from "./GlobalErrorFallback.module.scss";
 
-export const GlobalErrorFallback = () => {
+interface GlobalErrorFallbackProps {
+  resetErrorBoundary: () => void;
+}
+
+
+export const GlobalErrorFallback = ({ resetErrorBoundary }: GlobalErrorFallbackProps) => {
   return (
     <div className={styles.wrapper}>
 
@@ -14,10 +19,11 @@ export const GlobalErrorFallback = () => {
 
       <button
         className={styles.refreshBtn}
-        onClick={() => (window.location.href = "/")}
+        onClick={resetErrorBoundary}
       >
         Вернуться на главную страницу
       </button>
     </div>
   );
 };
+

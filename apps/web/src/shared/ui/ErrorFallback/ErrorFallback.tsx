@@ -2,6 +2,8 @@
 import { useEffect } from "react";
 //Роутинг:
 import { useRouteError, isRouteErrorResponse } from "react-router";
+//Логирование:
+import * as Sentry from "@sentry/react";
 //Изображения:
 import errorBanner from '@/shared/assets/images/banners/errorBanner.png';
 //Стили:
@@ -12,7 +14,9 @@ export const ErrorFallback = () => {
   const error = useRouteError();
 
   useEffect(() => {
-    console.error("Caught by React Router ErrorElement:", error);
+    if (error) {
+      Sentry.captureException(error);
+    }
   }, [error]);
 
   // Определяем текст ошибки в зависимости от её типа
