@@ -1,0 +1,74 @@
+.row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  padding: 22px 0;
+  /* pxtorem-disable-next-line */
+  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+  gap: 400px;
+
+  @include tablet {
+    gap: 50px;
+  }
+
+  @include mobile {
+    gap: 20px;
+  }
+
+  @include mobile-s {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding: 4px 0;
+    //Перенос текста:
+    word-wrap: break-word; //Старый стандарт
+    overflow-wrap: break-word; //Современный стандарт
+    word-break: break-all; //Разрывает слово в любом месте (если нужно)
+  }
+
+  &:last-child {
+    /* pxtorem-disable-next-line */
+    border: none;
+  }
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--auxiliary-text-color);
+  font-size: 14px;
+  flex-shrink: 2;
+
+  @include mobile-s {
+    gap: 6px;
+  }
+
+  label {
+    width: 100%;
+  }
+}
+
+//Звездочка для обязательных полей:
+.requiredStar {
+  color: #ff4d4f;
+  margin-left: 4px;
+}
+
+.inputError {
+  border-color: #ff4d4f !important;
+  background-color: #fff2f0 !important;
+}
+
+.errorText {
+  color: #ff4d4f;
+  font-size: 11px;
+  margin-top: 4px;
+  font-weight: 400;
+  display: block;
+}
+
+input {
+  border-radius: 6px;
+  text-align: center;
+  width: 100%;
+}

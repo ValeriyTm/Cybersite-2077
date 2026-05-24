@@ -18,7 +18,7 @@ import { IMaskInput } from "react-imask";
 import IMask from "imask";
 //Компоненты:
 import { TwoFactorModal, DeleteAccountModal } from "@/features/auth";
-import { Avatar, Input, Button, PasswordField } from "@/shared/ui";
+import { Avatar, Input, Button, PasswordField, BirthdayInput } from "@/shared/ui";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
@@ -200,87 +200,20 @@ export const ProfilePage = () => {
                 </div>
 
                 {/*Поле даты рождения:*/}
-                <div className={styles.row}>
-                  <div className={styles.label}>
-                    <label htmlFor="birthday-input">
-                      <HiOutlineCalendar />&nbsp;&nbsp;&nbsp;День рождения{" "}
-                      {/*Если включен режим редактирования, показываем звездочку, указывая, что поле обязательно к заполнению:*/}
-                      {isEditing && <span className={styles.requiredStar}>*</span>}
-                    </label>
-                  </div>
-                  <div className={styles.value}>
-                    {isEditing ? (
-                      <>
-                        {/*<Controller /> — Компонент из RHF. Он нужен, чтобы подружить IMask с состоянием формы:*/}
-                        <Controller
-                          control={control}
-                          name="birthday"
-                          render={({ field: { onChange, value } }) => (
-
-                            <IMaskInput
-                              id='birthday-input'
-                              mask={Date} //Указываем, что работаем с типом данных "Дата"
-                              //IMask сам поймет DD.MM.YYYY, если указать блоки:
-                              pattern="DD.MM.YYYY"
-                              blocks={{
-                                //Ограничиваем ввод:
-                                DD: { mask: IMask.MaskedRange, from: 1, to: 31 },
-                                MM: { mask: IMask.MaskedRange, from: 1, to: 12 },
-                                YYYY: {
-                                  mask: IMask.MaskedRange,
-                                  from: 1900,
-                                  to: new Date().getFullYear(),
-                                },
-                              }}
-                              //При помощи format и value переводим объект Date в строку ДД.ММ.ГГГГ (которую видит юзер) и обратно:
-                              format={(date: Date | null) =>
-                                date ? date.toLocaleDateString("ru-RU") : ""
-                              }
-                              parse={(str: string) => {
-                                const [d, m, y] = str.split(".");
-                                return new Date(
-                                  Number(y),
-                                  Number(m) - 1,
-                                  Number(d),
-                                );
-                              }}
-                              //Гарантируем, что инпут всегда отображает дату в понятном русском формате, если она есть в базе:
-                              value={
-                                value instanceof Date
-                                  ? value.toLocaleDateString("ru-RU")
-                                  : ""
-                              }
-                              //При каждом вводе символа маска пытается создать реальный объект Date. Как только дата введена полностью, она попадает в форму, если стерта — в форму уходит null:
-
-                              onAccept={(_, mask) => {
-                                // typedValue вернет объект Date, если дата полная, или null
-                                onChange(mask.typedValue);
-                              }}
-                              className={
-                                errors.birthday
-                                  ? styles.inputError
-                                  : styles.maskInput
-                              }
-                              placeholder="ДД.ММ.ГГГГ"
-                            />
-                          )}
-                        />
-                        {/*Вывод ошибки:*/}
-                        {errors.birthday && (
-                          <span className={styles.errorText}>
-                            {errors.birthday.message}
-                          </span>
-                        )}
-                      </>
-                    ) : (
+                {isEditing ? (
+                  <BirthdayInput control={control} error={errors.birthday} />
+                ) : (
+                  <div className={styles.row}>
+                    <div className={styles.label}>
+                      <HiOutlineCalendar />День рождения
+                    </div>
+                    <div className={styles.value}>
                       <span>
-                        {user?.birthday
-                          ? new Date(user.birthday).toLocaleDateString("ru-RU")
-                          : "Не указан"}
+                        {user?.birthday ? new Date(user.birthday).toLocaleDateString("ru-RU") : "Не указан"}
                       </span>
-                    )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/*Пол:*/}
                 <div className={styles.row}>

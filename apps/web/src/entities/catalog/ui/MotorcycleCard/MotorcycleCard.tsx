@@ -150,7 +150,7 @@ export const MotorcycleCard = ({
         <div className={styles.specs}>
           <span>{data.year} г.</span>
           {Number(data.displacement) > 0 && <span>{data.displacement} см³</span>}
-          <span>{data.power === 0 ? "" : `${data.power} л.с.`}</span>
+          <span>{data.power ? `${data.power} л.с.` : "н/д л.с."}</span>
           <span className={styles.rating}>{data.rating.toFixed(1)} ★</span>
         </div>
 

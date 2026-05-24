@@ -69,6 +69,7 @@
 .info {
   padding: 16px;
   display: flex;
+
   flex-direction: column;
   gap: 12px;
 }
@@ -107,6 +108,8 @@
 
 .rating {
   color: var(--color-rating);
+  display: flex;
+  flex-direction: row;
 }
 
 //Режим списка:
@@ -142,6 +145,24 @@
     display: flex;
     gap: 15px;
     align-items: center;
+
+    @include desktop {
+      max-width: 450px;
+    }
+
+    @include laptop {
+      max-width: 420px;
+    }
+
+    @include laptop-s {
+      max-width: 380px;
+      gap: 10px;
+    }
+
+    @include tablet {
+      max-width: 240px;
+      gap: 7px;
+    }
 
     @include mobile-s {
       flex-direction: column;
