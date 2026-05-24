@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+//Логирование:
+import { logger } from "./logger.js";
 
 const MONGO_URI =
   process.env.MONGO_URI || "mongodb://localhost:27017/cyber_moto_reviews";
@@ -10,9 +12,9 @@ export const connectMongoDB = async () => {
 
     await mongoose.connect(MONGO_URI); //Подключаемся к БД
 
-    console.log("✅MongoDB подключен успешно");
+    logger.info("✅MongoDB подключен успешно");
   } catch (error) {
-    console.error("❌Ошибка подключения к MongoDB:", error);
+    logger.error("❌Ошибка подключения к MongoDB:", error);
     process.exit(1); //Останавливаем сервер, если база недоступна
   }
 };

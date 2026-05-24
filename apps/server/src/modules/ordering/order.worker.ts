@@ -10,6 +10,8 @@ import { addDeliveredTask } from "./order.queue.js";
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Поисковый сервис модуля Catalog:
 import { searchService } from "../catalog/index.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 export const orderWorker = new Worker(
   "order-tasks", //(Поле должно совпадать с именем в Queue)
@@ -47,14 +49,14 @@ export const orderWorker = new Worker(
           for (const item of order.items) {
             await searchService.updateStockInElastic(item.motorcycleId);
           }
-          console.log(
+          logger.info(
             `Остатки заказа №${order.orderNumber} возвращены в Elastic (отмена)`,
           );
         } catch (error) {
-          console.error("Ошибка обновления Elastic при отмене заказа:", error);
+          logger.error("Ошибка обновления Elastic при отмене заказа:", error);
         }
 
-        console.log(
+        logger.info(
           `Заказ №${order.orderNumber} автоматически отменен (истекло время)`,
         );
       }
@@ -70,7 +72,7 @@ export const orderWorker = new Worker(
       //Как только начадась доставка, сразу планируем её завершение:
       await addDeliveredTask(order.id, order.estimatedDate);
 
-      console.log(`Заказ ${orderId} переведен в статус ДОСТАВКА`);
+      logger.info(`Заказ ${orderId} переведен в статус ДОСТАВКА`);
     }
 
     //Задача завершения доставки (перевод DELIVERY --> DELIVERED):
@@ -79,7 +81,7 @@ export const orderWorker = new Worker(
         where: { id: orderId },
         data: { status: "DELIVERED" },
       });
-      console.log(`Заказ ${orderId} прибыл в пункт назначения!`);
+      logger.info(`Заказ ${orderId} прибыл в пункт назначения!`);
 
       //Генерируем событие для отправки юзеру письма, что заказ доставлен:
       eventBus.emit(EVENTS.ORDER_DELIVERY_END, order);
@@ -92,7 +94,7 @@ export const orderWorker = new Worker(
       // Вызываем новый пакетный метод (Bulk) вместо цикла
       await searchService.updateStocksInElasticBulk(motorcycleIds);
 
-      console.log(
+      logger.info(
         `[Worker] Успешно синхронизировано товаров в Elastic: ${motorcycleIds.length}`,
       );
     }
@@ -103,5 +105,5 @@ export const orderWorker = new Worker(
 
 //Обработка ошибок воркера:
 orderWorker.on("failed", (job, err) => {
-  console.error(`Ошибка в задаче ${job?.id}: ${err.message}`);
+  logger.error(`Ошибка в задаче ${job?.id}: ${err.message}`);
 });

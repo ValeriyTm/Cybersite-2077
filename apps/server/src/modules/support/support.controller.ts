@@ -1,5 +1,5 @@
 //Типы:
-import { Request, Response } from "express";
+import { Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
@@ -15,6 +15,8 @@ import { recaptchaService } from "../../shared/services/recaptcha.service.js";
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Для удаления прикрепленных файлов:
 import fs from "fs/promises";
+//Логирование:
+import { logger } from "src/shared/lib/logger.js";
 
 //Создание тикета поддержки от юзера:
 export const createTicket = catchAsync(
@@ -41,7 +43,7 @@ export const createTicket = catchAsync(
             fs
               .unlink(file.path)
               .catch((err) =>
-                console.error(`Ошибка удаления файла: ${file.path}`, err),
+                logger.error(`Ошибка удаления файла: ${file.path}`, err),
               ),
           ),
         );

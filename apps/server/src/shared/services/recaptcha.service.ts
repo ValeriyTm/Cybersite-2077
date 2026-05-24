@@ -3,6 +3,8 @@
 import axios from "axios";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../utils/app-error.js";
+//Логирование:
+import { logger } from "../lib/logger.js";
 
 export class RecaptchaService {
   //Метод, который принимает токен, сгенерированную браузером пользователя и проверяет токен:
@@ -31,8 +33,8 @@ export class RecaptchaService {
           },
         },
       );
-      //Вывожу в консоль оценку "ботовости" запроса с клиента от Google:
-      console.log("RECAPTCHA SCORE:", response.data.score);
+      //Вывожу оценку "ботовости" запроса с клиента от Google:
+      logger.silly("RECAPTCHA SCORE:", response.data.score);
 
       //Извлекаю данные из ответа от Google:
       const { success, score } = response.data;
@@ -43,14 +45,14 @@ export class RecaptchaService {
       //Для v3 порог в 0.5 является стандартом индустрии.
       if (!success || score < 0.5) {
         //Если оценка плохая, считаем пользователя ботом и возвращаем false.
-        console.error("ReCAPTCHA failed:", response.data);
+        logger.error("ReCAPTCHA failed:", response.data);
         return false;
       }
 
       //Если всё отлично, возвращаем true.
       return true;
     } catch (error) {
-      console.error("ReCAPTCHA connection error:", error);
+      logger.error("ReCAPTCHA connection error:", error);
       //Если сервис Google недоступен или произошла сетевая ошибка, мы логируем это и блокируем запрос (false). Это стратегия fail-close (безопасность важнее доступности).
       return false;
     }

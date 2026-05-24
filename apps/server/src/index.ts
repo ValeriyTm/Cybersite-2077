@@ -5,6 +5,8 @@
 import "./shared/env.js"; // Загрузка .env должна одной из первых
 //Настройки сервера:
 import app from "./app.js";
+//Логгер:
+import { logger } from "./shared/lib/logger.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Сервис удаления неподтвержденных аккаунтов:
@@ -31,16 +33,16 @@ async function bootstrap() {
     while (retries) {
       try {
         // 1.Проверяем соединение с БД:
-        console.log("⏳Проверка соединения с PostgreSQL...");
+        logger.info("⏳Проверка соединения с PostgreSQL...");
         await prisma.$connect();
-        console.log("✅PostgreSQL подключен успешно");
+        logger.info("✅PostgreSQL подключен успешно");
 
         await connectMongoDB(); //Подключаем MongoDB
 
         break; // Выходим из цикла, если подключились
       } catch (err) {
         retries -= 1;
-        console.error(`Ошибка подключения. Осталось попыток: ${retries}`, err);
+        logger.error(`Ошибка подключения. Осталось попыток: ${retries}`, err);
         if (retries === 0) process.exit(1);
         await sleep(3000); // Ждем 3 секунды перед следующей попыткой
       }
@@ -50,7 +52,7 @@ async function bootstrap() {
     await initDiscountCron(); //Запускаем планировщик задач для скидок и промокодов
 
     TelegramService.init(); //Подключаемся к ТГ-боту
-    console.log("✉  К ТГ-боту подключение завершено");
+    logger.info("✉  К ТГ-боту подключение завершено");
 
     initNotificationListeners(); //Запускаем слушателя событий для сервиса оповещений
     initReportsSchedule(); //Запускаем работу очереди для сервиса отчетов
@@ -60,29 +62,29 @@ async function bootstrap() {
     //3.Только после успеха запускаем сервер:
 
     const server = app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
+      logger.info(`🚀 Сервер запущен на http://localhost:${PORT}`);
     });
 
     //4. Механизм плавного завершения работы (Graceful Shutdown):
     //(Цель — не просто убить процесс мгновенно, а дать приложению время корректно завершить текущие дела перед выходом).
     //Без этого при каждом перезапуске сервера старые соединения могут «висеть» в PostgreSQL, пока не забьют весь лимит подключений.
     const gracefulShutdown = async (signal: string) => {
-      console.log(`\n🛑 Получен сигнал ${signal}. Начинаем остановку...`);
+      logger.info(`\n🛑 Получен сигнал ${signal}. Начинаем остановку...`);
 
       // Закрываем HTTP-сервер (перестаем принимать новые запросы):
       server.close(() => {
-        console.log("📡 HTTP-сервер остановлен.");
+        logger.info("📡 HTTP-сервер остановлен.");
       });
 
       try {
         // Закрываем соединение с БД:
         await prisma.$disconnect();
-        console.log("🔌 Соединение с Prisma закрыто.");
+        logger.info("🔌 Соединение с Prisma закрыто.");
 
         process.exit(0);
         //Код "0" - работа завершена успешно.
       } catch (err) {
-        console.error("❌ Ошибка при закрытии ресурсов:", err);
+        logger.error("❌ Ошибка при закрытии ресурсов:", err);
         process.exit(1);
         //Код "1" - произошла ошибка, и приложение закрылось аварийно.
       }
@@ -92,8 +94,7 @@ async function bootstrap() {
     process.on("SIGINT", () => gracefulShutdown("SIGINT")); //"SIGINT" = Нажатие "Ctrl+C" в терминале.
     process.on("SIGTERM", () => gracefulShutdown("SIGTERM")); //"SIGTERM" = Сигнал, который посылает Docker (и Kubernetes) при остановке контейнера. Если сервер его игнорирует, Docker через 10 секунд принудительно «убивает» его (SIGKILL), что может повредить файлы БД.
   } catch (error) {
-    console.error("❌ Ошибка при запуске сервера:");
-    console.error(error);
+    logger.error("❌ Ошибка при запуске сервера:", error);
 
     // Если БД не отвечает, останавливаем процесс:
     await prisma.$disconnect();

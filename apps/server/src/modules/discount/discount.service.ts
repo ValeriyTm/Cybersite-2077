@@ -8,6 +8,8 @@ import { faker } from "@faker-js/faker";
 import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 export class DiscountService {
   //Генерация глобальной скидки (по году выпуска):
@@ -22,7 +24,7 @@ export class DiscountService {
       "EX",
       86400,
     );
-    console.log(`🔥 Глобальная скидка: ${randomYear} год, -${percent}%`);
+    logger.info(`🔥 Глобальная скидка: ${randomYear} год, -${percent}%`);
 
     return {
       globalYear: randomYear,
@@ -154,7 +156,7 @@ export class DiscountService {
       );
     }
 
-    console.log(
+    logger.info(
       `Персональные скидки для ${users.length} пользователей сгенерированы пакетно.`,
     );
     return { personalCount: users.length };

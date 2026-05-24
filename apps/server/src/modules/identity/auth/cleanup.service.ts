@@ -3,6 +3,7 @@
 import { Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../../shared/lib/redis.js";
+import { logger } from "../../../shared/lib/logger.js";
 
 const cleanupQueue = new Queue("cleanup-queue", { connection: redis });
 
@@ -33,6 +34,6 @@ export class CleanupService {
       },
     );
 
-    console.log("🧹 Сервис очистки БД на основе BullMQ запущен");
+    logger.info("🧹 Сервис очистки БД на основе BullMQ запущен");
   }
 }

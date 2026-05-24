@@ -10,7 +10,7 @@ import { paymentService } from "../payment/index.js";
 //Сервис корзины модуля Trading:
 import { cartService } from "../trading/index.js";
 //Очереди для отмены заказа / изменения статуса заказа:
-import { addOrderExpirationTask, addDeliveryStartTask } from "./order.queue.js";
+import { addOrderExpirationTask } from "./order.queue.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
@@ -22,6 +22,8 @@ import {
   CreateOrderServiceArgs,
   GetOrdersArgs,
 } from "@repo/validation";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 //Создание заказа:
 export const createOrder = catchAsync(
@@ -125,12 +127,12 @@ export const cancelOrder = catchAsync(
           refundAmount,
           orderId,
         );
-        console.log(`Возврат средств инициирован для заказа: ${order.id}`);
+        logger.info(`Возврат средств инициирован для заказа: ${order.id}`);
         return res.json({
           message: "Запрос на отмену и возврат средств отправлен в банк",
         });
       } catch (refundError) {
-        console.error("Ошибка при возврате в ЮKassa:", refundError);
+        logger.error("Ошибка при возврате в ЮKassa:", refundError);
         throw new AppError(500, "Ошибка при оформлении возврата средств");
       }
     }
@@ -150,7 +152,7 @@ export const cancelOrder = catchAsync(
         await searchService.updateStockInElastic(item.motorcycleId);
       }
     } catch (error) {
-      console.error("Ошибка Elastic при отмене:", error);
+      logger.error("Ошибка Elastic при отмене:", error);
     }
 
     res.json(canceledOrder);

@@ -8,8 +8,9 @@ import { discountLogic } from "../discount/index.js";
 import { MotorcyclesServiceArgs } from "@repo/validation";
 //Типы:
 import { type MotorcycleFullServer } from "@repo/types";
-
 import { estypes } from "@elastic/elasticsearch";
+//Логирование:
+import { logger } from "src/shared/lib/logger.js";
 
 //Подключаемся к контейнеру:
 export const esClient = new Client({ node: process.env.ELASTIC_NODE });
@@ -42,7 +43,7 @@ export class SearchService {
 
   //Метод для синхронизации всех данных из PostgreSQL в Elasticsearch:
   async syncAllMotorcycles() {
-    console.log("Начинаем порционную синхронизацию с Elasticsearch...");
+    logger.info("Начинаем порционную синхронизацию с Elasticsearch...");
 
     const BATCH_SIZE = 1000; // Обрабатываем по 1000 моделей за раз
     let skip = 0;
@@ -103,14 +104,14 @@ export class SearchService {
       });
 
       if (bulkResponse.errors) {
-        console.error(
+        logger.error(
           `Ошибки при индексации порции со skip ${skip}:`,
           bulkResponse.items,
         );
       }
 
       totalIndexed += motorcycles.length;
-      console.log(`Проиндексировано порционно: ${totalIndexed} моделей...`);
+      logger.info(`Проиндексировано порционно: ${totalIndexed} моделей...`);
 
       //Если вернулось меньше, чем размер батча — значит, это была последняя страница:
       if (motorcycles.length < BATCH_SIZE) {
@@ -122,7 +123,7 @@ export class SearchService {
 
     //Делаем финальный refresh один раз для всего индекса, когда всё готово:
     await esClient.indices.refresh({ index: this.indexName });
-    console.log(
+    logger.info(
       `Синхронизация завершена. Всего успешно проиндексировано ${totalIndexed} моделей`,
     );
   }
@@ -270,7 +271,7 @@ export class SearchService {
     });
 
     //Для отладки:
-    // console.log("result: ", JSON.stringify(result, null, 2));
+    // logger.info("result: ", JSON.stringify(result, null, 2));
 
     //Превращаем хиты Elastic в обычные объекты:
     const rawItems = result.hits.hits.map((hit) => ({
@@ -345,7 +346,7 @@ export class SearchService {
     });
 
     //Для отладки (просмотр возвращаемых данных с Elastic):
-    // console.log("result 2: ", JSON.stringify(result, null, 2));
+    // logger.info("result 2: ", JSON.stringify(result, null, 2));
 
     //Превращаем хиты Elastic в объекты:
     const rawItems = result.hits.hits.map((hit) => ({
@@ -530,7 +531,7 @@ export class SearchService {
 
   //Синхронизируем изменения в брендах (админка)
   async syncBrandMotorcycles(brandId: string) {
-    console.log(
+    logger.info(
       `Начинаем пакетную переиндексацию мотоциклов для бренда ID: ${brandId}`,
     );
 
@@ -570,7 +571,7 @@ export class SearchService {
       });
     }
 
-    console.log(
+    logger.info(
       `Успешно обновлен бренд для ${motorcycles.length} моделей мотоциклов.`,
     );
   }

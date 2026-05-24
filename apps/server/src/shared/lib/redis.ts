@@ -1,4 +1,6 @@
 import { Redis } from "ioredis";
+//Логирование:
+import { logger } from "./logger.js";
 
 //Подключаемся к Redis:
 export const redis = new Redis({
@@ -8,8 +10,8 @@ export const redis = new Redis({
   //позволяя библиотеке очередей самой управлять повторами при сбоях связи)
 });
 
-redis.on("error", (err) => console.error("Ошибка подключения к Redis:", err));
+redis.on("error", (err) => logger.error("Ошибка подключения к Redis:", err));
 //Добавляем условие, чтобы оповещение об успешном подключении Redis не выводилось, если оно вызвано запуском скрипта, а не основного сервера (чтобы не спамило в логи):
 if (!process.argv.some((arg) => arg.includes("scripts"))) {
-  redis.on("connect", () => console.log("✅Redis подключен успешно"));
+  redis.on("connect", () => logger.info("✅Redis подключен успешно"));
 }

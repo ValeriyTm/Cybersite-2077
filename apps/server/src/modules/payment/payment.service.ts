@@ -8,6 +8,8 @@ import {
 import { v4 as uuidv4 } from "uuid";
 //Используем сервис модуля Ordering:
 import { orderService } from "../ordering/index.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 interface Item {
   orderId: string;
@@ -82,7 +84,7 @@ export class PaymentService {
 
       return payment;
     } catch (error) {
-      console.error("YooKassa Error:", error);
+      logger.error("YooKassa Error:", error);
       throw new Error("Ошибка при создании платежа");
     }
   }
@@ -106,7 +108,7 @@ export class PaymentService {
 
       return refund;
     } catch (error) {
-      console.error("Ошибка возврата:", error);
+      logger.error("Ошибка возврата:", error);
       throw error;
     }
   }

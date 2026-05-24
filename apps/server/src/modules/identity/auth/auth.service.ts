@@ -22,7 +22,7 @@ import fs from "node:fs/promises"; // Используем промисы для
 import path from "node:path";
 //Для генерации событий:
 import { eventBus, EVENTS } from "../../../shared/lib/eventBus.js";
-//Логгер Grafana Loki:
+//Логгер:
 import { logger } from "../../../shared/lib/logger.js";
 //Типы:
 import { User } from "@repo/database/generated/prisma";
@@ -226,7 +226,7 @@ export class AuthService {
         });
       } catch (err) {
         // Если файла нет на диске (например, удалили вручную), просто логируем:
-        console.error("Ошибка при удалении файла аватара:", err);
+        logger.error("Ошибка при удалении файла аватара:", err);
       }
     }
 

@@ -7,6 +7,8 @@ import { prisma } from "@repo/database";
 //Для работы с путями и файлами:
 import fs from "fs/promises";
 import path from "path";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 interface ErrorType {
   message?: string;
@@ -40,7 +42,7 @@ export const supportCleanupWorker = new Worker(
         const error = err as ErrorType;
         // Если файла нет или ошибка доступа — просто логируем,
         // чтобы не прерывать удаление остальных файлов
-        console.error(`Не удалось удалить файл ${filePath}:`, error.message);
+        logger.error(`Не удалось удалить файл ${filePath}:`, error.message);
       }
     });
     // Ждем завершения всех операций удаления
@@ -51,7 +53,7 @@ export const supportCleanupWorker = new Worker(
       where: { ticketId },
     });
 
-    console.log(`Очистка файлов для тикета ${ticketId} завершена!`);
+    logger.info(`Очистка файлов для тикета ${ticketId} завершена!`);
   },
   { connection: redis },
 );

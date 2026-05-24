@@ -7,6 +7,8 @@ import { prisma } from "@repo/database";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+//Логирование:
+import { logger } from "../shared/lib/logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +16,7 @@ const __dirname = path.dirname(__filename);
 const UPLOADS_PATH = path.join(__dirname, "../../uploads/motorcycles");
 
 async function syncImages() {
-  console.log("Начинаем синхронизацию изображений с базой...");
+  logger.info("Начинаем синхронизацию изображений с базой...");
 
   // 1. Читаем все файлы из папки
   const files = fs.readdirSync(UPLOADS_PATH);
@@ -49,13 +51,13 @@ async function syncImages() {
       }));
 
       await prisma.productImage.createMany({ data: imageRecords });
-      console.log(`✅ Обновлено ${motoFiles.length} фото для: ${moto.slug}`);
+      logger.info(`✅ Обновлено ${motoFiles.length} фото для: ${moto.slug}`);
     }
   }
 
-  console.log("Синхронизация завершена!");
+  logger.info("Синхронизация завершена!");
 }
 
 syncImages()
-  .catch(console.error)
+  .catch(logger.error)
   .finally(() => prisma.$disconnect());

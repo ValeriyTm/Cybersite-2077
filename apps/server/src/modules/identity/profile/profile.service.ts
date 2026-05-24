@@ -6,6 +6,8 @@ import { UpdateProfileType } from "@repo/validation";
 //Для работы с путями и файлами:
 import fs from "node:fs/promises";
 import path from "node:path";
+//Логирование:
+import { logger } from "../../../shared/lib/logger.js";
 
 export class ProfileService {
   //Получаем данные о пользователе из БД:
@@ -92,7 +94,7 @@ export class ProfileService {
         //eslint-disable-next-line security/detect-non-literal-fs-filename
         await fs.unlink(oldPath); //Удаляем старый путь
       } catch (e) {
-        console.error("Не удалось удалить старый аватар:", e);
+        logger.error("Не удалось удалить старый аватар:", e);
         // Не кидаем ошибку дальше, чтобы загрузка нового не сорвалась
       }
     }

@@ -4,6 +4,7 @@ import { Worker } from "bullmq";
 import { redis } from "../../shared/lib/redis.js";
 //Основной сервис модуля Discount:
 import { DiscountService } from "./discount.service.js";
+import { logger } from "../../shared/lib/logger.js";
 
 const discountService = new DiscountService();
 
@@ -31,5 +32,5 @@ export const discountWorker = new Worker(
 );
 
 discountWorker.on("completed", (job) => {
-  console.log(`Задача ${job.name} успешно выполнена`);
+  logger.info(`Задача ${job.name} успешно выполнена`);
 });

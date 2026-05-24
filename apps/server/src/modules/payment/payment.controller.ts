@@ -10,6 +10,8 @@ import { searchService } from "../catalog/index.js";
 import { addDeliveryStartTask } from "../ordering/index.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
   const notification = req.body;
@@ -17,7 +19,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
   //1. Используем Callback Verification для проверки достоверности запроса:
   const paymentId = notification.object?.id;
   if (!paymentId) {
-    console.error("Получен некорректный вебхук: отсутствует ID платежа");
+    logger.error("Получен некорректный вебхук: отсутствует ID платежа");
     return res.status(400).send("Bad Request: Missing payment ID");
   }
 
@@ -31,7 +33,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
     try {
       actualPayment = await paymentService.callbackVerification(paymentId);
     } catch (error) {
-      console.error(
+      logger.error(
         `Ошибка при встречном запросе платежа ${paymentId} из ЮKassa:`,
         error,
       );
@@ -48,7 +50,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       //Извлекаем orderId из метаданных реального ответа ЮKassa
       orderId = actualPayment!.metadata?.orderId;
       if (!orderId) {
-        console.error(`В платеже ${paymentId} отсутствуют метаданные orderId`);
+        logger.error(`В платеже ${paymentId} отсутствуют метаданные orderId`);
         return res.status(200).send("OK"); // Отвечаем 200, чтобы ЮKassa не зацикливала отправку
       }
 
@@ -56,13 +58,13 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       const result = await paymentService.applyChangeAfterPayment(orderId);
 
       if (result.alreadyProcessed) {
-        console.log(
+        logger.info(
           `Заказ ${orderId} уже был обработан ранее или не существует.`,
         );
         return res.status(200).send("OK");
       }
 
-      console.log(`Платеж подтвержден для заказа: ${orderId}`);
+      logger.info(`Платеж подтвержден для заказа: ${orderId}`);
       const { order } = result;
 
       //Обновляем данные по остаткам в Elastic:
@@ -70,11 +72,11 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
         for (const item of order!.items) {
           await searchService.updateStockInElastic(item.motorcycleId);
         }
-        console.log(
+        logger.info(
           `Остатки после оплаты заказа №${order!.orderNumber} синхронизированы с Elastic`,
         );
       } catch (error) {
-        console.error("Ошибка синхронизации с Elastic при оплате:", error);
+        logger.error("Ошибка синхронизации с Elastic при оплате:", error);
       }
 
       //Запускаем BullMQ на доставку:
@@ -83,7 +85,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       //Создаём событие для оповещения в ТГ:
       eventBus.emit(EVENTS.ORDER_PAID, order);
 
-      console.log(
+      logger.info(
         `Оплата для заказа №${order!.orderNumber} прошла, остатки списаны, доставка запланирована!`,
       );
       break;
@@ -94,16 +96,16 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       //Извлекаем orderId из метаданных реального ответа ЮKassa
       orderId = actualPayment!.metadata?.orderId;
       if (!orderId) {
-        console.error(`В платеже ${paymentId} отсутствуют метаданные orderId`);
+        logger.error(`В платеже ${paymentId} отсутствуют метаданные orderId`);
         return res.status(200).send("OK"); // Отвечаем 200, чтобы ЮKassa не зацикливала отправку
       }
 
       if (!orderId) {
-        console.error("Получен вебхук payment.canceled без orderId в metadata");
+        logger.error("Получен вебхук payment.canceled без orderId в metadata");
         break;
       }
 
-      console.log(
+      logger.info(
         `Платеж отменен для заказа: ${orderId}. Причина: ${actualPayment!.cancellation_details?.reason}`,
       );
 
@@ -116,11 +118,11 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
           for (const item of order.items) {
             await searchService.updateStockInElastic(item.motorcycleId);
           }
-          console.log(
+          logger.info(
             `Остатки после отмены платежа для заказа №${orderId} синхронизированы с Elastic`,
           );
         } catch (error) {
-          console.error(
+          logger.error(
             "Ошибка синхронизации с Elastic при отмене платежа:",
             error,
           );
@@ -144,13 +146,13 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       const refundOrderId = refund.metadata?.orderId;
 
       if (!refundOrderId) {
-        console.error(
+        logger.error(
           `В вебхуке возврата по платежу ${paymentId} отсутствует orderId в metadata`,
         );
         break;
       }
 
-      console.log(
+      logger.info(
         `ЮKassa подтвердила возврат по платежу ${paymentId} для заказа ${refundOrderId} на сумму ${refundAmount}`,
       );
 
@@ -164,7 +166,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
             await searchService.updateStockInElastic(item.motorcycleId);
           }
         } catch (error) {
-          console.error("Ошибка синхронизации с Elastic при возврате:", error);
+          logger.error("Ошибка синхронизации с Elastic при возврате:", error);
         }
       }
 
@@ -175,7 +177,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
     }
     default: {
       // Логируем на случай, если ЮKassa пришлет иное событие:
-      console.log(
+      logger.info(
         `Получено необрабатываемое событие от ЮKassa: ${notification.event}`,
       );
       break;

@@ -3,7 +3,7 @@
 import jwt from "jsonwebtoken";
 //Модуль для работы с криптографией:
 import crypto from "node:crypto";
-//Логгер Grafana Loki:
+//Логгер:
 import { logger } from "../../../shared/lib/logger.js";
 //Типы:
 import { Role } from "@repo/database/generated/prisma";
@@ -62,16 +62,16 @@ export class TokenService {
       if (error instanceof Error) {
         // Дифференцируем ошибки в консоли сервера для удобства отладки
         if (error.name === "TokenExpiredError") {
-          console.log(
+          logger.info(
             "ℹ️ [JWT Access]: Срок действия токена истек (обычное явление)",
           );
         } else if (error.name === "JsonWebTokenError") {
-          console.error(
+          logger.error(
             "🚨 [JWT Access]: Критическая ошибка! Подпись токена невалидна или токен изменен:",
             error.message,
           );
         } else {
-          console.error(
+          logger.error(
             "❓ [JWT Access]: Непредвиденная ошибка валидации токена:",
             error,
           );
@@ -90,11 +90,11 @@ export class TokenService {
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === "TokenExpiredError") {
-          console.log(
+          logger.info(
             "ℹ️ [JWT Refresh]: Refresh-токен протух. Сессия окончательно завершена.",
           );
         } else {
-          console.error(
+          logger.error(
             "🚨 [JWT Refresh]: Попытка подделки Refresh-токена или ротация секретных ключей:",
             error.message,
           );

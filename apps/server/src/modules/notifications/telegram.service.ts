@@ -9,6 +9,8 @@ import { excelService } from "../reports/index.js";
 import fs from "fs/promises";
 //Типы:
 import { Statistics } from "../reports/types.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 export class TelegramService {
   private static bot: Telegraf;
@@ -22,9 +24,9 @@ export class TelegramService {
       // Запускаем бота
       this.bot
         .launch()
-        .catch((err) => console.error("Ошибка запуска TG бота:", err));
+        .catch((err) => logger.error("Ошибка запуска TG бота:", err));
 
-      console.log("🤖 Telegram Bot успешно инициализирован");
+      logger.info("🤖 Telegram Bot успешно инициализирован");
 
       //Через команду "/stats" в боте получим количество всех заказов:
       this.bot.command("stats", async (ctx) => {
@@ -57,7 +59,7 @@ export class TelegramService {
           await fs.unlink(pdfPath);
         } catch (error) {
           await ctx.reply("❌ Ошибка при генерации отчета");
-          console.error(error);
+          logger.error(error);
         }
       });
 
@@ -98,7 +100,7 @@ export class TelegramService {
 
           await ctx.reply("✅ Все файлы успешно отправлены.");
         } catch (error) {
-          console.error("Ошибка команды /reports_full:", error);
+          logger.error("Ошибка команды /reports_full:", error);
           await ctx.reply("❌ Произошла ошибка при создании отчетов.");
         }
       });
@@ -117,7 +119,7 @@ export class TelegramService {
         //parse_mode: 'HTML' позволяет использовать теги <b>, <i>, <code> и т.д.
       });
     } catch (error) {
-      console.error("Ошибка отправки сообщения в Telegram:", error);
+      logger.error("Ошибка отправки сообщения в Telegram:", error);
     }
   }
 
@@ -133,7 +135,7 @@ export class TelegramService {
         { caption },
       );
     } catch (error) {
-      console.error("Ошибка отправки файла в TG:", error);
+      logger.error("Ошибка отправки файла в TG:", error);
     }
   }
 }

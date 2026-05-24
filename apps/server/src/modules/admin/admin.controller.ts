@@ -60,6 +60,8 @@ import { newsService } from "../content/index.js";
 import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
+//Логирование:
+import { logger } from "src/shared/lib/logger.js";
 
 type ContentFull = UpdateNewsBodyArgs & {
   mainImage?: string;
@@ -134,7 +136,7 @@ export const updateBrand = catchAsync(
       searchService
         .syncBrandMotorcycles(id)
         .catch((err) =>
-          console.error(`Ошибка синхронизации бренда ${id} в ES:`, err),
+          logger.error(`Ошибка синхронизации бренда ${id} в ES:`, err),
         );
     }
 
@@ -268,7 +270,7 @@ export const updateStock = catchAsync(
 
     //Обновление инфы в Elasticsearch:
     searchService.updateStockInElastic(stock.motorcycleId).catch((err) => {
-      console.error(
+      logger.error(
         `Ошибка синхронизации остатков для байка ${stock.motorcycleId}:`,
         err,
       );
@@ -425,7 +427,7 @@ export const downloadSalesReport = catchAsync(
       );
 
       return res.download(filePath, (err) => {
-        if (err) console.error("Ошибка при отправке Excel:", err);
+        if (err) logger.error("Ошибка при отправке Excel:", err);
         // Удаляем временный файл после отправки, если нужно
         // fs.unlinkSync(filePath);
       });

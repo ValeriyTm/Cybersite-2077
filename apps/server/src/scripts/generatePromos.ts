@@ -2,11 +2,12 @@
 import { prisma } from "@repo/database"; // Клиент призмы
 import { redis } from "../shared/lib/redis.js"; //Клиент Redis
 import { faker } from "@faker-js/faker"; //Генерация рандомных слов
+import { logger } from "src/shared/lib/logger.js"; //Логирование
 
 async function generatePromos() {
   try {
     //1.Глобальные скидки:
-    console.log("Начинаем генерацию глобальных скидок...");
+    logger.info("Начинаем генерацию глобальных скидок...");
     const randomYear = Math.floor(Math.random() * (2021 - 1894 + 1)) + 1894; //Выбираем рандомный год для мотоциклов (1894-2021)
     const percent = Math.floor(Math.random() * (15 - 5 + 1)) + 5; //Выбираем рандомный размрер скидки (5-15%)
 
@@ -17,12 +18,12 @@ async function generatePromos() {
       "EX",
       86400,
     );
-    console.log(
+    logger.info(
       `Сгенерирована глобальная скидка: ${randomYear} год, -${percent}%`,
     );
 
     //2.Персональные скидки:
-    console.log("Начинаем генерацию персональных скидок...");
+    logger.info("Начинаем генерацию персональных скидок...");
     //Чистим просроченные скидки в БД перед началом:
     await prisma.personalDiscount.deleteMany({
       where: { expiresAt: { lt: new Date() } },
@@ -68,12 +69,12 @@ async function generatePromos() {
         });
       }
     }
-    console.log(
+    logger.info(
       `Персональные скидки для ${users.length} пользователей сгенерированы.`,
     );
 
     //3.Промокоды:
-    console.log("Начинаем генерацию промокодов...");
+    logger.info("Начинаем генерацию промокодов...");
     //Деактивируем старые промокоды:
     await prisma.promoCode.updateMany({ data: { isActive: false } });
 
@@ -98,11 +99,11 @@ async function generatePromos() {
         },
       });
     }
-    console.log("Промокоды сгенерированы");
+    logger.info("Промокоды сгенерированы");
 
     process.exit(0); //Принудительно завершаем процесс успешно
   } catch (error) {
-    console.error("Критическая ошибка синхронизации Elastic:", error);
+    logger.error("Критическая ошибка синхронизации Elastic:", error);
     process.exit(1);
   }
 }

@@ -4,6 +4,7 @@ import { Worker } from "bullmq";
 import { redis } from "../../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
+import { logger } from "../../../shared/lib/logger.js";
 
 export const cleanupWorker = new Worker(
   "cleanup-queue",
@@ -40,12 +41,12 @@ export const cleanupWorker = new Worker(
 cleanupWorker.on("completed", (_job, result) => {
   if (result && result.count > 0) {
     if (result.type === "users") {
-      console.log(
+      logger.info(
         `[Cleanup] Удалено неактивированных аккаунтов: ${result.count}`,
       );
     }
     if (result.type === "tokens") {
-      console.log(
+      logger.info(
         `[Cleanup] Удалено протухших отозванных сессий (токенов): ${result.count}`,
       );
     }

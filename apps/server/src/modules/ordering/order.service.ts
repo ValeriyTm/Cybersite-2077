@@ -12,6 +12,8 @@ import { CreateOrderServiceArgs } from "@repo/validation";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 import { addElasticSyncTask } from "./order.queue.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 interface OrderWithItems extends Order {
   items: OrderItem[];
@@ -143,7 +145,7 @@ export class OrderService {
         `Оплата заказа №${order.orderNumber}`,
       );
     } catch (error) {
-      console.error("Ошибка при генерации ссылки в ЮKassa:", error);
+      logger.error("Ошибка при генерации ссылки в ЮKassa:", error);
       // Обработка ошибки: заказ уже создан как PENDING, пользователь сможет попробовать оплатить его позже из личного кабинета
       throw new AppError(
         500,

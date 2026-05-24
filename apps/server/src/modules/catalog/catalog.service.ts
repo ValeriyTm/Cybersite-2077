@@ -13,6 +13,8 @@ import {
 //Взаимодействие с файлами и путями:
 import { promises as fs } from "fs";
 import * as path from "path";
+//Логирование:
+import { logger } from "src/shared/lib/logger.js";
 
 //Функция для генерации slug для модели мотоцикла:
 const slugify = (text: string) =>
@@ -113,11 +115,11 @@ export class CatalogService {
     //Сначала удаляем мотоцикл из поискового индекса Elasticsearch:
     try {
       await searchService.deleteFromIndex(id);
-      console.log(
+      logger.info(
         `[Elasticsearch] Модель ID ${id} успешно удалена из поискового индекса.`,
       );
     } catch (error) {
-      console.error(
+      logger.error(
         `[Elasticsearch] Ошибка при удалении модели ID ${id} из индекса:`,
         error,
       );
@@ -201,11 +203,11 @@ export class CatalogService {
     try {
       // Вызываем метод точечной индексации (который мы ранее исправили на esClient.update)
       await searchService.indexMotorcycle(newMotorcycle.id);
-      console.log(
+      logger.info(
         `[Elasticsearch] Новая модель ${newMotorcycle.model} успешно добавлена в поисковый индекс.`,
       );
     } catch (error) {
-      console.error(
+      logger.error(
         `[Elasticsearch] Ошибка индексации новой модели ID ${newMotorcycle.id}:`,
         error,
       );
@@ -250,7 +252,7 @@ export class CatalogService {
             // eslint-disable-next-line security/detect-non-literal-fs-filename
             await fs.unlink(filePath);
           } catch {
-            console.log("Файл уже удален");
+            logger.info("Файл уже удален");
           }
         }),
       );
@@ -296,7 +298,7 @@ export class CatalogService {
           // eslint-disable-next-line security/detect-non-literal-fs-filename
           await fs.rename(file.path, newPath);
         } catch {
-          console.log("Ошибка перемещения");
+          logger.info("Ошибка перемещения");
         }
         // Картинка станет главной (isMain: true), если старую обложку удалили И это самый первый файл в текущем цикле (index === 0)
         const isMain = shouldAssignNewMain && index === 0;
@@ -345,12 +347,12 @@ export class CatalogService {
     try {
       // Вызываем точечную переиндексацию (метод esClient.update, который мы исправили ранее)
       await searchService.indexMotorcycle(updatedMotorcycle.id);
-      console.log(
+      logger.info(
         `[Elasticsearch] Данные мотоцикла ID ${updatedMotorcycle.id} успешно обновлены в индексе.`,
       );
     } catch (error) {
       // Логируем ошибку, но не прерываем выполнение метода, чтобы изменения в Postgres сохранились
-      console.error(
+      logger.error(
         `[Elasticsearch] Не удалось обновить поисковый индекс для мотоцикла ID ${updatedMotorcycle.id}:`,
         error,
       );
@@ -432,11 +434,11 @@ export class CatalogService {
       try {
         const motoIds = affectedMotos.map((m) => m.id);
         await searchService.deleteFromIndexBulk(motoIds);
-        console.log(
+        logger.info(
           `[Elasticsearch] Из индекса успешно удалено ${affectedMotos.length} моделей бренда ID: ${id}`,
         );
       } catch (error) {
-        console.error(
+        logger.error(
           `[Elasticsearch] Ошибка при пакетном удалении моделей бренда ID ${id}:`,
           error,
         );
@@ -468,7 +470,7 @@ export class CatalogService {
         // Вызываем наш bulk-метод, который за 1 запрос обновит весь бренд в Elastic:
         await searchService.syncBrandMotorcycles(id);
       } catch (error) {
-        console.error(
+        logger.error(
           `[Elasticsearch] Ошибка при синхронизации мотоциклов после обновления бренда ID ${id}:`,
           error,
         );

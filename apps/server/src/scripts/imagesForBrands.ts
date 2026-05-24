@@ -7,6 +7,8 @@ import { prisma } from "@repo/database";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+//Логирование:
+import { logger } from "../shared/lib/logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,7 +33,7 @@ async function syncBrandImages() {
       select: { id: true, slug: true },
     });
 
-    console.log(`Найдено брендов в БД: ${brands.length}`);
+    logger.info(`Найдено брендов в БД: ${brands.length}`);
     let updatedCount = 0;
 
     // 4. Сопоставляем slug и имя файла
@@ -46,13 +48,13 @@ async function syncBrandImages() {
         });
 
         updatedCount++;
-        console.log(`✅ Обновлен ${brand.slug}: ${imagePublicPath}`);
+        logger.info(`✅ Обновлен ${brand.slug}: ${imagePublicPath}`);
       }
     }
 
-    console.log(`--- Итог: обновлено записей: ${updatedCount} ---`);
+    logger.info(`--- Итог: обновлено записей: ${updatedCount} ---`);
   } catch (error) {
-    console.error("Ошибка:", error);
+    logger.error("Ошибка:", error);
   } finally {
     await prisma.$disconnect();
   }

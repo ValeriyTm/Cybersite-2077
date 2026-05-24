@@ -29,7 +29,6 @@ export class TwoFactorService {
   verifyToken(token: string, secret: string): boolean {
     //Берем секрет из БД и текущее время, вычисляет, какие 6 цифр должны быть сейчас на экране у пользователя,
     //и сравнивает их с присланным token. Возвращает true или false:
-    console.log("Приступаю к проверке");
     return authenticator.check(token, secret);
   }
 }

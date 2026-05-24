@@ -2,6 +2,8 @@
 import { Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 // Создаем очередь для заказов
 export const orderQueue = new Queue("order-tasks", {
@@ -25,7 +27,7 @@ export const addDeliveryStartTask = async (orderId: string) => {
 
   await orderQueue.add("start-delivery", { orderId }, { delay: randomDelay });
 
-  console.log(
+  logger.info(
     `Задача на доставку для ${orderId} запланирована через ${randomDelay / 60000} мин.`,
   );
 };
@@ -44,7 +46,7 @@ export const addDeliveredTask = async (
 
   await orderQueue.add("set-delivered", { orderId }, { delay });
 
-  console.log(
+  logger.info(
     `Заказ ${orderId} будет помечен как DELIVERED через ${Math.round(delay / 1000 / 60)} мин.`,
   );
 };
@@ -62,7 +64,7 @@ export const addElasticSyncTask = async (motorcycleIds: string[]) => {
       },
     },
   );
-  console.log(
+  logger.info(
     `Задача на синхронизацию ${motorcycleIds.length} товаров в Elastic добавлена в очередь.`,
   );
 };

@@ -3,13 +3,15 @@
 import { prisma, Role } from "@repo/database";
 //Сервисы работы с токенами:
 import { tokenService } from "./token.service.js";
+//Логирование:
+import { logger } from "../../../shared/lib/logger.js";
 
 export class SessionService {
   // Сохраняем новую сессию (токен) в базу:
   async saveToken(userId: string, refreshToken: string) {
     //Если ID пустой, логируем ошибку и прерываем выполнение, чтобы не создать «битую» запись:
     if (!userId) {
-      console.error("SessionService: Попытка сохранить токен без userId!");
+      logger.error("SessionService: Попытка сохранить токен без userId!");
       throw new Error("Наличие userId обязательно для сохранения токена в БД");
     }
 
@@ -68,7 +70,7 @@ export class SessionService {
     });
 
     if (!dto.id) {
-      console.error("SessionService: Попытка сохранить токен без userId!");
+      logger.error("SessionService: Попытка сохранить токен без userId!");
       throw new Error("Наличие userId обязательно для сохранения токена в БД");
     }
 

@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodType, ZodError } from "zod";
 import fs from "fs/promises";
+//Логирование:
+import { logger } from "../lib/logger.js";
 
 export const validate = (schema: ZodType) => {
   return async (
@@ -10,9 +12,9 @@ export const validate = (schema: ZodType) => {
   ): Promise<void> => {
     try {
       //Для отладки:
-      // console.log("Отладка, req.body: ", req.body);
-      // console.log("Отладка, req.query: ", req.query);
-      // console.log("Отладка, req.params: ", req.params);
+      // logger.debug("Отладка, req.body: ", req.body);
+      // logger.debug("Отладка, req.query: ", req.query);
+      // logger.debug("Отладка, req.params: ", req.params);
 
       //1.Валидируем данные запроса:
       const parsed = await schema.parseAsync({
@@ -25,7 +27,7 @@ export const validate = (schema: ZodType) => {
       const safeParsed = parsed as any;
 
       //Для отладки:
-      // console.log("Отвалидированные данные, safeParsed: ", safeParsed);
+      // logger.debug("Отвалидированные данные, safeParsed: ", safeParsed);
 
       //2.Безопасная перезапись через дескрипторы свойств:
       if (safeParsed.query) {
@@ -73,7 +75,7 @@ export const validate = (schema: ZodType) => {
             fs
               .unlink(file.path)
               .catch((err) =>
-                console.error(
+                logger.error(
                   `Ошибка удаления временного файла: ${file.path}`,
                   err,
                 ),

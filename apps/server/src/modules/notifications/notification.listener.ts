@@ -83,9 +83,9 @@ export const initNotificationListeners = () => {
       );
     } catch (error) {
       logger.error(
-        `[EventBus] Critical failure: Delivered status mail not sent to ${order.user.email}`,
-      ); //Логгируем в Loki
-      console.log("Возникла ошибка с отправкой письма: ", error);
+        `Возникла ошибка с отправкой письма о прибытии товара юзеру ${order.user.email}`,
+        error,
+      );
     }
   });
 
@@ -96,9 +96,9 @@ export const initNotificationListeners = () => {
       await mailService.sendActivationMail(email, activationLink);
     } catch (error) {
       logger.error(
-        `[EventBus] Critical failure: Activation mail not sent to ${email}`,
-      ); //Логгируем в Loki
-      console.log("Возникла ошибка с отправкой письма: ", error);
+        `Возникла ошибка с отправкой письма с ссылкой активации юзеру ${email}`,
+        error,
+      );
     }
   });
 
@@ -109,9 +109,9 @@ export const initNotificationListeners = () => {
       await mailService.sendResetPasswordMail(email, link);
     } catch (error) {
       logger.error(
-        `[EventBus] Critical failure: Reset password mail not sent to ${email}`,
-      ); //Логгируем в Loki
-      console.log("Возникла ошибка с отправкой письма: ", error);
+        `Возникла ошибка с отправкой письма с сылкой на форму сброса пароля юзеру ${email}`,
+        error,
+      );
     }
   });
 
@@ -131,9 +131,9 @@ export const initNotificationListeners = () => {
         );
       } catch (error) {
         logger.error(
-          `[EventBus] Critical failure: Personal discount mail not sent to ${email}`,
-        ); //Логгируем в Loki
-        console.log("Возникла ошибка с отправкой письма: ", error);
+          `Возникла ошибка с отправкой письма с персональной скидкой юзеру ${email}`,
+          error,
+        );
       }
     },
   );

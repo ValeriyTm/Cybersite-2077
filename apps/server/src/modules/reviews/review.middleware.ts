@@ -12,6 +12,8 @@ import fs from "node:fs/promises";
 import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
 import { catchAsync } from "../../shared/utils/catch-async.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 export const validateReviewAccess = catchAsync(
   async (req: AuthRequest, _res: Response, next: NextFunction) => {
@@ -26,7 +28,7 @@ export const validateReviewAccess = catchAsync(
             fs
               .unlink(file.path)
               .catch((err) =>
-                console.error(`Ошибка удаления файла ${file.path}:`, err),
+                logger.error(`Ошибка удаления файла ${file.path}:`, err),
               ),
         );
         await Promise.all(deletePromises);

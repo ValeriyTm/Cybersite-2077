@@ -4,6 +4,8 @@ import { OAuth2Client } from "google-auth-library";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../../shared/utils/app-error.js";
 import { IGoogleUser } from "./auth.service.js";
+//Логирование:
+import { logger } from "../../../shared/lib/logger.js";
 
 //Создание экземпляра клиента:
 const client = new OAuth2Client(
@@ -44,9 +46,9 @@ export class OAuthService {
     } catch (error) {
       if (error instanceof Error) {
         //Если Google отказал, мы увидим в консоли точную причину:
-        console.error("GOOGLE_AUTH_ERROR_DETAILS:", error.message);
+        logger.error("GOOGLE_AUTH_ERROR_DETAILS:", error.message);
       } else {
-        console.error("Неизвестная ошибка:", error);
+        logger.error("Неизвестная ошибка:", error);
       }
       throw new AppError(401, "Не удалось получить данные");
     }

@@ -36,11 +36,9 @@ const collectDefaultMetrics = client.collectDefaultMetrics;
 
 //Настройки CORS:
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "http://localhost",
-    "http://localhost:4173",
-  ],
+  origin: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",")
+    : [],
   //Разрешаем передачу cookies, HTTP-авторизацию и TLS-сертификатов:
   credentials: true,
   //HTTP-статус, который сервер вернет в ответ на «предварительный»

@@ -3,6 +3,8 @@
 import { Request, Response, NextFunction } from "express";
 //Библиотека для фильтрации IP-адресов:
 import ipRangeCheck from "ip-range-check";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
 
 export const ipFilterMiddleware = (
   req: Request,
@@ -23,7 +25,7 @@ export const ipFilterMiddleware = (
   //   process.env.NODE_ENV === "development" &&
   //   (cleanIp === "127.0.0.1" || cleanIp === "localhost")
   // ) {
-  //   console.log("⚠️ [Webhook] Пропущен локальный запрос (Dev Mode)");
+  //   logger.info("⚠️ [Webhook] Пропущен локальный запрос (Dev Mode)");
   //   return next();
   // }
 
@@ -34,7 +36,7 @@ export const ipFilterMiddleware = (
   const isAllowed = ipRangeCheck(cleanIp, allowedIps);
 
   if (!isAllowed) {
-    console.warn(
+    logger.warn(
       `[Webhook] Попытка несанкционированного доступа с IP: ${cleanIp}`,
     );
     return res.status(403).json({
@@ -43,6 +45,6 @@ export const ipFilterMiddleware = (
     });
   }
 
-  console.log(`[Webhook] Получен доверенный запрос от ЮKassa (IP: ${cleanIp})`);
+  logger.info(`[Webhook] Получен доверенный запрос от ЮKassa (IP: ${cleanIp})`);
   next();
 };

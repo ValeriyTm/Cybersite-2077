@@ -5,6 +5,7 @@ import fs from "fs";
 import sharp from "sharp";
 import { AppError } from "../utils/app-error.js";
 import { NextFunction, Request, Response } from "express";
+import { logger } from "./logger.js";
 
 interface MulterOptions {
   dest: string; //Папка, в которую будут сохраняться загружаемые файлы
@@ -94,7 +95,7 @@ export const createMulter = ({
       next();
     } catch (error) {
       next(new AppError(500, "Ошибка при обработке изображений"));
-      console.error("Ошибка: ", error);
+      logger.error("Ошибка: ", error);
     }
   };
 

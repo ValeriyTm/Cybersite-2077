@@ -1,15 +1,24 @@
 //----------------Скрипт для запуска синхронизации Elasticsearch и PostgreSQL------------------------//
 import { prisma } from "@repo/database"; // Клиент призмы
 import { esClient } from "../modules/catalog/index.js"; // Путь к ES клиенту
+import { logger } from "../shared/lib/logger.js"; //Логирование
 
 const waitForElastic = async (url: string, retries = 10) => {
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url);
       if (response.ok) return true;
-    } catch (e) {
-      console.log(`[Elastic] Ждем запуска (попытка ${i + 1}/${retries})...`);
-      await new Promise((res) => setTimeout(res, 15000)); // Ждем 15 секунд перед следующей попыткой
+      logger.info(
+        `[Elastic] Сервер вернул статус ${response.status}. Попытка ${i + 1}/${retries} не удалась.`,
+      );
+    } catch (error) {
+      logger.info(
+        `[Elastic] Нет связи с сервером (ошибка: ${error}). Попытка ${i + 1}/${retries} не удалась.`,
+      );
+    }
+    if (i < retries - 1) {
+      logger.info(`[Elastic] Ожидание 15 секунд перед следующей попыткой...`);
+      await new Promise((res) => setTimeout(res, 15000));
     }
   }
   throw new Error("Elasticsearch не ответил вовремя.");
@@ -21,7 +30,7 @@ async function syncElastic() {
   const indexName = "motorcycles";
 
   try {
-    console.log("Начинаем синхронизацию с Elasticsearch...");
+    logger.info("Начинаем синхронизацию с Elasticsearch...");
 
     const motorcycles = await prisma.motorcycle.findMany({
       include: {
@@ -35,7 +44,7 @@ async function syncElastic() {
     });
 
     if (motorcycles.length === 0) {
-      console.log("В базе нет мотоциклов для синхронизации.");
+      logger.info("В базе нет мотоциклов для синхронизации.");
       return;
     }
 
@@ -69,22 +78,22 @@ async function syncElastic() {
     const bulkResponse = await esClient.bulk({ refresh: true, operations });
 
     if (bulkResponse.errors) {
-      console.error(
+      logger.error(
         "Ошибки при индексации:",
         JSON.stringify(bulkResponse.items, null, 2),
       );
       process.exit(1); // Выходим с ошибкой, чтобы цепочка CMD прервалась
     } else {
-      console.log(
+      logger.info(
         `🚀 Успешно проиндексировано ${motorcycles.length} моделей в Elastic`,
       );
       // Даем логам время дойти до консоли и выходим
       await prisma.$disconnect();
-      console.log("Скрипт синхронизации Elasticsearch завершен успешно.");
+      logger.info("Скрипт синхронизации Elasticsearch завершен успешно.");
       process.exit(0); //Принудительно завершаем процесс успешно
     }
   } catch (error) {
-    console.error("Критическая ошибка синхронизации Elastic:", error);
+    logger.error("Критическая ошибка синхронизации Elastic:", error);
     process.exit(1);
   }
 }
