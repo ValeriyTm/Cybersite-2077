@@ -11,6 +11,10 @@ import { paymentService } from "../payment/index.js";
 import { cartService } from "../trading/index.js";
 //Очереди для отмены заказа / изменения статуса заказа:
 import { addOrderExpirationTask } from "./order.queue.js";
+//Логирование:
+import { logger } from "../../shared/lib/logger.js";
+//Генерация событий:
+import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 //Используем функцию-обертку catchAsync, чтобы не писать везде "try...catch":
@@ -22,8 +26,6 @@ import {
   CreateOrderServiceArgs,
   GetOrdersArgs,
 } from "@repo/validation";
-//Логирование:
-import { logger } from "../../shared/lib/logger.js";
 
 //Создание заказа:
 export const createOrder = catchAsync(
@@ -145,6 +147,9 @@ export const cancelOrder = catchAsync(
       );
     }
     const canceledOrder = await orderService.cancelUserOrder(order.id);
+
+    //Создаём событие для отправки оповещения в ТГ:
+    eventBus.emit(EVENTS.ORDER_CANCELED, canceledOrder);
 
     //Обновляем Elastic, так как снялась бронь (reserved):
     try {

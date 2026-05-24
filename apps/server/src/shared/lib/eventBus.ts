@@ -7,6 +7,9 @@ export const eventBus = new EventEmitter();
 export const EVENTS = {
   ORDER_CREATED: "order.created",
   ORDER_PAID: "order.paid",
+  ORDER_REFUNDED: "order.refunded",
+  ORDER_CANCELED: "order.canceled",
+  ORDER_CANCELED_YOOKASSA: "order.canceled.yookassa",
   REVIEW_ADDED: "review.added",
   DISCOUNT_GENERATED: "discount.generated",
   ORDER_DELIVERY_END: "delivery.ended",

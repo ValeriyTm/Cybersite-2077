@@ -91,7 +91,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       break;
     }
     case "payment.canceled": {
-      //Событие отмены платежа
+      //Событие отмены платежа от ЮКассы:
 
       //Извлекаем orderId из метаданных реального ответа ЮKassa
       orderId = actualPayment!.metadata?.orderId;
@@ -129,8 +129,8 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
         }
       }
 
-      //Написать код:
-      // eventBus.emit(EVENTS.ORDER_CANCELED, orderId);
+      //Создаём событие для отправки оповещения в ТГ:
+      eventBus.emit(EVENTS.ORDER_CANCELED_YOOKASSA, order);
 
       //Когда-нибудь добавить запись причины отмена платежа от Юкассы в БД.
       //Когда-нибудь изменить функционал, чтобы, если первый платеж отменился, то заказ не окончательно отменялся, а жил какое-тов время для возможности повторной оплаты.
@@ -171,7 +171,7 @@ export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
       }
 
       //Написать код:
-      // eventBus.emit(EVENTS.ORDER_REFUNDED, orderId);
+      eventBus.emit(EVENTS.ORDER_REFUNDED, order);
 
       break;
     }

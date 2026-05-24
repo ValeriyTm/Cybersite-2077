@@ -233,7 +233,11 @@ export class OrderService {
   }
 
   //Изменить статус заказа:
-  async changeStatusOrder(orderId: string, newStatus: string, tx?: any) {
+  async changeStatusOrder(
+    orderId: string,
+    newStatus: OrderStatus,
+    tx?: Prisma.TransactionClient,
+  ) {
     const client = tx || prisma; //Если tx передан, то используем его (для случая, когда мы вызываем этот метод внутри транзакции)
     return await client.order.update({
       where: { id: orderId },

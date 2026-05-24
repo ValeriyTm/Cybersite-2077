@@ -118,6 +118,7 @@ export class TelegramService {
         parse_mode: "HTML",
         //parse_mode: 'HTML' позволяет использовать теги <b>, <i>, <code> и т.д.
       });
+      logger.info(`В ТГ отправлено сообщение: ${message}`);
     } catch (error) {
       logger.error("Ошибка отправки сообщения в Telegram:", error);
     }

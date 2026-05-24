@@ -1,6 +1,6 @@
 //--------Этот контроллер будет отвечать за получение списков с пагинацией и поиском.
 //Типы:
-import { raw, Response } from "express";
+import { Response } from "express";
 import { AuthRequest } from "../../shared/middlewares/authMiddleware.js";
 import {
   BrandsAdminArgs,
@@ -143,6 +143,7 @@ export const updateBrand = catchAsync(
     res.json(brands.updatedBrand);
   },
 );
+
 //---------------------Работа с мотоциклами:-------------
 //Метод поиска брендов (нужен для создания новой записи о мотоцикле; в поле выбора бренда автоматический поиск):
 export const searchBrands = catchAsync(

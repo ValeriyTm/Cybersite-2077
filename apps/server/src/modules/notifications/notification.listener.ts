@@ -53,7 +53,7 @@ export const initNotificationListeners = () => {
     await telegramService.sendMessage(message);
   });
 
-  //4) Реакция на событие принудилтельной генерации скидок и промокодов:
+  //4) Реакция на событие принудительной генерации скидок и промокодов:
   eventBus.on(EVENTS.DISCOUNT_GENERATED, async (data) => {
     const message = `
 📊 <b>ОТЧЕТ ПО АКЦИЯМ</b>
@@ -167,6 +167,45 @@ export const initNotificationListeners = () => {
 <b>ID тикета:</b> <code>${ticket.id}</code>
   `;
 
+    await telegramService.sendMessage(message);
+  });
+
+  //10) Реакция на событие отмены заказа юзером (без оплаты):
+  eventBus.on(EVENTS.ORDER_CANCELED, async (order) => {
+    const message = `
+❌ <b>НЕОПЛАЧЕННЫЙ ЗАКАЗ ОТМЕНЕН!</b>
+————————————————
+<b>Заказ:</b> <code>#${order.orderNumber}</code>
+<b>Клиент:</b> <code>${order.customerEmail}</code>
+————————————————
+<i>Заказ не был оплачен - возврат не требуется!</i> 
+     `;
+    await telegramService.sendMessage(message);
+  });
+
+  //11) Реакция на событие отмены оплаты со стороны ЮКассы:
+  eventBus.on(EVENTS.ORDER_CANCELED_YOOKASSA, async (order) => {
+    const message = `
+❌ <b>ЗАКАЗ ОТМЕНЕН ИЗ-ЗА НЕПРОШЕДШЕЙ ОПЛАТЫ!</b>
+————————————————
+<b>Заказ:</b> <code>#${order.orderNumber}</code>
+<b>Клиент:</b> <code>${order.customerEmail}</code>
+————————————————
+<i>При попытке оплаты в ЮКассе вознила проблема или же заказ не был вовремя оплачен. Заказ отменен автоматически!</i> 
+     `;
+    await telegramService.sendMessage(message);
+  });
+
+  //12) Реакция на событие осуществления отмены оплаченного заказа:
+  eventBus.on(EVENTS.ORDER_REFUNDED, async (order) => {
+    const message = `
+❌💰 <b>ОПЛАЧЕННЫЙ ЗАКАЗ ОТМЕНЕН!</b>
+————————————————
+<b>Заказ:</b> <code>#${order.orderNumber}</code>
+<b>Клиент:</b> <code>${order.customerEmail}</code>
+————————————————
+<i>Заказ был оплачен и возврат денежных средств уже осуществлен!</i> 
+     `;
     await telegramService.sendMessage(message);
   });
 };
