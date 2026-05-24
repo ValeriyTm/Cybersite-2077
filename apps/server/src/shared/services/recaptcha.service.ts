@@ -26,9 +26,8 @@ export class RecaptchaService {
         null, // Тело пустое, шлем всё в params
         {
           params: {
-            //Мой секретный ключ (на сайте Google получаю):
             secret: process.env.GOOGLE_RECAPTCHA_SECRET_KEY,
-            //Передаю токен, полученный от клиента:
+            //Токен, полученный от клиента:
             response: token,
           },
         },
@@ -53,7 +52,7 @@ export class RecaptchaService {
       return true;
     } catch (error) {
       logger.error("ReCAPTCHA connection error:", error);
-      //Если сервис Google недоступен или произошла сетевая ошибка, мы логируем это и блокируем запрос (false). Это стратегия fail-close (безопасность важнее доступности).
+      //Если сервис Google недоступен или произошла сетевая ошибка, то блокируем запрос (false).
       return false;
     }
   }

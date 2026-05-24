@@ -1,11 +1,11 @@
 import winston from "winston"; //Основное ядро библиотеки Winston (собирает логи)
 import LokiTransport from "winston-loki"; //Плагин (транспорт), который умеет упаковывать логи и отправлять их в Loki (на хранение) по HTTP
 
-//Создаем экземпляр логгера с настройками и экспортируем его, чтобы использовать в других частях проекта:
+//Создаем экземпляр логгера с настройками:
 export const logger = winston.createLogger({
   //Массив путей назначения (Winston может отправлять один и тот же лог в разные места одновременно):
   transports: [
-    // 1. Оставляем логи в консоли VS Code (для удобства):
+    // 1. Оставляем логи в консоли IDE (для удобства):
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.errors({ stack: true }), //Чтобы писать logger.error(msg, error)
@@ -22,7 +22,7 @@ export const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.errors({ stack: true }), //Чтобы писать logger.error(msg, error)
         winston.format.json(),
-      ), // орматируем сам текст лога как JSON-объект
+      ), // форматируем сам текст лога как JSON-объект
       //Если сервер Loki недоступен, чтобы приложение не «падало» из-за проблем с системой логирования:
       onConnectionError: (err) => console.error("Loki Connection Error:", err),
     }),

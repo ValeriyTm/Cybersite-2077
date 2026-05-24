@@ -3,12 +3,12 @@
 import { Request, Response, NextFunction } from "express";
 
 //Эта функция принимает контроллер и возвращает его же, но с невидимым .catch(next):
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export const catchAsync = (fn: Function) => {
   return (req: Request, res: Response, next: NextFunction) => {
     fn(req, res, next).catch(next);
   };
 };
-
 //В Express асинхронные ошибки (внутри async/await) не ловятся сервером автоматически — приложение может просто «зависнуть» или упасть. Эта обертка ловит любую ошибку в Promise и автоматически передает её в наш errorMiddleware через функцию next().
 
 //Как это выглядит в связке с errorMiddleware и AppError:

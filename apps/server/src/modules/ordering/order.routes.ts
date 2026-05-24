@@ -4,7 +4,6 @@ import * as orderController from "./order.controller.js";
 //Middleware:
 import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //Проверка авторизации
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
-import { roleMiddleware } from "src/shared/middlewares/roleMiddleware.js";
 import { validate } from "src/shared/middlewares/validate.js";
 //Схемы валидации:
 import {

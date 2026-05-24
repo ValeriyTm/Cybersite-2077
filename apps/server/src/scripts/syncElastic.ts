@@ -87,7 +87,6 @@ async function syncElastic() {
       logger.info(
         `🚀 Успешно проиндексировано ${motorcycles.length} моделей в Elastic`,
       );
-      // Даем логам время дойти до консоли и выходим
       await prisma.$disconnect();
       logger.info("Скрипт синхронизации Elasticsearch завершен успешно.");
       process.exit(0); //Принудительно завершаем процесс успешно

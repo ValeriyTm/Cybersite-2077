@@ -13,6 +13,7 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 //Логирование:
 import { logger } from "../../shared/lib/logger.js";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const handleWebhook = catchAsync(async (req: Request, res: Response) => {
   const notification = req.body;
 

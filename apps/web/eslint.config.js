@@ -48,6 +48,8 @@ export default tseslint.config(
     //Тут активируем конкретные проверки для React Hooks и React Refresh, а также разрешаем экспорт констант в правилах React Refresh:
     rules: {
       ...reactHooks.configs.recommended.rules,
+      "@typescript-eslint/no-explicit-any": "warn", //Разрешаем явные any
+
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },

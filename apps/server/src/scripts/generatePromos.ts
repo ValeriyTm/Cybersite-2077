@@ -24,9 +24,10 @@ async function generatePromos() {
 
     //2.Персональные скидки:
     logger.info("Начинаем генерацию персональных скидок...");
+    const now = new Date();
     //Чистим просроченные скидки в БД перед началом:
     await prisma.personalDiscount.deleteMany({
-      where: { expiresAt: { lt: new Date() } },
+      where: { expiresAt: { lt: now } },
     });
 
     //Находим всех пользователей, подтвердивших email:
@@ -35,40 +36,45 @@ async function generatePromos() {
       select: { id: true, email: true, name: true },
     });
 
-    //Получаем общее количество мотоциклов для эффективного рандома:
-    const bikesCount = await prisma.motorcycle.count();
-
-    for (const user of users) {
-      //Выбираем случайный пропуск (skip), чтобы получить рандомный байк:
-      const skip = Math.floor(Math.random() * bikesCount);
-      const randomBike = await prisma.motorcycle.findFirst({
-        skip: skip,
-        include: { brand: true },
+    if (users.length > 0) {
+      //Получаем ID всех мотоциклов:
+      const allBikes = await prisma.motorcycle.findMany({
+        select: { id: true },
       });
 
-      if (randomBike) {
+      if (allBikes.length > 0) {
+        const bikesCount = allBikes.length;
         const expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + 3); //Скидка на 3 дня
+        expiresAt.setDate(expiresAt.getDate() + 3); // Скидка на 3 дня
 
-        //Записываем скидку в БД (обновляем старую или создаем новую):
-        //@ts-ignore:
-        await prisma.personalDiscount.upsert({
-          where: {
-            userId_motorcycleId: {
-              userId: user.id,
-              motorcycleId: randomBike.id,
-            },
-          },
-          update: { expiresAt, discountPercent: 20 },
-          create: {
+        // тобы избежать медленных upsert в цикле, удаляем старые скидки этих пользователей
+        const userIds = users.map((u) => u.id);
+        await prisma.personalDiscount.deleteMany({
+          where: { userId: { in: userIds } },
+        });
+
+        const discountsToInsert = [];
+
+        //Синхронный цикл в памяти Node.js:
+        for (const user of users) {
+          const randomIndex = Math.floor(Math.random() * bikesCount);
+          const randomBike = allBikes[randomIndex];
+
+          discountsToInsert.push({
             userId: user.id,
             motorcycleId: randomBike.id,
             discountPercent: 20,
             expiresAt,
-          },
+          });
+        }
+
+        //Вставляем все скидки в БД:
+        await prisma.personalDiscount.createMany({
+          data: discountsToInsert,
         });
       }
     }
+
     logger.info(
       `Персональные скидки для ${users.length} пользователей сгенерированы.`,
     );
@@ -78,32 +84,32 @@ async function generatePromos() {
     //Деактивируем старые промокоды:
     await prisma.promoCode.updateMany({ data: { isActive: false } });
 
-    const promos = [];
+    const promoDataToInsert = [];
+    const expiresAtPromo = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
     for (let i = 0; i < 5; i++) {
       const code = faker.word.adjective().toUpperCase();
-      promos.push(code);
       const amount = Math.floor(Math.random() * (200000 - 100000 + 1)) + 100000;
 
-      await prisma.promoCode.upsert({
-        where: { code: code }, // Ищем по уникальному полю code
-        update: {
-          discountAmount: amount,
-          isActive: true, // Активируем заново, если он уже был в базе
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        },
-        create: {
-          code,
-          discountAmount: amount,
-          isActive: true,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        },
+      promoDataToInsert.push({
+        code,
+        discountAmount: amount,
+        isActive: true,
+        expiresAt: expiresAtPromo,
       });
     }
+
+    // Вставляем все 5 промокодов одним быстрым INSERT
+    await prisma.promoCode.createMany({
+      data: promoDataToInsert,
+      skipDuplicates: true, // Игнорируем, если такой код случайно сгенерировался ранее
+    });
+
     logger.info("Промокоды сгенерированы");
 
     process.exit(0); //Принудительно завершаем процесс успешно
   } catch (error) {
-    logger.error("Критическая ошибка синхронизации Elastic:", error);
+    logger.error("Критическая ошибка при генерации промокодов/скидок:", error);
     process.exit(1);
   }
 }

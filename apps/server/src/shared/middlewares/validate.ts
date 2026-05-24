@@ -9,6 +9,7 @@ export const validate = (schema: ZodType) => {
     req: Request,
     res: Response,
     next: NextFunction,
+    // eslint-disable-next-line sonarjs/cognitive-complexity
   ): Promise<void> => {
     try {
       //Для отладки:

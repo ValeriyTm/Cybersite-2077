@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 //Запускаем dotenv, указывая скрипту путь к .env, лежащему в корне проекта (берем путь текущего скрипта и идём назад на 3 шага):
 dotenv.config({ path: path.resolve(__dirname, "../../../../.env") });
 
-//Проверяем, что ключевые переменные на месте.
+//Проверяем, что ключевые переменные на месте:
 const result = serverEnvSchema.safeParse(process.env);
 if (!result.success) {
   console.error("❌ Критическая ошибка конфигурации .env файла:");

@@ -28,7 +28,7 @@ export default tseslint.config(
   {
     files: ["**/*.ts"], // Применять эти правила только к TS файлам
     languageOptions: {
-      ecmaVersion: 2024, //Разрешает использовать самые свежие фишки JavaScript (стандарт 2024 года).
+      ecmaVersion: 2024, //Разрешает использовать свежие фишки JavaScript (стандарт 2024 года).
       sourceType: "module", // Указываем, что используем ES-модули
       globals: {
         ...globals.node,
@@ -43,13 +43,18 @@ export default tseslint.config(
     },
     //Тут активируем конкретные проверки для TypeScript:
     rules: {
+      "sonarjs/pseudo-random": "warn", //Разрешаем Math.random
+      "sonarjs/no-clear-text-protocols": "warn", //Разрешаем http (чтобы не мешало сборке в dev)
+
+      "@typescript-eslint/no-explicit-any": "warn", //Разрешаем явные any
+
       //Запрещает оставлять неиспользуемые переменные, но позволяет создавать такие переменные, если их имя начинается с "_". Это удобно для случаев, когда нужно объявить переменную, но она не будет использоваться (например, для интерфейсов или типов):
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_" },
       ],
       "no-console": "off",
-      //Разрешает использовать console.log. На бэкенде это полезно для отладки, пока нет серьезного логгера.
+      //Разрешает использовать console.log.
 
       "security/detect-unsafe-regex": "error", // Запрещает деплой с опасными регулярками (защита от ReDoS-атак)
       "security/detect-object-injection": "warn", // Предупреждать о небезопасном обращении к свойствам объекта

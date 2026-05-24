@@ -2,7 +2,7 @@
 //--Это middleware защищает сервер от XSS-атак, удаляя любой HTML-код из входящих данных (req.body).
 //Сама библиотека:
 import createDOMPurify from "dompurify";
-//Эмулятор браузерного окружения (DOM), так как DOMPurify изначально создан для работы в браузере^
+//Эмулятор браузерного окружения (DOM), так как DOMPurify изначально создан для работы в браузере:
 import { JSDOM } from "jsdom";
 //Типы:
 import { Request, Response, NextFunction } from "express";

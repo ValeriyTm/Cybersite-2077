@@ -14,6 +14,8 @@ export const EVENTS = {
   DISCOUNT_GENERATED: "discount.generated",
   ORDER_DELIVERY_END: "delivery.ended",
   ACCOUNT_CREATED: "account.created",
+  //Линтер думает, что это захардкоженный пароль, поэтому отключаем:
+  // eslint-disable-next-line sonarjs/no-hardcoded-passwords
   FORGOT_PASSWORD: "forgot.password",
   DISCOUNTS_GENERATED: "discounts.generated",
   SUPPORT_TICKET_CREATED: "support.ticket.created",
