@@ -16,10 +16,11 @@ import {
   type DeleteAccountType,
 } from "@repo/validation";
 //Состояния:
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useProfile } from "@/features/auth";
 //API:
 import { $api, API_URL } from "@/shared/api";
+import axios from "axios";
 //Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 //Изображения:
@@ -52,7 +53,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   ////Основная форма профиля:
   const profileForm = useForm({
     resolver: zodResolver(UpdateProfileSchema),
-    values: {
+    defaultValues: {
       name: user?.name || "",
       phone: user?.phone || "",
       gender: user?.gender || null,
@@ -60,6 +61,18 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       birthday: user?.birthday ? new Date(user.birthday) : null,
     },
   });
+
+  // Синхронизируем форму с данными пользователя только тогда, когда пользователь не редактирует её вручную:
+  useEffect(() => {
+    if (user && !isEditing) {
+      profileForm.reset({
+        name: user.name || "",
+        phone: user.phone || "",
+        gender: user.gender || null,
+        birthday: user.birthday ? new Date(user.birthday) : null,
+      });
+    }
+  }, [user, isEditing, profileForm]);
 
   ////Форма смены пароля:
   const passForm = useForm<ChangePasswordType>({
@@ -81,12 +94,12 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   //-------Формируем правильный путь к аватару
   //Мы можем получать аватар либо с сервера Google, либо с нашего сервера, либо вообще дефолтное изображение возтмем
   //- из-за этого будет отличаться ссылка на аватар:
-  let avatarSrc = defaultAvatar;
-  if (user?.avatarUrl) {
-    avatarSrc = user.avatarUrl.startsWith("http")
+  const avatarSrc = useMemo(() => {
+    if (!user?.avatarUrl) return defaultAvatar;
+    return user.avatarUrl.startsWith("http")
       ? user.avatarUrl
       : `${API_URL}${user.avatarUrl}`;
-  }
+  }, [user?.avatarUrl]);
 
   //-----------------Обработчики----------------
   //------Отправка формы для сохранения новых данных профиля:
@@ -123,9 +136,12 @@ export const useProfileActions = (user: IUser | null | undefined) => {
 
       toast.success("Профиль обновлен");
       setIsEditing(false);
-    } catch (e: unknown) {
-      const error = e as ApiErrorResponse;
-      toast.error(error.response?.data?.message || "Ошибка обновления");
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        toast.error(e.response?.data?.message || "Ошибка обновления");
+      } else {
+        toast.error("Произошла непредвиденная ошибка");
+      }
     }
   };
 

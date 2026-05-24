@@ -118,7 +118,6 @@ export const useTradingStore = create<TradingState>()(
       set({
         cartItems: items.map((item) => ({
           ...item,
-          // selected: item.selected,
         })),
       }),
 

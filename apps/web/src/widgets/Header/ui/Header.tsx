@@ -12,7 +12,7 @@ import { TOP_BRANDS } from "../model/items";
 //API:
 import { $api, API_URL } from "@/shared/api";
 //Компоненты:
-import { Avatar } from "@/shared/ui";
+import { Avatar, HeaderLink } from "@/shared/ui";
 //Дебаунс для поиска:
 import debounce from "lodash/debounce";
 //Изображения:
@@ -53,11 +53,9 @@ export const Header = () => {
 
   const resetOrders = useOrderStore((state) => state.resetOrders);
   const fetchActiveCount = useOrderStore((state) => state.fetchActiveCount); //Получаем актуальные данные по активным заказам
-
+  const cartItems = useTradingStore((state) => state.cartItems); //Товары в корзине
   const clearTrading = useTradingStore((state) => state.clearTrading);
-
-  useCart(); //Получаем актуальные данные по корзине
-  useFavorites(); //Получаем актуальные данные по избранному
+  const favoritesCount = useTradingStore((state) => state.favoritesCount);  //Количество избранных товаров
 
   const isAuth = useAuthStore((state) => state.isAuth);
   const { user, isLoading } = useProfile();
@@ -82,10 +80,21 @@ export const Header = () => {
     [],
   );
 
-
-  //При загркузке получаем кол-во активных заказов:
+  //Очистка при размонтировании:
   useEffect(() => {
-    if (isAuth) fetchActiveCount();
+    return () => {
+      fetchSuggestions.cancel();
+    };
+  }, [fetchSuggestions]);
+
+  //Если пользователь логинится, то грузим инфу об активных заказах. Если логаут - обнуляем (в т.ч. корзину и избранное).
+  useEffect(() => {
+    if (isAuth) {
+      fetchActiveCount(); //Данные об активных заказах
+    } else {
+      clearTrading(); //Очистка счетчика корзины и избранного
+      resetOrders(); //Очистка счетчика активных заказов
+    }
   }, [isAuth]);
 
   //Закрытие при клике мимо:
@@ -99,15 +108,6 @@ export const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (isAuth) {
-      fetchActiveCount(); //Данные об активных заказах
-    } else {
-      clearTrading(); //Очистка счетчика корзины и избранного
-      resetOrders(); //Очистка счетчика активных заказов
-    }
-  }, [isAuth]);
-  //Если пользователь логинится, то грузим инфу о заказах и т.п. Если логаут - обнуляем.
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -127,13 +127,12 @@ export const Header = () => {
     }
   };
 
-  //Количество избранных товаров:
-  const { favoritesCount } = useTradingStore();
+
 
   //Количество товаров в корзине:
-  const cartCount = useTradingStore((state) =>
-    state.cartItems.reduce((acc, item) => acc + item.quantity, 0),
-  );
+  const cartCount = useMemo(() => {
+    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  }, [cartItems]);
 
   //---------------Иконки смены темы:-----------//
   const themes = [
@@ -175,28 +174,27 @@ export const Header = () => {
             <nav className={styles.topNav}>
               <ul>
                 <li>
-                  <Link to="/">Главная</Link>
+                  <HeaderLink to="/" end>Главная</HeaderLink>
                 </li>
                 <li>
-                  <Link to="/about">О компании</Link>
+                  <HeaderLink to="/about">О компании</HeaderLink>
                 </li>
                 <li>
-                  <Link to="/contacts">Контакты</Link>
+                  <HeaderLink to="/contacts">Контакты</HeaderLink>
                 </li>
                 <li>
-                  <Link to="/news">Новости</Link>
+                  <HeaderLink to="/news">Новости</HeaderLink>
                 </li>
                 <li>
-                  <Link to="/promos">Промокоды</Link>
+                  <HeaderLink to="/promos">Промокоды</HeaderLink>
                 </li>
                 <li>
-                  <Link to="/support">Поддержка</Link>
+                  <HeaderLink to="/support">Поддержка</HeaderLink>
                 </li>
                 {canSee && <li>
-                  <Link to="/admin">Админ</Link>
+                  <HeaderLink to="/admin">Админ</HeaderLink>
                 </li>}
               </ul>
-
             </nav>
 
             {/*1.2)Смена темы:*/}
@@ -291,33 +289,27 @@ export const Header = () => {
                       <section className={styles.mainPanel}>
                         {activeMainCat === "moto" ? (
                           <div className={styles.brandsGrid}>
-                            {TOP_BRANDS.map((brand) => {
-                              const motoLink = new URL(
-                                `/src/shared/assets/icons/moto_brands/${brand.slug}.png`,
-                                import.meta.url
-                              ).href;
-                              return (
-                                <Link
-                                  key={brand.slug}
-                                  to={`/catalog/motorcycles/${brand.slug}`}
-                                  className={styles.brandItem}
-                                  onClick={() => setIsCatalogOpen(false)}
-                                >
-                                  <div className={styles.brandIcon}>
-                                    <img
-                                      src={motoLink}
-                                      alt={`moto ${brand.name}`}
-                                      className={styles.motoIcon}
-                                      width='32'
-                                      height='32'
-                                    />
-                                  </div>
-                                  <span>
-                                    Мотоциклы <strong>{brand.name}</strong>
-                                  </span>
-                                </Link>
-                              );
-                            })}
+                            {TOP_BRANDS.map((brand) => (
+                              <Link
+                                key={brand.slug}
+                                to={`/catalog/motorcycles/${brand.slug}`}
+                                className={styles.brandItem}
+                                onClick={() => setIsCatalogOpen(false)}
+                              >
+                                <div className={styles.brandIcon}>
+                                  <img
+                                    src={brand.logo}
+                                    alt={`moto ${brand.name}`}
+                                    className={styles.motoIcon}
+                                    width='32'
+                                    height='32'
+                                  />
+                                </div>
+                                <span>
+                                  Мотоциклы <strong>{brand.name}</strong>
+                                </span>
+                              </Link>
+                            ))}
 
                             {/*Кнопка "Прочие бренды" */}
                             <Link

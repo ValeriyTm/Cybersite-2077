@@ -1,18 +1,19 @@
+import bmwLogo from "@/shared/assets/icons/moto_brands/bmw.png";
+import hondaLogo from "@/shared/assets/icons/moto_brands/honda.png";
+import yamahaLogo from "@/shared/assets/icons/moto_brands/yamaha.png";
+import kawasakiLogo from "@/shared/assets/icons/moto_brands/kawasaki.png";
+import ducatiLogo from "@/shared/assets/icons/moto_brands/ducati.png";
+import ktmLogo from "@/shared/assets/icons/moto_brands/ktm.png";
+import harleyLogo from "@/shared/assets/icons/moto_brands/harley-davidson.png";
+import suzukiLogo from "@/shared/assets/icons/moto_brands/suzuki.png";
+
 export const TOP_BRANDS = [
-  { name: "BMW", slug: "bmw", logo: "/static/moto_brands/bmw.png" },
-  { name: "Honda", slug: "honda", logo: "/static/moto_brands/honda.png" },
-  { name: "Yamaha", slug: "yamaha", logo: "/static/moto_brands/yamaha.png" },
-  {
-    name: "Kawasaki",
-    slug: "kawasaki",
-    logo: "/static/moto_brands/kawasaki.png",
-  },
-  { name: "Ducati", slug: "ducati", logo: "/static/moto_brands/ducati.png" },
-  { name: "KTM", slug: "ktm", logo: "/static/moto_brands/ktm.png" },
-  {
-    name: "Harley-Davidson",
-    slug: "harley-davidson",
-    logo: "/static/moto_brands/harley.png",
-  },
-  { name: "Suzuki", slug: "suzuki", logo: "/static/moto_brands/suzuki.png" },
+  { name: "BMW", slug: "bmw", logo: bmwLogo },
+  { name: "Honda", slug: "honda", logo: hondaLogo },
+  { name: "Yamaha", slug: "yamaha", logo: yamahaLogo },
+  { name: "Kawasaki", slug: "kawasaki", logo: kawasakiLogo },
+  { name: "Ducati", slug: "ducati", logo: ducatiLogo },
+  { name: "KTM", slug: "ktm", logo: ktmLogo },
+  { name: "Harley-Davidson", slug: "harley-davidson", logo: harleyLogo },
+  { name: "Suzuki", slug: "suzuki", logo: suzukiLogo },
 ];

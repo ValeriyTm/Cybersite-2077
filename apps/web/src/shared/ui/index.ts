@@ -7,6 +7,7 @@ export * from "./CursorTrail";
 export * from "./DataTable";
 export * from "./ErrorFallback";
 export * from "./GlobalErrorFallback";
+export * from "./HeaderLink";
 export * from "./ImageModal";
 export * from "./Input";
 export * from "./PasswordField";

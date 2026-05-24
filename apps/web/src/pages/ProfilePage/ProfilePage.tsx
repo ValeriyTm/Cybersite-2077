@@ -290,14 +290,14 @@ export const ProfilePage = () => {
                   </div>
                   <div className={styles.value}>
                     {isEditing ? (
-                      <label>
-                        <span className="visually-hidden">Выбор пола</span>
-                        <select {...register("gender")} className={styles.select}>
+                      <>
+                        <label htmlFor="gender-select" className="visually-hidden">Выбор пола</label>
+                        <select id="gender-select" {...register("gender")} className={styles.select}>
                           <option value="">Не указан</option>
                           <option value="MALE">Мужской</option>
                           <option value="FEMALE">Женский</option>
                         </select>
-                      </label>
+                      </>
                     ) : (
                       <span>
                         {user?.gender === "MALE" && "Мужской"}
@@ -397,7 +397,6 @@ export const ProfilePage = () => {
               setVerificationCode={setVerificationCode}
               onActivate={handleEnable2FA}
               onClose={() => setQrCode(null)}
-            // isLoading={is2FALoading}
             />
           )}
 
@@ -434,10 +433,6 @@ export const ProfilePage = () => {
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => {
-                    setIsEditing(false);
-                    reset();
-                  }}
                 >
                   Перейти в мои тикеты
                 </Button>

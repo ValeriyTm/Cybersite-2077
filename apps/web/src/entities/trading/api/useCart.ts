@@ -50,7 +50,26 @@ export const useCart = () => {
   //Синхронизируем кэш React Query с Zustand:
   useEffect(() => {
     if (query.data) {
-      setCart(query.data);
+      const currentCart = useTradingStore.getState().cartItems;
+
+      //Проверяем, совпадает ли состав корзины на сервере с тем, что у нас в стейте.
+      //(сравниваем длину и связку "id + количество + чекбокс" для каждого элемента):
+      const isIdentical =
+        currentCart.length === query.data.length &&
+        currentCart.every((localItem, index) => {
+          const serverItem = query.data[index];
+          return (
+            serverItem &&
+            localItem.id === serverItem.id &&
+            localItem.quantity === serverItem.quantity &&
+            localItem.selected === serverItem.selected
+          );
+        });
+
+      // Если данные отличаются, тогда обновляем стейт. Если они одинаковые — игнорируем, предотвращая холостой рендер.
+      if (!isIdentical) {
+        setCart(query.data);
+      }
     }
   }, [query.data, setCart]);
 
@@ -87,7 +106,7 @@ export const useCart = () => {
     //Если сервер подтвердил добавление, то:
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data); //Обновляем кэш
-      setCart(data); //Актуальный состав корзины записываем в локальное состояние корзины
+      // setCart(data); //Актуальный состав корзины записываем в локальное состояние корзины
     },
   });
 
@@ -106,7 +125,6 @@ export const useCart = () => {
     //Если сервер подтвердил добавление, то актуальный состав корзины записываем в локальное состояние корзины:
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data);
-      setCart(data);
     },
   });
 
@@ -120,7 +138,6 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data);
-      setCart(data);
       toast.success("Выбранный товар удален");
     },
   });
@@ -136,7 +153,6 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data);
-      setCart(data);
       removeSelectedLocally();
       toast.success("Выбранные товары удалены");
     },
@@ -156,7 +172,6 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data);
-      setCart(data);
     },
   });
 
@@ -171,7 +186,6 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data);
-      setCart(data);
     },
   });
 

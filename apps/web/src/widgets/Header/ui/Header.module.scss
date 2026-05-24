@@ -83,6 +83,10 @@
         color: var(--auxiliary-text-color);
         transition: color 0.2s;
 
+        &.activeLink {
+          color: var(--accent-text-color);
+        }
+
         @include hover {
           color: var(--accent-text-color);
         }

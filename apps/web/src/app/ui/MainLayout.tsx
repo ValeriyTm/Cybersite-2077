@@ -33,11 +33,10 @@ export const MainLayout = () => {
     document.body.className = theme;
   }, [theme]);
 
+  //Проверяем, нужно ли сейчас показывать глобальный экран загрузки:
+  const showGlobalLoader = isAuth && isLoading;
 
-  //Если авторизован и идёт загрузка, то покажем универсальный лоадер для всех страниц:
-  if (isAuth && isLoading) {
-    return <PageLoader />
-  }
+
 
   return (
     <>
@@ -61,9 +60,15 @@ export const MainLayout = () => {
 
       {/*Основной контент страницы:*/}
       <main className="content-wrapper" style={{ minHeight: '60vh' }}>
-        <Suspense fallback={<PageLoader />}>
-          <Outlet />
-        </Suspense>
+        {showGlobalLoader ? (
+          //Если профиль ещё грузится, показываем лоадер вместо контента страницы:
+          <PageLoader />
+        ) : (
+          //Как только профиль загрузился, показываем саму страницу:
+          <Suspense fallback={<PageLoader />}>
+            <Outlet />
+          </Suspense>
+        )}
       </main>
 
       <Footer />
