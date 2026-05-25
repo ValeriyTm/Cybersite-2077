@@ -42,7 +42,7 @@ export const DeleteAccountModal = ({
             error={error}
           />
 
-          <div className={styles.modalActions} style={{ marginTop: "1.5rem" }}>
+          <div className={styles.modalActions}>
             <Button
               type="button"
               variant="secondary"

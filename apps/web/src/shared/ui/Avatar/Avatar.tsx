@@ -9,7 +9,7 @@ interface AvatarProps {
   isAvatarLoading?: boolean;
   isEditing?: boolean;
   onClick?: () => void;
-  size?: "sm" | "md" | "lg"; // Добавим гибкости для будущего
+  size?: "sm" | "md" | "lg";
 }
 
 export const Avatar = ({

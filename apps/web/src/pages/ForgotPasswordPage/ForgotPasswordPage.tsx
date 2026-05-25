@@ -8,12 +8,12 @@ import {
 } from "@repo/validation";
 //API:
 import { $api } from "@/shared/api";
-//Библиотека для всплывающих уведомлений:
-import { toast } from "react-hot-toast";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Роутинг:
 import { Link } from "react-router";
+//Обработчик ошибок формы:
+import { handleFormError } from "@/shared/lib";
 //Состояния:
 import { useAuthSubmit } from "@/features/auth";
 //Компоненты:
@@ -37,16 +37,9 @@ export const ForgotPasswordPage = () => {
     },
   });
 
-  //Функция для обработки ошибок валидации Zod:
-  const onFormError = (errors: FieldErrors<ForgotPasswordType>) => {
-    //Берем первую ошибку из объекта:
-    const firstError = Object.values(errors)[0];
-    if (firstError?.message) {
-      toast.error(firstError.message, {
-        id: "forgot-password-validation-error", // Предотвращает спам — новое уведомление заменит старое
-      });
-    }
-  };
+  //Работа с ошибками формы:
+  const onFormError = (errors: FieldErrors<ForgotPasswordType>) =>
+    handleFormError(errors, "forgot-password-validation-error");
 
   const onSubmit = async (data: ForgotPasswordType) => {
     await handleAuthSubmit(
@@ -94,9 +87,11 @@ export const ForgotPasswordPage = () => {
               Получить ссылку
             </Button>
           </form>
-          <Link title="Go back" to="/auth" className={styles.backLink}>
+
+          <Link title="Go back" to="/auth" className={styles.backlink}>
             Вернуться к форме
           </Link>
+
         </div>
       </div>
     </>

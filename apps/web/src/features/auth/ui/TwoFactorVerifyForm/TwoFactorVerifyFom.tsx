@@ -85,20 +85,22 @@ export const TwoFactorVerifyForm = ({ userId, onSuccess }: Props) => {
         </p>
       </div>
 
-      <Input
-        label="Код из приложения"
-        placeholder="000000"
-        registration={register("code")}
-        error={errors.code}
-        maxLength={6}
-        autoFocus
-        // Добавляем специфический стиль для OTP, если нужно
-        className={styles.otpInput}
-      />
+      <div>
+        <Input
+          label="Код из приложения"
+          placeholder="000000"
+          registration={register("code")}
+          error={errors.code}
+          maxLength={6}
+          autoFocus
+          className={styles.otpInput}
+          center
+        />
 
-      <Button type="submit" isLoading={isSubmitting} loadingText="Проверка...">
-        Подтвердить и войти
-      </Button>
+        <Button type="submit" isLoading={isSubmitting} loadingText="Проверка...">
+          Подтвердить и войти
+        </Button>
+      </div>
     </form>
   );
 };

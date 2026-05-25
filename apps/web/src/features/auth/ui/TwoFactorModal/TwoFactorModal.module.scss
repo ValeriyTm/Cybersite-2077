@@ -16,9 +16,6 @@
 }
 
 .modal {
-  align-content: center;
-  justify-content: center;
-  justify-items: center;
   width: 100%;
   max-width: 500px;
   padding: 2rem;
@@ -97,6 +94,7 @@
 .modalActions {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   gap: 10px;
 }

@@ -1,0 +1,80 @@
+.header {
+  display: flex;
+  gap: 20px;
+}
+
+.category {
+  color: var(--main-text-color); // добавили базовый цвет для надежности
+}
+
+.question {
+  small {
+    color: var(--accent-text-color);
+    margin-block: 10px;
+    display: inline-block;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.question,
+.answer {
+  strong {
+    color: var(--accent-text-color);
+  }
+}
+
+.waiting {
+  color: var(--auxiliary-text-color);
+  font-style: italic;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+
+  &.OPEN {
+    background: #3498db;
+    color: var(--color-light);
+  }
+  &.IN_PROGRESS {
+    background: #f39c12;
+    color: var(--color-light);
+  }
+  &.RESOLVED {
+    background: var(--color-success);
+    color: var(--color-light);
+  }
+  &.CLOSED {
+    background: var(--auxiliary-text-color);
+    color: var(--color-light);
+  }
+}
+
+.ticketCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--auxiliary-bg-color-2);
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  width: 98%;
+  justify-self: center;
+
+  @include hover {
+    box-shadow: 0 0 10px var(--accent-text-color);
+  }
+}
+
+.answer {
+  margin-top: 10px;
+  padding-top: 15px;
+  /* pxtorem-disable-next-line */
+  border-top: 1px dashed #444;
+}

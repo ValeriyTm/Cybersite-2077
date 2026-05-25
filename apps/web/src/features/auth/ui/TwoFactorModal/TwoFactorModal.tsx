@@ -26,36 +26,38 @@ export const TwoFactorModal = ({
         <h3>Настройка защиты</h3>
         <p>Отсканируйте QR в Aegis или Google Authenticator</p>
 
-        <div className={styles.qrWrapper}>
-          <img src={qrCode} alt="QR Code" width='200' height='200' />
-        </div>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          onActivate();
+        }}>
+          <div className={styles.qrWrapper}>
+            <img src={qrCode} alt="QR Code" width='200' height='200' />
+          </div>
 
-        <input
-          type="text"
-          maxLength={6}
-          placeholder="000 000"
-          value={verificationCode}
-          onChange={(e) =>
-            setVerificationCode(e.target.value.replace(/\D/g, ""))
-          }
-          className={styles.otpInput}
-          autoFocus
-        />
+          <input
+            type="text"
+            maxLength={6}
+            placeholder="000 000"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ""))}
+            className={styles.otpInput}
+            autoFocus
+          />
 
-        <div className={styles.modalActions}>
-          <Button
-            onClick={onActivate}
-            isLoading={isLoading}
-            loadingText="Активация..."
-          >
-            Активировать
-          </Button>
+          <div className={styles.modalActions}>
 
-          <Button variant="secondary" onClick={onClose} disabled={isLoading}>
-            Отмена
-          </Button>
-        </div>
+            <Button type="submit" isLoading={isLoading} loadingText="Активация...">
+              Активировать
+            </Button>
+
+
+            <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
+              Отмена
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
+
 };

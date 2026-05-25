@@ -12,6 +12,8 @@ import { $api } from "@/shared/api";
 import { Helmet } from "react-helmet-async";
 //Библиотека всплывающих уведомлений:
 import { toast } from "react-hot-toast";
+//Обработчик ошибок формы:
+import { handleFormError } from "@/shared/lib";
 //Компоненты:
 import { PasswordField } from "@/shared/ui/";
 import { Button } from "@/shared/ui/Button";
@@ -39,16 +41,10 @@ export const ResetPasswordPage = () => {
     },
   });
 
-  //Функция для обработки ошибок валидации Zod:
-  const onFormError = (errors: FieldErrors<ResetPasswordType>) => {
-    //Берем первую ошибку из объекта:
-    const firstError = Object.values(errors)[0];
-    if (firstError?.message) {
-      toast.error(firstError.message, {
-        id: "reset-password-validation-error", // Предотвращает спам — новое уведомление заменит старое
-      });
-    }
-  };
+  //Работа с ошибками формы:
+  const onFormError = (errors: FieldErrors<ResetPasswordType>) =>
+    handleFormError(errors, "reset-password-validation-error");
+
 
   const onSubmit = async (data: ResetPasswordType) => {
     //Если в параметрах адресной строки нет токена сброса:
@@ -83,7 +79,7 @@ export const ResetPasswordPage = () => {
       <div className={styles.container}>
         <div className={styles.card}>
           <h1>Новый пароль</h1>
-          <p className={styles.subText}>
+          <p>
             Придумайте сложный пароль для защиты аккаунта
           </p>
 
@@ -104,14 +100,16 @@ export const ResetPasswordPage = () => {
               error={errors.confirmPassword}
             />
 
-            <Button
-              type="submit"
-              variant="primary"
-              isLoading={isSubmitting}
-              loadingText="Сохранение..."
-            >
-              Обновить пароль
-            </Button>
+            <div className={styles.actions}>
+              <Button
+                type="submit"
+                variant="primary"
+                isLoading={isSubmitting}
+                loadingText="Сохранение..."
+              >
+                Обновить пароль
+              </Button>
+            </div>
           </form>
         </div>
       </div>

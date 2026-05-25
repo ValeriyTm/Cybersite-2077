@@ -3,94 +3,22 @@
   flex-direction: column;
   align-self: center;
   justify-self: center;
-  max-width: var(--container-width);
   width: 100%;
+  max-width: var(--container-width);
 }
 
 h1 {
-  color: var(--accent-text-color) !important;
   padding-inline: 20px;
+
+  color: var(--accent-text-color) !important;
 
   @include mobile {
     text-align: center;
   }
 }
 
-.header {
-  display: flex;
-  gap: 20px;
-}
-
-.question {
-  small {
-    color: var(--accent-text-color);
-    margin-block: 10px;
-  }
-
-  p {
-    margin-bottom: 0;
-  }
-}
-
-.question,
-.answer {
-  strong {
-    color: var(--accent-text-color);
-  }
-}
-
-.waiting {
-  color: var(--auxiliary-text-color);
-  font-style: italic;
-}
-
-.status {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 700;
-
-  &.OPEN {
-    background: #3498db;
-    color: #fff;
-  }
-  &.IN_PROGRESS {
-    background: #f39c12;
-    color: #fff;
-  }
-  &.RESOLVED {
-    background: var(--color-success);
-    color: #fff;
-  }
-  &.CLOSED {
-    background: var(--auxiliary-text-color);
-    color: #fff;
-  }
-}
-
-.ticketCard {
+.list {
   display: flex;
   flex-direction: column;
-  background: var(--auxiliary-bg-color-2);
-  /* pxtorem-disable-next-line */
-  border: 1px solid #333;
-  margin-bottom: 20px;
-  padding: 20px;
-  border-radius: 8px;
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  width: 98%;
-  justify-self: center;
-
-  @include hover {
-    box-shadow: 0 0 10px var(--accent-text-color);
-  }
-}
-
-.answer {
-  margin-top: 10px;
-  padding-top: 15px;
-  /* pxtorem-disable-next-line */
-  border-top: 1px dashed #444;
-  color: #2ecc71;
+  width: 100%;
 }
