@@ -190,6 +190,8 @@ label {
     border: 1px solid var(--color-light);
     border-radius: 8px;
     outline: none;
+    text-align: center;
+
     &:focus {
       border-color: var(--color-dark);
     }

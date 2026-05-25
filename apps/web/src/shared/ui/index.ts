@@ -1,5 +1,4 @@
 export * from "./Avatar";
-export * from "./BirthdayInput";
 export * from "./Breadcrumbs";
 export * from "./BurgerButton";
 export * from "./Button";

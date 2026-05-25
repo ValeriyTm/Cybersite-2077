@@ -67,8 +67,10 @@
   display: block;
 }
 
-input {
-  border-radius: 6px;
-  text-align: center;
-  width: 100%;
+.value {
+  input {
+    border-radius: 6px;
+    text-align: center;
+    width: 100%;
+  }
 }

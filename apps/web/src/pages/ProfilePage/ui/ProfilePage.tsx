@@ -1,6 +1,4 @@
 import { useRef } from "react";
-//Работа с формами:
-import { Controller } from "react-hook-form";
 //Роутер:
 import { Navigate } from "react-router";
 import { Link } from "react-router";
@@ -13,12 +11,10 @@ import {
   HiOutlinePhone,
   HiOutlineCalendar,
 } from "react-icons/hi";
-//Библиотека для работы с масками в инпутах:
-import { IMaskInput } from "react-imask";
-import IMask from "imask";
 //Компоненты:
 import { TwoFactorModal, DeleteAccountModal } from "@/features/auth";
-import { Avatar, Input, Button, PasswordField, BirthdayInput } from "@/shared/ui";
+import { Avatar, Input, Button, PasswordField, } from "@/shared/ui";
+import { BirthdayInput, PhoneInput } from "./components";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
@@ -75,11 +71,11 @@ export const ProfilePage = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null); //Ссылка на инпут загрузки аватара
 
+  //Если данных о юзере нет, то перекидываем его на форму регистрации-логина:
+  if (!user) return <Navigate to="/auth" />;
 
   // Если данные еще грузятся, можно показать лоадер на всю страницу:
   if (isLoading) return <div>Загрузка профиля...</div>;
-  //Если данных о юзере нет, то перекидываем его на форму регистрации-логина:
-  if (!user) return <Navigate to="/auth" />; // Защита от "пустого" профиля
 
   return (
     <>
@@ -87,6 +83,7 @@ export const ProfilePage = () => {
         <title>Cybersite-2077 | Мой профиль</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
+
       <div className={styles.profilePage}>
         <div className={styles.container}>
           {/*Блок с именем, аватаром и кнопкой редактирования:*/}
@@ -136,14 +133,12 @@ export const ProfilePage = () => {
                   </div>
                   <div className={styles.value}>
                     {isEditing ? (
-                      <>
-                        <Input
-                          registration={register("name")}
-                          error={errors.name}
-                          label='Поле ввода имени'
-                          visuallyHidden={true}
-                        />
-                      </>
+                      <Input
+                        registration={register("name")}
+                        error={errors.name}
+                        label='Поле ввода имени'
+                        visuallyHidden={true}
+                      />
                     ) : (
                       <span>{user?.name}</span>
                     )}
@@ -161,43 +156,16 @@ export const ProfilePage = () => {
                 </div>
 
                 {/*Номер телефона:*/}
-                <div className={styles.row}>
-                  <div className={styles.label}>
-                    <label htmlFor="phone-input">
-                      <HiOutlinePhone />&nbsp;&nbsp;&nbsp;Телефон{" "}
-                      {isEditing && <span className={styles.requiredStar}>*</span>}
-                    </label>
-                  </div>
-                  <div className={styles.value}>
-                    {isEditing ? (
-                      <>
-                        <Controller
-                          control={control}
-                          name="phone"
-                          render={({ field: { onChange, value } }) => (
-                            <IMaskInput
-                              id="phone-input"
-                              mask="+{7} (000) 000-00-00"
-                              value={value || ""}
-                              onAccept={(val) => onChange(val)} // Передаем значение в форму
-                              className={
-                                errors.phone ? styles.inputError : styles.maskInput
-                              }
-                            />
-                          )}
-                        />
-                        {/*Вывод ошибки:*/}
-                        {errors.phone && (
-                          <span className={styles.errorText}>
-                            {errors.phone.message}
-                          </span>
-                        )}
-                      </>
-                    ) : (
+                {isEditing ? (
+                  <PhoneInput control={control} error={errors.phone} />
+                ) : (
+                  <div className={styles.row}>
+                    <div className={styles.label}><HiOutlinePhone />&nbsp;&nbsp;&nbsp;Телефон</div>
+                    <div className={styles.value}>
                       <span>{user?.phone || "Не указан"}</span>
-                    )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/*Поле даты рождения:*/}
                 {isEditing ? (
