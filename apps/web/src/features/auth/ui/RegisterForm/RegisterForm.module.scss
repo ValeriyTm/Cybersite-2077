@@ -1,0 +1,17 @@
+.btnGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+span,
+a,
+p {
+  color: var(--main-text-color);
+}

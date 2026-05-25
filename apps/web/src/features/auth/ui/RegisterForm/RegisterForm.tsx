@@ -2,18 +2,18 @@
 import { useForm, type FieldErrors } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
-//Библиотека всплывающих уведомлений:
-import { toast } from "react-hot-toast";
+//Обработчик ошибок формы:
+import { handleFormError } from "@/shared/lib";
 //API:
 import { $api } from "@/shared/api";
 //Схемы валидации Zod:
 import { RegisterFormSchema, type RegisterFormType } from "@repo/validation";
 //Компоненты:
-import { Button, Input, PasswordField } from "@/shared/ui";
+import { Button, Checkbox, Input, PasswordField } from "@/shared/ui";
 //Состояния:
 import { useAuthSubmit } from "@/features/auth";
 //Стили:
-import styles from "../AuthCard/AuthCard.module.scss";
+import styles from "./RegisterForm.module.scss";
 
 export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
@@ -35,16 +35,9 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
     },
   });
 
-  // Функция, которая сработает, если Zod найдет ошибки (когда пользователь нажал «Зарегистрироваться», но ввел данные неверно):
-  const onFormError = (errors: FieldErrors<RegisterFormType>) => {
-    // Берем первую попавшуюся ошибку и выводим её в Toast
-    const firstError = Object.values(errors)[0];
-    if (firstError?.message) {
-      toast.error(firstError.message, {
-        id: "form-validation-error", //Предотвращает спам уведомлениями - новое сообщение просто заменит старое.
-      });
-    }
-  };
+  //Работа с ошибками формы:
+  const onFormError = (errors: FieldErrors<RegisterFormType>) =>
+    handleFormError(errors, "form-validation-error");
 
   const onSubmit = async (data: RegisterFormType) => {
     await handleAuthSubmit(
@@ -66,7 +59,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
           //Делаем задержку перед переключением на логин (onSuccess пришел из пропсов AuthCard):
           setTimeout(() => {
             onSuccess();
-          }, 1500);
+          }, 500);
         },
       },
       data,
@@ -111,24 +104,24 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
       />
 
       {/*Чекбокс с согласиями:*/}
-      <div className={styles.checkboxField}>
-        <input type="checkbox" id="terms" {...register("acceptTerms")} />
-        <label htmlFor="terms">
-          Я даю{" "}
-          <a href="/terms" target="_blank">
-            Согласие на обработку персональных данных
-            <span className="visually-hidden">Откроется в новой вкладке</span>
-          </a>{" "}
-          и принимаю условия{" "}
-          <a href="/privacy" target="_blank">
-            Политики конфиденциальности
-            <span className="visually-hidden">Откроется в новой вкладке</span>
-          </a>
-        </label>
-        {errors.acceptTerms && (
-          <span className={styles.errorText}>{errors.acceptTerms.message}</span>
-        )}
-      </div>
+      <Checkbox
+        label={
+          <>
+            Я даю{" "}
+            <a href="/terms" target="_blank">
+              Согласие на обработку персональных данных
+              <span className="visually-hidden">Откроется в новой вкладке</span>
+            </a>{" "}
+            и принимаю условия{" "}
+            <a href="/privacy" target="_blank">
+              Политики конфиденциальности
+              <span className="visually-hidden">Откроется в новой вкладке</span>
+            </a>
+          </>
+        }
+        registration={register("acceptTerms")}
+        error={errors.acceptTerms}
+      />
 
       <div className={styles.btnGroup}>
         {/*Кнопка отправки:*/}

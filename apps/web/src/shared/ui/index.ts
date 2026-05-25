@@ -2,6 +2,7 @@ export * from "./Avatar";
 export * from "./Breadcrumbs";
 export * from "./BurgerButton";
 export * from "./Button";
+export * from "./Checkbox";
 export * from "./ConfirmModal";
 export * from "./CursorTrail";
 export * from "./DataTable";

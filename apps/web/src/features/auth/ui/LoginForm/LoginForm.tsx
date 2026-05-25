@@ -1,7 +1,5 @@
 //React Hook Form:
 import { useForm, type SubmitHandler, type FieldErrors } from "react-hook-form";
-//Роутер:
-import { useNavigate } from "react-router";
 //Библиотека для всплывающих уведомлений:
 import { toast } from "react-hot-toast";
 //Библиотека для связывания Zod и React Hook Form:
@@ -13,12 +11,14 @@ import { useState } from "react";
 import { useAuthSubmit, useAuthStore } from "@/features/auth";
 //API:
 import { $api } from "@/shared/api/api";
+//Обработчик ошибок формы:
+import { handleFormError } from "@/shared/lib";
 //Компоненты:
-import { PasswordField } from "@/shared/ui";
+import { Checkbox, PasswordField } from "@/shared/ui";
 import { Button, Input } from "@/shared/ui";
 import { TwoFactorVerifyForm } from "../TwoFactorVerifyForm";
 //Стили:
-import styles from "../AuthCard/AuthCard.module.scss";
+import styles from "./LoginForm.module.scss";
 
 interface Props {
   onSuccess: () => void;
@@ -26,7 +26,6 @@ interface Props {
 }
 
 export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
-  const navigate = useNavigate();
   const { setAuth, setTempUserId, tempUserId } = useAuthStore();
   const { handleAuthSubmit } = useAuthSubmit<LoginFormType>();
   const [show2FA, setShow2FA] = useState(false);
@@ -47,16 +46,9 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
     },
   });
 
-  //Функция для обработки ошибок валидации Zod на клиенте:
-  const onFormError = (errors: FieldErrors<LoginFormType>) => {
-    //Берем первую ошибку из объекта:
-    const firstError = Object.values(errors)[0];
-    if (firstError?.message) {
-      toast.error(firstError.message, {
-        id: "login-validation-error", // редотвращает спам — новое уведомление заменит старое
-      });
-    }
-  };
+  //Работа с ошибками формы:
+  const onFormError = (errors: FieldErrors<LoginFormType>) =>
+    handleFormError(errors, "login-validation-error");
 
   //Отправка формы:
   const onSubmit: SubmitHandler<LoginFormType> = async (data: LoginFormType) => {
@@ -82,7 +74,6 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
           if (res.data.accessToken) {
             setAuth(res.data.accessToken); //Устанавливаем access token в клиентский store.
             toast.success("С возвращением!");
-            navigate("/profile");
           }
         },
       },
@@ -127,12 +118,10 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
       />
 
       {/* Контейнер "Запомнить меня" */}
-      <div className={styles.optionsRow}>
-        <label className={styles.checkboxLabel}>
-          <input type="checkbox" {...register("rememberMe")} />
-          <span>Запомнить меня</span>
-        </label>
-      </div>
+      <Checkbox
+        label="Запомнить меня"
+        registration={register("rememberMe")}
+      />
 
       {/*Кнопка отправки формы:*/}
       <Button

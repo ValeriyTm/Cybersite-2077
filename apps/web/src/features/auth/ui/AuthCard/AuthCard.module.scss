@@ -26,7 +26,11 @@
   cursor: pointer;
   background: transparent;
   color: var(--auxiliary-text-color);
-  transition: 0.3s;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .isActive {
@@ -62,6 +66,7 @@
   align-items: center;
   margin: 20px 0;
   color: var(--accent-text-color);
+
   &::before,
   &::after {
     content: "";
@@ -69,213 +74,6 @@
     height: 1px;
     background: var(--accent-text-color);
     margin: 0 10px;
-  }
-}
-
-.field {
-  text-align: left;
-  margin-bottom: 16px;
-
-  label {
-    display: block;
-    margin-bottom: 6px;
-    color: var(--main-text-color);
-    font-size: 14px;
-  }
-  input {
-    width: 100%;
-    padding: 12px;
-    // /* pxtorem-disable-next-line */
-    border: 1px solid #eee;
-    border-radius: 10px;
-    background: #f9f9f9;
-    box-sizing: none;
-
-    &:focus {
-      color: var(--accent-text-color);
-      /* pxtorem-disable-next-line */
-      border: 1px solid var(--accent-text-color) !important;
-    }
-
-    &.inputError {
-      border-color: var(--color-danger);
-    }
-  }
-}
-
-.errorText {
-  color: var(--color-danger);
-  font-size: 12px;
-  margin-top: 4px;
-  display: block;
-}
-
-.submitBtn {
-  width: 100%;
-  padding: 14px;
-  /* pxtorem-disable-next-line */
-  border: none;
-  border-radius: 30px;
-  background: #ccc;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-
-  &:not(:disabled):hover {
-    background: #000;
-  }
-}
-
-.passwordWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-
-  input {
-    padding-right: 45px; //Место для кнопки
-  }
-}
-
-.checkboxField {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 8px;
-  margin: 20px 0;
-  text-align: left;
-
-  input {
-    margin-top: 4px;
-    cursor: pointer;
-  }
-
-  label {
-    flex: 1;
-    font-size: 13px;
-    color: var(--main-text-color);
-    line-height: 1.4;
-
-    a {
-      color: var(--accent-text-color);
-      text-decoration: underline;
-      @include hover {
-        text-decoration: none;
-      }
-    }
-  }
-}
-
-.labelWithLink {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 10px;
-}
-
-.forgotLink {
-  font-size: 0.85rem;
-  color: var(--primary-color);
-  text-decoration: none;
-
-  @include hover {
-    text-decoration: underline;
-  }
-}
-
-.optionsRow {
-  display: flex;
-  justify-content: flex-start;
-  margin: 12px 0 20px;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #666;
-  cursor: pointer;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 44px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  input {
-    cursor: pointer;
-  }
-}
-
-.inputCenter {
-  text-align: center;
-  font-size: 24px !important;
-  letter-spacing: 8px;
-  font-weight: bold;
-}
-
-.subText {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.backBtn {
-  margin-top: 10px;
-  background: none;
-  /* pxtorem-disable-next-line */
-  border: none;
-  color: #888;
-  cursor: pointer;
-  font-size: 13px;
-  @include hover {
-    text-decoration: underline;
-  }
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.resetBtn {
-  background: #f0f0f0;
-  color: #666;
-  /* pxtorem-disable-next-line */
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  @include hover {
-    background: #e0e0e0;
-    color: #333;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-.btnGroup {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-
-  @include mobile {
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
   }
 }
 

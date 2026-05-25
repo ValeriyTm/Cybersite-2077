@@ -1,0 +1,23 @@
+.labelWithLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.forgotLink {
+  font-size: 0.85rem;
+  color: var(--primary-color);
+  text-decoration: none;
+
+  @include hover {
+    text-decoration: underline;
+  }
+}
+
+span,
+a,
+p {
+  color: var(--main-text-color);
+}
