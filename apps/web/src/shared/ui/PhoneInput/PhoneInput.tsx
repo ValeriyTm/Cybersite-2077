@@ -40,7 +40,7 @@ export const PhoneInput = ({
               mask="+{7} (000) 000-00-00"
               value={value || ""}
               onAccept={(val) => onChange(val)}
-              className={error ? styles.inputError : styles.maskInput}
+              className={`${styles.maskInput} ${error ? styles.inputError : ''}`}
             />
           )}
         />

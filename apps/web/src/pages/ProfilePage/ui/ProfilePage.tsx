@@ -4,12 +4,12 @@ import { Navigate } from "react-router";
 import { ChangePasswordCard, DeleteAccountCard, ProfileHeader, SessionManagementCard, TwoFactorAuthCard, useProfile, useProfileActions } from "@/features/auth";
 //Компоненты:
 import { TwoFactorModal, DeleteAccountModal } from "@/features/auth";
+import { SupportTicketsCard } from "@/features/support/ui/SupportTicketsCard";
+import { ProfileInfoCard } from "@/widgets/ProfileInfoCard";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from "./ProfilePage.module.scss";
-import { SupportTicketsCard } from "@/features/support/ui/SupportTicketsCard";
-import { ProfileInfoCard } from "@/widgets/ProfileInfoCard";
 
 export const ProfilePage = () => {
   const { user, isLoading, logout, logoutAll } = useProfile();
@@ -57,79 +57,79 @@ export const ProfilePage = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className={styles.profilePage}>
-        <div className={styles.container}>
-          {/*1) Блок с именем, аватаром и кнопкой редактирования: */}
-          <ProfileHeader
-            name={user?.name || ""}
-            role={user?.role}
-            avatarSrc={avatarSrc}
-            isAvatarLoading={isAvatarLoading}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            onAvatarChange={handleAvatarChange}
+
+      <div className={styles.container}>
+        {/*1) Блок с именем, аватаром и кнопкой редактирования: */}
+        <ProfileHeader
+          name={user?.name || ""}
+          role={user?.role}
+          avatarSrc={avatarSrc}
+          isAvatarLoading={isAvatarLoading}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          onAvatarChange={handleAvatarChange}
+        />
+
+        {/*2) Форма персональных данных:*/}
+        <ProfileInfoCard
+          user={user}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          profileForm={profileForm}
+          onSubmit={onSubmit}
+          onFormError={onFormError}
+        />
+
+        {/*3) Секция смены пароля:*/}
+        <ChangePasswordCard
+          passForm={passForm}
+          onChangePassword={onChangePassword}
+        />
+
+        {/*4) Секция включения 2FA:*/}
+        {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
+          <TwoFactorAuthCard
+            is2FAEnabled={!!user?.is2FAEnabled}
+            onSetup2FA={handleSetup2FA}
           />
+        )}
 
-          {/*2) Форма персональных данных:*/}
-          <ProfileInfoCard
-            user={user}
-            isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            profileForm={profileForm}
-            onSubmit={onSubmit}
-            onFormError={onFormError}
+        {/*5) Модальное окно настройки 2FA */}
+        {qrCode && (
+          <TwoFactorModal
+            qrCode={qrCode}
+            verificationCode={verificationCode}
+            setVerificationCode={setVerificationCode}
+            onActivate={handleEnable2FA}
+            onClose={() => setQrCode(null)}
           />
+        )}
 
-          {/*3) Секция смены пароля:*/}
-          <ChangePasswordCard
-            passForm={passForm}
-            onChangePassword={onChangePassword}
+        {/*6) Модальное окно для удаления аккаунта:*/}
+        {showDeleteModal && (
+          <DeleteAccountModal
+            isOpen={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            onSubmit={handleSubmit(onDeleteAccount)}
+            registration={register("password")}
+            error={errors.password}
+            isLoading={isSubmitting}
           />
+        )}
 
-          {/*4) Секция включения 2FA:*/}
-          {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
-            <TwoFactorAuthCard
-              is2FAEnabled={!!user?.is2FAEnabled}
-              onSetup2FA={handleSetup2FA}
-            />
-          )}
+        {/*7) Управление сессиями:*/}
+        <SessionManagementCard
+          onLogout={logout}
+          onLogoutAll={logoutAll}
+        />
 
-          {/*5) Модальное окно настройки 2FA */}
-          {qrCode && (
-            <TwoFactorModal
-              qrCode={qrCode}
-              verificationCode={verificationCode}
-              setVerificationCode={setVerificationCode}
-              onActivate={handleEnable2FA}
-              onClose={() => setQrCode(null)}
-            />
-          )}
+        {/*8) Вопросы поддержке: */}
+        <SupportTicketsCard />
 
-          {/*6) Модальное окно для удаления аккаунта:*/}
-          {showDeleteModal && (
-            <DeleteAccountModal
-              isOpen={showDeleteModal}
-              onClose={() => setShowDeleteModal(false)}
-              onSubmit={handleSubmit(onDeleteAccount)}
-              registration={register("password")}
-              error={errors.password}
-              isLoading={isSubmitting}
-            />
-          )}
-
-          {/*7) Управление сессиями:*/}
-          <SessionManagementCard
-            onLogout={logout}
-            onLogoutAll={logoutAll}
-          />
-
-          {/*8) Вопросы поддержке: */}
-          <SupportTicketsCard />
-
-          {/*9) Удаление аккаунта:*/}
-          <DeleteAccountCard onOpenDeleteModal={() => setShowDeleteModal(true)} />
-        </div >
+        {/*9) Удаление аккаунта:*/}
+        <DeleteAccountCard onOpenDeleteModal={() => setShowDeleteModal(true)} />
       </div >
+
     </>
   );
 };

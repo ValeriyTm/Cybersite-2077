@@ -8,7 +8,7 @@ import styles from "./SupportTicketsCard.module.scss";
 export const SupportTicketsCard = () => {
 	return (
 		<div className={styles.ticketsZone}>
-			<h2>Вопросы поддержке</h2>
+			<h3>Вопросы поддержке</h3>
 			<Link to="/support/tickets">
 				<Button type="button" variant="secondary">
 					Перейти в мои тикеты

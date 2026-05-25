@@ -2,55 +2,51 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
+  z-index: 1100;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100;
+  width: 100%;
+  height: 100%;
   padding: 20px;
+
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
 }
 
 .modal {
-  background: var(--auxiliary-bg-color-2);
-  padding: 2.5rem;
-  border-radius: 20px;
-  max-width: 450px;
   width: 100%;
-  box-shadow: 0 25px 50px -12px rgba(220, 53, 69, 0.2);
+  max-width: 450px;
+  padding: 2.5rem;
+
   text-align: center;
+
+  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(220, 53, 69, 0.2);
 
   h2 {
-    color: var(--color-danger);
     margin-bottom: 1rem;
+
     font-size: 1.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    color: var(--color-danger);
   }
 
   p {
-    color: var(--main-text-color);
-    font-size: 1rem;
-    line-height: 1.6;
     margin-bottom: 2rem;
 
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--main-text-color);
+
     strong {
-      color: var(--color-danger);
       font-weight: 700;
+      color: var(--color-danger);
     }
   }
-}
-
-.warningIcon {
-  font-size: 3rem;
-  color: var(--color-danger);
-  margin-bottom: 1rem;
 }
 
 .modalActions {
@@ -62,10 +58,4 @@
   @include mobile-s {
     grid-template-columns: 1fr;
   }
-}
-
-//Стили для инпута внутри модалки:
-.inputWrapper {
-  text-align: left;
-  margin-bottom: 1rem;
 }

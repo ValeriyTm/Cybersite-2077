@@ -27,10 +27,10 @@ export const DeleteAccountModal = ({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
-        <h2 style={{ color: "#dc3545", marginBottom: "1rem" }}>
+        <h2>
           Удаление аккаунта
         </h2>
-        <p style={{ marginBottom: "1.5rem", fontSize: "0.95rem" }}>
+        <p>
           Это действие **необратимо** ❗. <br />
           Введите пароль для подтверждения:
         </p>
