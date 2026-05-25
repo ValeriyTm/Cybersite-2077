@@ -15,7 +15,7 @@ import { useAuthSubmit, useAuthStore } from "@/features/auth";
 import { $api } from "@/shared/api/api";
 //Компоненты:
 import { PasswordField } from "@/shared/ui";
-import { Button } from "@/shared/ui";
+import { Button, Input } from "@/shared/ui";
 import { TwoFactorVerifyForm } from "../TwoFactorVerifyForm";
 //Стили:
 import styles from "../AuthCard/AuthCard.module.scss";
@@ -103,17 +103,13 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit, onFormError)} className={styles.form}>
       {/*Поле ввода email:*/}
-      <div className={styles.field}>
-        <label>Email</label>
-        <input
-          {...register("email")}
-          placeholder="mail@example.com"
-          className={errors.email ? styles.inputError : ""}
-        />
-        {errors.email && (
-          <span className={styles.errorText}>{errors.email.message}</span>
-        )}
-      </div>
+      <Input
+        label="Email"
+        type="email"
+        placeholder="mail@example.com"
+        registration={register("email")}
+        error={errors.email}
+      />
 
       {/*Поле ввода пароля:*/}
       <PasswordField

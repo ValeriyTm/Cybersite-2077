@@ -12,25 +12,6 @@
   border: 1px solid var(--accent-text-color);
   border-radius: 20px;
 
-  button {
-    width: 200px;
-    padding: 10px 20px;
-    margin-block: 10px;
-
-    color: var(--accent-text-color);
-
-    background-color: var(--auxiliary-bg-color);
-    /* pxtorem-disable-next-line */
-    border: 1px solid var(--accent-text-color);
-    border-radius: 10px;
-
-    @include hover {
-      color: var(--color-light);
-
-      background-color: var(--accent-text-color);
-    }
-  }
-
   h2 {
     margin-block: 15px;
 
@@ -48,4 +29,10 @@
   /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-text-color) !important;
   border-radius: 10px;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-block: 10px;
 }

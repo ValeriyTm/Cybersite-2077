@@ -61,7 +61,7 @@ export const ProfileHeader = ({
       {!isEditing && (
         <Button
           type="button"
-          variant="secondary"
+          variant="outline-dark"
           onClick={() => setIsEditing(true)}
         >
           Редактировать профиль

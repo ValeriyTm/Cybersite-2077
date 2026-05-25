@@ -45,7 +45,7 @@ export const DeleteAccountModal = ({
           <div className={styles.modalActions} style={{ marginTop: "1.5rem" }}>
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               onClick={onClose}
               disabled={isLoading}
             >

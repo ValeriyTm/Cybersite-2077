@@ -1,0 +1,40 @@
+.googleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 20px;
+
+  background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 2px solid var(--accent-text-color);
+  border-radius: 30px;
+  cursor: pointer;
+
+  opacity: 0.85;
+
+  transition:
+    scale var(--transition-duration) ease,
+    box-shadow var(--transition-duration) ease;
+
+  @include hover {
+    scale: 1.01;
+    box-shadow: 0 0 20px var(--accent-text-color);
+  }
+
+  .google {
+    width: 20px;
+    height: 20px;
+
+    color: rgb(50, 50, 253);
+
+    background-color: #f9f9f9;
+    border-radius: 50%;
+  }
+
+  span {
+    color: var(--accent-text-color);
+  }
+}

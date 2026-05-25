@@ -57,35 +57,6 @@
   }
 }
 
-.googleBtn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--main-bg-color);
-  color: var(--main-text-color);
-  border-radius: 30px;
-  background: var(--accent-text-color);
-  cursor: pointer;
-  margin-bottom: 20px;
-  opacity: 0.85;
-
-  @include hover {
-    scale: 1.05;
-  }
-
-  .google {
-    color: rgb(58, 58, 173);
-    width: 20px;
-    height: 20px;
-    background-color: #f9f9f9;
-    border-radius: 50%;
-  }
-}
-
 .divider {
   display: flex;
   align-items: center;

@@ -1,4 +1,3 @@
-import React from "react";
 //Стили:
 import styles from "./SelectFilter.module.scss";
 
@@ -15,13 +14,13 @@ interface SelectFilterProps {
   placeholder?: string;
 }
 
-export const SelectFilter: React.FC<SelectFilterProps> = ({
+export const SelectFilter = ({
   label,
   value,
   options,
   onChange,
   placeholder = "Все",
-}) => {
+}: SelectFilterProps) => {
   return (
     <div className={styles.SelectFilter}>
       <h4 className={styles.label}>{label}</h4>

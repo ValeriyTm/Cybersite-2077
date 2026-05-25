@@ -114,7 +114,7 @@ export const HomePage = () => {
 
 
   //----SEO:-----//
-  const canonicalUrl = `${API_URL}/`;
+  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/`;
   ///
   if (isLoading)
     return (

@@ -9,6 +9,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: FieldError; // Объект ошибки из formState.errors
   visuallyHidden?: boolean;
   id?: string;
+  center?: boolean;
 }
 
 export const Input = ({
@@ -18,6 +19,7 @@ export const Input = ({
   className,
   visuallyHidden,
   id,
+  center,
   ...props
 }: InputProps) => {
   //Если id не передан, то используем имя из registration:
@@ -30,7 +32,7 @@ export const Input = ({
         id={inputId}
         {...registration}
         {...props}
-        className={`${styles.input} ${error ? styles.inputError : ""} ${className || ""}`}
+        className={`${styles.input} ${center ? styles.centered : ''} ${error ? styles.inputError : ""} ${className || ""}`}
       />
       {error && <span className={styles.errorText}>{error.message}</span>}
     </div>

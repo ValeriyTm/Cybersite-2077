@@ -3,6 +3,7 @@ export * from "./BirthdayInput";
 export * from "./ChangePasswordCard";
 export * from "./DeleteAccountCard";
 export * from "./DeleteAccountModal";
+export * from "./GoogleAuthButton";
 export * from "./LoginForm";
 export * from "./ProfileHeader";
 export * from "./RegisterForm";

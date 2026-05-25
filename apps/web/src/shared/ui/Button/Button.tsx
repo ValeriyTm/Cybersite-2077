@@ -7,7 +7,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   isLoading?: boolean;
   loadingText?: string;
-  variant?: "primary" | "secondary" | "danger" | "outline";
+  variant?: "primary" | "secondary" | "danger" | "outline" | "outline-dark";
+  bold?: boolean;
 }
 
 export const Button = ({
@@ -17,11 +18,12 @@ export const Button = ({
   variant = "primary",
   className,
   disabled,
+  bold,
   ...props
 }: ButtonProps) => {
   return (
     <button
-      className={`${styles.btn} ${styles[variant]} ${className || ""}`}
+      className={`${styles.btn} ${styles[variant]} ${bold ? styles.bold : ''} ${className || ""}`}
       disabled={isLoading || disabled}
       {...props}
     >

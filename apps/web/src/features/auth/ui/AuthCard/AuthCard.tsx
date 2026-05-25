@@ -1,12 +1,10 @@
 //Состояния:
-import { useAuthStore, useProfile } from "@/features/auth";
+import { GoogleAuthButton, useAuthStore, useProfile } from "@/features/auth";
 import { useState, useEffect } from "react";
 //Роутинг:
 import { useNavigate, useSearchParams, useLocation } from "react-router";
 //Библиотека для показа всплывающих уведомлений:
 import { toast } from "react-hot-toast";
-//Иконки:
-import { FcGoogle } from "react-icons/fc";
 //API:
 import { API_URL } from "@/shared/api";
 //SEO:
@@ -118,24 +116,15 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
         <div className={styles.formCard}>
           <h2>{mode === "login" ? "Вход" : "Регистрация"}</h2>
 
-          <button
-            className={styles.googleBtn}
-            type="button"
+          <GoogleAuthButton
+            mode={mode}
             onClick={handleGoogleLogin}
-          >
-            <FcGoogle className={styles.google} />
-            <span>
-              {mode === "login"
-                ? "Войти с Google"
-                : "Зарегистрироваться с Google"}
-            </span>
-          </button>
+          />
 
           <div className={styles.divider}>
             <span>ИЛИ</span>
           </div>
-          {/* Рендерим нужную форму */}
-          {/* Передаем функцию переключения в форму регистрации */}
+          {/* Рендерим нужную форму: */}
           {mode === "login" ? (
             <LoginForm onSuccess={handleSuccess} onVerify2FA={handleSuccess} />
           ) : (

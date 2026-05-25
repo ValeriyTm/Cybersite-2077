@@ -51,7 +51,7 @@ export const TwoFactorModal = ({
             Активировать
           </Button>
 
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+          <Button variant="secondary" onClick={onClose} disabled={isLoading}>
             Отмена
           </Button>
         </div>

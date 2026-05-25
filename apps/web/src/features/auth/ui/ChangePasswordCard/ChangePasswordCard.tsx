@@ -43,7 +43,7 @@ export const ChangePasswordCard = ({ passForm, onChangePassword }: ChangePasswor
         <div className={styles.actions}>
           <Button
             type="submit"
-            variant="outline"
+            variant="outline-dark"
             isLoading={isPassSubmitting}
             loadingText="Обновление..."
           >

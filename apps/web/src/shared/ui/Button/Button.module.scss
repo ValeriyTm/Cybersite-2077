@@ -2,82 +2,135 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   min-width: 120px;
   max-width: 300px;
-  // padding: 0.75rem 1.5rem;
-  padding: 4px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  /* pxtorem-disable-next-line */
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 70%;
+  min-height: 44px; //Для accessibility
+  box-sizing: border-box;
   gap: 8px;
+  padding-block: 8px;
+  padding-inline: 16px;
+
+  font-size: 1rem;
+  white-space: normal; //Перенос строк
+  text-align: center; //Текст по центру при переносе
+
+  border: none; //Граница будет задаваться вариантами
+  border-radius: 8px;
+  cursor: pointer;
   overflow: hidden; //Чтобы лоадер не вылезал за края
-  min-height: 44px;
+
+  transition: all var(--transition-duration) ease;
 
   &:disabled {
-    opacity: 0.6;
     cursor: not-allowed;
+
+    opacity: 0.6;
   }
 
+  //Сжатие при нажатии:
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
   }
 }
 
-// Варианты кнопок
+.bold {
+  font-weight: 600;
+}
+
+//-----------------------------------Варианты кнопок:----------------------------//
 .primary {
-  background-color: var(--accent-text-color);
   color: var(--main-text-color);
+
+  background-color: var(--accent-text-color);
 
   @include hover {
     &:not(:disabled) {
-      background-color: var(--main-text-color);
       color: var(--accent-text-color);
+
+      background-color: var(--main-text-color);
     }
+  }
+
+  &:focus-visible {
+    outline: 3px dotted var(--main-text-color);
   }
 }
 
 .secondary {
+  color: white;
+
   background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--main-text-color);
-  color: white;
 
   @include hover {
     &:not(:disabled) {
       background-color: var(--auxiliary-text-color);
     }
   }
+
+  &:focus-visible {
+    outline: 3px dotted var(--accent-text-color);
+  }
 }
 
 .outline {
+  color: var(--accent-text-color);
+
   background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
-  border: 1px solid var(--primary-color, var(--accent-text-color));
-  color: var(--primary-color, var(--accent-text-color));
+  border: 1px solid var(--accent-text-color);
 
   @include hover {
     &:not(:disabled) {
-      background-color: var(--accent-text-color) !important;
       color: var(--main-text-color);
+
+      background-color: var(--accent-text-color) !important;
     }
+  }
+
+  &:focus-visible {
+    outline: 3px dotted var(--main-text-color);
+  }
+}
+
+.outline-dark {
+  color: var(--accent-text-color);
+
+  background-color: var(--auxiliary-bg-color);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+
+  @include hover {
+    &:not(:disabled) {
+      color: var(--main-text-color);
+
+      background-color: var(--accent-text-color) !important;
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px dotted var(--main-text-color);
   }
 }
 
 .danger {
+  color: var(--color-danger);
+
   background-color: var(--color-dark);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--color-danger);
-  color: var(--color-danger);
 
   @include hover {
     &:not(:disabled) {
-      background-color: var(--color-danger);
       color: var(--color-light);
+
+      background-color: var(--color-danger);
     }
+  }
+
+  &:focus-visible {
+    outline: 3px dotted var(--main-text-color);
   }
 }

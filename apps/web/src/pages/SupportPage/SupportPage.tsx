@@ -9,14 +9,11 @@ import { API_URL, $api } from "@/shared/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Работа с формами:
-import { Controller, useForm } from "react-hook-form";
-import { IMaskInput } from "react-imask";
+import { useForm } from "react-hook-form";
 //Роутинг:
 import { Link } from "react-router";
 //reCAPTCHA:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-//Иконки:
-import { HiOutlinePhone } from "react-icons/hi";
 //Компоненты:
 import { PhoneInput } from "@/shared/ui";
 //Уведомления:
