@@ -1,13 +1,15 @@
 .BrandCard {
   display: flex;
-  justify-content: center;
   flex-direction: row;
+  justify-content: center;
   padding: 18px;
+
   background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   text-decoration: none;
+
   transition: all 0.3s ease;
 
   @include tablet {
@@ -20,10 +22,6 @@
     box-shadow: 0 0 20px var(--accent-text-color);
     transform: scale(1.02);
   }
-
-  h3 {
-    color: var(--accent-text-color);
-  }
 }
 
 p {
@@ -35,14 +33,15 @@ p {
 .text {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   align-items: center;
+  gap: 8px;
 }
 
 .name {
-  font-size: 1.4rem;
-  color: var(--main-text-color);
   margin: 0 0 8px 0;
+
+  font-size: 1.4rem;
+  color: var(--accent-text-color);
 }
 
 .info {
@@ -50,6 +49,7 @@ p {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+
   color: rgba(255, 255, 255, 0.4);
 }
 
@@ -59,23 +59,21 @@ p {
 
 .frame {
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: white;
+  justify-content: center;
   width: 50px;
   height: 50px;
-  border-radius: 20%;
   overflow: hidden;
+
+  background-color: white;
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
+  border-radius: 20%;
 }
 
 .logo {
-  // width: 40px;
-  // height: 40px;
   width: 100%;
   height: 100%;
-  position: relative;
   object-fit: scale-down;
 }
 
@@ -84,7 +82,6 @@ p {
   flex-direction: row;
   align-items: center;
   justify-items: center;
-  // justify-content: space-between;
   gap: 20px;
 }
 

@@ -11,30 +11,22 @@ import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { Breadcrumbs } from "@/shared/ui";
 //Изображения:
-import equipmentImage from '@/shared/assets/images/catalog/equipment.jpg';
-import motoImage from '@/shared/assets/images/catalog/motorcycles.jpg';
-import spareImage from '@/shared/assets/images/catalog/spare.jpg';
+import { CATEGORY_IMAGES } from "./models/categories";
 //Стили:
 import styles from "./CatalogPage.module.scss";
+
+//Хлебные крошки:
+const breadcrumbs = [
+  { label: "Каталог", href: "/catalog" }, // Текущая страница
+];
 
 export const CatalogPage = () => {
 
   const { data: categories = [], isLoading, isError } = useSiteCategories();
 
-  //Изображения:
-  const CATEGORY_IMAGES: Record<string, string> = {
-    equipment: equipmentImage,
-    motorcycles: motoImage,
-    spare: spareImage,
-  };
 
   //SEO:
   const canonicalUrl = `${API_URL}/catalog`;
-
-  //Хлебные крошки:
-  const breadcrumbs = [
-    { label: "Каталог", href: "/catalog" }, // Текущая страница
-  ];
 
   if (isLoading)
     return (

@@ -18,6 +18,8 @@ import { AnimatedMotorcycle } from "./components/AnimatedMotorcycle/AnimatedMoto
 import { InfoCell } from "./components/InfoCell/InfoCell";
 import { ReviewSection } from "./components/ReviewSection/ReviewSection";
 
+const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/`;
+
 export const HomePage = () => {
   const { isLoading } = useProfile();
   const { theme } = useThemeStore();
@@ -28,8 +30,6 @@ export const HomePage = () => {
     "theme-retrowave": "decoration-retro",
     "theme-doom": "decoration-doom"
   }[theme] || "decoration-orange";
-
-  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/`;
 
   if (isLoading)
     return (

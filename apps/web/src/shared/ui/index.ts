@@ -12,6 +12,7 @@ export * from "./GlobalErrorFallback";
 export * from "./HeaderLink";
 export * from "./ImageModal";
 export * from "./Input";
+export * from "./Pagination";
 export * from "./PasswordField";
 export * from "./PaymentModal";
 export * from "./PhoneInput";
