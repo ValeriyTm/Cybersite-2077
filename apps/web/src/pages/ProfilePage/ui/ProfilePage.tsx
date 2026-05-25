@@ -1,9 +1,7 @@
-import { useRef } from "react";
 //Роутер:
 import { Navigate } from "react-router";
-import { Link } from "react-router";
 //Состояния:
-import { useProfile, useProfileActions } from "@/features/auth";
+import { ChangePasswordCard, DeleteAccountCard, ProfileHeader, SessionManagementCard, TwoFactorAuthCard, useProfile, useProfileActions } from "@/features/auth";
 //Иконки:
 import {
   HiOutlineUser,
@@ -13,12 +11,13 @@ import {
 } from "react-icons/hi";
 //Компоненты:
 import { TwoFactorModal, DeleteAccountModal } from "@/features/auth";
-import { Avatar, Input, Button, PasswordField, } from "@/shared/ui";
+import { Input, Button } from "@/shared/ui";
 import { BirthdayInput, PhoneInput } from "./components";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from "./ProfilePage.module.scss";
+import { SupportTicketsCard } from "@/features/support/ui/SupportTicketsCard";
 
 export const ProfilePage = () => {
   const { user, isLoading, logout, logoutAll } = useProfile();
@@ -55,21 +54,12 @@ export const ProfilePage = () => {
     formState: { errors, isSubmitting },
   } = profileForm;
 
-  //Извлекаем методы формы смены пароля (используем алиасы, чтобы не было конфликта имен):
-  const {
-    register: regPass,
-    handleSubmit: handlePassSubmit,
-    formState: { errors: passErrors, isSubmitting: isPassSubmitting },
-  } = passForm;
-
   // Извлекаем методы и состояния из формы удаления аккаунта:
   const {
     register: regDelete,
     handleSubmit: handleDeleteSubmit,
     formState: { errors: deleteErrors, isSubmitting: isDeleting },
   } = deleteForm;
-
-  const fileInputRef = useRef<HTMLInputElement>(null); //Ссылка на инпут загрузки аватара
 
   //Если данных о юзере нет, то перекидываем его на форму регистрации-логина:
   if (!user) return <Navigate to="/auth" />;
@@ -86,43 +76,18 @@ export const ProfilePage = () => {
 
       <div className={styles.profilePage}>
         <div className={styles.container}>
-          {/*Блок с именем, аватаром и кнопкой редактирования:*/}
-          <div className={styles.profileHeader}>
-            <Avatar
-              src={avatarSrc}
-              isAvatarLoading={isAvatarLoading}
-              isEditing={isEditing}
-              onClick={() =>
-                isEditing && !isAvatarLoading && fileInputRef.current?.click()
-              }
-            />
-            {/*Инпут для загрузки аватара:*/}
-            <label htmlFor="avatar" className='visually-hidden'>Загрузка аватара</label>
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              id="avatar"
-              onChange={handleAvatarChange}
-            />
-            {/*Отображаем имя и роль пользователя:*/}
-            <div className={styles.titleSection}>
-              <h3>{user?.name}</h3>
-              <p>{user?.role?.toLowerCase()}</p>
-            </div>
+          {/*1) Блок с именем, аватаром и кнопкой редактирования: */}
+          <ProfileHeader
+            name={user?.name || ""}
+            role={user?.role}
+            avatarSrc={avatarSrc}
+            isAvatarLoading={isAvatarLoading}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            onAvatarChange={handleAvatarChange}
+          />
 
-            {!isEditing && (
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setIsEditing(true)}
-              >
-                Редактировать профиль
-              </Button>
-            )}
-          </div>
-
-          {/*Форма с персональными данными:*/}
+          {/*2) Форма с персональными данными:*/}
           <div className={styles.infoGrid}>
             <form onSubmit={handleSubmit(onSubmit, onFormError)}>
               <div className={styles.card}>
@@ -235,62 +200,21 @@ export const ProfilePage = () => {
             </form>
           </div>
 
-          {/*Секция смены пароля:*/}
-          <div className={styles.card} style={{ marginTop: "24px" }}>
-            <div className={styles.header}>
-              <h2>Безопасность</h2>
-            </div>
-            <form onSubmit={handlePassSubmit(onChangePassword)}>
-              <PasswordField
-                label="Текущий пароль"
-                registration={regPass("oldPassword")}
-                error={passErrors.oldPassword}
-              />
+          {/*3) Секция смены пароля:*/}
+          <ChangePasswordCard
+            passForm={passForm}
+            onChangePassword={onChangePassword}
+          />
 
-              <PasswordField
-                label="Новый пароль"
-                placeholder="Минимум 8 символов"
-                registration={regPass("newPassword")}
-                error={passErrors.newPassword}
-              />
+          {/*4) Секция включения 2FA:*/}
+          {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
+            <TwoFactorAuthCard
+              is2FAEnabled={!!user?.is2FAEnabled}
+              onSetup2FA={handleSetup2FA}
+            />
+          )}
 
-              <PasswordField
-                label="Повторите пароль"
-                registration={regPass("confirmPassword")}
-                error={passErrors.confirmPassword}
-              />
-
-              <div className={styles.actions}>
-                <Button
-                  type="submit"
-                  variant="outline"
-                  isLoading={isPassSubmitting}
-                  loadingText="Обновление..."
-                >
-                  Обновить пароль
-                </Button>
-              </div>
-            </form>
-          </div>
-          {/*  */}
-
-          {/*Включение 2FA:*/}
-          {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && <div className={styles.securityZone}>
-            <h3>Админ</h3>
-            {
-              <button
-                title='Двухфакторная аутентификация'
-                onClick={user?.is2FAEnabled ? undefined : handleSetup2FA}
-                className={user.is2FAEnabled ? styles.enabled2FA : styles.btn2FA}
-                disabled={user.is2FAEnabled}
-              >
-                {user.is2FAEnabled ? "2FA Активна ✅" : "Включить 2FA 🛡️"}
-              </button>
-            }
-
-          </div>}
-
-          {/* Модальное окно настройки 2FA */}
+          {/*5) Модальное окно настройки 2FA */}
           {qrCode && (
             <TwoFactorModal
               qrCode={qrCode}
@@ -301,7 +225,7 @@ export const ProfilePage = () => {
             />
           )}
 
-          {/*Модальное окно для удаления аккаунта:*/}
+          {/*6) Модальное окно для удаления аккаунта:*/}
           {showDeleteModal && (
             <DeleteAccountModal
               isOpen={showDeleteModal}
@@ -313,51 +237,19 @@ export const ProfilePage = () => {
             />
           )}
 
-          {/*Управление сессиями:*/}
-          <div className={styles.sessionZone}>
-            <h3>Управление сессиями</h3>
-            <div className={styles.btnGroup}>
-              <Button type="button" variant="secondary" onClick={logout}>
-                Выйти из аккаунта
-              </Button>
+          {/*7) Управление сессиями:*/}
+          <SessionManagementCard
+            onLogout={logout}
+            onLogoutAll={logoutAll}
+          />
 
-              <Button type="button" variant="danger" onClick={logoutAll}>
-                Выйти со всех устройств
-              </Button>
-            </div>
-          </div>
+          {/*8) Вопросы поддержке: */}
+          <SupportTicketsCard />
 
-          <div className={styles.ticketsZone}>
-            <h3>Вопросы поддержке</h3>
-            <span>
-              <Link to="/support/tickets" style={{ marginRight: "10px" }}>
-                <Button
-                  type="button"
-                  variant="secondary"
-                >
-                  Перейти в мои тикеты
-                </Button>
-              </Link>
-
-            </span>
-          </div>
-
-          {/*Удаление аккаунта:*/}
-          <div className={styles.dangerZone}>
-            <h2>Опасная зона</h2>
-
-            <Button
-              type="button"
-              variant="danger"
-              onClick={() => setShowDeleteModal(true)}
-            >
-              Удалить аккаунт
-            </Button>
-
-          </div>
+          {/*9) Удаление аккаунта:*/}
+          <DeleteAccountCard onOpenDeleteModal={() => setShowDeleteModal(true)} />
         </div >
       </div >
     </>
-
   );
 };

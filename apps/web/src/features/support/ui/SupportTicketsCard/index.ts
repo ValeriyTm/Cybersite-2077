@@ -1,0 +1,1 @@
+export { SupportTicketsCard } from "./SupportTicketsCard";

@@ -1,0 +1,32 @@
+.dangerZone {
+  margin-top: 30px;
+  padding: 20px;
+  margin-bottom: 40px;
+  border-radius: 20px;
+  background-color: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--color-danger);
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  button {
+    max-width: 300px;
+    margin-block: 10px;
+  }
+
+  @include mobile {
+    justify-content: center;
+    align-items: center;
+  }
+
+  h2 {
+    color: var(--color-danger);
+    // font-size: 16px;
+    margin-block: 15px;
+
+    @include mobile {
+      margin-block: 5px;
+    }
+  }
+}
