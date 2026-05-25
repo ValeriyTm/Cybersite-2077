@@ -1,21 +1,33 @@
+//Работа с IMask:
 import { Controller, type Control, type FieldError } from "react-hook-form";
 import { IMaskInput } from "react-imask";
+//Иконки:
 import { HiOutlinePhone } from "react-icons/hi";
-import styles from "../../ProfilePage.module.scss";
+//Стили:
+import styles from "./PhoneInput.module.scss";
 
 interface PhoneInputProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>;
   error?: FieldError;
+  id?: string;
+  required?: boolean;
+  className?: string;
 }
 
-export const PhoneInput = ({ control, error }: PhoneInputProps) => {
+export const PhoneInput = ({
+  control,
+  error,
+  id = "phone-input",
+  required = false,
+  className = ""
+}: PhoneInputProps) => {
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row} ${className}`.trim()}>
       <div className={styles.label}>
-        <label htmlFor="phone-input">
+        <label htmlFor={id}>
           <HiOutlinePhone />&nbsp;&nbsp;&nbsp;Телефон{" "}
-          <span className={styles.requiredStar}>*</span>
+          {required && <span className={styles.requiredStar}>*</span>}
         </label>
       </div>
       <div className={styles.value}>
@@ -24,7 +36,7 @@ export const PhoneInput = ({ control, error }: PhoneInputProps) => {
           name="phone"
           render={({ field: { onChange, value } }) => (
             <IMaskInput
-              id="phone-input"
+              id={id}
               mask="+{7} (000) 000-00-00"
               value={value || ""}
               onAccept={(val) => onChange(val)}

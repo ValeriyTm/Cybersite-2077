@@ -12,6 +12,7 @@ export * from "./ImageModal";
 export * from "./Input";
 export * from "./PasswordField";
 export * from "./PaymentModal";
+export * from "./PhoneInput";
 export * from "./RatingInput";
 export * from "./ReviewCardHome";
 export * from "./SpecRow";

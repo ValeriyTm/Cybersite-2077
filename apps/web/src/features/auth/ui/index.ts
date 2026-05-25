@@ -1,4 +1,5 @@
 export * from "./AuthCard";
+export * from "./BirthdayInput";
 export * from "./ChangePasswordCard";
 export * from "./DeleteAccountCard";
 export * from "./DeleteAccountModal";

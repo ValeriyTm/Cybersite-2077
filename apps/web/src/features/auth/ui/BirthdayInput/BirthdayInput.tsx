@@ -1,8 +1,11 @@
+//Работа с IMask:
 import { Controller, type Control, type FieldError } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import IMask from "imask";
+//Иконки:
 import { HiOutlineCalendar } from "react-icons/hi";
-import styles from "../../ProfilePage.module.scss";
+//Стили:
+import styles from "./BirthdayInput.module.scss";
 
 interface BirthdayInputProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

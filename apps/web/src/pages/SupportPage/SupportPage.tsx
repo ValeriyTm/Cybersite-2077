@@ -15,8 +15,10 @@ import { IMaskInput } from "react-imask";
 import { Link } from "react-router";
 //reCAPTCHA:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-//Компоненты:
+//Иконки:
 import { HiOutlinePhone } from "react-icons/hi";
+//Компоненты:
+import { PhoneInput } from "@/shared/ui";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
@@ -198,37 +200,12 @@ export const SupportPage = () => {
           </div>
 
           {/*Номер телефона:*/}
-          <div className={styles.rowMobile}>
-            <div className={styles.label}>
-              <label htmlFor="phone">
-                <HiOutlinePhone /> Телефон{" "}
-              </label>
-            </div>
-            <div className={styles.value}>
-              <>
-                <Controller
-                  control={control}
-                  name="phone"
-                  render={({ field: { onChange, value } }) => (
-                    <IMaskInput
-                      id='phone'
-                      mask="+{7} (000) 000-00-00"
-                      value={value || ""}
-                      onAccept={(val) => onChange(val)} // Передаем значение в форму
-                      className={
-                        errors.phone ? styles.inputError : styles.maskInput
-                      }
-                    />
-                  )}
-                />
-              </>
-              {errors.phone && (
-                <span className={styles.errorMessage}>
-                  {errors.phone.message}
-                </span>
-              )}
-            </div>
-          </div>
+          <PhoneInput
+            control={control}
+            error={errors.phone}
+            id="phone"
+          // className={styles.rowMobile}
+          />
 
           <label htmlFor="reason" className="visually-hidden">Выберите причину обращения</label>
           <select {...register("category")} id='reason'>
