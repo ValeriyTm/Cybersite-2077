@@ -13,6 +13,7 @@ interface PhoneInputProps {
   id?: string;
   required?: boolean;
   className?: string;
+  center?: boolean;
 }
 
 export const PhoneInput = ({
@@ -20,7 +21,8 @@ export const PhoneInput = ({
   error,
   id = "phone-input",
   required = false,
-  className = ""
+  className = "",
+  center,
 }: PhoneInputProps) => {
   return (
     <div className={`${styles.row} ${className}`.trim()}>
@@ -40,7 +42,7 @@ export const PhoneInput = ({
               mask="+{7} (000) 000-00-00"
               value={value || ""}
               onAccept={(val) => onChange(val)}
-              className={`${styles.maskInput} ${error ? styles.inputError : ''}`}
+              className={`${styles.maskInput} ${center ? styles.centered : ''} ${error ? styles.inputError : ''}`}
             />
           )}
         />

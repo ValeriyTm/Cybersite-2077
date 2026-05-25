@@ -1,0 +1,48 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 10px;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.subBtn {
+  background-color: var(--accent-text-color);
+  color: var(--main-text-color);
+  padding: 5px 10px;
+  border-radius: 20px;
+  height: 44px;
+  font-weight: 800;
+
+  @include hover {
+    &:not(:disabled) {
+      opacity: 0.8;
+      box-shadow: 0 0 10px var(--accent-text-color);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

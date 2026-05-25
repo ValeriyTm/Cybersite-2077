@@ -60,6 +60,7 @@ export const ProfileInfoCard = ({
             control={control}
             error={errors.phone}
             required={true}
+            center
           />
         ) : (
           <div className={styles.row}>

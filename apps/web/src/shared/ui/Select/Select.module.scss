@@ -1,0 +1,39 @@
+select {
+  background: var(--main-text-color);
+  /* pxtorem-disable-next-line */
+  border: 1px solid #333;
+  padding: 15px;
+  border-radius: 6px;
+  color: var(--color-black);
+  font-size: 1rem;
+  outline: none;
+  width: 100%;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+  appearance: none;
+
+  &::placeholder {
+    color: gray;
+  }
+
+  &:hover {
+    box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+  }
+
+  &:focus-visible {
+    border: 2px solid var(--accent-text-color);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    background-color: #f5f5f5;
+    opacity: 0.7;
+  }
+}
+
+.center {
+  text-align: center;
+}
