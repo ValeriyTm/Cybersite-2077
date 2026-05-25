@@ -2,7 +2,7 @@ import { lazy } from 'react';
 //Роутинг:
 import { createBrowserRouter } from "react-router";
 //Компоненты:
-import { HomePage } from '@/pages/HomePage/HomePage';
+import { HomePage } from '@/pages/HomePage/ui/HomePage';
 import { MainLayout } from "@/app/ui/MainLayout";
 import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
 import { ProtectedRoute } from '@/app/providers/router/ui/ProtectedRoute.js';

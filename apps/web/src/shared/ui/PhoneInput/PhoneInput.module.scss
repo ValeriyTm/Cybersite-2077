@@ -2,19 +2,10 @@
   display: grid;
   grid-template-columns: 140px 1fr;
   align-items: center;
-  gap: 400px;
   padding: 22px 0;
 
   /* pxtorem-disable-next-line */
   border-bottom: 1px solid #f0f0f0;
-
-  @include tablet {
-    gap: 50px;
-  }
-
-  @include mobile {
-    gap: 20px;
-  }
 
   @include mobile-s {
     grid-template-columns: 1fr;
@@ -61,8 +52,8 @@
 
 .maskInput {
   width: 100%;
-  padding: 8px 12px;
   min-height: 44px;
+  padding: 8px 12px;
 
   font-family: inherit;
   font-size: 1rem;

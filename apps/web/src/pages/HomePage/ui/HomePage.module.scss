@@ -1,0 +1,134 @@
+.homePage {
+  background: var(--basic-gradient);
+}
+
+// Главная сетка Grid для ячеек
+.container {
+  display: grid;
+  gap: 5px;
+  border: 2px solid black;
+  grid-template-areas:
+    "cell-1 cell-2 sidebar-1"
+    "cell-3 cell-4 sidebar-1";
+  grid-template-columns: 1fr 1fr 1fr;
+
+  @include tablet {
+    grid-template-areas:
+      "sidebar-1 sidebar-1"
+      "cell-1 cell-2"
+      "cell-3 cell-4";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto minmax(300px, auto) minmax(300px, auto);
+  }
+
+  @include mobile {
+    grid-template-areas:
+      "sidebar-1"
+      "cell-1"
+      "cell-2"
+      "cell-3"
+      "cell-4";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(300px, auto) minmax(300px, auto);
+  }
+}
+
+.cell1 {
+  grid-area: cell-1;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  text-align: center;
+  border: 1px solid var(--accent-text-color);
+  overflow: hidden;
+  position: relative;
+  max-height: 400px;
+  width: 100%;
+
+  @include tablet {
+    max-height: 350px;
+  }
+  @include mobile {
+    max-height: 320px;
+  }
+
+  .teamImage {
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+}
+
+.cell3 {
+  grid-area: cell-3;
+}
+.cell4 {
+  grid-area: cell-4;
+}
+
+.sidebar {
+  grid-area: sidebar-1;
+  border: 1px solid var(--accent-text-color);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  @include tablet {
+    max-height: 400px;
+  }
+}
+
+.textMain {
+  color: var(--accent-text-color);
+  font-size: 20px;
+  padding-top: 10px;
+
+  @include mobile {
+    padding-top: 5px;
+  }
+}
+
+.brands {
+  background-color: var(--auxiliary-bg-color-2);
+  font-weight: 700;
+  font-size: 30px;
+  padding-top: 10px;
+  color: var(--accent-text-color);
+  -webkit-text-stroke: 1px var(--color-black);
+  padding-left: 15px;
+
+  @include mobile {
+    font-weight: 500;
+    font-size: 24px;
+    text-align: center;
+    padding-inline: 5px;
+    line-height: normal;
+  }
+
+  @include mobile-s {
+    font-size: 20px;
+    -webkit-text-stroke: 0.5px var(--color-black);
+  }
+}
+
+.decoration-orange {
+  width: 100%;
+  height: 8px;
+  background-image: url("@/shared/assets/images/decoration/texture-orange.png");
+}
+.decoration-blue {
+  width: 100%;
+  height: 8px;
+  background-image: url("@/shared/assets/images/decoration/texture-blue.png");
+}
+.decoration-retro {
+  width: 100%;
+  height: 40px;
+  background-image: url("@/shared/assets/images/decoration/texture-retro.png");
+}
+.decoration-doom {
+  width: 100%;
+  height: 8px;
+  background-image: url("@/shared/assets/images/decoration/texture-doom.png");
+}

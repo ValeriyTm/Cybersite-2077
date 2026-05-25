@@ -1,39 +1,72 @@
-select {
-  background: var(--main-text-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid #333;
-  padding: 15px;
-  border-radius: 6px;
-  color: var(--color-black);
-  font-size: 1rem;
-  outline: none;
+.selectWrapper {
+  position: relative;
   width: 100%;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
 
-  appearance: none;
+  select {
+    background: var(--main-text-color);
+    /* pxtorem-disable-next-line */
+    border: 1px solid #333;
+    padding: 10px 40px 10px 12px;
+    border-radius: 8px;
+    color: var(--color-black);
+    font-size: 1rem;
+    min-height: 44px;
+    outline: none;
+    width: 100%;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
 
-  &::placeholder {
-    color: gray;
+    cursor: pointer;
+
+    /* Скрываем стандартную стрелку браузера */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* Скрываем стрелку в старых IE */
+    &::-ms-expand {
+      display: none;
+    }
+
+    &::placeholder {
+      color: gray;
+    }
+
+    &:hover {
+      box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+    }
+
+    &:focus-visible {
+      border: 2px solid var(--accent-text-color);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+
+      background-color: #f5f5f5;
+      opacity: 0.7;
+    }
   }
 
-  &:hover {
-    box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+  .center {
+    text-align: center;
   }
 
-  &:focus-visible {
-    border: 2px solid var(--accent-text-color);
+  .arrow {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--accent-text-color);
+
+    /* Стрелочка не должна перехватывать клики мыши, они должны идти на сам select */
+    pointer-events: none;
+    transition: transform 0.2s ease;
   }
-
-  &:disabled {
-    cursor: not-allowed;
-
-    background-color: #f5f5f5;
-    opacity: 0.7;
-  }
-}
-
-.center {
-  text-align: center;
 }

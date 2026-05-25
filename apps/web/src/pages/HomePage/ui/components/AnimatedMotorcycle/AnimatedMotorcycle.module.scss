@@ -1,0 +1,92 @@
+.cell2 {
+  border: 1px solid var(--accent-text-color);
+  overflow: hidden;
+  position: relative;
+  max-height: 400px;
+  width: 100%;
+
+  @include tablet {
+    max-height: 350px;
+  }
+  @include mobile {
+    max-height: 320px;
+  }
+
+  .cellContainer {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-image: url("@/shared/assets/images/animation/frame1.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    @include hover {
+      background-image: url("@/shared/assets/images/animation/background.gif");
+
+      @media (prefers-reduced-motion: reduce) {
+        background-image: url("@/shared/assets/images/animation/frame1.png");
+      }
+    }
+  }
+
+  .motorcycleFrame {
+    position: absolute;
+    width: 240px;
+    aspect-ratio: 16 / 9;
+    bottom: -2%;
+    left: 10%;
+
+    // Рама выше колес
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("@/shared/assets/images/animation/moto-frame.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      z-index: 2;
+    }
+
+    // Тень под мотоциклом
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 5%;
+      left: 5%;
+      width: 90%;
+      height: 10px;
+      background: rgba(211, 36, 202, 0.4);
+      border-radius: 50%;
+      filter: blur(5px);
+      z-index: 0;
+    }
+  }
+
+  .backWheel {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    bottom: 0%;
+    left: -5%;
+  }
+  .frontWheel {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    bottom: -2%;
+    left: 57%;
+  }
+  .smoke {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    bottom: 19%;
+    left: -15%;
+    z-index: 30;
+  }
+}
