@@ -7,7 +7,7 @@ import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, type Motor
 import { useUrlSearch } from "@/shared/lib/hooks/useUrlSearch";
 //Компоненты:
 import { MotorcycleCard } from "@/widgets/MotorcycleCard";
-import { RangeFilter, SelectFilter } from "@/features/catalog-filter";
+import { CatalogSorting, RangeFilter, SelectFilter } from "@/features/catalog";
 import { Breadcrumbs, Button, Input, Pagination } from "@/shared/ui";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //API:
@@ -98,22 +98,7 @@ export const MotorcyclesPage = () => {
             </div>
 
             {/*2.1.2.Сортировка*/}
-            <div className={styles.sorting}>
-              <label className={styles.sortLabel} htmlFor="sorting-select">Сортировать:</label>
-              <select
-                className={styles.sortSelect}
-                value={filters.sortBy}
-                id='sorting-select'
-                onChange={(e) => updateFilters({ sortBy: e.target.value })}
-              >
-                <option value="name_asc">По алфавиту (А-Я)</option>
-                <option value="name_desc">По алфавиту (Я-А)</option>
-                <option value="price_asc">Сначала дешевые</option>
-                <option value="price_desc">Сначала дорогие</option>
-                <option value="year_desc">Сначала новые</option>
-                <option value="rating_desc">Высокий рейтинг</option>
-              </select>
-            </div>
+            <CatalogSorting />
 
             {/*2.1.3.Переключатели режима отображения:*/}
             <div className={styles.displayControls}>
@@ -130,7 +115,6 @@ export const MotorcyclesPage = () => {
                   </button>
                 ))}
               </div>
-
               {/*Переключатель вида Grid/List: */}
               <div className={styles.viewSwitch}>
                 <button
@@ -152,12 +136,6 @@ export const MotorcyclesPage = () => {
           </header>
 
           {/*Кнопка фильтров на мобилке:*/}
-          {/* <div>
-            <button className={styles.mobileBtn} type="button" onClick={toggleFilter}>
-              Фильтры 🔍
-            </button>
-          </div> */}
-          {/* Кнопка фильтров на мобилке */}
           <div className={styles.mobileBtnWrapper}>
             <Button
               type="button"

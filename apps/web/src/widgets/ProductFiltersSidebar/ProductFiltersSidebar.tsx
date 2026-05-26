@@ -1,7 +1,7 @@
 //Состояния и опции:
 import { CATEGORY_OPTIONS, TRANSMISSION_OPTIONS, useMotorcycleFilters } from "@/entities/catalog";
 //Компоненты:
-import { RangeFilter, SelectFilter } from "@/features/catalog-filter";
+import { RangeFilter, SelectFilter } from "@/features/catalog";
 import { Button } from "@/shared/ui";
 //Стили:
 import styles from "./ProductFiltersSidebar.module.scss";

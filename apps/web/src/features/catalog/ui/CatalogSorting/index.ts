@@ -1,0 +1,1 @@
+export { CatalogSorting } from "./CatalogSorting";

@@ -8,7 +8,7 @@ import { $api } from "@/shared/api";
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { OrderCard } from "@/entities/ordering";
-import { SelectFilter } from "@/features/catalog-filter";
+import { SelectFilter } from "@/features/catalog";
 //Стили:
 import styles from "./MyOrdersPage.module.scss";
 import type { Order } from "@/entities/ordering/types/types";

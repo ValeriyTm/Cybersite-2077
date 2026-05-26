@@ -16,8 +16,6 @@ export const UserTicketsPage = () => {
     queryFn: () => $api.get("/support/my-tickets").then((res) => res.data),
   });
 
-
-
   if (isLoading) return <div>Загрузка...</div>;
 
   return (
