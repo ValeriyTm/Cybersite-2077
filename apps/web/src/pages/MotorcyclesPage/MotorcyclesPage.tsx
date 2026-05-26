@@ -1,17 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
-import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, type MotorcycleResponse, CATEGORY_OPTIONS, TRANSMISSION_OPTIONS } from "@/entities/catalog";
-import { useQuery } from "@tanstack/react-query";
-//API:
-import { $api } from "@/shared/api";
+import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, type MotorcycleResponse, CATEGORY_OPTIONS, TRANSMISSION_OPTIONS, useCatalogMotorcycles } from "@/entities/catalog";
 //Дебаунс для поиска:
 import { useUrlSearch } from "@/shared/lib/hooks/useUrlSearch";
 //Компоненты:
 import { MotorcycleCard } from "@/widgets/MotorcycleCard";
 import { RangeFilter, SelectFilter } from "@/features/catalog-filter";
-import { Breadcrumbs, Input, Pagination } from "@/shared/ui";
+import { Breadcrumbs, Button, Input, Pagination } from "@/shared/ui";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //API:
 import { API_URL } from "@/shared/api";
@@ -19,6 +16,7 @@ import { API_URL } from "@/shared/api";
 import { Helmet } from "react-helmet-async";
 //Стили:
 import styles from "./MotorcyclesPage.module.scss";
+import { ProductFiltersSidebar } from "@/widgets/ProductFiltersSidebar";
 
 export const MotorcyclesPage = () => {
   //Извлекаем данные из адресной строки:
@@ -39,22 +37,8 @@ export const MotorcyclesPage = () => {
   //Debounce для поиска:
   const { searchQuery, debouncedSearch } = useUrlSearch("search", 500);
 
-
-  //Загружаем и кэшируем данные о моделях мотоциклов с учетом фильтров:
-  const { data, isLoading } = useQuery({
-    queryKey: ["motorcycles", brandSlug, filters],
-    queryFn: () =>
-      $api
-        .get<MotorcycleResponse>(`catalog/motorcycles/`, {
-          params: { ...filters, brandSlug },
-        })
-        //Оставляем только полезные данные в data:
-        .then((res) => res.data),
-    //При переключении страниц старые данные не пропадают мгновенно:
-    placeholderData: (previousData) => previousData,
-    // Кэшируем результат на 5 минут, чтобы при кнопке "Назад" всё было мгновенно
-    staleTime: 5 * 60 * 1000,
-  });
+  //Данные о моделях мотоциклов с учетом фильтров:
+  const { data, isLoading } = useCatalogMotorcycles({ brandSlug, filters });
 
   //--------------------------------------------------------------------//
   //Хлебные крошки (навигация):
@@ -82,82 +66,12 @@ export const MotorcyclesPage = () => {
 
       <div className={styles.Page}>
         {/*1) Сайдбар с фильтрами:*/}
-        <aside className={` ${isOpen ? styles.SidebarMobile : styles.Sidebar}`}>
-          {/*Тут фильтры:*/}
-          <div className={styles.exitSidebar} onClick={toggleFilter}>x</div>
-          <h2 className={styles.sidebarTitle}>Фильтры</h2>
-
-          {/*Фильтр по цене:*/}
-          <RangeFilter
-            label="Цена (₽)"
-            min={filters.minPrice}
-            max={filters.maxPrice}
-            onChange={(min, max) =>
-              updateFilters({ minPrice: min, maxPrice: max })
-            }
-          />
-
-          {/*Фильтр по объему двигателя:*/}
-          <RangeFilter
-            label="Объем (см³)"
-            min={filters.minDisplacement}
-            max={filters.maxDisplacement}
-            onChange={(min, max) =>
-              updateFilters({ minDisplacement: min, maxDisplacement: max })
-            }
-          />
-
-          {/*Фильтр по году выпуска:*/}
-          <RangeFilter
-            label="Год выпуска"
-            min={filters.minYear}
-            max={filters.maxYear}
-            onChange={(min, max) => updateFilters({ minYear: min, maxYear: max })}
-          />
-
-          {/*Фильтр по мощности:*/}
-          <RangeFilter
-            label="Мощность (л.с.)"
-            min={filters.minPower}
-            max={filters.maxPower}
-            onChange={(min, max) =>
-              updateFilters({ minPower: min, maxPower: max })
-            }
-          />
-
-          {/*Фильтр по категории:*/}
-          <SelectFilter
-            label="Категория"
-            value={filters.category}
-            options={CATEGORY_OPTIONS}
-            onChange={(val) => updateFilters({ category: val })}
-          />
-
-          {/*Фильтр по трансмиссии:*/}
-          <SelectFilter
-            label="Тип привода"
-            value={filters.transmission}
-            options={TRANSMISSION_OPTIONS}
-            onChange={(val) => updateFilters({ transmission: val })}
-          />
-
-          {/*Фильтр наличия:*/}
-          <label className={styles.checkboxFilter}>
-            <input
-              type="checkbox"
-              checked={filters.onlyInStock}
-              onChange={(e) => updateFilters({ onlyInStock: e.target.checked })}
-            />
-            <span className={styles.checkboxLabel}>Только в наличии</span>
-          </label>
-
-          <button className={styles.filterMobileBtn} onClick={toggleFilter} type="button">Применить</button>
-        </aside>
+        <ProductFiltersSidebar isOpen={isOpen} onClose={() => setIsOpen(false)} />
 
         {/*2) Карточки и сортировка:*/}
         <main className={styles.Content}>
 
-
+          {/*2.0. Навигация:*/}
           <Breadcrumbs items={breadcrumbs} />
 
           <h1 className={styles.title}>
@@ -238,11 +152,22 @@ export const MotorcyclesPage = () => {
           </header>
 
           {/*Кнопка фильтров на мобилке:*/}
-          <div>
+          {/* <div>
             <button className={styles.mobileBtn} type="button" onClick={toggleFilter}>
               Фильтры 🔍
             </button>
+          </div> */}
+          {/* Кнопка фильтров на мобилке */}
+          <div className={styles.mobileBtnWrapper}>
+            <Button
+              type="button"
+              variant="outline-dark"
+              onClick={toggleFilter}
+            >
+              ФИЛЬТРЫ 🔍
+            </Button>
           </div>
+
 
           {/*2.2.Карточки:*/}
           {isLoading && (

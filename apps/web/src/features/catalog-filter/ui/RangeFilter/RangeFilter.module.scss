@@ -3,11 +3,12 @@
 }
 
 .label {
-  color: var(--auxiliary-text-color);
+  margin-bottom: 12px;
+
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  color: var(--auxiliary-text-color);
 }
 
 .inputs {
@@ -18,30 +19,45 @@
 
 .input {
   width: 100%;
+  height: 44px;
+  padding: 4px 12px;
+
+  font-size: 0.9rem;
+  color: var(--main-text-color);
+  outline: none;
+
   background: var(--main-bg-color);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-text-color);
-  color: var(--main-text-color);
-  padding: 4px 12px;
   border-radius: 8px;
-  font-size: 0.9rem;
-  outline: none;
+
   transition: border-color 0.2s;
-  height: 44px;
 
   &::placeholder {
     color: var(--auxiliary-text-color);
   }
 
-  &:focus {
-    border-color: var(--accent-text-color);
+  &:hover {
+    box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+  }
+
+  &:focus-visible {
+    border: 2px solid var(--accent-text-color);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    background-color: #f5f5f5;
+    opacity: 0.7;
   }
 
   //Убираем стрелочки у инпута number:
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
     margin: 0;
+
+    -webkit-appearance: none;
   }
 }
 

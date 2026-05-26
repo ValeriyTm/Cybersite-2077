@@ -4,3 +4,4 @@ export { useMotorcycleReviews } from "./useMotorcycleReviews";
 export { useRelatedMotos } from "./useRelatedMotos";
 export { useSiteCategories } from "./useSiteCategories";
 export { useBrands } from "./useBrands";
+export { useCatalogMotorcycles } from "./useCatalogMotorcycles";

@@ -1,0 +1,120 @@
+.Sidebar {
+  width: 300px;
+  flex-shrink: 0;
+
+  @include laptop-s {
+    display: none;
+  }
+}
+
+.SidebarMobile {
+  display: flex;
+  flex-direction: column;
+  height: 745px;
+  overflow-y: auto;
+  width: 300px;
+  flex-shrink: 0;
+  position: fixed;
+  top: 201px;
+  z-index: 1500;
+  background-color: var(--main-bg-color);
+  padding: 10px 20px;
+  border-radius: 20px;
+  /* pxtorem-disable-next-line */
+  border: 2px solid var(--accent-text-color);
+
+  @include laptop-s-above {
+    display: none;
+  }
+}
+
+.filterMobileBtn {
+  color: var(--accent-text-color);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  background-color: var(--main-bg-color);
+  padding: 5px 20px;
+  border-radius: 10px;
+  margin-top: 5px;
+  cursor: pointer;
+
+  @include laptop-s-above {
+    display: none;
+  }
+}
+
+.sidebarTitle {
+  color: var(--main-text-color);
+  font-size: 1.4rem;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+
+  @include laptop-s {
+    margin-block: 0;
+  }
+}
+
+.exitSidebar {
+  color: var(--main-text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  cursor: pointer;
+
+  @include hover {
+    color: var(--accent-text-color);
+  }
+}
+
+.checkboxFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding-block: 0 16px;
+  padding-inline: 0;
+  color: var(--main-text-color);
+  transition: transform 0.2s;
+  position: relative;
+
+  @include hover {
+    transform: scale(1.02);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    height: 44px;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-text-color);
+
+    @include hover {
+      box-shadow: 0 0 20px var(--accent-text-color);
+    }
+  }
+
+  .checkboxLabel {
+    color: var(--auxiliary-text-color);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}

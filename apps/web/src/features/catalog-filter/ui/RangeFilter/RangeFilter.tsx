@@ -21,14 +21,19 @@ export const RangeFilter = ({
 }: RangeFilterProps) => {
   /////------------------Внедряем дебаунс:----------------
   //1) Локальный стейт для мгновенного отклика инпутов:
+  const [prevMin, setPrevMin] = useState<number | undefined>(min);
+  const [prevMax, setPrevMax] = useState<number | undefined>(max);
+
   const [localMin, setLocalMin] = useState<number | undefined>(min);
   const [localMax, setLocalMax] = useState<number | undefined>(max);
 
-  //2) Синхронизируем локальный стейт, если пропсы изменились извне (например, при сбросе фильтров):
-  useEffect(() => {
+  // 2) Синхронизация при изменении пропсов извне:
+  if (min !== prevMin || max !== prevMax) {
+    setPrevMin(min);
+    setPrevMax(max);
     setLocalMin(min);
     setLocalMax(max);
-  }, [min, max]);
+  }
 
   //3) Создаем дебаунс-версию функции уведомления родителя:
   const debouncedOnChange = useMemo(
