@@ -101,16 +101,6 @@
   }
 }
 
-.Error {
-  /* pxtorem-disable-next-line */
-  border: 3px solid var(--color-danger);
-
-  @include hover {
-    /* pxtorem-disable-next-line */
-    border: 2px solid var(--color-danger);
-  }
-}
-
 //Боковая панель с результатами:
 .summary {
   background: var(--auxiliary-bg-color-2);
@@ -195,53 +185,6 @@
   padding: 150px 20px;
   font-size: 1.4rem;
   color: var(--accent-text-color);
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-top: 12px;
-
-  .favIconBtn {
-    background: none;
-    /* pxtorem-disable-next-line */
-    border: none;
-    font-size: 1.3rem;
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.2s ease;
-    display: flex;
-    align-items: center;
-
-    @include hover {
-      transform: scale(1.2);
-    }
-
-    &.active {
-      filter: drop-shadow(0 0 5px rgba(156, 21, 32, 0.7));
-    }
-  }
-
-  .deleteTextBtn {
-    background: none;
-    /* pxtorem-disable-next-line */
-    border: none;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
-
-    @include hover {
-      color: var(--color-danger);
-    }
-  }
-}
-
-.errorHint {
-  grid-area: footer;
-  color: var(--color-danger);
 }
 
 ////Для промокода:

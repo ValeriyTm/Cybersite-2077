@@ -10,14 +10,16 @@ import { type MotorcycleCart } from "@/entities/catalog";
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from './CartItem.module.scss'
-import { AddToCartButton, FavoriteButton } from '@/features/trading';
 
 export interface CartCardProps {
   data: MotorcycleCart;
   handleDeletingId: (data: string) => void;
+  favoriteButtonSlot?: React.ReactNode; //Слот для кнопки "Избранного"
+  actionButtonSlot?: React.ReactNode;  //Слот для кнопки "Корзины"
 }
 
-export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
+export const CartItem = ({ data, handleDeletingId, favoriteButtonSlot,
+  actionButtonSlot }: CartCardProps) => {
   const {
     toggleSelect,
   } = useCart();
@@ -79,8 +81,9 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
 
         <div className={styles.actions}>
           <div className={styles.btnGroup}>
-            {/* Добавить/удалить из избранного: */}
-            <FavoriteButton motorcycleId={data.id} viewMode="list" />
+
+            {/* Тут будет кнопка добавить/удалить из избранного: */}
+            {favoriteButtonSlot}
 
             {/* Удалить из корзины: */}
             <button title='Удалить из корзины' onClick={() => handleDeletingId(data.id)} className={styles.deleteBtn}>
@@ -88,19 +91,8 @@ export const CartItem = ({ data, handleDeletingId }: CartCardProps) => {
             </button>
           </div>
 
-          {/*Изменить количество товара в корзине:*/}
-          <AddToCartButton
-            variant="card"
-            data={{
-              id: data.id,
-              model: data.model,
-              price: data.price,
-              slug: data.slug,
-              totalInStock: data.totalInStock,
-              year: data.year,
-            }}
-            onCartPage
-          />
+          {/*Тут будет кнопка изменения количества товара в корзине:*/}
+          {actionButtonSlot}
         </div>
 
         {/*Цена:*/}

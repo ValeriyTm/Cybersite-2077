@@ -15,6 +15,7 @@ import { Helmet } from 'react-helmet-async';
 import toast from "react-hot-toast";
 //Стили:
 import styles from "./CartPage.module.scss";
+import { CartCard } from "@/widgets/CartCard";
 
 export const CartPage = () => {
   const { user } = useProfile(); // Достаем данные профиля
@@ -186,7 +187,7 @@ export const CartPage = () => {
             <div className={styles.list}>
               {cartItems.map((item) => {
                 return (
-                  <CartItem key={item.id} data={item} handleDeletingId={handleDeletingId} />
+                  <CartCard key={item.id} data={item} handleDeletingId={handleDeletingId} />
                 )
               })}
             </div>
