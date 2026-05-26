@@ -3,12 +3,9 @@
   width: 100%;
 
   select {
-    background: var(--main-text-color);
     /* pxtorem-disable-next-line */
-    border: 1px solid #333;
     padding: 10px 40px 10px 12px;
     border-radius: 8px;
-    color: var(--color-black);
     font-size: 1rem;
     min-height: 44px;
     outline: none;
@@ -69,4 +66,43 @@
     pointer-events: none;
     transition: transform 0.2s ease;
   }
+}
+
+.inputError {
+  border: 2px solid red !important;
+}
+
+//------Варианты:--------//
+.light {
+  background: var(--main-text-color);
+  color: var(--color-black);
+  border: 1px solid #333;
+}
+
+.dark {
+  background-color: transparent;
+  color: var(--accent-text-color);
+  border: 1px solid var(--accent-text-color);
+}
+
+.labelLight {
+  color: var(--color-dark);
+}
+
+.labelDark {
+  color: var(--color-light);
+}
+
+.parentWrapperRow {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.parentWrapperColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
 }

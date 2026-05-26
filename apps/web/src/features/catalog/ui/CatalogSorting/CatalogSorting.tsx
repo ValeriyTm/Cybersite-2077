@@ -1,28 +1,32 @@
 import { useMotorcycleFilters } from "@/entities/catalog";
+//Компоненты:
+import { Select } from "@/shared/ui";
 //Стили:
 import styles from "./CatalogSorting.module.scss";
+
+const SORT_OPTIONS = [
+  { value: "name_asc", label: "По алфавиту (А-Я)" },
+  { value: "name_desc", label: "По алфавиту (Я-А)" },
+  { value: "price_asc", label: "Сначала дешевые" },
+  { value: "price_desc", label: "Сначала дорогие" },
+  { value: "year_desc", label: "Сначала новые" },
+  { value: "rating_desc", label: "Высокий рейтинг" },
+];
 
 export const CatalogSorting = () => {
   const { filters, updateFilters } = useMotorcycleFilters();
 
   return (
     <div className={styles.sorting}>
-      <label className={styles.sortLabel} htmlFor="sorting-select">
-        Сортировать:
-      </label>
-      <select
-        className={styles.sortSelect}
-        value={filters.sortBy || "name_asc"}
+      <Select
         id="sorting-select"
+        label="Сортировать:"
+        options={SORT_OPTIONS}
+        value={filters.sortBy || "name_asc"}
         onChange={(e) => updateFilters({ sortBy: e.target.value })}
-      >
-        <option value="name_asc">По алфавиту (А-Я)</option>
-        <option value="name_desc">По алфавиту (Я-А)</option>
-        <option value="price_asc">Сначала дешевые</option>
-        <option value="price_desc">Сначала дорогие</option>
-        <option value="year_desc">Сначала новые</option>
-        <option value="rating_desc">Высокий рейтинг</option>
-      </select>
+        variant="dark"
+        direction="row"
+      />
     </div>
   );
 };

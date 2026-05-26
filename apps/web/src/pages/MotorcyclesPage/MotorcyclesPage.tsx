@@ -2,14 +2,13 @@ import { useState } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
-import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, type MotorcycleResponse, CATEGORY_OPTIONS, TRANSMISSION_OPTIONS, useCatalogMotorcycles } from "@/entities/catalog";
+import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, useCatalogMotorcycles } from "@/entities/catalog";
 //Дебаунс для поиска:
 import { useUrlSearch } from "@/shared/lib/hooks/useUrlSearch";
 //Компоненты:
 import { MotorcycleCard } from "@/widgets/MotorcycleCard";
-import { CatalogSorting, RangeFilter, SelectFilter } from "@/features/catalog";
+import { CatalogDisplayControls, CatalogSorting } from "@/features/catalog";
 import { Breadcrumbs, Button, Input, Pagination } from "@/shared/ui";
-import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //API:
 import { API_URL } from "@/shared/api";
 //SEO:
@@ -25,7 +24,7 @@ export const MotorcyclesPage = () => {
   //Фильтры из URL:
   const { filters, updateFilters } = useMotorcycleFilters();
   //Получаем UI-настройки (какой тип отображения карточек выбран) из Zustand:
-  const { viewMode, setViewMode } = useCatalogStore();
+  const { viewMode } = useCatalogStore();
 
   //Для фильтров на мобилке:
   const [isOpen, setIsOpen] = useState(false);
@@ -80,11 +79,11 @@ export const MotorcyclesPage = () => {
               : `Мотоциклы ${brandSlug?.toUpperCase()}`}
           </h1>
           <h5>Найдено моделей: {data?.total || 0}</h5>
+
           {/*2.1.Topbar:*/}
           <header className={styles.topBar}>
             {/*2.1.1.Поиск:*/}
             <div className={styles.searchWrapper}>
-              <label htmlFor="moto-search" className="visually-hidden">Поиск по модели</label>
               <Input
                 id="moto-search"
                 type="search"
@@ -101,38 +100,7 @@ export const MotorcyclesPage = () => {
             <CatalogSorting />
 
             {/*2.1.3.Переключатели режима отображения:*/}
-            <div className={styles.displayControls}>
-              {/*Переключатель лимита: */}
-              <div className={styles.limitSwitch}>
-                <span>Отображать:</span>
-                {[20, 40].map((val) => (
-                  <button
-                    key={val}
-                    className={`${styles.limitBtn} ${filters.limit === val ? styles.active : ""}`}
-                    onClick={() => updateFilters({ limit: val, page: 1 })}
-                  >
-                    {val}
-                  </button>
-                ))}
-              </div>
-              {/*Переключатель вида Grid/List: */}
-              <div className={styles.viewSwitch}>
-                <button
-                  className={`${viewMode === "grid" ? styles.active : ""} ${styles.viewStyle}`}
-                  onClick={() => setViewMode("grid")}
-                  title="Плиткой"
-                >
-                  <LuLayoutGrid />
-                </button>
-                <button
-                  className={`${viewMode === "list" ? styles.active : ""} ${styles.viewStyle}`}
-                  onClick={() => setViewMode("list")}
-                  title="Списком"
-                >
-                  <LuLayoutList />
-                </button>
-              </div>
-            </div>
+            <CatalogDisplayControls />
           </header>
 
           {/*Кнопка фильтров на мобилке:*/}

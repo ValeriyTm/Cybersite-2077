@@ -148,9 +148,11 @@ export const SupportForm = () => {
 					label="Выберите причину обращения"
 					visuallyHidden
 					placeholder="Выберите причину обращения"
+					showPlaceholder={true}
 					registration={register("category")}
 					error={errors.category}
 					options={REASON_OPTIONS}
+					variant="light"
 				/>
 
 				{/* Область ввода сообщения */}

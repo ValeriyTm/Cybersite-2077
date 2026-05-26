@@ -1,12 +1,13 @@
 .Page {
   display: flex;
-  min-height: 100vh;
-  background: var(--main-bg-color);
   width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
   padding: 40px 20px;
-  gap: 40px;
   box-sizing: border-box; //Чтобы паддинги не раздували ширину
+  gap: 40px;
+
+  background: var(--main-bg-color);
 
   @include mobile-s {
     text-align: center;
@@ -14,121 +15,63 @@
 }
 
 .title {
-  font-size: 2.2rem;
-  color: var(--accent-text-color);
-  margin: 0;
-  line-height: 1.2;
   align-self: center;
 
-  span {
-    display: block;
-    color: #f39c12;
-    font-size: 1.8rem;
-  }
+  font-size: 2.2rem;
+  line-height: 1.2;
+  color: var(--accent-text-color);
+  margin: 0;
 }
 
 h5 {
+  align-self: center;
   margin-top: 5px;
   margin-bottom: 10px;
-  align-self: center;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
   width: 100%;
+  gap: 24px;
 }
 
 .topBar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  justify-content: space-between;
   width: 100%;
+  margin-bottom: 30px;
 }
 
 //Стили для индикатора загрузки поверх сетки:
 .Content {
-  flex-grow: 1;
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
+  flex-grow: 1;
 }
 
 .loadingOverlay {
   position: absolute;
   inset: 0;
+  z-index: 10;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 100px;
+
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f39c12;
+  pointer-events: none; //Чтобы клики проходили сквозь него
+
   background: rgba(8, 8, 8, 0.7);
   backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 100px;
-  z-index: 10;
-  color: #f39c12;
-  font-weight: 700;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  pointer-events: none; //Чтобы клики проходили сквозь него
-}
-
-//Пагинация:
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 50px;
-  padding: 20px 0;
-}
-
-.numbers {
-  display: flex;
-  gap: 8px;
-}
-
-.pageBtn {
-  width: 40px;
-  height: 40px;
-  background: #111;
-  /* pxtorem-disable-next-line */
-  border: 1px solid #333;
-  color: #fff;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &.active {
-    background: var(--accent-text-color);
-    border-color: var(--accent-text-color);
-    color: #000;
-    font-weight: 700;
-  }
-
-  @include hover {
-    &:not(.active) {
-      border-color: var(--accent-text-color);
-    }
-  }
-}
-
-.navBtn {
-  background: none;
-  /* pxtorem-disable-next-line */
-  border: 1px solid #333;
-  color: var(--accent-text-color);
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.2;
-    cursor: not-allowed;
-  }
 }
 
 .searchWrapper {
@@ -137,48 +80,12 @@ h5 {
   max-width: 400px;
 }
 
-.searchInput {
-  width: 100%;
-  padding: 12px 16px 12px 45px; //Отступ слева под иконку
-  background: var(--main-bg-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-bg-color);
-  border-radius: 10px;
-  color: var(--main-text-color);
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-
-  &:focus {
-    box-shadow: 0 0 15px var(--accent-text-color);
-    outline: none;
-  }
-
-  &::placeholder {
-    color: var(--auxiliary-text-color);
-  }
-}
-
-.searchIcon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0.4;
-  font-size: 1.1rem;
-}
-
 //-----------Стили для переключателей режима отображения:
-.displayControls {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
   width: 100%;
+  gap: 10px;
 
   //Внутри карточки в режиме list
   :global(.Card) {
@@ -199,53 +106,16 @@ h5 {
   }
 }
 
-.limitSwitch {
-  display: flex;
-  gap: 8px;
-  text-transform: uppercase;
-  align-items: center;
-  font-size: 0.9rem;
-  color: var(--auxiliary-text-color);
-
-  button {
-    background: none;
-    /* pxtorem-disable-next-line */
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    font-weight: 700;
-
-    &.active {
-      color: var(--accent-text-color);
-      scale: 1.1;
-    }
-  }
-}
-
-.viewSwitch {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-}
-
-.active {
-  background: var(--accent-text-color);
-  scale: 1.1;
-}
-
 ///--------------
 .mobileBtnWrapper {
-  color: var(--accent-text-color);
-  text-transform: uppercase;
-  font-size: 24px;
   position: fixed;
-  // top: 220px;
   right: 30px;
   z-index: 100;
 
   @include laptop-s-above {
     display: none;
   }
+
   @include tablet-above {
     top: 220px;
   }
@@ -260,34 +130,5 @@ h5 {
 
   @include mobile-s {
     top: 170px;
-  }
-}
-
-//----
-.limitBtn {
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    width: 44px;
-    height: 44px;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-  }
-}
-
-.viewStyle {
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    width: 44px;
-    height: 44px;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
   }
 }
