@@ -1,11 +1,9 @@
 import React from "react";
 //Состояния:
 import { useTradingStore, useFavoritesPage } from "@/entities/trading";
-import { useState, useEffect } from "react";
 //Компоненты:
 import { MotorcycleCard } from "@/widgets/MotorcycleCard";
-//Иконки:
-import { FaArrowUp } from "react-icons/fa";
+import { Button, ScrollToTopButton } from "@/shared/ui";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
@@ -15,39 +13,13 @@ import type { MotorcycleFull } from "@repo/types";
 export const FavoritesPage = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useFavoritesPage();
-
   const favoritesCount = useTradingStore((state) => state.favoritesCount);
 
-  //-----------------------Подъем наверх экрана:--------------------//
-  //Показывать кнопку подъема наверх страницы или нет:
-  const [showScroll, setShowScroll] = useState(false);
 
-  //Следим за прокруткой экрана, чтобы понять, выводить кнопку подъема или ещё рано:
-  useEffect(() => {
-    const checkScroll = () => {
-      const scrolled = window.scrollY > 400;
-
-      // Меняем стейт только, если текущее значение showScroll не совпадает с реальностью.
-      if (scrolled !== showScroll) {
-        setShowScroll(scrolled);
-      }
-    };
-
-    window.addEventListener("scroll", checkScroll);
-    return () => window.removeEventListener("scroll", checkScroll);
-  }, [showScroll]);
-
-  //Обработчик для плавного скролла экрана наверх:
-  const scrollTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  //-----------------------------------------------------------
   if (favoritesCount === 0)
     return (
       <div className={styles.empty}>У вас пока нет избранных моделей 🤍</div>
     );
-
 
   return (
     <>
@@ -59,36 +31,34 @@ export const FavoritesPage = () => {
         <h1>Моё избранное ({favoritesCount})</h1>
 
         <div className={styles.list}>
-          {data?.pages.map((group, i) => (
-            <React.Fragment key={i}>
-              {group.items.map((moto: MotorcycleFull) => {
-                return (
-                  <MotorcycleCard key={moto.id} moto={moto} viewMode="list" />
-                )
-              })}
-            </React.Fragment>
-            //React.Fragment используется как невидимый контейнер для группировки списка элементов внутри метода .map().
-          ))}
+          {data?.pages.map((group) =>
+            group.items.map((moto: MotorcycleFull) => (
+              <MotorcycleCard
+                key={moto.id}
+                moto={moto}
+                viewMode="list"
+                onFavoritePage
+              />
+            ))
+          )}
         </div>
 
         {/*Кнопка подъема "Наверх":*/}
-        <button
-          className={`${styles.scrollToTop} ${showScroll ? styles.visible : ''}`}
-          onClick={scrollTop}
-          aria-label="Наверх страницы"
-        >
-          <FaArrowUp />
-        </button>
+        <ScrollToTopButton />
 
         {/*Кнопка для загрузки новых карточек мотоциклов:*/}
         {hasNextPage && (
-          <button
-            className={styles.loadMore}
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? "Загрузка..." : "Показать еще"}
-          </button>
+          <div className={styles.loadMoreWrapper}>
+            <Button
+              type="button"
+              variant="outline-dark"
+              onClick={() => fetchNextPage()}
+              isLoading={isFetchingNextPage}
+              loadingText="Загрузка..."
+            >
+              Показать еще
+            </Button>
+          </div>
         )}
       </main>
     </>

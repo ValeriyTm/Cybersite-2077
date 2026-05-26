@@ -20,13 +20,15 @@ export interface MotorcycleItemProps {
   viewMode?: "grid" | "list";
   favoriteButtonSlot?: React.ReactNode; //Слот для кнопки "Избранного"
   actionButtonSlot?: React.ReactNode;  //Слот для кнопки "Корзины"
+  onFavoritePage?: boolean; //Если компонент вызывается на странице избранного
 }
 
 export const MotorcycleItem = ({
   data,
   viewMode = "grid", //Вид карточки (сетка или список)
   favoriteButtonSlot,
-  actionButtonSlot
+  actionButtonSlot,
+  onFavoritePage = false
 }: MotorcycleItemProps) => {
 
   //Утилиты для подготовки данных:
@@ -88,7 +90,7 @@ export const MotorcycleItem = ({
         </div>
       )}
 
-      <div className={styles.info}>
+      <div className={onFavoritePage ? styles.infoFav : styles.info}>
         <div className={styles.mainTitleGroup}>
           <h3 className={styles.model} title={data.model}>{data.model}</h3>
           {viewMode === "list" && (

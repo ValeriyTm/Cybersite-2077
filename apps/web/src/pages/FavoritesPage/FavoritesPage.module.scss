@@ -1,52 +1,27 @@
 .Page {
+  width: auto;
   max-width: 1200px;
+  min-height: 80vh;
   margin: 40px auto;
   padding: 0 20px;
-  min-height: 80vh;
 
   h1 {
-    font-size: 2rem;
+    padding-bottom: 15px;
     margin-bottom: 30px;
+
+    font-size: 2rem;
     color: var(--accent-text-color);
+
     /* pxtorem-disable-next-line */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 15px;
   }
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   margin-bottom: 40px;
-}
-
-.loadMore {
-  display: block;
-  margin: 30px auto;
-  padding: 12px 40px;
-  background: transparent;
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  color: var(--accent-text-color);
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  @include hover {
-    &:not(:disabled) {
-      background: var(--accent-text-color);
-      color: #000;
-    }
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    border-color: #333;
-    color: var(--auxiliary-text-color);
-    cursor: not-allowed;
-  }
+  gap: 12px;
 }
 
 .empty {
@@ -55,49 +30,18 @@
   align-items: center;
   justify-content: center;
   padding: 100px 0;
-  color: var(--main-text-color);
-  font-size: 1.2rem;
   gap: 20px;
 
-  &::before {
-    content: "🤍";
-    font-size: 3rem;
-    opacity: 0.5;
-  }
+  font-size: 1.2rem;
+  color: var(--main-text-color);
 }
 
-//Кнопка "Наверх"
-.scrollToTop {
-  position: fixed;
-  bottom: 80px;
-  right: 40px;
-  width: 50px;
-  height: 50px;
-  background: var(--accent-text-color);
-  color: #000;
-  /* pxtorem-disable-next-line */
-  border: none;
-  border-radius: 50%;
+.loadMoreWrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
-  cursor: pointer;
-  z-index: 2000;
+  margin: 30px 0;
 
-  //Изначально скрыта:
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
-
-  @include hover {
-    background: #fff;
-    transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
-  }
-
-  &.visible {
-    opacity: 1;
-    visibility: visible;
+  :global(.btn) {
+    padding-inline: 40px;
   }
 }

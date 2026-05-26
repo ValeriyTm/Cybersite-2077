@@ -122,20 +122,34 @@
 
   transform: none !important; //В списке анимация поднятия не нужна
 
-  .info {
+  .info,
+  .infoFav {
     display: flex;
     flex-direction: row;
-    // display: grid;
-    // grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     justify-content: space-between !important;
     width: 100%;
     padding: 0;
     gap: 40px;
+  }
 
+  .info {
     @media (width <= 1350px) {
       flex-direction: column;
-      // grid-template-columns: 1fr;
+      padding-top: 10px;
+      gap: 10px;
+
+      .footer {
+        padding-top: 10px;
+        /* pxtorem-disable-next-line */
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+
+  .infoFav {
+    @media (width <= 900px) {
+      flex-direction: column;
       padding-top: 10px;
       gap: 10px;
 

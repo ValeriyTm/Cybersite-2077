@@ -18,6 +18,7 @@ export * from "./PaymentModal";
 export * from "./PhoneInput";
 export * from "./RatingInput";
 export * from "./ReviewCardHome";
+export * from "./ScrollToTopButton";
 export * from "./Select";
 export * from "./SpecRow";
 export * from "./Textarea";

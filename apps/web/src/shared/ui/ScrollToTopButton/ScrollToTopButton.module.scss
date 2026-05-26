@@ -1,0 +1,39 @@
+.scrollToTop {
+  position: fixed;
+  right: 40px;
+  bottom: 80px;
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+
+  color: #000;
+  cursor: pointer;
+
+  background: var(--accent-text-color);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
+
+  // Изначально скрыта
+  opacity: 0;
+  visibility: hidden;
+
+  transition: all 0.3s ease-in-out;
+
+  @include hover {
+    color: initial; /* Свойство не менялось, сохраняем каскад */
+
+    background: #fff;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+}

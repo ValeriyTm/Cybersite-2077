@@ -10,9 +10,10 @@ import type { MotorcycleFull } from "@repo/types";
 interface MotorcycleCardProps {
   moto: MotorcycleShort | MotorcycleFull;
   viewMode?: "grid" | "list";
+  onFavoritePage?: boolean;
 }
 
-export const MotorcycleCard = ({ moto, viewMode = "grid" }: MotorcycleCardProps) => {
+export const MotorcycleCard = ({ moto, viewMode = "grid", onFavoritePage }: MotorcycleCardProps) => {
   const mainImage = extractMainImage(moto);
   const currentBrandSlug = moto.brandSlug ?? (typeof moto.brand === 'object' ? moto.brand.slug : '');
 
@@ -21,6 +22,7 @@ export const MotorcycleCard = ({ moto, viewMode = "grid" }: MotorcycleCardProps)
       key={moto.id}
       data={moto}
       viewMode={viewMode}
+      onFavoritePage={onFavoritePage}
       favoriteButtonSlot={
         <FavoriteButton motorcycleId={moto.id} viewMode={viewMode} />
       }
