@@ -29,50 +29,6 @@
   }
 }
 
-.mainInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-
-  p {
-    margin-bottom: 4px;
-  }
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  margin: 0 0 10px 0;
-  line-height: 1;
-
-  @include mobile {
-    font-size: 2.5rem;
-  }
-}
-
-.brandBadge {
-  display: inline-block;
-  padding: 6px 16px;
-  background: var(--accent-text-color);
-  color: #000;
-  font-weight: 800;
-  border-radius: 4px;
-  margin-bottom: 24px;
-
-  @include mobile {
-    margin-bottom: 10px;
-  }
-}
-
-.price {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent-text-color);
-  margin-bottom: 10px;
-}
-
 //Сетка характеристик:
 .specsGrid {
   display: grid;
@@ -122,86 +78,6 @@
   @include mobile {
     margin-bottom: 10px;
   }
-}
-
-//Галерея фото:
-.gallerySection {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: 500px;
-
-  @include mobile {
-    align-items: center;
-    max-width: 480px;
-  }
-
-  @include mobile-s {
-    max-width: 360px;
-  }
-}
-
-.mainImageWrapper {
-  width: 100%;
-  height: 350px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--auxiliary-bg-color-2);
-  /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @include mobile {
-    height: 340px;
-    width: 340px;
-  }
-
-  @include mobile-s {
-    height: 300px;
-    width: 300px;
-  }
-}
-
-.mainImg {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.thumbnails {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.thumbWrapper {
-  width: 80px;
-  height: 60px;
-  border-radius: 6px;
-  overflow: hidden;
-  cursor: pointer;
-  /* pxtorem-disable-next-line */
-  border: 2px solid transparent;
-  background: #111;
-  transition: all 0.2s ease;
-
-  @include hover {
-    border-color: rgba(243, 156, 18, 0.5);
-  }
-
-  // &.activeThumb {
-  //   border-color: #f39c12;
-  //   box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
-  // }
-}
-
-.thumbImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 //Рекомендации:
@@ -349,106 +225,6 @@
   }
 }
 
-//--Корзина
-.addToCartBtn {
-  background: var(--accent-text-color);
-  color: #000;
-  /* pxtorem-disable-next-line */
-  border: none;
-  padding: 12px 30px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s;
-
-  @include hover {
-    background: var(--accent-text-color);
-    box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-}
-
-///Ряд с кнопками
-.actionRow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--auxiliary-bg-color-2);
-  padding: 25px;
-  width: 95%;
-  border-radius: 15px;
-  margin: 15px 0;
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-
-  @include mobile {
-    padding: 10px;
-    margin-inline: 20px;
-  }
-}
-
-.buttons {
-  display: flex;
-  gap: 15px;
-
-  @include mobile {
-    flex-direction: column;
-  }
-}
-
-.cartBtn {
-  background: var(--accent-text-color);
-  color: #000;
-  /* pxtorem-disable-next-line */
-  border: none;
-  padding: 15px 35px;
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  @include hover {
-    background: #ffae1a;
-    transform: translateY(-2px);
-  }
-}
-
-.favBtn {
-  background: var(--main-bg-color);
-  color: var(--main-text-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid #444;
-  padding: 8px 24px;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s;
-  width: 400px;
-  min-height: 44px;
-  text-align: center;
-
-  @include hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  &.active {
-    border-color: #ff4757;
-    color: #ff4757;
-    background: rgba(255, 71, 87, 0.1);
-  }
-}
-
 //Для вкладки отзывов:
 .reviewsTab {
   padding: 30px 0;
@@ -467,20 +243,6 @@
   /* pxtorem-disable-next-line */
   border: 1px dashed #333;
   border-radius: 8px;
-}
-
-.oldPrice {
-  text-decoration: line-through;
-  color: #666;
-  font-size: 1.8rem;
-  padding-bottom: 10px;
-}
-
-.personalDiscount {
-  padding-bottom: 10px;
-  color: green;
-  font-weight: 700;
-  font-style: italic;
 }
 
 .docsSection {

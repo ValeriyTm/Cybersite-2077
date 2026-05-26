@@ -13,14 +13,15 @@ import type { MotorcycleFull } from "@repo/types";
 import { Helmet } from "react-helmet-async";
 //Компоненты:
 import { SpecRow, Breadcrumbs } from "@/shared/ui";
-import { type MotorcycleReview, type MotorcycleShort } from "@/entities/catalog";
+import { MotorcycleGallery, type MotorcycleReview, type MotorcycleShort } from "@/entities/catalog";
 import { MotorcycleCard } from "@/widgets/MotorcycleCard";
-import { AddToCartButton } from "@/features/trading";
+import { AddToCartButton, FavoriteButton } from "@/features/trading";
 import { ReviewCard } from "@/entities/reviews";
 //Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили
 import styles from "./MotorcycleDetailsPage.module.scss";
+import { MotorcycleInfoCard } from "@/widgets/MotorcycleInfoCard";
 
 
 const STATIC_URL = `${API_URL}/static/motorcycles`;
@@ -289,111 +290,9 @@ export const MotorcycleDetailsPage = () => {
 
           {/* Фото и главные параметры */}
           <section className={styles.hero}>
-            <div className={styles.gallerySection}>
-              <div className={styles.mainImageWrapper}>
-                <img
-                  src={activeImage}
-                  alt={motorcycle.model}
-                  className={styles.mainImg}
-                  width='500'
-                  height='350'
-                />
-              </div>
+            <MotorcycleGallery images={motorcycle.images} model={motorcycle.model} />
 
-              {/* Список миниатюр */}
-              {motorcycle.images?.length > 0 && (
-                <div className={styles.thumbnails}>
-                  {motorcycle.images.map((img) => {
-
-                    return (
-                      <div
-                        key={img.id}
-                        className={`${styles.thumbWrapper}`}
-                        onClick={() => setClickedImgUrl(`${STATIC_URL}/${img.url}`)}
-                      >
-                        <img
-                          src={`${STATIC_URL}/${img.url}`}
-                          alt="thumb"
-                          className={styles.thumbImg}
-                          width='76'
-                          height='56'
-                        />
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div className={styles.mainInfo}>
-              <h1 className={styles.title}>{motorcycle.model}</h1>
-              <div className={styles.brandBadge}>{motorcycle.brand.name}</div>
-
-              <div className={styles.actionRow}>
-                {Number(motorcycle.discountData.discountPercent) > 0 ? (
-                  <>
-                    <div className={styles.oldPrice}>
-                      {motorcycle.discountData.originalPrice.toLocaleString()} ₽
-                    </div>{" "}
-                    {motorcycle.discountData.isPersonal && (
-                      <span className={styles.personalDiscount}>
-                        Персональная скидка!
-                      </span>
-                    )}
-                    <div className={styles.price}>
-                      {motorcycle.discountData.finalPrice.toLocaleString()} ₽
-                    </div>
-                  </>
-                ) : (
-                  <div className={styles.price}>
-                    {motorcycle.price.toLocaleString()} ₽
-                  </div>
-                )}
-
-                {motorcycle.totalInStock ? (
-                  <p>Количество единиц в наличии: {motorcycle.totalInStock}</p>
-                ) : (
-                  <p>Нет в наличии</p>
-                )}
-
-                <div className={styles.buttons}>
-                  <AddToCartButton
-                    data={{
-                      id: motorcycle.id,
-                      model: motorcycle.model,
-                      price: motorcycle.price,
-                      image: mainImg || '',
-                      brandSlug: motorcycle.brand.slug,
-                      slug: motorcycle.slug,
-                      totalInStock: motorcycle.totalInStock,
-                      year: motorcycle.year,
-                    }}
-                  />
-
-                  {/*Кнопка добавления в избранное*/}
-                  <button
-                    className={`${styles.favBtn} ${isFavorite ? styles.active : ""}`}
-                    onClick={handleFavoriteClick}
-                    title={
-                      isFavorite
-                        ? "Удалить из избранного"
-                        : "Добавить в избранное"
-                    }
-                  >
-                    {isFavorite ? "❤️ В избранном" : "🤍 В избранное"}
-                  </button>
-                </div>
-              </div>
-
-              <p className={styles.description}>
-                {motorcycle.year} года выпуска. Объем двигателя{" "}
-                {motorcycle.displacement} см³.
-              </p>
-              <p className={styles.description}>Текущий рейтинг: {Number(motorcycle.rating.toFixed(1))}</p>
-              <p className={styles.description}>
-                Артикул товара: {motorcycle.slug}
-              </p>
-            </div>
+            <MotorcycleInfoCard motorcycle={motorcycle} />
           </section>
 
           {/* Таблица характеристик:*/}

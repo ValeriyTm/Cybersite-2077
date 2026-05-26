@@ -106,7 +106,7 @@ export const useCart = () => {
     //Если сервер подтвердил добавление, то:
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data); //Обновляем кэш
-      // setCart(data); //Актуальный состав корзины записываем в локальное состояние корзины
+      toast.success("Товар помещен в корзину");
     },
   });
 
@@ -138,7 +138,7 @@ export const useCart = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data);
-      toast.success("Выбранный товар удален");
+      toast.success("Товар удален из корзины");
     },
   });
 
@@ -154,7 +154,7 @@ export const useCart = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(["cart"], data);
       removeSelectedLocally();
-      toast.success("Выбранные товары удалены");
+      toast.success("Товары удален из корзины");
     },
   });
 

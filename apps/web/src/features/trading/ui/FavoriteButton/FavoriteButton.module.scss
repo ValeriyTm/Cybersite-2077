@@ -74,3 +74,42 @@
     transform: scale(1.2);
   }
 }
+
+.detailsFavoriteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 24px;
+  gap: 8px;
+
+  font-size: 14px;
+  text-align: center;
+  color: var(--main-text-color);
+  cursor: pointer;
+
+  background: var(--main-bg-color);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--auxiliary-text-color);
+  border-radius: 10px;
+
+  transition: all 0.2s ease;
+
+  @include hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &.active {
+    background: rgba(255, 71, 87, 0.1);
+    border-color: #ff4757;
+
+    span {
+      color: #ff4757;
+    }
+  }
+}
+
+.btnText {
+  font-weight: 500;
+}

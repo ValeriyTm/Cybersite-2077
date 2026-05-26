@@ -2,20 +2,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  min-height: 46px; //Фиксируем высоту, чтобы UI не прыгал при смене кнопок
   width: 100%;
+  min-height: 46px; //Фиксируем высоту, чтобы UI не прыгал при смене кнопок
+  gap: 12px;
 }
 
 //Бейдж "В корзине" (для варианта card)
 .addedBadge {
-  font-size: 0.8rem;
-  color: var(--color-success);
-  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 4px;
+
+  font-size: 0.8rem;
+  font-weight: 600;
   white-space: nowrap;
+  color: var(--color-success);
 
   &::before {
     content: "✓";
@@ -23,27 +24,30 @@
 }
 
 .addBtn {
-  background: var(--accent-text-color);
-  color: var(--main-text-color);
-  /* pxtorem-disable-next-line */
-  border: none;
-  padding: 10px 8px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  padding: 10px 8px;
   gap: 10px;
+
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--main-text-color);
+  cursor: pointer;
+
+  background: var(--accent-text-color);
+  /* pxtorem-disable-next-line */
+  border: none;
+  border-radius: 10px;
+
   transition: all 0.2s ease;
 
   @include hover {
     opacity: 0.9;
     scale: 1.05;
-    transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(243, 156, 18, 0.2);
+    transform: translateY(-2px);
   }
 
   &:active {
@@ -51,9 +55,10 @@
   }
 
   &:disabled {
-    background-color: var(--auxiliary-text-color);
     color: #666;
     cursor: not-allowed;
+
+    background-color: var(--auxiliary-text-color);
   }
 }
 
@@ -61,12 +66,13 @@
   position: relative;
 
   &::after {
-    content: "";
     position: absolute;
-    width: 44px;
-    height: 44px;
     top: 50%;
     left: 50%;
+    width: 44px;
+    height: 44px;
+
+    content: "";
     translate: -50% -50%;
   }
 }
@@ -74,28 +80,32 @@
 .stepper {
   display: flex;
   align-items: center;
-  background: var(--main-bg-color);
-  border-radius: 10px;
-  padding: 4px;
   justify-content: space-between;
   width: 120px;
+  padding: 4px;
+
+  background: var(--main-bg-color);
   /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
 
   button {
-    width: 32px;
-    height: 32px;
-    background: var(--auxiliary-bg-color-2);
-    /* pxtorem-disable-next-line */
-    border: none;
-    color: var(--main-text-color);
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 800;
-    font-size: 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 32px;
+    height: 32px;
+
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--main-text-color);
+    cursor: pointer;
+
+    background: var(--auxiliary-bg-color-2);
+    /* pxtorem-disable-next-line */
+    border: none;
+    border-radius: 8px;
+
     transition: all 0.2s;
 
     @include hover {
@@ -105,11 +115,12 @@
   }
 
   .count {
-    color: var(--main-text-color);
-    font-weight: 700;
-    font-size: 1rem;
     min-width: 30px;
+
+    font-size: 1rem;
+    font-weight: 700;
     text-align: center;
+    color: var(--main-text-color);
   }
 }
 

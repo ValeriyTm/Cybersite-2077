@@ -1,0 +1,1 @@
+export { MotorcycleInfoCard } from "./MotorcycleInfoCard";
