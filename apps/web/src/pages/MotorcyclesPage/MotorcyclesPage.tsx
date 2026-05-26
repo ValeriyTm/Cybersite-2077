@@ -2,16 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 //Работа с параметрами:
 import { useParams } from "react-router";
 //Состояния:
-import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, type MotorcycleResponse } from "@/entities/catalog";
+import { useMotorcycleFilters, useCatalogStore, type MotorcycleShort, type MotorcycleResponse, CATEGORY_OPTIONS, TRANSMISSION_OPTIONS } from "@/entities/catalog";
 import { useQuery } from "@tanstack/react-query";
 //API:
 import { $api } from "@/shared/api";
 //Дебаунс для поиска:
-import debounce from "lodash/debounce";
+import { useUrlSearch } from "@/shared/lib/hooks/useUrlSearch";
 //Компоненты:
 import { MotorcycleCard } from "@/widgets/MotorcycleCard";
 import { RangeFilter, SelectFilter } from "@/features/catalog-filter";
-import { Breadcrumbs, Pagination } from "@/shared/ui";
+import { Breadcrumbs, Input, Pagination } from "@/shared/ui";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //API:
 import { API_URL } from "@/shared/api";
@@ -24,7 +24,6 @@ export const MotorcyclesPage = () => {
   //Извлекаем данные из адресной строки:
   const { brandSlug } = useParams<{ brandSlug: string }>();
   const { slug } = useParams<{ slug: string }>();
-
   //Фильтры из URL:
   const { filters, updateFilters } = useMotorcycleFilters();
   //Получаем UI-настройки (какой тип отображения карточек выбран) из Zustand:
@@ -36,6 +35,10 @@ export const MotorcyclesPage = () => {
   const toggleFilter = () => {
     setIsOpen(!isOpen);
   };
+
+  //Debounce для поиска:
+  const { searchQuery, debouncedSearch } = useUrlSearch("search", 500);
+
 
   //Загружаем и кэшируем данные о моделях мотоциклов с учетом фильтров:
   const { data, isLoading } = useQuery({
@@ -53,35 +56,6 @@ export const MotorcyclesPage = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  //-------------------------------Опции------------------------------//
-  // Опции для категорий:
-  const CATEGORY_OPTIONS = [
-    { value: "Allround", label: "Универсальный" },
-    { value: "ATV", label: "Квадроцикл" },
-    { value: "Classic", label: "Классический" },
-    { value: "Cross / motocross", label: "Кросс/Мотокросс" },
-    { value: "Custom / cruiser", label: "Кастом/Круизер" },
-    { value: "Enduro / offroad", label: "Эндуро" },
-    { value: "Minibike, cross", label: "Минибайк, кросс" },
-    { value: "Minibike, sport", label: "Минибайк, спорт" },
-    { value: "Naked bike", label: "Нейкед(стрит)" },
-    { value: "Prototype / concept model", label: "Прототип/концепт" },
-    { value: "Scooter", label: "Скутер" },
-    { value: "Speedway", label: "Трековый" },
-    { value: "Sport", label: "Спортбайк" },
-    { value: "Sport touring", label: "Спорт-туринг" },
-    { value: "Super motard", label: "Супермото" },
-    { value: "Touring", label: "Туристический" },
-    { value: "Trial", label: "Trial" },
-    { value: "Unspecified category", label: "Не классифицировано" },
-  ];
-
-  const TRANSMISSION_OPTIONS = [
-    { value: "Chain", label: "Цепь" },
-    { value: "Belt", label: "Ремень" },
-    { value: "Cardan", label: "Кардан" },
-  ];
-
   //--------------------------------------------------------------------//
   //Хлебные крошки (навигация):
   const breadcrumbs = [
@@ -92,22 +66,6 @@ export const MotorcyclesPage = () => {
       href: `/catalog/motorcycles/${brandSlug}`,
     }, //Текущая страница
   ];
-
-  //--------Debounce для поиска (дебаунс для фильтров зашит в комоненте фильтра):--------
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((value: string) => {
-        updateFilters({ search: value, page: 1 }); //Обновляем URL спустя 500мс
-      }, 500),
-    [updateFilters],
-  );
-
-
-  //Очистка при размонтировании (т.е. поиск не будет работать):
-  useEffect(() => {
-    return () => debouncedSearch.cancel();
-  }, [debouncedSearch]);
-
 
   //---------------------------------SEO:-----------------------//
   const canonicalUrl = `${API_URL}/catalog/motorcycles/${brandSlug}`;
@@ -213,15 +171,16 @@ export const MotorcyclesPage = () => {
             {/*2.1.1.Поиск:*/}
             <div className={styles.searchWrapper}>
               <label htmlFor="moto-search" className="visually-hidden">Поиск по модели</label>
-              <input
+              <Input
+                id="moto-search"
                 type="search"
-                id='moto-search'
-                placeholder="Поиск по модели (напр. CBR 1000)..."
-                className={styles.searchInput}
-                defaultValue={filters.search}
+                placeholder="🔍 Поиск по модели (напр. CBR 1000)..."
+                defaultValue={searchQuery}
                 onChange={(e) => debouncedSearch(e.target.value)}
+                label="Поиск по модели"
+                visuallyHidden
+                variant='dark'
               />
-              <span className={styles.searchIcon}>🔍</span>
             </div>
 
             {/*2.1.2.Сортировка*/}

@@ -41,6 +41,113 @@ interface MotorcycleDocument {
 export class SearchService {
   private readonly indexName = "motorcycles";
 
+  //Метод для формирования запроса в Elasticsearch:
+  private buildElasticQuery(data: MotorcyclesServiceArgs): ElasticQuery {
+    const {
+      search,
+      brandSlug,
+      minPrice,
+      maxPrice,
+      minYear,
+      maxYear,
+      category,
+      transmission,
+      minDisplacement,
+      maxDisplacement,
+      minPower,
+      maxPower,
+      onlyInStock,
+    } = data;
+
+    const query: ElasticQuery = { bool: { must: [], filter: [] } };
+
+    //Настройки поиска:
+    if (search) {
+      query.bool.must.push({
+        bool: {
+          should: [
+            // Ищет по началу слова (идеально для "Ninj" -> "Ninja")
+            { match_phrase_prefix: { model: { query: search } } },
+            {
+              match: {
+                model: { query: search, fuzziness: "AUTO", operator: "and" },
+              }, //"fuzziness" - прощает опечатки ("Yamha" вместо "Yamaha"); operator "and" - ищет все слова из запроса
+            },
+          ],
+          minimum_should_match: 1,
+        },
+      });
+    }
+
+    //Фильтры точного совпадения:
+    if (brandSlug && brandSlug !== "all")
+      query.bool.filter.push({ match: { brandSlug } });
+    if (category) query.bool.filter.push({ match: { category } });
+    if (transmission) query.bool.filter.push({ match: { transmission } });
+
+    //Фильтр наличия:
+    if (String(onlyInStock) === "true") {
+      query.bool.filter.push({ range: { totalInStock: { gt: 0 } } });
+    }
+
+    //Диапазоны:
+    this.addRangeFilter(query, "price", minPrice, maxPrice, 0, 99999999);
+    this.addRangeFilter(query, "year", minYear, maxYear, 1900, 2100);
+    this.addRangeFilter(
+      query,
+      "displacement",
+      minDisplacement,
+      maxDisplacement,
+      0,
+      99999,
+    );
+    this.addRangeFilter(
+      query,
+      "power",
+      Number(minPower),
+      Number(maxPower),
+      0,
+      9999,
+    );
+
+    return query;
+  }
+
+  //Метод для применения фильтров к запросу:
+  private addRangeFilter(
+    query: ElasticQuery,
+    field: string,
+    min: number | undefined,
+    max: number | undefined,
+    defaultMin: number,
+    defaultMax: number,
+  ) {
+    if (min || max) {
+      query.bool.filter.push({
+        range: {
+          [field]: {
+            gte: min || defaultMin,
+            lte: max || defaultMax,
+          },
+        },
+      });
+    }
+  }
+
+  //Метод для сортировки:
+  private getElasticSort(sortBy?: string): Record<string, "asc" | "desc">[] {
+    const sortMapping: Record<string, Record<string, "asc" | "desc">[]> = {
+      name_asc: [{ "model.keyword": "asc" }],
+      name_desc: [{ "model.keyword": "desc" }],
+      price_asc: [{ price: "asc" }],
+      price_desc: [{ price: "desc" }],
+      year_desc: [{ year: "desc" }],
+      rating_desc: [{ rating: "desc" }],
+    };
+
+    return (sortBy ? sortMapping[sortBy] : undefined) || [{ _score: "desc" }];
+  }
+
   //Метод для синхронизации всех данных из PostgreSQL в Elasticsearch:
   async syncAllMotorcycles() {
     logger.info("Начинаем порционную синхронизацию с Elasticsearch...");
@@ -62,7 +169,7 @@ export class SearchService {
         },
         skip: skip,
         take: BATCH_SIZE,
-        orderBy: { id: "asc" }, //Сортировка обязательна для стабильной пагинации
+        orderBy: { id: "asc" },
       });
 
       if (motorcycles.length === 0) {
@@ -130,138 +237,13 @@ export class SearchService {
 
   //Основной поиск/сортировка по моделям с фильтрами:
   async searchMotorcycles(data: MotorcyclesServiceArgs, userId?: string) {
-    const {
-      brandSlug,
-      search,
-      minPrice,
-      maxPrice,
-      minYear,
-      maxYear,
-      category,
-      transmission,
-      minDisplacement,
-      maxDisplacement,
-      minPower,
-      maxPower,
-      page = 1,
-      limit = 20,
-      sortBy,
-      onlyInStock,
-    } = data;
+    const { page = 1, limit = 20, sortBy } = data;
 
-    const query: ElasticQuery = {
-      bool: {
-        must: [], //Обязательные условия
-        filter: [], //Условия фильтрации
-      },
-    };
+    //Подготовка параметров для БД:
+    const query = this.buildElasticQuery(data);
+    const sort = this.getElasticSort(sortBy);
 
-    //------------------------Поиск:-----------------------//
-    //Добавляем логику поиска по названию модели:
-    if (search) {
-      query.bool.must.push({
-        match: {
-          model: {
-            query: search,
-            fuzziness: "AUTO", //Прощает опечатки ("Yamha" вместо "Yamaha")
-            operator: "and", //Ищет все слова из запроса
-          },
-        },
-      });
-    }
-
-    //Фильтр по бренду:
-    if (brandSlug && brandSlug !== "all") {
-      query.bool.filter.push({ match: { brandSlug: brandSlug } });
-    }
-
-    //Диапазон цен:
-    if (minPrice || maxPrice) {
-      query.bool.filter.push({
-        range: {
-          price: {
-            gte: minPrice || 0,
-            lte: maxPrice || 99999999,
-          },
-        },
-      });
-    }
-
-    //Год выпуска:
-    if (minYear || maxYear) {
-      query.bool.filter.push({
-        range: {
-          year: {
-            gte: minYear || 1900,
-            lte: maxYear || 2100,
-          },
-        },
-      });
-    }
-
-    //Только в наличии:
-    const isOnlyInStock = String(onlyInStock) === "true";
-    if (isOnlyInStock) {
-      query.bool.filter.push({
-        range: {
-          totalInStock: { gt: 0 },
-        },
-      });
-    }
-
-    //Категория:
-    if (category) {
-      query.bool.filter.push({ match: { category: category } });
-    }
-
-    //Объем двигателя:
-    if (minDisplacement || maxDisplacement) {
-      query.bool.filter.push({
-        range: {
-          displacement: {
-            gte: minDisplacement || 0,
-            lte: maxDisplacement || 99999,
-          },
-        },
-      });
-    }
-
-    //Мощность двигателя:
-    if (minPower || maxPower) {
-      query.bool.filter.push({
-        range: {
-          power: {
-            // Убедись, что поле в Elastic называется power
-            gte: Number(minPower) || 0,
-            lte: Number(maxPower) || 9999,
-          },
-        },
-      });
-    }
-
-    //Трансмиссия:
-    if (transmission) {
-      query.bool.filter.push({ match: { transmission: transmission } });
-    }
-
-    //---------------------Сортировка-------------:
-    type SortOrder = "asc" | "desc";
-    type SortSetting = Record<string, SortOrder>;
-
-    const sortMapping = new Map<string, SortSetting[]>([
-      ["name_asc", [{ "model.keyword": "asc" }]],
-      ["name_desc", [{ "model.keyword": "desc" }]],
-      ["price_asc", [{ price: "asc" }]],
-      ["price_desc", [{ price: "desc" }]],
-      ["year_desc", [{ year: "desc" }]],
-      ["rating_desc", [{ rating: "desc" }]],
-    ]);
-
-    const sort: SortSetting[] = (sortBy
-      ? sortMapping.get(sortBy)
-      : undefined) || [{ _score: "desc" }];
-
-    //---------------------------------------------------
+    //Запрос в Elasticsearch:
     const result = await esClient.search<MotorcycleDocument>({
       index: this.indexName,
       from: (page - 1) * limit, //Расчёт зависит от переданного лимита (20 или 40 передаём)

@@ -10,7 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   visuallyHidden?: boolean;
   id?: string;
   center?: boolean;
-  variant: 'dark' | 'light';
+  variant?: 'dark' | 'light';
 }
 
 export const Input = ({
