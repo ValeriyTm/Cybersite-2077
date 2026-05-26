@@ -1,23 +1,22 @@
 //Роутинг:
 import { Link } from "react-router";
-//API:
-import { API_URL } from "@/shared/api";
 //Типы:
 import { type MotorcycleShort } from "@/entities/catalog/model";
 import type { MotorcycleFull } from "@repo/types";
-//Состояния:
-import { useTradingStore, useFavorites } from "@/entities/trading";
-import { useAuthStore } from "@/features/auth"; //Состояние авторизации
 //Компоненты:
-import { AddToCartButton } from "@/features/trading";
+import { AddToCartButton, FavoriteButton } from "@/features/trading";
+//Утилиты:
+import {
+  extractMainImage,
+  getMotoImageUrl,
+  getCartImageUrl,
+  extractBrandName,
+  getDiscountInfo,
+} from "@/entities/catalog/lib/utils";
 //Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from "./MotorcycleCard.module.scss";
-
-
-//Пути для изображений карточки:
-const STATIC_URL = `${API_URL}/static`;
 
 export interface MotorcycleCardProps {
   data: MotorcycleShort | MotorcycleFull;
@@ -25,67 +24,22 @@ export interface MotorcycleCardProps {
 }
 
 export const MotorcycleCard = ({
-  data, //Данные
+  data,
   viewMode = "grid", //Вид карточки (сетка или список)
 }: MotorcycleCardProps) => {
-  const isAuth = useAuthStore((state) => state.isAuth); //Авторизован ли юзер
 
-  //Где находится mainImage зависит от того, какие данные передаются в компонент:
-  //(из FavoritesPage передаётся MotorcycleFull, из остальных мест - MotorcycleShort)
-  const mainImage = 'mainImage' in data
-    ? data.mainImage // Если это MotorcycleShort, берем плоскую строку
-    : data.images?.find(img => img.isMain)?.url;
+  //Утилиты для подготовки данных:
+  const mainImage = extractMainImage(data);
+  const brandName = extractBrandName(data);
+  const displayImageUrl = getMotoImageUrl(mainImage, defaultMotoImage);
+  const cartImageUrl = getCartImageUrl(mainImage);
 
-  //Определяем какое изображение ставить для отображения изображения:
-  const getImageUrl = (path: string | null | undefined) => {
-    if (!path) return defaultMotoImage;
-    //Если в базе путь "/defaults/...", просто добавляем домен
-    if (path.startsWith("/")) {
-      return `${STATIC_URL}${path}`;
-    }
-    //Если это просто имя файла ("yamaha-r1.jpg"), ищем в папке motorcycles:
-    return `${STATIC_URL}/motorcycles/${path}`;
-  };
+  const { currentPrice, hasDiscount, isPersonalDiscount, discountPercent } = getDiscountInfo(data);
 
-  //Определяем какое изображение ставить для передачи в корзину:
-  const getImageUrlCart = (path: string | null | undefined) => {
-    if (!path) return "";
-
-    //Если это просто имя файла ("yamaha-r1.jpg"), ищем в папке motorcycles:
-    return `${STATIC_URL}/motorcycles/${path}`;
-  };
+  const currentBrandSlug = data.brandSlug ?? (typeof data.brand === 'object' ? data.brand.slug : '');
 
   //Формируем динамический класс для всей карточки:
   const cardClassName = `${styles.Card} ${viewMode === "list" ? styles.listView : ""}`;
-
-  //-----
-  //Подключаем логику избранного:
-  const { toggleFavorite } = useFavorites();
-  const isFavorite = useTradingStore((state) =>
-    state.favoriteIds.includes(data.id),
-  );
-
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Чтобы клик по сердечку не перекидывал на страницу байка
-    if (!isAuth) {
-      alert("Войдите, чтобы добавлять в избранное"); //Можно когда-нибудь заменить на красивую модалку
-      return;
-    }
-    toggleFavorite(data.id);
-  };
-  //-----
-  const currentBrandSlug = data.brandSlug ?? (typeof data.brand === 'object' ? data.brand.slug : '');
-
-  //Хелпер для извлечения бренда при разном формате входных данных:
-  const brandName =
-    typeof data.brand === "object"
-      ? (data.brand).name // Если прилетел объект (из избранного)
-      : data.brand; // Если прилетела строка (из общего каталога)
-
-  //Скидки и расчёт цены с учетом скидки:
-  const currentPrice = data.discountData?.finalPrice ?? data.price; //
-  const hasDiscount = Number(data.discountData.discountPercent) > 0; //Есть ли скидка 
-  const isPersonalDiscount = data.discountData.isPersonal; //Персональная ли скидка
 
   return (
     <Link
@@ -97,13 +51,12 @@ export const MotorcycleCard = ({
         <div className={styles.imageBox}>
           {/*Изображение:*/}
           <img
-            src={getImageUrl(mainImage)}
+            src={displayImageUrl}
             loading="lazy"
             decoding="async"
             alt={data.model}
             className={styles.img}
             onError={(e) => {
-              //Реализуем защитный механизм: если даже по очищенному пути получаем ошибку 404
               const target = e.target as HTMLImageElement;
               target.onerror = null;
               target.src = defaultMotoImage;
@@ -111,28 +64,24 @@ export const MotorcycleCard = ({
             width='425'
             height='180'
           />
+
           {/*Бадж скидки */}
           {hasDiscount && (
             <div
               className={`${styles.badgeDiscount} ${isPersonalDiscount ? styles.personal : ""}`}
             >
               {isPersonalDiscount ? "ДЛЯ ВАС " : ""}-
-              {data.discountData.discountPercent}%
+              {discountPercent}%
             </div>
           )}
 
           {/*Кнопка добавления в избранное:*/}
-          <button
-            className={`${styles.favoriteBtn} ${isFavorite ? styles.active : ""}`}
-            onClick={handleFavoriteClick}
-            title={isFavorite ? "Удалить из избранного" : "В избранное"}
-          >
-            {isFavorite ? "❤️" : "🤍"}
-          </button>
+          <FavoriteButton motorcycleId={data.id} viewMode="grid" />
 
           {/*Бадж высокого рейтинга:*/}
           {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
 
+          {/*Бадж наличия*/}
           {data.totalInStock > 0 && (
             <span className={styles.presence}>В наличии</span>
           )}
@@ -177,13 +126,7 @@ export const MotorcycleCard = ({
 
           <div className={styles.ratingAndAction}>
             {viewMode === "list" && (
-              <button
-                className={`${styles.listFavoriteBtn} ${isFavorite ? styles.active : ""}`}
-                onClick={handleFavoriteClick}
-                title={isFavorite ? "Удалить из избранного" : "В избранное"}
-              >
-                {isFavorite ? "❤️" : "🤍"}
-              </button>
+              <FavoriteButton motorcycleId={data.id} viewMode="list" />
             )}
 
             <AddToCartButton
@@ -192,7 +135,7 @@ export const MotorcycleCard = ({
                 id: data.id,
                 model: data.model,
                 price: data.price,
-                image: getImageUrlCart(mainImage),
+                image: cartImageUrl,
                 brandSlug: currentBrandSlug,
                 slug: data.slug,
                 totalInStock: data.totalInStock,
@@ -202,7 +145,6 @@ export const MotorcycleCard = ({
           </div>
         </div>
       </div>
-
     </Link>
   );
 };

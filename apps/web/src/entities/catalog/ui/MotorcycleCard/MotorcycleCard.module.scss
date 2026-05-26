@@ -1,43 +1,43 @@
 .Card {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 320px;
+
   background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   overflow: hidden;
   text-decoration: none;
+
   transition: all 0.3s ease;
-  min-width: 320px;
-  width: 100%;
-  // max-width: 400px;
 
   @include hover {
-    transform: translateY(-5px);
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
+    transform: translateY(-5px);
 
     .img {
       transform: scale(1.05);
     }
   }
-
-  h3 {
-    color: var(--accent-text-color);
-  }
 }
 
 .imageBox {
   position: relative;
+
   height: 180px;
-  overflow: hidden;
+
   background: var(--main-bg-color);
+  overflow: hidden;
 }
 
 .img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+
   transition: transform 0.5s ease;
 }
 
@@ -45,93 +45,96 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: var(--accent-text-color);
-  color: #000;
+
   padding: 4px 8px;
+
   font-size: 0.7rem;
   font-weight: 700;
-  border-radius: 4px;
   text-transform: uppercase;
+  color: #000;
+
+  background: var(--accent-text-color);
+  border-radius: 4px;
 }
 
 .presence {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  background: var(--accent-text-color);
-  color: var(--color-light);
+
   padding: 4px 8px;
+
   font-size: 0.7rem;
   font-weight: 700;
+  color: var(--color-light);
+
+  background: var(--accent-text-color);
   border-radius: 4px;
 }
 
 .info {
-  padding: 16px;
   display: flex;
-
   flex-direction: column;
+  padding: 16px;
   gap: 12px;
 }
 
 .model {
+  margin: 0;
+
   font-size: 1.2rem;
   color: var(--main-text-color);
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
 }
 
 .specs {
   display: flex;
   gap: 12px;
+
   color: var(--auxiliary-text-color);
 }
 
 .footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-top: auto;
   padding-top: 12px;
+
   /* pxtorem-disable-next-line */
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.price {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--accent-text-color);
-}
-
 .rating {
-  color: var(--color-rating);
   display: flex;
   flex-direction: row;
+
+  color: var(--color-rating);
 }
 
-//Режим списка:
 .listView {
+  display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 12px 24px;
-  gap: 20px;
   min-height: 60px;
+  padding: 12px 24px;
+  padding-right: 25px;
+  gap: 20px;
+
   transform: none !important; //В списке анимация поднятия не нужна
 
   .info {
-    width: 100%;
-    gap: 40px;
-
     display: flex;
     flex-direction: row;
     // display: grid;
     // grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     justify-content: space-between !important;
+    width: 100%;
     padding: 0;
+    gap: 40px;
 
     @media (width <= 900px) {
       flex-direction: column;
@@ -141,10 +144,10 @@
   }
 
   .mainTitleGroup {
-    flex: 2;
     display: flex;
-    gap: 15px;
+    flex: 2;
     align-items: center;
+    gap: 15px;
 
     @include desktop {
       max-width: 450px;
@@ -172,27 +175,32 @@
 
   .model {
     margin: 0;
+
     font-size: 1rem;
   }
 
   .specs {
+    display: flex;
     flex: 2;
-    margin: 0;
     justify-content: center;
+    margin: 0;
+    padding: 0;
     gap: 20px;
+
     /* pxtorem-disable-next-line */
     border: none;
-    padding: 0;
   }
 
   .footer {
+    display: flex;
     flex: 1;
-    margin: 0;
     justify-content: flex-end;
+    margin: 0;
+    padding: 0;
     gap: 20px;
+
     /* pxtorem-disable-next-line */
     border: none;
-    padding: 0;
 
     @include mobile {
       gap: 0;
@@ -203,54 +211,8 @@
     font-size: 1.1rem;
   }
 
-  //Настройка контейнера для выравнивания
-  display: flex;
-  align-items: center;
-  padding-right: 25px;
-
   .listBrand {
     color: var(--color-rating);
-  }
-}
-
-////--------Избранное---
-.favoriteBtn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.2s ease;
-  font-size: 14px;
-
-  &::after {
-    content: "";
-    position: absolute;
-    width: 44px;
-    height: 44px;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-  }
-
-  @include hover {
-    transform: scale(1.1);
-    background: rgba(0, 0, 0, 0.8);
-  }
-
-  &.active {
-    background: #fff;
-    border-color: #fff;
   }
 }
 
@@ -260,74 +222,44 @@
   gap: 15px;
 }
 
-.listFavoriteBtn {
-  background: none;
-  /* pxtorem-disable-next-line */
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 5px;
-  transition: transform 0.2s;
-  display: flex;
-  align-items: center;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    width: 44px;
-    height: 44px;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-  }
-
-  @include hover {
-    transform: scale(1.2);
-  }
-}
-
-//Скидки:
 .badgeDiscount {
   position: absolute;
-  bottom: 10px;
   right: 10px;
-  background: #2da109;
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-weight: 900;
-  font-size: 0.8rem;
+  bottom: 10px;
   z-index: 10;
+
+  padding: 4px 10px;
+
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #fff;
+
+  background: #2da109;
+  border-radius: 4px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 
   &.personal {
-    background: #f39c12;
     color: #f80000;
+
+    background: #f39c12;
   }
 }
 
 .priceBlock {
   display: flex;
   flex-direction: column;
-  gap: 2px;
   min-width: 120px;
+  gap: 2px;
 
   .oldPrice {
-    text-decoration: line-through;
-    color: #666;
     font-size: 0.9rem;
+    color: #666;
+    text-decoration: line-through;
   }
 
   .newPrice {
-    color: #fff;
     font-size: 1.3rem;
     font-weight: 800;
-  }
-
-  .price {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #fff;
+    color: var(--accent-text-color);
   }
 }

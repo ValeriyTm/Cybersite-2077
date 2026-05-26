@@ -129,7 +129,7 @@ export class SearchService {
   }
 
   //Основной поиск/сортировка по моделям с фильтрами:
-  async searchMotorcycles(data: MotorcyclesServiceArgs, userId: string) {
+  async searchMotorcycles(data: MotorcyclesServiceArgs, userId?: string) {
     const {
       brandSlug,
       search,

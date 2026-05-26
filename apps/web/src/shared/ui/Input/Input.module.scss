@@ -19,7 +19,6 @@
   min-height: 44px;
 
   font-size: 1rem;
-  color: var(--color-dark);
 
   border-radius: 8px;
   outline: none;
@@ -73,10 +72,12 @@
   background-color: var(--color-light);
   /* pxtorem-disable-next-line */
   border: 1.5px solid var(--auxiliary-bg-color-2);
+  color: var(--color-dark);
 }
 
 .dark {
   background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1.5px solid var(--main-text-color);
+  color: var(--color-light);
 }

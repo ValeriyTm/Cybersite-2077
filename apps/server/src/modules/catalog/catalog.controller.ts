@@ -71,9 +71,10 @@ export const getBrands = catchAsync(async (req: Request, res: Response) => {
 export const getMotorcycles = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const data = req.query as unknown as MotorcyclesServiceArgs;
+    console.log("data: ", data);
 
     // Достаем userId из токена (если он есть; если нет, то персональные скидки будет не доступны)
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const result = await searchService.searchMotorcycles(data, userId);
     res.status(200).json(result);
