@@ -31,6 +31,12 @@
     position: relative;
     z-index: 2; // Чтобы инпут был выше невидимой области клика
 
+    accent-color: var(--accent-text-color);
+
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-text-color);
+
     cursor: pointer;
 
     &.inputError {
@@ -38,17 +44,20 @@
       outline: 2px solid var(--color-danger);
       outline-offset: 2px;
     }
+
+    @include hover {
+      box-shadow: 0 0 20px var(--accent-text-color);
+    }
   }
 }
 
-.labelText {
+.labelText,
+.labelTextWither {
   position: relative;
   z-index: 2; // Ссылки внутри текста должны быть кликабельны
   flex: 1;
 
-  font-size: 14px;
   line-height: 1.4;
-  color: var(--main-text-color);
 
   a {
     color: var(--accent-text-color);
@@ -60,10 +69,44 @@
   }
 }
 
+.labelText {
+  color: var(--main-text-color);
+}
+
+.labelTextWither {
+  color: var(--auxiliary-text-color);
+}
+
 .errorText {
   display: block;
   margin-top: 4px;
 
   font-size: 12px;
   color: var(--color-danger);
+}
+
+.smallText {
+  font-size: 14px;
+}
+
+.single {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-text-color);
+
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
+
+  @include hover {
+    box-shadow: 0 0 20px var(--accent-text-color);
+  }
 }

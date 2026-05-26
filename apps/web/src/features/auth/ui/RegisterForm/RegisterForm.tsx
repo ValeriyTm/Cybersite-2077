@@ -121,6 +121,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
         }
         registration={register("acceptTerms")}
         error={errors.acceptTerms}
+        smallText
       />
 
       <div className={styles.btnGroup}>

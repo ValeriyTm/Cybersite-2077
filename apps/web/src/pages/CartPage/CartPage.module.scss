@@ -1,18 +1,20 @@
 .CartPage {
+  width: auto;
   max-width: var(--container-width);
+  min-height: 80vh;
   margin: 40px auto;
   padding: 0 20px;
-  min-height: 80vh;
 
   @include mobile {
     margin-top: 16px;
   }
 
   .title {
-    font-size: 2.2rem;
-    color: var(--accent-text-color);
     margin-bottom: 30px;
+
+    font-size: 2.2rem;
     font-weight: 800;
+    color: var(--accent-text-color);
 
     @include mobile {
       margin-bottom: 10px;
@@ -23,10 +25,10 @@
 .content {
   display: grid;
   grid-template-columns: 1fr 380px;
-  gap: 30px;
   align-items: flex-start;
+  gap: 30px;
 
-  @include tablet {
+  @include laptop-s {
     grid-template-columns: 1fr;
   }
 
@@ -38,224 +40,73 @@
 
 //Верхняя панель управления корзиной:
 .controls {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: var(--auxiliary-bg-color-2);
+  justify-content: space-between;
   padding: 15px 20px;
-  border-radius: 12px;
   margin-bottom: 20px;
+
+  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
+  border-radius: 12px;
 
   @include mobile-s {
     line-height: 1;
   }
 
   .checkboxLabel {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
-    cursor: pointer;
-    color: var(--accent-text-color);
+
     font-weight: 500;
-    position: relative;
+    color: var(--accent-text-color);
+    cursor: pointer;
 
     &::after {
-      content: "";
       position: absolute;
-      left: 0;
-      right: 0;
-      height: 44px;
       top: 50%;
-      transform: translateY(-50%);
-    }
+      right: 0;
+      left: 0;
+      height: 44px;
 
-    input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent-text-color);
+      content: "";
+      transform: translateY(-50%);
     }
   }
 
   .deleteSelected {
+    padding-block: 10px;
+
+    font-weight: 600;
+    color: var(--color-danger);
+    cursor: pointer;
+
     background: none;
     /* pxtorem-disable-next-line */
     border: none;
-    color: var(--color-danger);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
 
-    padding-block: 10px;
+    transition: opacity 0.2s;
 
     @include hover {
       opacity: 0.8;
     }
 
     &:disabled {
-      opacity: 0.3;
       cursor: not-allowed;
-    }
-  }
-}
 
-//Боковая панель с результатами:
-.summary {
-  background: var(--auxiliary-bg-color-2);
-  padding: 30px;
-  border-radius: 16px;
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  position: sticky;
-  top: 120px;
-
-  @include hover {
-    box-shadow: 0 10px 30px var(--accent-text-color);
-  }
-
-  @include mobile {
-    padding: 16px;
-  }
-
-  p {
-    margin-bottom: 5px;
-  }
-
-  h3 {
-    color: var(--main-text-color);
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    margin-top: 0;
-  }
-
-  .summaryRow {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    color: var(--auxiliary-text-color);
-    font-size: 1rem;
-
-    &.total {
-      margin-top: 25px;
-      padding-top: 20px;
-      /* pxtorem-disable-next-line */
-      border-top: 1px solid #333;
-      color: var(--main-text-color);
-      font-size: 1.4rem;
-      font-weight: 800;
-    }
-  }
-
-  .checkoutBtn {
-    width: 100%;
-    background: var(--accent-text-color);
-    color: var(--main-text-color);
-    /* pxtorem-disable-next-line */
-    border: none;
-    padding: 18px;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: all 0.2s;
-
-    @include mobile-s {
-      margin-top: 0;
-    }
-
-    @include hover {
-      &:not(:disabled) {
-        opacity: 0.8;
-        transform: translateY(-2px);
-      }
-    }
-
-    &:disabled {
       opacity: 0.3;
-      cursor: not-allowed;
     }
   }
 }
 
 .empty {
-  text-align: center;
   padding: 150px 20px;
+
   font-size: 1.4rem;
+  text-align: center;
   color: var(--accent-text-color);
-}
-
-////Для промокода:
-.promoSection {
-  margin: 20px 0;
-  padding: 15px;
-  background: var(--main-bg-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--color-dark);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-
-  .inputGroup {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    flex-direction: column;
-
-    @include tablet {
-      flex-direction: row;
-    }
-
-    @include mobile-s {
-      flex-direction: column;
-    }
-  }
-
-  input {
-    flex: 1;
-    background: var(--auxiliary-bg-color-2);
-    /* pxtorem-disable-next-line */
-    border: 1px solid #333;
-    padding: 9px 12px;
-    color: var(--main-text-color);
-    border-radius: 4px;
-    text-transform: uppercase;
-    &:focus {
-      border-color: var(--accent-text-color);
-      outline: none;
-    }
-  }
-
-  .applyBtn {
-    background: var(--accent-text-color);
-    color: var(--main-text-color);
-    /* pxtorem-disable-next-line */
-    border: none;
-    padding: 10px 16px;
-    border-radius: 4px;
-    font-weight: 700;
-    cursor: pointer;
-
-    @include hover {
-      box-shadow: 0 0 30px var(--accent-text-color);
-    }
-  }
-
-  .successMsg {
-    margin-top: 10px;
-    color: var(--color-success);
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-}
-
-.removeBtn {
-  background-color: #c0676f;
-  border-radius: 50%;
-
-  @include hover {
-    background-color: var(--color-danger);
-  }
 }

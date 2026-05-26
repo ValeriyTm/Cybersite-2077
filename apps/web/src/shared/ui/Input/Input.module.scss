@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 1.25rem;
 
   text-align: left;
 }
@@ -15,8 +14,9 @@
 
 .input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem; //Было 0.75rem 1rem
   min-height: 44px;
+  margin-bottom: 1.25rem;
 
   font-size: 1rem;
 

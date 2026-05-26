@@ -2,22 +2,19 @@
 import { useTradingStore, useCart } from "@/entities/trading";
 import { useState } from "react";
 import { useProfile } from "@/features/auth";
-//Навигация:
-import { useNavigate } from "react-router";
 //Компоненты:
-import { ConfirmModal } from "@/shared/ui";
-import { CartItem } from "@/entities/trading";
-//API:
-import { $api } from "@/shared/api";
+import { Checkbox, ConfirmModal } from "@/shared/ui";
+import { CartCard } from "@/widgets/CartCard";
+import { CartOrderSummary } from "@/widgets/CartOrderSummary";
 //SEO:
 import { Helmet } from 'react-helmet-async';
-//Уведомления:
-import toast from "react-hot-toast";
 //Стили:
 import styles from "./CartPage.module.scss";
-import { CartCard } from "@/widgets/CartCard";
 
 export const CartPage = () => {
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
+
   const { user } = useProfile(); // Достаем данные профиля
 
   const { cartItems } = useTradingStore();
@@ -31,34 +28,10 @@ export const CartPage = () => {
   const isAllSelected =
     cartItems.length > 0 && cartItems.every((item) => item.selected);
 
-  //Для промокода:
-  const [promoCode, setPromoCode] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<{
-    code: string;
-    amount: number;
-  } | null>(null);
+  //Выбранные товары:
+  const selectedItems = cartItems.filter((item) => item.selected);
 
-
-  const navigate = useNavigate();
-
-  //Стейты для модалок
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
-
-  //------------------------------Расчёт цены:--------------------------//
-  const selectedItems = cartItems.filter((item) => item.selected); //Рассматриваем не все товары корзины, а только выделенные
-  //Применяем к ним действие скидок:
-  const subtotal = selectedItems.reduce(
-    (acc, item) =>
-      acc + (item.discountData?.finalPrice || item.price) * item.quantity,
-    0,
-  );
-
-
-  const promoAmount = Number(appliedPromo?.amount || 0); //Уменьшение суммы от промокода
-  const finalTotal = Math.max(0, subtotal - promoAmount); //Получаем конечную сумму
-  //------------------------------------------------------------------//
-
+  //-----------------------------------Обработчики----------------------------//
   //Обработчик удаления одного товара из корзины:
   const handleConfirmSingle = () => {
     if (deletingId) {
@@ -66,25 +39,11 @@ export const CartPage = () => {
       setDeletingId(null);
     }
   };
-  //-----------------------------------Обработчики----------------------------//
-  //
+
+  //Обработчик удаления выбранных товаров:
   const handleDeletingId = (data: string) => {
     setDeletingId(data);
   }
-
-
-  //Обработчик для применения промокода:
-  const handleApplyPromo = async () => {
-    try {
-      const res = await $api.post("/discount/apply-promo", { code: promoCode });
-      setAppliedPromo({ code: res.data.code, amount: res.data.discountAmount });
-      toast.success(`Промокод ${res.data.code} применен!`);
-    } catch (e) {
-      setAppliedPromo(null);
-      toast.error("Промокод не найден, истек или уже использован");
-      console.log('Ошибка: ', e)
-    }
-  };
 
   //Обработчик для выбора всех чекбоксов:
   const handleToggleAll = () => {
@@ -98,43 +57,10 @@ export const CartPage = () => {
     setIsBulkDeleteOpen(false);
   };
 
-  //--------------Проверяем допустимо ли юзеру перейти к оформлению заказа:-----//
-  //Проверяем заполненность профиля
-  const isProfileIncomplete = user ? (!user.phone || !user.birthday) : false;
-
-  //Если среди выбранных товаров есть такой, у которого количество указано больше, чем есть остатков, то получаем true:
-  const hasStockErrorInSelected = selectedItems.some(
-    (item) => item.quantity > item.totalInStock,
-  );
-
-
-  //Переход к оформлению заказа:
-  const handleOrder = () => {
-    //Проверяем профиль в момент клика:
-    if (!user?.phone || !user?.birthday) {
-      toast.error("Для оформления заказа необходимо указать телефон и дату рождения в профиле!");
-      return; // Прерываем выполнение, дальше код не идет
-    }
-
-    //Фиксируем Я.Метрику:
-    const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
-    if (typeof window !== 'undefined' && (window as any).ym) {
-      (window as any).ym(metricaId, 'reachGoal', 'ORDER_CLICK');
-    }
-
-    //Редирект на оформление заказа:
-    navigate("/checkout", {
-      state: {
-        promo: appliedPromo,
-        allowed: true, //Флаг, что юзер попал на страницу /checkout именно с корзины
-      }
-    });
-  };
   ///--------------------------При отсутствии товаров:------------------------//
-  if (cartItems.length === 0) {
+  if (cartItems.length === 0 && !user) {
     return <div className={styles.empty}>Ваша корзина пуста 🛒</div>;
   }
-
 
   return (
     <>
@@ -144,36 +70,16 @@ export const CartPage = () => {
       </Helmet>
 
       <main className={styles.CartPage}>
-        {/*1) Модалка для удаления одного товара из корзины*/}
-        <ConfirmModal
-          isOpen={!!deletingId}
-          title="Вы действительно хотите удалить этот товар из корзины?"
-          onConfirm={handleConfirmSingle}
-          onCancel={() => setDeletingId(null)}
-        />
-
-        {/*2) Модалка для массового удаления товаров из корзины*/}
-        <ConfirmModal
-          isOpen={isBulkDeleteOpen}
-          title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
-          onConfirm={handleConfirmBulk}
-          onCancel={() => setIsBulkDeleteOpen(false)}
-        />
-
         <h1 className={styles.title}>Корзина</h1>
-
         <div className={styles.content}>
-          {/*3) Header:*/}
+          {/*Header:*/}
           <div className={styles.main}>
             <div className={styles.controls}>
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={isAllSelected}
-                  onChange={handleToggleAll}
-                />
-                Выбрать все
-              </label>
+              <Checkbox
+                label="Выбрать все"
+                checked={isAllSelected}
+                onChange={handleToggleAll}
+              />
               <button
                 className={styles.deleteSelected}
                 onClick={() => setIsBulkDeleteOpen(true)}
@@ -183,7 +89,7 @@ export const CartPage = () => {
               </button>
             </div>
 
-            {/*4) Список товаров:*/}
+            {/*Список товаров:*/}
             <div className={styles.list}>
               {cartItems.map((item) => {
                 return (
@@ -193,80 +99,25 @@ export const CartPage = () => {
             </div>
           </div>
 
-          {/*5) Сайдбар с итоговой ценой:*/}
-          <aside className={styles.summary}>
-            {/*5.1.) Окно с ценой и кнопкой оформления заказа:*/}
-            <h3>Условия заказа</h3>
-            <div className={styles.summaryRow}>
-              <span>Выбрано товаров:</span>
-              <span>{selectedItems.length}</span>
-            </div>
-            <div className={`${styles.summaryRow} ${styles.total}`}>
-              <span>Итого:</span>
-              <span>{finalTotal.toLocaleString()} ₽</span>
-            </div>
-
-            {isProfileIncomplete && (
-              <p className={styles.warning}>
-                ⚠️ Заполните телефон и дату рождения в профиле для оформления
-                заказа
-              </p>
-            )}
-
-            {hasStockErrorInSelected && (
-              <p className={styles.warning}>
-                ❌ Исправьте количество товаров (превышен остаток на складах)
-              </p>
-            )}
-
-            <button
-              type="button"
-              className={styles.checkoutBtn}
-              disabled={selectedItems.length === 0 || hasStockErrorInSelected}
-              onClick={(e) => {
-                e.stopPropagation(); //Останавливаем "шум" для других компонентов
-                handleOrder();
-              }}
-            >
-              Перейти к оформлению
-            </button>
-
-            {/*5.2.) Зона ввода промокода:*/}
-            <div className={styles.promoSection}>
-              <p className={styles.promoLabel}>Промокод на скидку:</p>
-
-              {!appliedPromo ? (
-                <div className={styles.inputGroup}>
-                  <label htmlFor="promo" className="visually-hidden">Ввести промокод</label>
-                  <input
-                    type="text"
-                    placeholder="ВВЕДИТЕ СЛОВО"
-                    value={promoCode}
-                    id="promo"
-                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                  />
-                  <button className={styles.applyBtn} onClick={handleApplyPromo}>
-                    Применить
-                  </button>
-                </div>
-              ) : (
-                <div className={styles.successMsg}>
-                  ✅ Промокод <strong>{appliedPromo.code}</strong> применен:
-                  <br></br>
-                  <span> -{appliedPromo.amount.toLocaleString()} ₽</span>
-                  <br></br>
-                  <span>Отменить промокод: </span>
-                  <button
-                    className={styles.removeBtn}
-                    onClick={() => setAppliedPromo(null)}
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-            </div>
-          </aside>
+          {/*Сайдбар с итоговой ценой:*/}
+          <CartOrderSummary selectedItems={selectedItems} user={user!} />
         </div>
+
+        {/*Модалка для удаления одного товара из корзины*/}
+        <ConfirmModal
+          isOpen={!!deletingId}
+          title="Вы действительно хотите удалить этот товар из корзины?"
+          onConfirm={handleConfirmSingle}
+          onCancel={() => setDeletingId(null)}
+        />
+
+        {/*Модалка для массового удаления товаров из корзины*/}
+        <ConfirmModal
+          isOpen={isBulkDeleteOpen}
+          title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
+          onConfirm={handleConfirmBulk}
+          onCancel={() => setIsBulkDeleteOpen(false)}
+        />
       </main>
     </>
 

@@ -2,7 +2,7 @@
 import { CATEGORY_OPTIONS, TRANSMISSION_OPTIONS, useMotorcycleFilters } from "@/entities/catalog";
 //Компоненты:
 import { RangeFilter, SelectFilter } from "@/features/catalog";
-import { Button } from "@/shared/ui";
+import { Button, Checkbox } from "@/shared/ui";
 //Стили:
 import styles from "./ProductFiltersSidebar.module.scss";
 
@@ -28,10 +28,17 @@ export const ProductFiltersSidebar = ({ isOpen, onClose }: ProductFiltersSidebar
       <SelectFilter label="Категория" value={filters.category} options={CATEGORY_OPTIONS} onChange={(val) => updateFilters({ category: val })} />
       <SelectFilter label="Тип привода" value={filters.transmission} options={TRANSMISSION_OPTIONS} onChange={(val) => updateFilters({ transmission: val })} />
 
-      <label className={styles.checkboxFilter}>
+      {/* <label className={styles.checkboxFilter}>
         <input type="checkbox" checked={filters.onlyInStock} onChange={(e) => updateFilters({ onlyInStock: e.target.checked })} />
         <span className={styles.checkboxLabel}>Только в наличии</span>
-      </label>
+      </label> */}
+
+      <Checkbox
+        label="Только в наличии"
+        checked={filters.onlyInStock}
+        onChange={(e) => updateFilters({ onlyInStock: e.target.checked })}
+        wither
+      />
 
       <Button
         type="button"

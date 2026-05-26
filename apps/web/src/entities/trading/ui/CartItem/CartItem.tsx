@@ -4,6 +4,8 @@ import { useCart } from '@/entities/trading/api';
 import { Link } from "react-router";
 //API:
 import { API_URL } from '@/shared/api'
+//Компоненты:
+import { Checkbox } from '@/shared/ui';
 //Типы:
 import { type MotorcycleCart } from "@/entities/catalog";
 //Изображения:
@@ -45,13 +47,15 @@ export const CartItem = ({ data, handleDeletingId, favoriteButtonSlot,
       <div className={styles.cartItem}>
         {/*Чекбокс:*/}
         <div className={styles.checkboxWrapper}>
-          <input
-            type="checkbox"
+          <Checkbox
+            label="Выбрать товар"
             checked={data.selected}
             onChange={handleCheckboxChange}
-
+            single
           />
         </div>
+
+
 
         {/*Img:*/}
         <div className={styles.itemImg}>

@@ -2,13 +2,13 @@
 .cartWrapper {
   display: flex;
   flex-direction: column;
+  margin-block: 20px;
+
   background: var(--auxiliary-bg-color-2);
   border: 1px solid var(--accent-text-color);
-  margin-block: 20px;
   border-radius: 12px;
 
   @include hover {
-    border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
   }
 }
@@ -29,59 +29,39 @@
     "check image bot price";
   grid-template-columns: 1fr 3fr 10fr 120px;
   align-items: center;
+  padding: 20px;
   gap: 20px;
 
-  padding: 20px;
   transition:
     transform 0.2s,
     border-color 0.2s;
 
   @include mobile {
+    display: grid; /* подразумевается контекстом grid-template-areas */
     grid-template-areas:
       "check image price"
       "check image price"
       "top top top"
       "bot bot bot";
     grid-template-columns: 1fr 4fr 4fr;
-    gap: 10px;
     align-items: center;
     justify-items: center;
     padding-inline: 10px;
-  }
-
-  input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--accent-text-color);
+    gap: 10px;
   }
 
   .checkboxWrapper {
     grid-area: check;
-    align-self: center;
-    justify-self: center;
-
-    input {
-      position: relative;
-
-      &::after {
-        content: "";
-        position: absolute;
-        width: 44px;
-        height: 44px;
-        top: 50%;
-        left: 50%;
-        translate: -50% -50%;
-      }
-    }
   }
 
   .itemImg {
     grid-area: image;
     width: 120px;
     height: 80px;
+
+    background: var(--color-dark);
     border-radius: 8px;
     overflow: hidden;
-    background: var(--color-dark);
 
     img {
       width: 100%;
@@ -103,75 +83,29 @@
 
     .btnGroup {
       display: flex;
+      align-items: center;
       gap: 20px;
-      align-items: center;
-    }
-
-    //Управление количеством:
-    .quantityControl {
-      display: flex;
-      align-items: center;
-      background: var(--main-bg-color);
-      border-radius: 8px;
-      padding: 5px;
-      justify-content: space-between;
-      width: 110px;
-
-      .quantityBtn {
-        position: relative;
-
-        &::after {
-          content: "";
-          position: absolute;
-          width: 44px;
-          height: 44px;
-          top: 50%;
-          left: 50%;
-          translate: -50% -50%;
-        }
-      }
-
-      button {
-        width: 30px;
-        height: 30px;
-        background: var(--auxiliary-bg-color-2);
-        /* pxtorem-disable-next-line */
-        border: none;
-        color: var(--main-text-color);
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: bold;
-
-        @include hover {
-          background: var(--auxiliary-text-color);
-        }
-      }
-
-      span {
-        color: var(--main-text-color);
-        font-weight: 600;
-        width: 30px;
-        text-align: center;
-      }
     }
 
     .deleteBtn {
+      position: relative;
+      padding: 2px 16px;
+
       color: var(--color-danger);
+
+      background-color: var(--auxiliary-bg-color-2);
       /* pxtorem-disable-next-line */
       border: 1px solid var(--color-danger);
-      background-color: var(--auxiliary-bg-color-2);
-      padding: 2px 16px;
       border-radius: 6px;
-      position: relative;
-      max-height: 44px;
 
       &::after {
-        content: "";
         position: absolute;
-        height: 44px;
         top: 50%;
-        left: -2px;
         right: -2px;
+        left: -2px;
+        height: 44px;
+
+        content: "";
         transform: translateY(-50%);
       }
 
@@ -192,11 +126,12 @@
     }
 
     .itemName {
+      margin-bottom: 0;
+
       font-size: 1.3rem;
-      color: var(--main-text-color);
       text-align: left;
       text-decoration: none;
-      margin-bottom: 0;
+      color: var(--main-text-color);
 
       @include hover {
         color: var(--accent-text-color);
@@ -207,19 +142,21 @@
   //Блок цены:
   .priceBlock {
     grid-area: price;
-    text-align: right;
     display: flex;
     flex-direction: column;
 
+    text-align: right;
+
     .currentPrice {
+      margin-bottom: 4px;
+
       font-size: 0.85rem;
       color: var(--color-light);
-      margin-bottom: 4px;
     }
 
     .oldPrice {
-      text-decoration: line-through;
       font-size: 0.7rem;
+      text-decoration: line-through;
       // color: var(--auxiliary-text-color);
       color: var(--color-danger);
     }
@@ -231,16 +168,9 @@
     }
 
     .badgeDiscount {
-      color: var(--color-danger);
       font-weight: 800;
       font-style: italic;
+      color: var(--color-danger);
     }
   }
-}
-
-.errorHint {
-  grid-area: footer;
-  color: var(--color-danger);
-  text-align: center;
-  padding-block: 5px;
 }
