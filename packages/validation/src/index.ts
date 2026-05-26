@@ -204,8 +204,7 @@ export const ResetPasswordSchema = z
         "В пароле нужен хотя бы один спецсимвол (@, #, $ и т.д.)",
       ),
     confirmPassword: z.string(),
-    //@ts-ignore:
-    captchaToken: z.string({ required_error: "Ошибка безопасности" }),
+    captchaToken: z.string({ message: "Ошибка безопасности" }),
   })
   .strict()
   .refine((data) => data.password === data.confirmPassword, {
@@ -1124,7 +1123,7 @@ export const UpdateQuantityCartSchema = z.object({
       .string()
       .min(1, { message: "id не должен быть пустой строкой" })
       .max(36, "Максимум 36 символов для id"),
-    quantity: z.coerce.number().int().positive(),
+    quantity: z.coerce.number().int().nonnegative(),
   }),
 });
 

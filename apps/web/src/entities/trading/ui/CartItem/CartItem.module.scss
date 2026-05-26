@@ -101,57 +101,10 @@
       justify-content: center;
     }
 
-    button {
-      background: none;
-      /* pxtorem-disable-next-line */
-      border: none;
-      font-size: 0.85rem;
-      color: var(--auxiliary-text-color);
-      cursor: pointer;
-      padding: 0;
-      position: relative;
-
-      @include hover {
-        color: var(--accent-text-color);
-      }
-      &:last-child:hover {
-        color: var(--color-danger);
-      }
-    }
-
-    .favIconBtn {
-      background: none;
-      /* pxtorem-disable-next-line */
-      border: none;
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      display: flex;
-      align-items: center;
-      position: relative;
-
-      &::after {
-        content: "";
-        position: absolute;
-        width: 44px;
-        height: 44px;
-        top: 50%;
-        left: 50%;
-        translate: -50% -50%;
-      }
-
-      @include hover {
-        transform: scale(1.2);
-      }
-
-      &.active {
-        filter: drop-shadow(0 0 5px rgba(156, 21, 32, 0.7));
-      }
-    }
-
     .btnGroup {
       display: flex;
       gap: 20px;
+      align-items: center;
     }
 
     //Управление количеством:
@@ -206,9 +159,11 @@
       color: var(--color-danger);
       /* pxtorem-disable-next-line */
       border: 1px solid var(--color-danger);
-      padding: 2px 4px;
+      background-color: var(--auxiliary-bg-color-2);
+      padding: 2px 16px;
       border-radius: 6px;
       position: relative;
+      max-height: 44px;
 
       &::after {
         content: "";
@@ -221,8 +176,7 @@
       }
 
       @include hover {
-        scale: 1.1;
-        color: var(--color-danger);
+        box-shadow: 0 0 10px var(--color-danger);
       }
     }
   }
@@ -240,7 +194,6 @@
     .itemName {
       font-size: 1.3rem;
       color: var(--main-text-color);
-      margin-bottom: 10px;
       text-align: left;
       text-decoration: none;
       margin-bottom: 0;
@@ -281,21 +234,6 @@
       color: var(--color-danger);
       font-weight: 800;
       font-style: italic;
-    }
-  }
-
-  .deleteTextBtn {
-    background: none;
-    /* pxtorem-disable-next-line */
-    border: none;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
-
-    @include hover {
-      color: var(--color-danger);
     }
   }
 }

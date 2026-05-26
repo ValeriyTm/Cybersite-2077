@@ -9,17 +9,19 @@ export interface AddToCartButtonProps {
     id: string,
     model: string,
     price: number,
-    image: string,
-    brandSlug: string,
+    image?: string, //Не передаем, если вызываем со старницы корзины
+    brandSlug?: string, //Не передаем, если вызываем со старницы корзины
     slug: string,
     totalInStock: number,
     year: number,
   };
+  onCartPage?: boolean;
 }
 
 export const AddToCartButton = ({
   data,
   variant = "details",
+  onCartPage = false,
 }: AddToCartButtonProps) => {
   //Мутации для работы с корзиной:
   const { addToCart, updateQuantity, removeItem } = useCart();
@@ -52,13 +54,30 @@ export const AddToCartButton = ({
         disabled={!data.totalInStock} //Если товара нет в наличии, кнопка будет неактивной
         className={styles.addBtn}
         onClick={(e) =>
-          handleAction(e, () => addToCart({ ...data, quantity: 1, selected: true }))
+          handleAction(e, () => addToCart({ ...data, image: data.image!, brandSlug: data.brandSlug!, quantity: 1, selected: true }))
         }
       >
         {data.totalInStock ? "🛒 В корзину" : "Нет в наличии"}
       </button>
     );
   }
+
+  //Если мы на странице корзины, то уменьшение товара меньше 1 невозможно (для этого отдельная кнопка):
+  const handleDecrease = () => {
+    if (cartItem!.quantity > 1) {
+      updateQuantity({ id: data.id, quantity: cartItem!.quantity - 1 });
+    } else {
+      // Если остался 1 товар: в корзине зануляем, в каталоге — удаляем совсем
+      if (onCartPage) {
+        updateQuantity({ id: data.id, quantity: 0 });
+      } else {
+        removeItem(data.id);
+      }
+    }
+  };
+
+  const isMaxStockReached = cartItem!.quantity >= data.totalInStock;
+
 
   //2) Если товар есть в корзине, то показываем счетчик:
   return (
@@ -67,17 +86,7 @@ export const AddToCartButton = ({
         {/*Кнопка уменьшения количества товара в корзине:*/}
         <button
           onClick={(e) =>
-            handleAction(e, () => {
-              //Если товара более 1 в корзине, то уменьшаем на "1". Если товара "1", то просто удаляем из корзины:
-              if (cartItem.quantity > 1) {
-                updateQuantity({
-                  id: data.id,
-                  quantity: cartItem.quantity - 1,
-                });
-              } else {
-                removeItem(data.id);
-              }
-            })
+            handleAction(e, handleDecrease)
           }
           className={styles.quantityBtn}
         >
@@ -89,6 +98,7 @@ export const AddToCartButton = ({
 
         {/*Кнопка увеличения количества товара в корзине:*/}
         <button
+          disabled={isMaxStockReached}
           onClick={(e) => {
             handleOrder();
             handleAction(e, () =>
@@ -102,8 +112,8 @@ export const AddToCartButton = ({
         </button>
       </div>
 
-      {/*Отображаем текст "В корзине", если формат card:*/}
-      {variant === "card" && <div className={styles.addedBadge}>В корзине</div>}
+      {/*Отображаем текст "В корзине", если формат card и мы не на странице корзины:*/}
+      {(variant === "card" && !onCartPage) && <div className={styles.addedBadge}>В корзине</div>}
     </div>
   );
 };

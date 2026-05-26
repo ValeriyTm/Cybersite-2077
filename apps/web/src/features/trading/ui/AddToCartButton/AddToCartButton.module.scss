@@ -112,6 +112,12 @@
       background: #444;
       color: var(--accent-text-color);
     }
+
+    &:disabled {
+      color: transparent;
+
+      cursor: not-allowed;
+    }
   }
 
   .count {
