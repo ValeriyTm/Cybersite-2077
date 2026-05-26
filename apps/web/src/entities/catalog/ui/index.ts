@@ -1,3 +1,3 @@
 export * from "./BrandCard";
 export * from "./CategoryCard";
-export * from "./MotorcycleCard";
+export * from "./MotorcycleItem";

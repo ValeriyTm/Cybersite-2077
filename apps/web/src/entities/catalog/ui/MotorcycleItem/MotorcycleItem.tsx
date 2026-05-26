@@ -3,36 +3,36 @@ import { Link } from "react-router";
 //Типы:
 import { type MotorcycleShort } from "@/entities/catalog/model";
 import type { MotorcycleFull } from "@repo/types";
-//Компоненты:
-import { AddToCartButton, FavoriteButton } from "@/features/trading";
 //Утилиты:
 import {
   extractMainImage,
   getMotoImageUrl,
-  getCartImageUrl,
   extractBrandName,
   getDiscountInfo,
 } from "@/entities/catalog/lib/utils";
 //Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
-import styles from "./MotorcycleCard.module.scss";
+import styles from "./MotorcycleItem.module.scss";
 
-export interface MotorcycleCardProps {
+export interface MotorcycleItemProps {
   data: MotorcycleShort | MotorcycleFull;
   viewMode?: "grid" | "list";
+  favoriteButtonSlot?: React.ReactNode; //Слот для кнопки "Избранного"
+  actionButtonSlot?: React.ReactNode;  //Слот для кнопки "Корзины"
 }
 
-export const MotorcycleCard = ({
+export const MotorcycleItem = ({
   data,
   viewMode = "grid", //Вид карточки (сетка или список)
-}: MotorcycleCardProps) => {
+  favoriteButtonSlot,
+  actionButtonSlot
+}: MotorcycleItemProps) => {
 
   //Утилиты для подготовки данных:
   const mainImage = extractMainImage(data);
   const brandName = extractBrandName(data);
   const displayImageUrl = getMotoImageUrl(mainImage, defaultMotoImage);
-  const cartImageUrl = getCartImageUrl(mainImage);
 
   const { currentPrice, hasDiscount, isPersonalDiscount, discountPercent } = getDiscountInfo(data);
 
@@ -75,8 +75,8 @@ export const MotorcycleCard = ({
             </div>
           )}
 
-          {/*Кнопка добавления в избранное:*/}
-          <FavoriteButton motorcycleId={data.id} viewMode="grid" />
+          {/*Тут будет кнопка добавления в избранное:*/}
+          {favoriteButtonSlot}
 
           {/*Бадж высокого рейтинга:*/}
           {data.rating > 4.7 && <span className={styles.badge}>Top Rated</span>}
@@ -125,23 +125,12 @@ export const MotorcycleCard = ({
           </div>
 
           <div className={styles.ratingAndAction}>
-            {viewMode === "list" && (
-              <FavoriteButton motorcycleId={data.id} viewMode="list" />
-            )}
 
-            <AddToCartButton
-              variant="card"
-              data={{
-                id: data.id,
-                model: data.model,
-                price: data.price,
-                image: cartImageUrl,
-                brandSlug: currentBrandSlug,
-                slug: data.slug,
-                totalInStock: data.totalInStock,
-                year: data.year,
-              }}
-            />
+            {/*Тут будет кнопка избранного:*/}
+            {viewMode === "list" && favoriteButtonSlot}
+
+            {/*Тут будет для корзины:*/}
+            {actionButtonSlot}
           </div>
         </div>
       </div>

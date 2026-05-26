@@ -9,9 +9,9 @@ import { $api } from "@/shared/api";
 //Дебаунс для поиска:
 import debounce from "lodash/debounce";
 //Компоненты:
-import { MotorcycleCard } from "@/entities/catalog";
+import { MotorcycleCard } from "@/widgets/MotorcycleCard";
 import { RangeFilter, SelectFilter } from "@/features/catalog-filter";
-import { Breadcrumbs } from "@/shared/ui";
+import { Breadcrumbs, Pagination } from "@/shared/ui";
 import { LuLayoutGrid, LuLayoutList } from "react-icons/lu";
 //API:
 import { API_URL } from "@/shared/api";
@@ -292,7 +292,7 @@ export const MotorcyclesPage = () => {
           <div className={viewMode === "grid" ? styles.grid : styles.list}>
             {data?.items?.map((moto: MotorcycleShort) => {
               return (
-                <MotorcycleCard key={moto.id} data={moto} viewMode={viewMode} />
+                <MotorcycleCard key={moto.id} moto={moto} viewMode={viewMode} />
               );
             })}
 
@@ -305,77 +305,11 @@ export const MotorcyclesPage = () => {
           </div>
 
           {/*2.3.Пагинация:*/}
-          {data?.pages && data.pages > 1 && (
-            <footer className={styles.pagination}>
-              {/*Кнопка "в самое начало":*/}
-              <button
-                className={styles.navBtn}
-                disabled={filters.page === 1}
-                onClick={() => updateFilters({ page: 1 })}
-                title="В начало"
-              >
-                &laquo;&laquo;
-              </button>
-
-              {/*Кнопка "на одну назад": */}
-              <button
-                className={styles.navBtn}
-                disabled={filters.page === 1}
-                onClick={() => updateFilters({ page: filters.page - 1 })}
-              >
-                &laquo;
-              </button>
-
-              {/*Отображение числа страниц:*/}
-              <div className={styles.numbers}>
-                {(() => {
-                  const pages = [];
-                  const maxButtons = 5;
-                  const totalPages = data?.pages || 1;
-
-                  let startPage = Math.max(1, filters.page - 2);
-                  const endPage = Math.min(totalPages, startPage + maxButtons - 1);
-
-                  if (endPage - startPage < maxButtons - 1) {
-                    startPage = Math.max(1, endPage - maxButtons + 1);
-                  }
-
-                  for (let i = startPage; i <= endPage; i++) {
-                    pages.push(
-                      <button
-                        key={i}
-                        onClick={() => updateFilters({ page: i })}
-                        className={`${styles.pageBtn} ${filters.page === i ? styles.active : ""}`}
-                      >
-                        {i}
-                      </button>,
-                    );
-                  }
-                  return pages;
-                })()}
-              </div>
-
-              {/*Кнопка "на одну вперед":*/}
-              <button
-                className={styles.navBtn}
-                // Берем totalPages прямо из данных React Query
-                disabled={filters.page === (data?.pages || 1)}
-                onClick={() => updateFilters({ page: filters.page + 1 })}
-              >
-                &raquo;
-              </button>
-
-              {/*Кнопка "в самый конец":*/}
-              <button
-                className={styles.navBtn}
-                disabled={filters.page === (data?.pages || 1)}
-                onClick={() => updateFilters({ page: data?.pages || 1 })}
-                title="В конец"
-              >
-                &raquo;&raquo;
-              </button>
-            </footer>
-          )}
+          <Pagination
+            currentPage={filters.page}
+            totalPages={data?.pages || 1}
+            onPageChange={(page) => updateFilters({ page })}
+          />
         </main>
       </div>
     </>

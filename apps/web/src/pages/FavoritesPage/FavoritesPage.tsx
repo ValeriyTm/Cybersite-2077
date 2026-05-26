@@ -3,7 +3,7 @@ import React from "react";
 import { useTradingStore, useFavoritesPage } from "@/entities/trading";
 import { useState, useEffect } from "react";
 //Компоненты:
-import { MotorcycleCard } from "@/entities/catalog";
+import { MotorcycleCard } from "@/widgets/MotorcycleCard";
 //Иконки:
 import { FaArrowUp } from "react-icons/fa";
 //SEO:
@@ -63,7 +63,7 @@ export const FavoritesPage = () => {
             <React.Fragment key={i}>
               {group.items.map((moto: MotorcycleFull) => {
                 return (
-                  <MotorcycleCard key={moto.id} data={moto} viewMode="list" />
+                  <MotorcycleCard key={moto.id} moto={moto} viewMode="list" />
                 )
               })}
             </React.Fragment>

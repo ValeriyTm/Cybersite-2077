@@ -13,7 +13,8 @@ import type { MotorcycleFull } from "@repo/types";
 import { Helmet } from "react-helmet-async";
 //Компоненты:
 import { SpecRow, Breadcrumbs } from "@/shared/ui";
-import { MotorcycleCard, type MotorcycleReview, type MotorcycleShort } from "@/entities/catalog";
+import { type MotorcycleReview, type MotorcycleShort } from "@/entities/catalog";
+import { MotorcycleCard } from "@/widgets/MotorcycleCard";
 import { AddToCartButton } from "@/features/trading";
 import { ReviewCard } from "@/entities/reviews";
 //Изображения:
@@ -655,7 +656,7 @@ export const MotorcycleDetailsPage = () => {
               <h2 className={styles.sectionTitle}>Похожие модели</h2>
               <div className={styles.relatedGrid}>
                 {relatedMotorcycles.map((moto: MotorcycleShort) => (
-                  <MotorcycleCard key={moto.id} data={moto} />
+                  <MotorcycleCard key={moto.id} moto={moto} />
                 ))}
               </div>
             </section>

@@ -102,9 +102,6 @@
   justify-content: space-between;
   margin-top: auto;
   padding-top: 12px;
-
-  /* pxtorem-disable-next-line */
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .rating {
@@ -136,10 +133,17 @@
     padding: 0;
     gap: 40px;
 
-    @media (width <= 900px) {
+    @media (width <= 1350px) {
       flex-direction: column;
       // grid-template-columns: 1fr;
       padding-top: 10px;
+      gap: 10px;
+
+      .footer {
+        padding-top: 10px;
+        /* pxtorem-disable-next-line */
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
     }
   }
 
@@ -173,42 +177,16 @@
     }
   }
 
-  .model {
-    margin: 0;
-
-    font-size: 1rem;
-  }
-
-  .specs {
-    display: flex;
-    flex: 2;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
-    gap: 20px;
-
-    /* pxtorem-disable-next-line */
-    border: none;
-  }
-
   .footer {
     display: flex;
     flex: 1;
     justify-content: flex-end;
-    margin: 0;
     padding: 0;
     gap: 20px;
-
-    /* pxtorem-disable-next-line */
-    border: none;
 
     @include mobile {
       gap: 0;
     }
-  }
-
-  .price {
-    font-size: 1.1rem;
   }
 
   .listBrand {
