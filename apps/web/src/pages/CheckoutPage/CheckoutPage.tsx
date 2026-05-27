@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { useEffect, useMemo, useState } from "react";
 import { useTradingStore } from "@/entities/trading";
-import { PaymentModal } from "@/shared/ui";
+import { PaymentModal } from "@/widgets/PaymentModal";
 import { DeliveryAddressSelector } from "@/features/ordering";
 import { CheckoutSummary } from "@/widgets/CheckoutSummary";
 //Типы:

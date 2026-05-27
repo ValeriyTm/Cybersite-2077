@@ -14,7 +14,7 @@ export * from "./ImageModal";
 export * from "./Input";
 export * from "./Pagination";
 export * from "./PasswordField";
-export * from "./PaymentModal";
+export * from "./PaymentTimer";
 export * from "./PhoneInput";
 export * from "./RatingInput";
 export * from "./ReviewCardHome";

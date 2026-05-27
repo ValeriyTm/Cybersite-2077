@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
 //Типы:
 import type { MotorcycleCart } from "@/entities/catalog";
 import type { OrderItem } from "@/entities/ordering/types/types";
+//Компоненты:
+import { Button, PaymentTimer } from "@/shared/ui";
 //Изображения:
 import yookassaLogo from '@/shared/assets/images/logos/yookassa_logo.png'
 //Стили:
@@ -24,30 +25,6 @@ export const PaymentModal = ({
   items,
   createdAt,
 }: PaymentModalProps) => {
-  const [timeLeft, setTimeLeft] = useState<string>("");
-
-  useEffect(() => {
-    if (!createdAt) return;
-
-    const timer = setInterval(() => {
-      const expiresAt = new Date(createdAt).getTime() + 60 * 60 * 1000; // +1 час
-      const now = new Date().getTime();
-      const diff = expiresAt - now;
-
-      if (diff <= 0) {
-        setTimeLeft("Время истекло");
-        clearInterval(timer);
-      } else {
-        const mins = Math.floor((diff / 1000 / 60) % 60);
-        const secs = Math.floor((diff / 1000) % 60);
-        setTimeLeft(`${mins}:${secs < 10 ? "0" : ""}${secs}`);
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [createdAt]);
-
-
   if (!isOpen) return null;
 
   return (
@@ -73,8 +50,7 @@ export const PaymentModal = ({
           </p>
           {createdAt && (
             <p>
-              Осталось времени на оплату:{" "}
-              <span className={styles.timer}>{timeLeft}</span>
+              Осталось времени на оплату: <PaymentTimer createdAt={createdAt} />
             </p>
           )}
           <p>
@@ -102,12 +78,22 @@ export const PaymentModal = ({
           </ul>
         </div>
 
-        <button className={styles.payBtn} onClick={onConfirm}>
-          Оплатить
-        </button>
-        <button className={styles.closeBtn} onClick={onClose}>
-          Закрыть
-        </button>
+        <div className={styles.btnGroup}>
+          <Button
+            type="button"
+            variant="primary"
+            onClick={onConfirm}
+          >
+            Оплатить
+          </Button>
+          <Button
+            type="button"
+            variant="simple"
+            onClick={onClose}
+          >
+            Отмена
+          </Button>
+        </div>
       </div>
     </div>
   );

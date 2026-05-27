@@ -139,3 +139,20 @@
     outline: 3px dotted var(--main-text-color);
   }
 }
+
+.simple {
+  color: gray;
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
+
+  @include hover {
+    &:not(:disabled) {
+      color: var(--color-light);
+    }
+  }
+
+  &:focus-visible {
+    outline: 1px dotted var(--color-light);
+  }
+}

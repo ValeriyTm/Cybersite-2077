@@ -10,7 +10,7 @@ import { Link } from "react-router";
 import { $api, API_URL } from "@/shared/api";
 //Компоненты:
 import { ReviewModal } from "@/features/reviews";
-import { PaymentModal } from "@/shared/ui";
+import { PaymentModal } from "@/widgets/PaymentModal";
 //Типы:
 import type { Order, OrderItem } from "../../types/types";
 //Изображения:
