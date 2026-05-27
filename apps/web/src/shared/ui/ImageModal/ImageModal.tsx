@@ -1,5 +1,6 @@
-import ReactDOM from "react-dom";
 import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
+import { FocusTrap } from "focus-trap-react";
 //Стили:
 import styles from "./ImageModal.module.scss";
 
@@ -26,58 +27,71 @@ export const ImageModal = ({
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   }, [images.length]);
 
+  //Блокировка сколла:
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
   //Слушаем клавиатуру:
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") next();
       if (e.key === "ArrowLeft") prev();
-      if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [next, prev, onClose]);
+  }, [next, prev]);
 
-  return ReactDOM.createPortal(
+  if (!images.length) return null;
+
+  return createPortal(
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-        {/* Кнопка Влево */}
-        {images.length > 1 && (
-          <button
-            className={`${styles.navBtn} ${styles.prevBtn}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              prev();
-            }}
-          >
-            ‹
+      <FocusTrap focusTrapOptions={{ escapeDeactivates: true, onDeactivate: onClose }}>
+        <div className={styles.container} onClick={(e) => e.stopPropagation()}>
+          {/* Кнопка Влево */}
+          {images.length > 1 && (
+            <button
+              className={`${styles.navBtn} ${styles.prevBtn}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                prev();
+              }}
+            >
+              ‹
+            </button>
+          )}
+
+          <img src={images[currentIndex]} alt="fullsize review image" />
+
+          {/* Кнопка Вправо */}
+          {images.length > 1 && (
+            <button
+              className={`${styles.navBtn} ${styles.nextBtn}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                next();
+              }}
+            >
+              ›
+            </button>
+          )}
+
+          <button className={styles.closeBtn} onClick={onClose}>
+            ×
           </button>
-        )}
 
-        <img src={images[currentIndex]} alt="fullsize review image" />
-
-        {/* Кнопка Вправо */}
-        {images.length > 1 && (
-          <button
-            className={`${styles.navBtn} ${styles.nextBtn}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              next();
-            }}
-          >
-            ›
-          </button>
-        )}
-
-        <button className={styles.closeBtn} onClick={onClose}>
-          ×
-        </button>
-
-        {/* Индикатор: 1 / 5 */}
-        <div className={styles.counter}>
-          {currentIndex + 1} / {images.length}
+          {/* Индикатор: 1 / 5 */}
+          <div className={styles.counter}>
+            {currentIndex + 1} / {images.length}
+          </div>
         </div>
-      </div>
+      </FocusTrap>
     </div>,
-    document.body,
+    document.getElementById('modals-root')!
   );
 };

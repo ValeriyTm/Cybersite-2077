@@ -3,7 +3,7 @@ import { useState } from "react";
 //API:
 import { API_URL } from "@/shared/api";
 //Компоненты:
-import { ImageModal } from "@/shared/ui";
+import { Button, ImageModal } from "@/shared/ui";
 //Типы:
 import type { MotorcycleReview } from "@/entities/catalog";
 //Изображения:
@@ -41,6 +41,11 @@ export const ReviewCard = ({
   //Может ли юзер удалить отзыв:
   const canDelete = review.userId === currentUserId || isAdmin;
 
+  //Парсинг даты:
+  const formattedDate = review.createdAt
+    ? new Date(review.createdAt).toLocaleDateString()
+    : "Дата не указана";
+
   return (
     <article className={styles.card}>
       <div className={styles.header}>
@@ -60,7 +65,7 @@ export const ReviewCard = ({
         </div>
         <div className={styles.meta}>
           <span className={styles.date}>
-            {new Date(review.createdAt).toLocaleDateString()}
+            {formattedDate}
           </span>
           <div className={styles.rating}>
             {"★".repeat(review.rating)}
@@ -87,11 +92,22 @@ export const ReviewCard = ({
               src={`${API_URL}${img}`}
               alt="review picture"
               onClick={() => setPhotoIndex(i)} //Открываем галерею при клике
-              className={styles.clickableImg}
             />
           ))}
         </div>
       </div>
+
+      {canDelete && (
+        <div className={styles.btnWrapper}>
+          <Button
+            type="button"
+            variant="cancel"
+            onClick={() => onDelete(review._id)}
+          >
+            Удалить отзыв
+          </Button>
+        </div>
+      )}
 
       {/*Компонент галереи: */}
       {photoIndex !== null && (
@@ -100,15 +116,6 @@ export const ReviewCard = ({
           startIndex={photoIndex}
           onClose={() => setPhotoIndex(null)}
         />
-      )}
-
-      {canDelete && (
-        <button
-          className={styles.deleteBtn}
-          onClick={() => onDelete(review._id)}
-        >
-          Удалить отзыв
-        </button>
       )}
     </article>
   );
