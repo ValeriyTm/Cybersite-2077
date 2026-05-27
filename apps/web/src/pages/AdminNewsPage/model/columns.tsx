@@ -3,16 +3,16 @@ import { type ColumnDef } from '@tanstack/react-table';
 //Работа с датами:
 import { format } from 'date-fns';
 //Типы:
-import type { NewsFromServer } from '@/entities/admin/types/types';
+import type { News } from '@/entities/content';
 //Иконки:
 import { FaEdit, FaTrash } from 'react-icons/fa';
 //Стили:
 import styles from './columns.module.scss';
 
 
-export const newsColumns = (onEdit: (item: NewsFromServer) => void,
+export const newsColumns = (onEdit: (item: News) => void,
   onDelete: (id: string) => void,
-  onStatusUpdate: (id: string, status: string) => void): ColumnDef<NewsFromServer>[] => [
+  onStatusUpdate: (id: string, status: string) => void): ColumnDef<News>[] => [
     {
       accessorKey: 'title',
       header: 'Заголовок',

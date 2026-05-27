@@ -5,12 +5,12 @@ import { useForm } from 'react-hook-form';
 //Иконки:
 import { FaTrash, FaMotorcycle, FaAlignLeft } from 'react-icons/fa';
 //Типы:
-import type { NewsFromServer } from '@/entities/admin/types/types';
+import type { News } from '@/entities/content';
 //Стили:
 import styles from './AdminNewsPage.module.scss';
 
 interface NewsModalProps {
-  news: NewsFromServer;
+  news: News;
   onClose: () => void;
   onSubmit: (formData: FormData) => void;
 }
@@ -34,7 +34,7 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
   });
 
   // Локальный стейт для блоков контента
-  const [blocks, setBlocks] = useState<NewsFromServer['content'] | []>(news?.content || []);
+  const [blocks, setBlocks] = useState<News['content'] | []>(news?.content || []);
   const [mainImage, setMainImage] = useState<File | null>(null);
 
   const addBlock = (type: 'text' | 'image' | 'motorcycle') => {

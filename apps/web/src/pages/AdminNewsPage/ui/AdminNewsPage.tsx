@@ -9,7 +9,7 @@ import { $api } from '@/shared/api';
 //Компоненты:
 import { NewsModal } from './NewsModal';
 //Типы:
-import type { NewsFromServer } from '@/entities/admin/types/types';
+import type { News } from '@/entities/content';
 //Уведомления:
 import toast from 'react-hot-toast';
 //Стили:
@@ -17,12 +17,12 @@ import styles from './AdminNewsPage.module.scss';
 
 export const AdminNewsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingNews, setEditingNews] = useState<NewsFromServer | null>(null);
+  const [editingNews, setEditingNews] = useState<News | null>(null);
   const queryClient = useQueryClient();
 
   const { data: news } = useQuery({
     queryKey: ['admin-news'],
-    queryFn: () => $api.get<NewsFromServer[]>('/admin/news').then(res => res.data)
+    queryFn: () => $api.get<News[]>('/admin/news').then(res => res.data)
   });
 
   const saveMutation = useMutation({
@@ -88,7 +88,7 @@ export const AdminNewsPage = () => {
 
       {isModalOpen && (
         <NewsModal
-          news={editingNews as NewsFromServer}
+          news={editingNews as News}
           onClose={() => setIsModalOpen(false)}
           onSubmit={(formData: FormData) => saveMutation.mutate(formData)}
         />
