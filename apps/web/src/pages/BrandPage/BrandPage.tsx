@@ -4,8 +4,6 @@ import { BrandCard, useBrands } from "@/entities/catalog";
 import { Breadcrumbs, Input, Pagination } from "@/shared/ui";
 //Хук для работы с дебаунсом:
 import { useUrlSearch } from "@/shared/lib/hooks/useUrlSearch";
-//API:
-import { API_URL } from "@/shared/api";
 //Типы:
 import { type Brand } from '@/entities/catalog/model/types';
 //SEO:
@@ -20,7 +18,7 @@ const breadcrumbs = [
 ];
 
 //SEO:
-const canonicalUrl = `${API_URL}/catalog/motorcycles`;
+const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/catalog/motorcycles`;
 
 export const BrandPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();

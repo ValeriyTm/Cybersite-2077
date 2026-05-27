@@ -1,9 +1,5 @@
-//Состояния:
-import { useQuery } from "@tanstack/react-query";
-//API:
-import { $api } from "@/shared/api";
 //Компоненты:
-import { TicketCard } from "@/entities/support";
+import { TicketCard, useTickets } from "@/entities/support";
 //Типы:
 import type { Ticket } from "@/entities/support";
 import { Helmet } from "react-helmet-async";
@@ -11,10 +7,8 @@ import { Helmet } from "react-helmet-async";
 import styles from "./UserTicketsPage.module.scss";
 
 export const UserTicketsPage = () => {
-  const { data: tickets, isLoading } = useQuery({
-    queryKey: ["my-tickets"],
-    queryFn: () => $api.get("/support/my-tickets").then((res) => res.data),
-  });
+  //Получаем тикеты:
+  const { data: tickets, isLoading } = useTickets();
 
   if (isLoading) return <div>Загрузка...</div>;
 

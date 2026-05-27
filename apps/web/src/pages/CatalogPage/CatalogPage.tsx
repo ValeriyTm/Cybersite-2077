@@ -4,8 +4,6 @@ import {
 } from "@/entities/catalog";
 //Состояния:
 import { type ProductCategory } from "@repo/types";
-//API:
-import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
@@ -26,7 +24,7 @@ export const CatalogPage = () => {
 
 
   //SEO:
-  const canonicalUrl = `${API_URL}/catalog`;
+  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/catalog`;
 
   if (isLoading)
     return (

@@ -1,5 +1,3 @@
-//API:
-import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Компоненты:
@@ -7,7 +5,7 @@ import { PromoCard, usePromos } from "@/entities/discount";
 //Стили:
 import styles from "./PromosPage.module.scss";
 
-const canonicalUrl = `${API_URL}/promos`;
+const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/promos`;
 
 export const PromosPage = () => {
   //Получаем промокоды:

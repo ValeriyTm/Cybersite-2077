@@ -103,7 +103,7 @@ export const MotorcycleDetailsPage = () => {
   const seoTitle = `${motorcycle.brand.name} ${motorcycle.model} ${motorcycle.year} г.в. — Характеристики и цены | CyberSite2077`;
   const seoDescription = `Подробные технические характеристики ${motorcycle.brand.name} ${motorcycle.model}: двигатель ${motorcycle.displacement} см³, мощность ${motorcycle.power} л.с. Цвета: ${motorcycle.colors?.join(", ")}. Узнайте всё о модели на CyberSite2077.`;
   const ogImage = activeImage || defaultMotoImage;
-  const canonicalUrl = `${API_URL}/catalog/motorcycles/${brandSlug}/${slug}`;
+  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/catalog/motorcycles/${brandSlug}/${slug}`;
 
   return (
     <>

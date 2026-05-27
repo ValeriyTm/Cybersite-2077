@@ -4,11 +4,8 @@ import { Link } from 'react-router';
 import { useEffect } from 'react';
 import { useLayoutStore, useThemeStore } from '@/entities/session';
 import { useProfile, useAuthStore } from '@/features/auth';
-//Изображения:
-import logoOrange from '@/shared/assets/images/logos/logo-orange.png';
-import logoBlue from '@/shared/assets/images/logos/logo-blue.png';
-import logoRetro from '@/shared/assets/images/logos/logo-retro.png';
-import logoDoom from '@/shared/assets/images/logos/logo-doom.png';
+//Прочее:
+import { getLogoByTheme } from "@/entities/session";
 //Стили:
 import styles from './MobileMenu.module.scss';
 import { HeaderLink } from '@/shared/ui';
@@ -30,21 +27,7 @@ export const MobileMenu = () => {
     ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"].includes(user.role);
   const canSee = isAuth && isAdmin;
 
-  //Путь к логотипу в зависимости от темы:
-  let logoUrl;
-  switch (theme) {
-    case "theme-orange":
-      logoUrl = logoOrange;
-      break;
-    case "theme-blue":
-      logoUrl = logoBlue;
-      break;
-    case "theme-retrowave":
-      logoUrl = logoRetro;
-      break;
-    case "theme-doom":
-      logoUrl = logoDoom
-  }
+  const logoUrl = getLogoByTheme(theme);
 
   if (!isMenuOpen) return null;
 
@@ -64,47 +47,36 @@ export const MobileMenu = () => {
 
           <ul>
             <li>
-              {/* <Link to="/profile">{isAuth ? "Личный кабинет" : "Войти"} 👤</Link> */}
               <HeaderLink to="/profile" end>{isAuth ? "Личный кабинет" : "Войти"} 👤</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/">Главная 🏠</Link> */}
               <HeaderLink to="/" end>Главная 🏠</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/profile/favorites">Моё избранное ❤️</Link> */}
               <HeaderLink to="/profile/favorites" end>Моё избранное ❤️</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/cart">Моя корзина 🛒</Link> */}
               <HeaderLink to="/cart" end>Моя корзина 🛒</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/orders/my">Мои заказы 📦</Link> */}
               <HeaderLink to="/orders/my" end>Мои заказы 📦</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/about">О компании ℹ️</Link> */}
               <HeaderLink to="/about" end>О компании ℹ️</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/contacts">Контакты 📞</Link> */}
               <HeaderLink to="/contacts" end>Контакты 📞</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/news">Новости 📰</Link> */}
               <HeaderLink to="/news" end>Новости 📰</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/promos">Промокоды 🎫</Link> */}
               <HeaderLink to="/promos" end>Промокоды 🎫</HeaderLink>
             </li>
             <li>
-              {/* <Link to="/support">Поддержка 💬</Link> */}
               <HeaderLink to="/support" end>Поддержка 💬</HeaderLink>
             </li>
             {canSee && <li>
-              {/* <Link to="/admin">Админ ⚙️</Link> */}
               <HeaderLink to="/admin" end>Админ ⚙️</HeaderLink>
             </li>}
           </ul>

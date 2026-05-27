@@ -20,7 +20,7 @@ export const NewsDetailsPage = () => {
   const { data: article, isLoading, isError } = useSpecificNews(slug);
 
   //SEO:
-  const canonicalUrl = `${API_URL}/content/news/${slug}`;
+  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/content/news/${slug}`;
   const seoTitle = `Cybersite-2077 | Новость ${slug}`
 
   //------Проблемные случаи:----------//

@@ -9,8 +9,6 @@ import { useUrlSearch } from "@/shared/lib/hooks/useUrlSearch";
 import { MotorcycleCard } from "@/widgets/MotorcycleCard";
 import { CatalogDisplayControls, CatalogSorting } from "@/features/catalog";
 import { Breadcrumbs, Button, Input, Pagination } from "@/shared/ui";
-//API:
-import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from "react-helmet-async";
 //Стили:
@@ -51,7 +49,7 @@ export const MotorcyclesPage = () => {
   ];
 
   //---------------------------------SEO:-----------------------//
-  const canonicalUrl = `${API_URL}/catalog/motorcycles/${brandSlug}`;
+  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/catalog/motorcycles/${brandSlug}`;
   const seoTitle = `Cybersite-2077 | Каталог мотоциклов ${brandSlug?.toUpperCase()}: все модели и поколения`;
   const seoDescription = `Полный список моделей ${slug?.toUpperCase()} с техническими характеристиками, фото и ценами. Найдено моделей: ${data?.total || 0}.`;
 

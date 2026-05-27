@@ -1,5 +1,3 @@
-//API:
-import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
@@ -16,7 +14,7 @@ export const AboutPage = () => {
   ];
 
   //SEO:
-  const canonicalUrl = `${API_URL}/about`;
+  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/about`;
 
   return (
     <>

@@ -1,5 +1,6 @@
 import type { DragEvent, ChangeEvent } from "react";
-import { Link } from "react-router"; // Используем ваш роутер
+import { Link } from "react-router";
+//Стили:
 import styles from "./FileUpload.module.scss";
 
 interface FileUploadProps {

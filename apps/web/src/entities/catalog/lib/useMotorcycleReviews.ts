@@ -13,11 +13,7 @@ export const useMotorcycleReviews = ({
   const queryClient = useQueryClient();
 
   //Получение отзывов:
-  const {
-    data: reviews,
-    // isLoading,
-    // isError,
-  } = useQuery({
+  const { data: reviews } = useQuery({
     queryKey: ["reviews", motorcycleId],
     queryFn: () => $api.get(`/reviews/${motorcycleId}`).then((res) => res.data),
     enabled: !!motorcycleId,
@@ -36,9 +32,6 @@ export const useMotorcycleReviews = ({
 
   return {
     reviews,
-    // isLoading,
-    // isError,
     deleteReview: deleteReviewMutation.mutate,
-    // isDeleting: deleteReviewMutation.isPending,
   };
 };

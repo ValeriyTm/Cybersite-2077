@@ -1,7 +1,8 @@
 //Компоненты:
-import type { MotorcycleCart } from "@/entities/catalog";
 import { CartItem } from "@/entities/trading";
 import { AddToCartButton, FavoriteButton } from "@/features/trading";
+//Типы:
+import type { MotorcycleCart } from "@/entities/catalog";
 
 
 interface CartCardProps {

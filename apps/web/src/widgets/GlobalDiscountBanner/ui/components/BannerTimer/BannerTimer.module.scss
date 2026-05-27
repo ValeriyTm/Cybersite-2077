@@ -1,0 +1,47 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--accent-text-color);
+  padding: 8px 15px;
+  border-radius: 6px;
+  /* pxtorem-disable-next-line */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+
+  @include mobile {
+    padding: 6px 6px;
+  }
+
+  @include mobile-s {
+    flex-direction: row;
+    padding: 3px 6px;
+  }
+
+  .timerLabel {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+
+    @include mobile-s {
+      margin-right: 10px;
+    }
+  }
+
+  .digits {
+    font-family: var(--font-family-base);
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+
+    @include mobile {
+      font-size: 1.2rem;
+    }
+
+    span {
+      display: inline-block;
+      min-width: 1.6rem;
+      text-align: center;
+    }
+  }
+}

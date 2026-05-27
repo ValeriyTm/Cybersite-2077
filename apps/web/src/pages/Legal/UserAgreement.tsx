@@ -1,14 +1,11 @@
-//API:
-import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from "./Legal.module.scss";
 
-export const UserAgreement = () => {
-  //SEO:
-  const canonicalUrl = `${API_URL}/agreement`;
+const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/agreement`;
 
+export const UserAgreement = () => {
   return (
     <>
       <Helmet>

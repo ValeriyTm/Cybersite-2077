@@ -4,7 +4,6 @@ interface GlobalErrorFallbackProps {
   resetErrorBoundary: () => void;
 }
 
-
 export const GlobalErrorFallback = ({ resetErrorBoundary }: GlobalErrorFallbackProps) => {
   return (
     <div className={styles.wrapper}>

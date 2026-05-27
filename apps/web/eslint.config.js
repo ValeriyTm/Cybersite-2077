@@ -49,6 +49,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "@typescript-eslint/no-explicit-any": "warn", //Разрешаем явные any
+      "sonarjs/pseudo-random": "warn", //ЧТобы не ругался на Math.random()
 
       "react-refresh/only-export-components": [
         "warn",

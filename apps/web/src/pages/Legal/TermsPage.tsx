@@ -1,13 +1,11 @@
-//API:
-import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from "./Legal.module.scss";
 
+const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/terms`;
+
 export const TermsPage = () => {
-  //SEO:
-  const canonicalUrl = `${API_URL}/terms`;
 
   return (
     <>

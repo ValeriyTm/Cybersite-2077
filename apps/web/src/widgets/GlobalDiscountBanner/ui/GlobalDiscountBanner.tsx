@@ -1,35 +1,13 @@
-//Состояния:
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-//API:
-import { $api } from "@/shared/api";
+import { useGlobalDiscount } from "@/entities/discount";
 //Компоненты:
-import { getTimeToMidnight } from "@/shared/lib";
+import { BannerTimer } from "./components/BannerTimer";
 //Стили
 import styles from "./GlobalDiscountBanner.module.scss";
 
 export const GlobalDiscountBanner = () => {
-  const [timeLeft, setTimeLeft] = useState(getTimeToMidnight());
 
-  //Запускаем отсчет таймера:
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const newTime = getTimeToMidnight();
-      setTimeLeft(newTime);
-
-      // Если время вышло, можно обновить данные (рефетч)
-      if (newTime.totalMs <= 0) {
-        window.location.reload();
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const { data: discount } = useQuery({
-    queryKey: ["global-discount"],
-    queryFn: () => $api.get("/discount/global").then((res) => res.data),
-  });
+  //Данные по глобальной скидке:
+  const { data: discount } = useGlobalDiscount();
 
   if (!discount) return null;
 
@@ -46,13 +24,7 @@ export const GlobalDiscountBanner = () => {
           </div>
 
           {/*Таймер обратного отсчёта: */}
-          <div className={styles.timer} role='time'>
-            <span className={styles.timerLabel}>До конца акции:</span>
-            <div className={styles.digits}>
-              <span>{timeLeft.hours}</span>:<span>{timeLeft.minutes}</span>:
-              <span>{timeLeft.seconds}</span>
-            </div>
-          </div>
+          <BannerTimer />
         </div>
       </div>
     </div>

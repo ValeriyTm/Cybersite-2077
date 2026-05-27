@@ -30,7 +30,7 @@ export const ContactsMap = () => {
                 <Marker position={position} icon={customIcon}>
                     {/*Тултип при наведении:*/}
                     <Tooltip direction="top" offset={[0, -20]} opacity={1}>
-                        <span style={{ fontWeight: "bold", color: "#333" }}>
+                        <span className={styles.tooltip}>
                             Главный салон CyberMoto-2077
                         </span>
                     </Tooltip>

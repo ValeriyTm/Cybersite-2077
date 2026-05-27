@@ -1,6 +1,6 @@
 import type { Ticket } from "@/entities/support/types/types";
 //Мапперы:
-import { REASON_RU_MAP, STATUS_RU_MAP } from "../model/statusMappers";
+import { REASON_RU_MAP, STATUS_RU_MAP } from "../../model/statusMappers";
 //Стили:
 import styles from "./TicketCard.module.scss";
 

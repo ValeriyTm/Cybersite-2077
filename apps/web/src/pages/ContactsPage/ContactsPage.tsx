@@ -1,5 +1,3 @@
-//API:
-import { API_URL } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
@@ -12,7 +10,7 @@ import styles from './ContactsPage.module.scss'
 
 export const ContactsPage = () => {
   //SEO:
-  const canonicalUrl = `${API_URL}/contacts`;
+  const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/contacts`;
 
   return (
     <>

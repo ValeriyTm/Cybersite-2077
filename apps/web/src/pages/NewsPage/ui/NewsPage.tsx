@@ -1,7 +1,5 @@
 //Состояния:
 import { useNews } from '@/entities/content';
-//API:
-import { API_URL } from '@/shared/api';
 //Компоненты:
 import { NewsCard } from '@/entities/content';
 //SEO:e
@@ -9,7 +7,7 @@ import { Helmet } from 'react-helmet-async';
 //Стили:
 import styles from './NewsPage.module.scss';
 
-const canonicalUrl = `${API_URL}/news`;
+const canonicalUrl = `${import.meta.env.VITE_SITE_URL}/news`;
 
 export const NewsPage = () => {
   //Получаем новости:
