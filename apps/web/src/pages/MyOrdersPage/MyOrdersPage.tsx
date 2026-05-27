@@ -1,50 +1,26 @@
 //Состояния:
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useAuthStore } from "@/features/auth";
-//API:
-import { $api } from "@/shared/api";
+import { useMyOrders } from "@/entities/ordering";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
 import { OrderCard } from "@/widgets/OrderCard";
 import { SelectFilter } from "@/features/catalog";
+//Прочее:
+import { statusOptions } from "./categories";
 //Стили:
 import styles from "./MyOrdersPage.module.scss";
-import type { Order } from "@/entities/ordering/types/types";
 
 
 export const MyOrdersPage = () => {
   const [statusFilter, setStatusFilter] = useState<string | undefined>(
     undefined,
   );
-
   const { isAuth } = useAuthStore();
 
-  const {
-    data: orders,
-    isLoading,
-    isError,
-  } = useQuery<Order[]>({
-    queryKey: ["my-orders", statusFilter],
-    queryFn: () =>
-      //Получаем список заказов юзера:
-      $api
-        .get("/orders/my", {
-          params: { status: statusFilter },
-        })
-        .then((res) => res.data),
-
-    //Добавляем автоматический опрос сервера каждые 30 секунд (чтобы статус был актуальным):
-    refetchInterval: 30 * 1000,
-    //Также обновлять, когда окно браузера снова становится активным:
-    refetchOnWindowFocus: true,
-  });
-
-
-  if (isLoading) {
-    return <div className={`${styles.infoState} ${styles.loading}`}>Загрузка ваших заказов... 🏍️</div>;
-  }
+  //Получаем список заказов юзера:
+  const { data: orders, isLoading, isError } = useMyOrders(statusFilter);
 
   if (!isAuth) {
     return (
@@ -52,6 +28,9 @@ export const MyOrdersPage = () => {
         Вы не авторизованы 🔑
       </div>
     );
+  }
+  if (isLoading) {
+    return <div className={`${styles.infoState} ${styles.loading}`}>Загрузка ваших заказов... 🏍️</div>;
   }
 
   if (isError) {
@@ -61,16 +40,6 @@ export const MyOrdersPage = () => {
       </div>
     );
   }
-
-  //Опции для фильтра по статусу заказа:
-  const statusOptions = [
-    { value: "PENDING", label: "Ожидают оплаты" },
-    { value: "PAID", label: "Оплачены" },
-    { value: "DELIVERY", label: "Доставляются" },
-    { value: "DELIVERED", label: "Доставлены" },
-    { value: "COMPLETED", label: "Завершены" },
-    { value: "CANCELED", label: "Отменены" },
-  ];
 
   return (
     <>

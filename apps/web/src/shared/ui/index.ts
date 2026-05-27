@@ -1,3 +1,4 @@
+export * from "./ActionConfirmModal";
 export * from "./Avatar";
 export * from "./Breadcrumbs";
 export * from "./BurgerButton";

@@ -10,10 +10,10 @@ interface OrderState {
 }
 
 export const useOrderStore = create<OrderState>((set) => ({
-  activeOrdersCount: 0, //Счетчик активных заказов на фронте
+  activeOrdersCount: 0, //Счетчик активных заказов
   fetchActiveCount: async () => {
     const res = await $api.get("/orders/active-count");
     set({ activeOrdersCount: res.data.count });
   }, //Получаем кол-во активных заказов с сервера
-  resetOrders: () => set({ activeOrdersCount: 0 }), //Обнуляем счетчик активных заказов на фронте
+  resetOrders: () => set({ activeOrdersCount: 0 }), //Обнуляем счетчик активных заказов
 }));

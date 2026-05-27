@@ -1,5 +1,5 @@
 //Состояния:
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 //API:
 import { $api } from "@/shared/api";
@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 //Стил:
 import styles from "./ReviewModal.module.scss";
 
+
 export const ReviewModal = ({
   orderId,
   item,
@@ -27,6 +28,17 @@ export const ReviewModal = ({
   onClose: () => void;
   isReviewModalOpen: boolean;
 }) => {
+  //Блокировка скроллбара:
+  useEffect(() => {
+    if (!isReviewModalOpen) return;
+    //Сохраняем исходный стиль скролла, чтобы случайно не затереть другие глобальные стили
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [isReviewModalOpen]);
+
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [images, setImages] = useState<File[]>([]);
@@ -92,10 +104,6 @@ export const ReviewModal = ({
       return prev.filter((_, i) => i !== index);
     });
   };
-
-  if (!isReviewModalOpen) return null;
-
-
 
   return createPortal(
     <FocusTrap active={isReviewModalOpen} focusTrapOptions={{ onDeactivate: onClose }}>

@@ -1,6 +1,6 @@
 //Состояние:
 import { useTradingStore } from "@/entities/trading";
-import { useOrderStore } from "./orderStore";
+import { useOrderStore } from "./useOrderStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 //Навигация:
 import { useNavigate } from "react-router";

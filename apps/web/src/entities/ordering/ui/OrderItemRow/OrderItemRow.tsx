@@ -1,8 +1,7 @@
+//Навигация:
 import { Link } from "react-router";
 //API:
 import { API_URL } from "@/shared/api";
-//Компоненты:
-import { Button } from "@/shared/ui";
 //Типы:
 import type { OrderItem } from "@/entities/ordering/types/types";
 //Изображения:
@@ -13,11 +12,11 @@ import styles from "./OrderItemRow.module.scss";
 interface OrderItemRowProps {
   item: OrderItem;
   orderAddress: string;
-  isCompleted: boolean;
-  onOpenReviewModal: (item: OrderItem) => void;
+  action?: React.ReactNode;
 }
 
-export const OrderItemRow = ({ item, orderAddress, isCompleted, onOpenReviewModal }: OrderItemRowProps) => {
+export const OrderItemRow = ({ item, orderAddress, action }: OrderItemRowProps) => {
+
   const imageUrl = item.motorcycle.images?.length > 0
     ? `${API_URL}/static/motorcycles/${item.motorcycle.images.find((img) => img.isMain)?.url}`
     : defaultMotoImage;
@@ -37,17 +36,7 @@ export const OrderItemRow = ({ item, orderAddress, isCompleted, onOpenReviewModa
         <p>Адрес доставки: <span>{orderAddress}</span></p>
       </div>
 
-      {isCompleted && (
-        <Button
-          type="button"
-          variant="review"
-          disabled={item.isReviewed}
-          onClick={() => !item.isReviewed && onOpenReviewModal(item)}
-          bold
-        >
-          {item.isReviewed ? "Отзыв оставлен ✓" : "Оставить отзыв"}
-        </Button>
-      )}
+      {action && <div className={styles.actionWrapper}>{action}</div>}
     </div>
   );
 };

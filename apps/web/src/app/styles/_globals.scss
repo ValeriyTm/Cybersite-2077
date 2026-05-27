@@ -5,6 +5,8 @@ body {
   background-color: var(--main-bg-color);
   cursor: var(--cursor-path), auto; //Кастомный курсор
 
+  scrollbar-gutter: stable; //Чтобы страница не прыгала по горизонтали при скрытии скроллбара
+
   input,
   textarea,
   select {
