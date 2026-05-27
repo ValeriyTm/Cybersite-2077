@@ -38,6 +38,25 @@
       }
     }
 
+    .subContainer:first-child {
+      @include tablet {
+        .innerImage {
+          @include tablet {
+            height: 250px;
+          }
+        }
+      }
+
+      @include mobile {
+        .innerImage {
+          @include tablet {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+    }
+
     .subContainer {
       width: 50%;
       padding: 3px;

@@ -11,6 +11,7 @@ import logoDoom from '@/shared/assets/images/logos/logo-doom.png';
 import mainBanner from '@/shared/assets/images/banners/mainBanner.png';
 //Стили:
 import styles from "./HeroBanner.module.scss";
+import { Button } from "@/shared/ui";
 
 export const HeroBanner = () => {
   const isAuth = useAuthStore((state) => state.isAuth);
@@ -58,9 +59,12 @@ export const HeroBanner = () => {
         <div className={styles.attentionBlock}>
           <span>Начни покупки с нами</span>
           <div className={styles.attentionWrapper}>
-            <Link to={catalogLink}>
-              <button className={styles.attentionBtn}>Начать →</button>
-            </Link>
+            <Button
+              to={catalogLink}
+              variant="parade"
+            >
+              Начать →
+            </Button>
           </div>
         </div>
       </div>

@@ -76,34 +76,23 @@
     }
   }
 
+  //Парадная кнопка:
   .attentionWrapper {
-    background: var(--banner-gradient) !important;
+    background: var(--banner-gradient);
     height: 50px;
-    width: 146px;
+    width: 150px; //146px
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 24px;
+    border-radius: 10px;
 
     @include hover {
-      background: var(--button-gradient) !important;
+      background: var(--button-gradient);
     }
-  }
 
-  .attentionBtn {
-    margin: 0 auto;
-    color: var(--accent-text-color);
-    background-color: var(--main-bg-color);
-    border-radius: 20px;
-    height: 44px;
-    width: 140px;
-    border: none !important;
-    font-weight: 600;
-    font-size: 20px;
-    -webkit-text-stroke: 0.5px var(--auxiliary-text-color);
-
-    @include hover {
-      color: var(--reserve-text-color);
+    a {
+      display: inline-block;
+      max-width: 140px;
     }
   }
 }
