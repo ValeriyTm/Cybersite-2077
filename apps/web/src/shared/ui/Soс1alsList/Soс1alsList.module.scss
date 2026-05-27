@@ -1,0 +1,99 @@
+.soc1als {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+
+    margin-bottom: 30px;
+    list-style-type: none;
+
+    font-size: 1.5rem;
+    color: var(--auxiliary-text-color);
+
+    @include mobile-s {
+      gap: 15px;
+
+      padding-inline: 10px;
+    }
+
+    li {
+      position: relative;
+
+      @include mobile-s {
+        display: flex;
+        justify-content: center;
+        flex: 0 0 calc((100% - 45px) / 4);
+      }
+    }
+
+    a {
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+
+        width: 44px;
+        height: 44px;
+      }
+    }
+  }
+
+  svg {
+    cursor: pointer;
+    transition:
+      color 0.2s,
+      transform 0.2s;
+  }
+}
+
+//-----------------Иконки:-----------------------
+.facebook {
+  @include hover {
+    color: #1877f2;
+  }
+}
+
+.twitter {
+  @include hover {
+    color: #1da1f2;
+  }
+}
+
+.youtube {
+  @include hover {
+    color: #ff0000;
+  }
+}
+
+.whatsapp {
+  @include hover {
+    color: #25d366;
+  }
+}
+
+.viber {
+  @include hover {
+    color: #7360f2;
+  }
+}
+
+.vk {
+  @include hover {
+    color: #0077ff;
+  }
+}
+
+.tiktok {
+  @include hover {
+    color: #69c9d0;
+  }
+}
+
+.telegram {
+  @include hover {
+    color: #24a1de;
+  }
+}

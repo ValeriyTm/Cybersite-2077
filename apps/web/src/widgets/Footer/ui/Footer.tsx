@@ -2,45 +2,17 @@
 import { Link } from "react-router";
 //Состояния:
 import { useThemeStore } from "@/entities/session";
-//Иконки:
-import {
-  FaFacebook,
-  FaTelegram,
-  FaWhatsapp,
-  FaViber,
-  FaTwitter,
-  FaTiktok,
-  FaVk,
-  FaYoutube,
-} from "react-icons/fa";
-//Изображения:
-import logoOrange from '@/shared/assets/images/logos/logo-orange.png';
-import logoBlue from '@/shared/assets/images/logos/logo-blue.png';
-import logoRetro from '@/shared/assets/images/logos/logo-retro.png';
-import logoDoom from '@/shared/assets/images/logos/logo-doom.png';
+//Компоненты:
+import { Button, SocialsList } from "@/shared/ui";
+//Прочее:
+import { getLogoByTheme } from "@/entities/session";
 //Стили:
 import styles from "./Footer.module.scss";
 
 export const Footer = () => {
   const { theme } = useThemeStore();
-
   const currentYear = new Date().getFullYear();
-
-  //Путь к логотипу в зависимости от темы:
-  let logoUrl;
-  switch (theme) {
-    case "theme-orange":
-      logoUrl = logoOrange;
-      break;
-    case "theme-blue":
-      logoUrl = logoBlue;
-      break;
-    case "theme-retrowave":
-      logoUrl = logoRetro;
-      break;
-    case "theme-doom":
-      logoUrl = logoDoom
-  }
+  const logoUrl = getLogoByTheme(theme);
 
   return (
     <footer className={styles.footer}>
@@ -100,57 +72,15 @@ export const Footer = () => {
           <div className={styles.supportColumn}>
             <h3>Остались вопросы?</h3>
             <p>Задайте их нам прямо сейчас!</p>
-            <Link to="/support" className={styles.supportBtn}>
+
+            <Button to="/support" variant="outline-dark">
               Задать вопрос
-            </Link>
+            </Button>
           </div>
         </div>
 
         {/* Иконки соцсетей: */}
-        <div className={styles.soc1als}>
-          <ul>
-            <li>
-              <a href="/" aria-label="Facebook" className={styles.facebook}>
-                <FaFacebook aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-            <li>
-              <a href="/" aria-label="Twitter" className={styles.twitter}>
-                <FaTwitter aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-            <li>
-              <a href="/" aria-label="Tiktok" className={styles.tiktok}>
-                <FaTiktok aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-            <li>
-              <a href="/" aria-label="Vkontakte" className={styles.vk}>
-                <FaVk aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-            <li>
-              <a href="/" aria-label="Youtube" className={styles.youtube}>
-                <FaYoutube aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-            <li>
-              <a href="/" aria-label="Telegram" className={styles.telegram}>
-                <FaTelegram aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-            <li>
-              <a href="/" aria-label="Whatsapp" className={styles.whatsapp}>
-                <FaWhatsapp aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-            <li>
-              <a href="/" aria-label="Viber" className={styles.viber}>
-                <FaViber aria-hidden="true" focusable="false" />
-              </a>
-            </li>
-          </ul>
-        </div>
+        <SocialsList />
 
         <hr className={styles.divider} />
 

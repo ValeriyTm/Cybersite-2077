@@ -1,12 +1,16 @@
 .footer {
-  background: var(--main-bg-color);
-  color: #fff;
+  display: flex;
+  justify-content: center;
+
   padding-block: 30px;
   /* pxtorem-disable-next-line */
   border-top: 1px solid var(--accent-text-color);
+
   width: 100%;
-  display: flex;
-  justify-content: center;
+
+  background: var(--main-bg-color);
+
+  color: #fff;
 
   @include mobile-s {
     padding-block: 15px;
@@ -17,18 +21,16 @@
     max-width: var(--container-width);
 
     .top {
-      width: 100%;
-      margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-bottom: 40px;
-      justify-items: center;
       align-items: start;
+      justify-items: center;
+      gap: 10px;
 
-      li {
-        position: relative;
-      }
+      margin: 0 auto;
+      margin-bottom: 40px;
+
+      width: 100%;
 
       @include tablet {
         grid-template-columns: 1fr 1fr;
@@ -40,7 +42,12 @@
 
       @include mobile-s {
         grid-template-columns: 1fr;
+
         text-align: center;
+      }
+
+      li {
+        position: relative;
       }
     }
   }
@@ -49,6 +56,7 @@
   .supportColumn {
     display: flex;
     flex-direction: column;
+
     max-width: 200px;
 
     @include tablet {
@@ -60,13 +68,15 @@
     }
 
     h3 {
-      font-size: 1.1rem;
-      text-transform: uppercase;
       margin-bottom: 8px;
-      color: #fff;
       /* pxtorem-disable-next-line */
       border-bottom: 2px solid var(--accent-text-color);
+
       width: fit-content;
+
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      color: #fff;
 
       @include mobile-s {
         margin-top: 8px;
@@ -74,9 +84,9 @@
     }
 
     ul {
-      list-style-type: none; //Убираем маркеры
       margin: 0;
       padding: 0;
+      list-style-type: none; //Убираем маркеры
 
       @include mobile-s {
         text-align: center;
@@ -85,13 +95,17 @@
       li {
         line-height: 1.3;
       }
+
       a {
-        color: var(--auxiliary-text-color);
-        text-decoration: none;
-        transition: color 0.2s;
         position: relative;
+
         display: block;
         padding-block: 13.5px;
+
+        color: var(--auxiliary-text-color);
+        text-decoration: none;
+
+        transition: color 0.2s;
 
         @include hover {
           color: var(--accent-text-color);
@@ -102,14 +116,15 @@
 
   .supportBtn {
     display: inline-block;
+    margin-top: 10px;
     padding: 10px 20px;
     /* pxtorem-disable-next-line */
     border: 2px solid var(--accent-text-color);
     border-radius: 50px;
-    text-align: center;
+
     font-weight: bold;
-    margin-top: 10px;
     color: var(--accent-text-color);
+    text-align: center;
 
     @include mobile {
       margin-top: 0;
@@ -117,6 +132,7 @@
 
     @include hover {
       background-color: var(--accent-text-color);
+
       color: var(--color-dark) !important;
     }
   }
@@ -124,56 +140,6 @@
   p {
     @include mobile {
       margin-bottom: 0;
-    }
-  }
-
-  .soc1als {
-    ul {
-      display: flex;
-      justify-content: center;
-
-      gap: 25px;
-      font-size: 1.5rem;
-      margin-bottom: 30px;
-      color: var(--auxiliary-text-color);
-      list-style-type: none;
-
-      flex-wrap: wrap;
-
-      @include mobile-s {
-        padding-inline: 10px;
-        gap: 15px;
-      }
-
-      li {
-        position: relative;
-
-        @include mobile-s {
-          flex: 0 0 calc((100% - 45px) / 4);
-          display: flex;
-          justify-content: center;
-        }
-      }
-
-      a {
-        &::after {
-          content: "";
-          position: absolute;
-          width: 44px;
-          height: 44px;
-          top: 50%;
-          left: 50%;
-          translate: -50% -50%;
-        }
-      }
-    }
-
-    svg {
-      cursor: pointer;
-
-      transition:
-        color 0.2s,
-        transform 0.2s;
     }
   }
 
@@ -189,27 +155,31 @@
   }
 
   .divider {
-    border: 0;
+    margin-bottom: 20px;
     /* pxtorem-disable-next-line */
     border-top: 1px solid #222;
-    margin-bottom: 20px;
+    border: 0;
   }
 
   .bottom {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 20px;
+
     padding-inline: 10px;
+
     color: #444;
 
     @include mobile-s {
       flex-direction: column;
       gap: 5px;
     }
+
     a {
       color: var(--auxiliary-text-color);
       text-decoration: none;
+
       @include hover {
         color: var(--main-text-color);
       }
@@ -222,69 +192,23 @@
 }
 
 .logolink {
-  max-width: 200px;
-  aspect-ratio: 2;
   height: auto;
+  aspect-ratio: 2;
+
+  max-width: 200px;
+
   @include laptop-s {
     display: none;
   }
 
   .logo {
-    height: auto;
     width: 100%;
+    height: auto;
+
     opacity: 0.9;
 
     @include hover {
       opacity: 1;
     }
-  }
-}
-
-//-----------------Иконки:-----------------------
-.facebook {
-  @include hover {
-    color: #1877f2 !important;
-  }
-}
-
-.twitter {
-  @include hover {
-    color: #1da1f2 !important;
-  }
-}
-
-.youtube {
-  @include hover {
-    color: #ff0000 !important;
-  }
-}
-
-.whatsapp {
-  @include hover {
-    color: #25d366 !important;
-  }
-}
-
-.viber {
-  @include hover {
-    color: #7360f2 !important;
-  }
-}
-
-.vk {
-  @include hover {
-    color: #0077ff !important;
-  }
-}
-
-.tiktok {
-  @include hover {
-    color: #69c9d0 !important;
-  }
-}
-
-.telegram {
-  @include hover {
-    color: #24a1de !important;
   }
 }

@@ -7,7 +7,7 @@ import { useThemeStore } from "@/entities/session";
 //Роутинг:
 import { Link } from "react-router";
 //Прочее:
-import { getLogoByTheme } from "../model/items";
+import { getLogoByTheme } from "@/entities/session";
 //Компоненты:
 import { HeaderCatalog, SearchWithSuggestions } from "@/features/catalog";
 import { HeaderNav } from "./components/HeaderNav";

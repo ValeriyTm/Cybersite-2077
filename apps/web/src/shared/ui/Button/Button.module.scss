@@ -37,6 +37,13 @@
   &:active {
     transform: scale(0.97);
   }
+
+  // Стили для ссылки в состоянии disabled
+  &.disabledLink {
+    pointer-events: none;
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }
 
 .bold {

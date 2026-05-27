@@ -1,13 +1,15 @@
 .container {
-  max-width: var(--container-width);
-  width: 100%;
-  justify-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-self: center;
+
+  width: 100%;
+  max-width: var(--container-width);
 
   .info {
     width: 100%;
+
     text-align: center;
 
     h1 {
@@ -21,12 +23,14 @@
 
   p {
     margin-bottom: 10px;
+
     text-align: center;
   }
 
   .map {
-    width: 60%;
     z-index: 10;
+
+    width: 60%;
 
     @include laptop-s {
       width: 70%;
@@ -34,16 +38,19 @@
 
     @include tablet {
       padding-inline: 15px;
+
       width: 100%;
     }
   }
 
   .imgContainer {
+    justify-self: center;
+
+    margin-bottom: 20px;
+
     width: 100%;
     max-width: 700px;
     aspect-ratio: 2 / 1;
-    margin-bottom: 20px;
-    justify-self: center;
 
     img {
       width: 100%;
@@ -55,8 +62,9 @@
 .contacts {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
   align-items: center;
+
+  margin-bottom: 20px;
 
   a {
     padding: 5px;
@@ -64,102 +72,5 @@
     @include hover {
       color: var(--accent-text-color);
     }
-  }
-}
-
-.soc1als {
-  ul {
-    display: flex;
-    justify-content: center;
-
-    gap: 25px;
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    color: var(--auxiliary-text-color);
-
-    flex-wrap: wrap;
-
-    @include mobile-s {
-      padding-inline: 10px;
-      gap: 15px;
-    }
-
-    li {
-      position: relative;
-
-      @include mobile-s {
-        flex: 0 0 calc((100% - 45px) / 4);
-        display: flex;
-        justify-content: center;
-      }
-    }
-
-    a {
-      &::after {
-        content: "";
-        position: absolute;
-        width: 44px;
-        height: 44px;
-        top: 50%;
-        left: 50%;
-        translate: -50% -50%;
-      }
-    }
-  }
-
-  svg {
-    cursor: pointer;
-
-    transition:
-      color 0.2s,
-      transform 0.2s;
-  }
-}
-
-.facebook {
-  @include hover {
-    color: #1877f2 !important;
-  }
-}
-
-.twitter {
-  @include hover {
-    color: #1da1f2 !important;
-  }
-}
-
-.youtube {
-  @include hover {
-    color: #ff0000 !important;
-  }
-}
-
-.whatsapp {
-  @include hover {
-    color: #25d366 !important;
-  }
-}
-
-.viber {
-  @include hover {
-    color: #7360f2 !important;
-  }
-}
-
-.vk {
-  @include hover {
-    color: #0077ff !important;
-  }
-}
-
-.tiktok {
-  @include hover {
-    color: #69c9d0 !important;
-  }
-}
-
-.telegram {
-  @include hover {
-    color: #24a1de !important;
   }
 }

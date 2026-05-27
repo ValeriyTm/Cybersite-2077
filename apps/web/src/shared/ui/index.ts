@@ -20,5 +20,6 @@ export * from "./RatingInput";
 export * from "./ReviewCardHome";
 export * from "./ScrollToTopButton";
 export * from "./Select";
+export * from "./Soс1alsList";
 export * from "./SpecRow";
 export * from "./Textarea";
