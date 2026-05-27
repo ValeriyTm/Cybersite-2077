@@ -1,1 +1,2 @@
-export { OrderCard } from "./OrderCard";
+export * from "./CheckoutOrderPreview";
+export * from "./OrderCard";

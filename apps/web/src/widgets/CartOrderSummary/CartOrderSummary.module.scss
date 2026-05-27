@@ -33,6 +33,11 @@
     }
   }
 
+  & > button {
+    max-width: none;
+    width: 100%;
+  }
+
   .summaryRow {
     display: flex;
     justify-content: space-between;

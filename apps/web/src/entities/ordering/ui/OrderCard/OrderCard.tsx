@@ -12,7 +12,7 @@ import { $api, API_URL } from "@/shared/api";
 import { ReviewModal } from "@/features/reviews";
 import { PaymentModal } from "@/shared/ui";
 //Типы:
-import type { Order, OrderItem } from "../types/types";
+import type { Order, OrderItem } from "../../types/types";
 //Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:

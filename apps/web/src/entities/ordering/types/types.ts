@@ -4,6 +4,7 @@ import {
   type Brand,
   type Motorcycle,
   type ProductImage,
+  type Warehouse,
 } from "@repo/database/generated/prisma";
 
 export interface Order {
@@ -61,4 +62,39 @@ export interface DeliveryResponse {
     lng: number;
     name: string;
   };
+}
+
+export interface CreateOrderPayload {
+  items: {
+    id: string;
+    model: string;
+    price: number;
+    quantity: number;
+  }[];
+  address: string;
+  coords: { lat: number; lng: number } | null;
+  deliveryInfo: {
+    warehouse: {
+      id: string;
+      name: string;
+      city: string;
+      lat: number;
+      lng: number;
+    };
+    cost: number;
+    days: number;
+    estimatedDate: string;
+    distanceKm: number;
+  } | null;
+  promoCode: string | null;
+  totalPrice: number;
+  shouldPay: boolean;
+}
+
+export interface DeliveryInfo {
+  warehouse: Warehouse;
+  cost: number;
+  days: number;
+  estimatedDate: string;
+  distanceKm: number;
 }

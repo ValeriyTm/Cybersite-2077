@@ -24,31 +24,38 @@
   }
 }
 
-.confirmBtnStyle {
-  background: var(--accent-text-color);
-  color: var(--main-text-color);
-  /* pxtorem-disable-next-line */
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+.mapFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
-  @include hover {
-    scale: 1.05;
+  margin-top: 20px;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 10px;
+
+  @include mobile {
+    flex-direction: column;
+  }
+
+  .btnWrapper {
+    width: 100%;
+
+    button {
+      max-width: none;
+    }
   }
 }
 
-.cancelBtnStyle {
-  background: var(--auxiliary-text-color);
-  color: var(--main-text-color);
-  /* pxtorem-disable-next-line */
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
+.mapBasic {
+  height: 500px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-  @include hover {
-    scale: 1.05;
-  }
+.mapContainer {
+  height: 100%;
 }

@@ -1,0 +1,60 @@
+.summary {
+  position: sticky;
+  top: 100px;
+
+  padding: 30px;
+
+  background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  border-radius: 16px;
+
+  h3 {
+    margin-bottom: 25px;
+
+    color: var(--main-text-color);
+
+    @include mobile {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+    color: var(--auxiliary-text-color);
+
+    @include mobile {
+      padding-block: 5px !important;
+    }
+  }
+
+  .total {
+    padding-top: 20px;
+    margin-top: 20px;
+
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--main-text-color);
+
+    /* pxtorem-disable-next-line */
+    border-top: 1px solid #333;
+  }
+
+  .btnGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .btnWrapper {
+      width: 100%;
+
+      button {
+        max-width: none;
+      }
+    }
+  }
+}

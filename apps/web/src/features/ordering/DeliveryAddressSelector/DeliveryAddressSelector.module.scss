@@ -1,0 +1,65 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  margin-bottom: 25px;
+  gap: 20px;
+
+  background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  border-radius: 16px;
+
+  @include mobile {
+    margin-bottom: 15px;
+  }
+
+  h3 {
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+
+    font-size: 1.3rem;
+    color: var(--color-light);
+
+    /* pxtorem-disable-next-line */
+    border-bottom: 1px solid #333;
+
+    @include mobile {
+      margin: 0;
+    }
+  }
+}
+
+.addressBox {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .currentAddress {
+    padding: 10px;
+
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-text-color);
+
+    background: rgba(243, 156, 18, 0.1);
+    border-radius: 8px;
+  }
+
+  button {
+    align-self: center;
+  }
+}
+
+.deliveryInfoStyle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  /* pxtorem-disable-next-line */
+  border-top: 1px solid var(--color-light);
+
+  span {
+    color: var(--color-light);
+  }
+}

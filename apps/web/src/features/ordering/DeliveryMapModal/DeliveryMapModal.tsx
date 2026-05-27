@@ -12,10 +12,13 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+//Типы:
+import type { Warehouse } from "@repo/database/generated/prisma/client";
 //Стили:
 import styles from './DeliveryMapModal.module.scss';
+import { Button } from "@/shared/ui";
 
-let DefaultIcon = L.icon({
+const DefaultIcon = L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow,
   iconSize: [25, 41],
@@ -34,10 +37,10 @@ const warehouseIcon = new L.Icon({
 });
 
 interface DeliveryMapModalProps {
-  warehouses: any[];
+  warehouses: Warehouse[];
   onSelect: (coords: { lat: number; lng: number }, address: string) => void;
   onClose: () => void;
-  initialCoords: any;
+  initialCoords: { lat: number; lng: number } | null;
 }
 
 export const DeliveryMapModal = ({
@@ -87,6 +90,7 @@ export const DeliveryMapModal = ({
           setTempCoords(e.latlng);
         } catch (err) {
           setAddress("Ошибка определения адреса");
+          console.log(`Ошибка определения адреса: ${err}`)
         } finally {
           setLoading(false);
         }
@@ -96,28 +100,15 @@ export const DeliveryMapModal = ({
   };
 
   return (
-    <div
-      className={`"map-modal-overlay" ${styles.modalOverlayStyle}`}
-
-    >
-      <div
-        className={`"map-modal-content" ${styles.modalContentStyle}`}
-      >
+    <div className={`"map-modal-overlay" ${styles.modalOverlayStyle}`}>
+      <div className={`"map-modal-content" ${styles.modalContentStyle}`}>
         <h3>Выберите адрес доставки на карте</h3>
-
-        <div
-          style={{
-            height: "500px",
-            width: "100%",
-            borderRadius: "12px",
-            overflow: "hidden",
-          }}
-        >
+        <div className={styles.mapBasic}>
           <MapContainer
             center={[55.75, 37.61]}
             zoom={4}
             attributionControl={false} //Убираем надпись в нижнем углу
-            style={{ height: "100%" }}
+            className={styles.mapContainer}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
@@ -130,7 +121,7 @@ export const DeliveryMapModal = ({
               >
                 {/*Тултип при наведении:*/}
                 <Tooltip direction="top" offset={[0, -32]} opacity={1}>
-                  <span style={{ fontWeight: "bold", color: "#333" }}>
+                  <span>
                     Склад: {wh.name}
                   </span>
                 </Tooltip>
@@ -147,25 +138,25 @@ export const DeliveryMapModal = ({
           </MapContainer>
         </div>
 
-        <div className="map-footer" style={{ marginTop: "20px" }}>
+        <div className={styles.mapFooter}>
           <p>
             <strong>Адрес:</strong>{" "}
             {loading ? "Поиск..." : address || "Кликните на карту"}
           </p>
-          <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
-            <button
-              onClick={() =>
+
+          <div className={styles.btnGroup}>
+            <div className={styles.btnWrapper}>
+              <Button type="button" disabled={!tempCoords || loading} variant="primary" onClick={() =>
                 tempCoords &&
-                onSelect({ lat: tempCoords.lat, lng: tempCoords.lng }, address)
-              }
-              disabled={!tempCoords || loading}
-              className={styles.confirmBtnStyle}
-            >
-              Подтвердить адрес
-            </button>
-            <button onClick={onClose} className={styles.cancelBtnStyle}>
-              Отмена
-            </button>
+                onSelect({ lat: tempCoords.lat, lng: tempCoords.lng }, address)}>
+                Подтвердить адрес
+              </Button>
+            </div>
+            <div className={styles.btnWrapper}>
+              <Button type="button" variant="secondary" onClick={onClose}>
+                Отмена
+              </Button>
+            </div>
           </div>
         </div>
       </div>
