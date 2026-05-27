@@ -271,67 +271,67 @@
 }
 
 //Поиск:
-.searchBox {
-  flex-shrink: 0;
-  min-width: 260px;
-  flex: 1;
-  position: relative;
-  display: flex;
+// .searchBox {
+//   flex-shrink: 0;
+//   min-width: 260px;
+//   flex: 1;
+//   position: relative;
+//   display: flex;
 
-  @include mobile {
-    max-width: 200px;
-  }
+//   @include mobile {
+//     max-width: 200px;
+//   }
 
-  input {
-    width: 100%;
-    background: var(--auxiliary-bg-color-2);
-    /* pxtorem-disable-next-line */
-    border: 1px solid #333;
-    padding: 12px 20px;
-    border-radius: 8px 0 0 8px;
-    color: #fff;
-    outline: none;
+//   input {
+//     width: 100%;
+//     background: var(--auxiliary-bg-color-2);
+//     /* pxtorem-disable-next-line */
+//     border: 1px solid #333;
+//     padding: 12px 20px;
+//     border-radius: 8px 0 0 8px;
+//     color: #fff;
+//     outline: none;
 
-    @include mobile {
-      height: 40px;
-    }
+//     @include mobile {
+//       height: 40px;
+//     }
 
-    @include mobile-s {
-      height: 35px;
-    }
+//     @include mobile-s {
+//       height: 35px;
+//     }
 
-    @include hover {
-      border-color: var(--main-text-color);
-    }
+//     @include hover {
+//       border-color: var(--main-text-color);
+//     }
 
-    &:focus {
-      border-color: var(--accent-text-color);
-    }
-  }
+//     &:focus {
+//       border-color: var(--accent-text-color);
+//     }
+//   }
 
-  button {
-    background: var(--main-bg-color);
-    /* pxtorem-disable-next-line */
-    border-left: none;
-    color: var(--accent-text-color);
-    padding: 0.75rem 20px;
-    border-radius: 0 8px 8px 0;
-    cursor: pointer;
-    font-weight: 600;
+//   button {
+//     background: var(--main-bg-color);
+//     /* pxtorem-disable-next-line */
+//     border-left: none;
+//     color: var(--accent-text-color);
+//     padding: 0.75rem 20px;
+//     border-radius: 0 8px 8px 0;
+//     cursor: pointer;
+//     font-weight: 600;
 
-    @include mobile {
-      padding-block: 0.45rem;
-    }
+//     @include mobile {
+//       padding-block: 0.45rem;
+//     }
 
-    @include mobile-s {
-      padding-block: 0.25rem;
-    }
+//     @include mobile-s {
+//       padding-block: 0.25rem;
+//     }
 
-    @include hover {
-      background: var(--auxiliary-bg-color-2);
-    }
-  }
-}
+//     @include hover {
+//       background: var(--auxiliary-bg-color-2);
+//     }
+//   }
+// }
 
 //Блок с данными профиля--------:
 .userActions {
@@ -612,97 +612,6 @@
     .brandIcon img {
       scale: 1.2;
     }
-  }
-}
-
-////-----------Подсказки при поиске:
-.searchBox {
-  position: relative;
-
-  button {
-    /* pxtorem-disable-next-line */
-    border: 1px solid var(--accent-text-color);
-  }
-}
-
-.suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: var(--auxiliary-bg-color-2);
-  /* pxtorem-disable-next-line */
-  border: 1px solid #333;
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  margin-top: 2px;
-  overflow: hidden;
-  animation: slideDown 0.2s ease-out;
-  z-index: 1200;
-}
-
-.suggestItem {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 10px 15px;
-  text-decoration: none;
-  transition: background 0.2s;
-  /* pxtorem-disable-next-line */
-  border-bottom: 1px solid #222;
-
-  &:last-child {
-    /* pxtorem-disable-next-line */
-    border: none;
-  }
-
-  @include hover {
-    background: #252525;
-    .suggestModel {
-      color: var(--accent-text-color);
-    }
-  }
-}
-
-.suggestImg {
-  width: 50px;
-  height: 35px;
-  background: #000;
-  border-radius: 4px;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.suggestInfo {
-  display: flex;
-  flex-direction: column;
-}
-
-.suggestModel {
-  color: var(--main-text-color);
-  // font-size: 0.9rem;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.suggestYear {
-  color: #666;
-  font-size: 0.75rem;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 

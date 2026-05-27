@@ -1,0 +1,170 @@
+.searchBox {
+  position: relative;
+
+  display: flex;
+  flex: 1;
+  flex-shrink: 0;
+
+  min-width: 260px;
+
+  @include mobile {
+    max-width: 200px;
+  }
+
+  input {
+    padding: 12px 20px;
+    /* pxtorem-disable-next-line */
+    border: 1px solid #333;
+    border-radius: 8px 0 0 8px;
+
+    width: 100%;
+
+    background: var(--auxiliary-bg-color-2);
+
+    color: #fff;
+    outline: none;
+
+    @include mobile {
+      height: 40px;
+    }
+
+    @include mobile-s {
+      height: 35px;
+    }
+
+    @include hover {
+      box-shadow: 0 0 20px var(--accent-text-color);
+    }
+
+    &:focus {
+      border-color: var(--accent-text-color);
+    }
+  }
+
+  button {
+    padding: 0.75rem 20px;
+    /* pxtorem-disable-next-line */
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+
+    background: var(--main-bg-color);
+
+    font-weight: 600;
+    color: var(--accent-text-color);
+
+    cursor: pointer;
+
+    @include mobile {
+      padding-block: 0.45rem;
+    }
+
+    @include mobile-s {
+      padding-block: 0.25rem;
+    }
+
+    @include hover {
+      box-shadow: 0 0 20px var(--accent-text-color);
+    }
+  }
+}
+
+.searchBox {
+  position: relative;
+
+  button {
+    /* pxtorem-disable-next-line */
+    border: 1px solid var(--accent-text-color);
+  }
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1200;
+
+  margin-top: 2px;
+  /* pxtorem-disable-next-line */
+  border: 1px solid #333;
+  border-radius: 0 0 8px 8px;
+
+  width: 100%;
+  overflow: hidden;
+
+  background: var(--auxiliary-bg-color-2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+  animation: slideDown 0.2s ease-out;
+}
+
+.suggestItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  padding: 10px 15px;
+  /* pxtorem-disable-next-line */
+  border-bottom: 1px solid #222;
+
+  text-decoration: none;
+
+  transition: background 0.2s;
+
+  &:last-child {
+    /* pxtorem-disable-next-line */
+    border: none;
+  }
+
+  @include hover {
+    background: #252525;
+
+    .suggestModel {
+      color: var(--accent-text-color);
+    }
+  }
+}
+
+.suggestImg {
+  border-radius: 4px;
+
+  width: 50px;
+  height: 35px;
+  overflow: hidden;
+
+  background: #000;
+
+  img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+  }
+}
+
+.suggestInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestModel {
+  font-weight: 500;
+  color: var(--main-text-color);
+
+  transition: color 0.2s;
+}
+
+.suggestYear {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

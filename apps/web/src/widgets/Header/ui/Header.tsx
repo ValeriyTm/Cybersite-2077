@@ -1,20 +1,15 @@
 //Состояния:
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAuthStore, useProfile, useProfileActions } from "@/features/auth";
 import { useTradingStore } from "@/entities/trading";
 import { useOrderStore } from "@/entities/ordering";
 import { useThemeStore } from "@/entities/session";
 //Роутинг:
-import { Link, useNavigate } from "react-router";
-//Типы:
-import { type MotorcycleShort } from "@/entities/catalog";
+import { Link } from "react-router";
+//Прочее:
 import { TOP_BRANDS } from "../model/items";
-//API:
-import { $api, API_URL } from "@/shared/api";
 //Компоненты:
 import { Avatar, HeaderLink } from "@/shared/ui";
-//Дебаунс для поиска:
-import debounce from "lodash/debounce";
 //Изображения:
 import logoOrange from '@/shared/assets/images/logos/logo-orange.png';
 import logoBlue from '@/shared/assets/images/logos/logo-blue.png';
@@ -28,9 +23,9 @@ import motoIcon from '@/shared/assets/icons/catalog-icons/moto-icon.png';
 import equipIcon from '@/shared/assets/icons/catalog-icons/equip-icon.png';
 import gearIcon from '@/shared/assets/icons/catalog-icons/gear-icon.webp';
 import scooterIcon from '@/shared/assets/icons/moto_brands/scooter.png';
-import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from "./Header.module.scss";
+import { SearchWithSuggestions } from "@/features/catalog";
 
 type MainCategory = "moto" | "gear" | "parts";
 
@@ -41,13 +36,6 @@ export const Header = () => {
   const [activeMainCat, setActiveMainCat] = useState<MainCategory>("moto");
   //Переключение темы:
   const { theme, setTheme } = useThemeStore();
-
-  const navigate = useNavigate();
-
-  //Состояние для поиска с подсказками:
-  const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<MotorcycleShort[]>([]);
-  const searchRef = useRef<HTMLFormElement>(null);
 
   const { activeOrdersCount } = useOrderStore();
 
@@ -63,30 +51,6 @@ export const Header = () => {
   const { avatarSrc
   } = useProfileActions(user);
 
-
-  //Дебаунс запроса:
-  const fetchSuggestions = useMemo(
-    () =>
-      debounce(async (q: string) => {
-        try {
-          const { data } = await $api.get(
-            `/catalog/search/suggest?q=${q}`,
-          );
-          setSuggestions(data);
-        } catch (e) {
-          console.error(e);
-        }
-      }, 300),
-    [],
-  );
-
-  //Очистка при размонтировании:
-  useEffect(() => {
-    return () => {
-      fetchSuggestions.cancel();
-    };
-  }, [fetchSuggestions]);
-
   //Если пользователь логинится, то грузим инфу об активных заказах. Если логаут - обнуляем (в т.ч. корзину и избранное).
   useEffect(() => {
     if (isAuth) {
@@ -96,36 +60,6 @@ export const Header = () => {
       resetOrders(); //Очистка счетчика активных заказов
     }
   }, [isAuth]);
-
-  //Закрытие при клике мимо:
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setSuggestions([]);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setSearchQuery(val);
-    if (val.length >= 2) fetchSuggestions(val);
-    else setSuggestions([]);
-  };
-
-  const handleSearchSubmit = (e?: React.SubmitEvent) => {
-    e?.preventDefault();
-    if (searchQuery.trim().length >= 2) {
-      //Переходим в общий каталог с активным поиском:
-      navigate(
-        `/catalog/motorcycles/all?search=${encodeURIComponent(searchQuery)}`,
-      );
-      setSuggestions([]); //Закрываем подсказки
-    }
-  };
 
   //Количество товаров в корзине:
   const cartCount = useMemo(() => {
@@ -338,57 +272,7 @@ export const Header = () => {
               </div>
 
               {/*2.3)Поиск с подсказками (Autocomplete) */}
-              <form
-                className={styles.searchBox}
-                onSubmit={handleSearchSubmit}
-                ref={searchRef}
-              >
-                <label htmlFor="main-search" className="visually-hidden">Поиск по каталогу</label>
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={handleInputChange}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
-                  placeholder="Поиск по каталогу"
-                  id='main-search'
-
-                />
-                <button type="submit">Найти</button>
-
-                {suggestions.length > 0 && (
-                  <div className={styles.suggestions}>
-                    {suggestions.map((moto) => {
-                      const linkToImage = (moto.mainImage !== '')
-                        ? `${API_URL}/static/motorcycles/${moto.mainImage}`
-                        : defaultMotoImage;
-
-                      return (
-                        <Link
-                          key={moto.id}
-                          to={`/catalog/motorcycles/${moto.brandSlug}/${moto.slug}`}
-                          className={styles.suggestItem}
-                          onClick={() => {
-                            setSuggestions([]);
-                            setSearchQuery("");
-                          }}
-                        >
-                          <div className={styles.suggestImg}>
-                            <img src={linkToImage} alt="moto image" width='50' height='35' />
-                          </div>
-                          <div className={styles.suggestInfo}>
-                            <span className={styles.suggestModel}>
-                              {moto.model}
-                            </span>
-                            <span className={styles.suggestYear}>
-                              {moto.year} г.
-                            </span>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </form>
+              <SearchWithSuggestions />
             </div>
 
             <div className={styles.rightBotMenu}>
