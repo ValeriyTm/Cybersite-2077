@@ -1,0 +1,65 @@
+.promoCard {
+  padding: 24px;
+  /* pxtorem-disable-next-line */
+  border: 2px dashed var(--accent-text-color);
+  border-radius: 12px;
+
+  background: var(--auxiliary-bg-color-2);
+
+  text-align: center;
+
+  transition: border-color 0.3s;
+
+  @include mobile {
+    padding: 10px 16px;
+  }
+
+  @include hover {
+    border-color: var(--accent-text-color);
+  }
+
+  .amount {
+    margin-bottom: 15px;
+
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent-text-color);
+
+    @include mobile-s {
+      margin-bottom: 5px;
+    }
+  }
+
+  .codeWrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
+
+    background: var(--main-bg-color);
+
+    .code {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--main-text-color);
+    }
+
+    button {
+      border-radius: 4px;
+
+      max-width: 100px;
+
+      @include hover {
+        box-shadow: 0 0 10px var(--accent-text-color);
+      }
+    }
+  }
+
+  .expires {
+    font-size: 0.8rem;
+    color: var(--auxiliary-text-color);
+  }
+}

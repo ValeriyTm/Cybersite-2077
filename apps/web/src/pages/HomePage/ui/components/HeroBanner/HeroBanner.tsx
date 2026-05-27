@@ -62,6 +62,7 @@ export const HeroBanner = () => {
             <Button
               to={catalogLink}
               variant="parade"
+              bold
             >
               Начать →
             </Button>

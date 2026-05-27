@@ -1,0 +1,1 @@
+export { usePromos } from "./usePromos";

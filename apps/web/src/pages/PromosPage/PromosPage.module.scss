@@ -1,7 +1,12 @@
 .container {
-  max-width: var(--container-width);
   margin: 40px auto;
   padding: 0 20px;
+
+  max-width: var(--container-width);
+
+  @include tablet {
+    text-align: center;
+  }
 
   @include mobile {
     margin-block: 20px;
@@ -9,12 +14,15 @@
 }
 
 .title {
-  font-size: 2.5rem;
   margin-bottom: 10px;
+
+  font-size: 2.5rem;
 }
+
 .subtitle {
-  color: var(--auxiliary-text-color);
   margin-bottom: 40px;
+
+  color: var(--auxiliary-text-color);
 
   @include mobile {
     text-align: center;
@@ -23,70 +31,32 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 3fr));
   gap: 20px;
 }
 
-.promoCard {
-  background: var(--auxiliary-bg-color-2);
+.emptyState {
+  margin: 0 auto;
+  padding: 60px 20px;
   /* pxtorem-disable-next-line */
-  border: 2px dashed var(--accent-text-color);
-  padding: 24px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
   border-radius: 12px;
+
+  max-width: 600px;
+
+  background: var(--auxiliary-bg-color-2);
+
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--auxiliary-text-color);
   text-align: center;
-  transition: border-color 0.3s;
+}
 
-  @include mobile {
-    padding: 10px 16px;
-  }
+.loader {
+  padding-top: 150px;
 
-  @include hover {
-    border-color: var(--accent-text-color);
-  }
-
-  .amount {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--accent-text-color);
-    margin-bottom: 15px;
-
-    @include mobile-s {
-      margin-bottom: 5px;
-    }
-  }
-
-  .codeWrap {
-    background: var(--main-bg-color);
-    padding: 10px;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-
-    .code {
-      font-family: monospace;
-      font-weight: 700;
-      color: var(--main-text-color);
-    }
-
-    button {
-      background: var(--auxiliary-bg-color-2);
-      color: var(--main-text-color);
-      /* pxtorem-disable-next-line */
-      border: none;
-      padding: 14px 10px;
-      font-size: 0.7rem;
-      border-radius: 4px;
-      cursor: pointer;
-      @include hover {
-        box-shadow: 0 0 10px var(--accent-text-color);
-      }
-    }
-  }
-
-  .expires {
-    font-size: 0.8rem;
-    color: var(--auxiliary-text-color);
-  }
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--main-text-color);
+  text-align: center;
 }
