@@ -1,118 +1,150 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  z-index: 5000; // Подняли чуть выше, чтобы гарантированно перекрывать всё
+
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(5px);
 }
 
 .modal {
-  background: var(--auxiliary-bg-color-2);
   padding: 32px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 500px;
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
+  border-radius: 12px;
+
+  width: 90%;
+  max-width: 500px;
+
+  background: var(--auxiliary-bg-color-2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+  @include mobile {
+    padding: 20px;
+  }
 
   h3 {
+    margin-top: 0;
     margin-bottom: 24px;
-    color: var(--accent-text-color);
+
     font-size: 1.4rem;
+    color: var(--accent-text-color);
     text-align: center;
 
     @include mobile {
-      margin-block: 5px;
+      margin-bottom: 15px;
     }
   }
 }
 
 .section {
   margin-bottom: 20px;
+
   label {
     display: block;
     margin-bottom: 8px;
-    color: var(--main-text-color);
+
     font-size: 0.9rem;
+    color: var(--main-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   @include mobile {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 }
 
-textarea {
+.photoSection {
   width: 100%;
-  height: 120px;
-  background: var(--main-text-color) !important;
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color) !important;
-  border-radius: 8px;
-  padding: 12px;
-  color: var(--main-text-color);
-  resize: none;
-  margin-bottom: 20px;
-  &:focus {
-    border-color: var(--accent-text-color);
-    outline: none;
-  }
 }
 
 .uploadLabel {
   display: inline-block;
+  margin-top: 20px;
   padding: 12px 20px;
-  background: var(--main-bg-color);
   /* pxtorem-disable-next-line */
   border: 1px dashed var(--auxiliary-text-color);
   border-radius: 8px;
-  cursor: pointer;
-  color: #ccc;
+
   width: 100%;
+  box-sizing: border-box;
+
+  background: var(--main-bg-color);
+
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--auxiliary-text-color);
   text-align: center;
+
+  cursor: pointer;
   transition: all 0.2s;
+
   @include hover {
     /* pxtorem-disable-next-line */
-    border: 1px solid var(--accent-text-color);
+    border-style: solid;
+    border-color: var(--accent-text-color);
+
+    color: var(--main-text-color);
   }
 }
 
 .previews {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
   flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 16px;
 
   .previewItem {
     position: relative;
+
     width: 70px;
     height: 70px;
 
     img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+
+      /* pxtorem-disable-next-line */
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 6px;
+
+      object-fit: cover;
     }
 
     .removeIcon {
       position: absolute;
       top: -6px;
       right: -6px;
-      background: var(--color-danger);
-      color: var(--main-text-color);
-      /* pxtorem-disable-next-line */
-      border: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      cursor: pointer;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
+      margin: 0;
+      border: none;
+      border-radius: 50%;
+
+      width: 20px;
+      height: 20px;
+
+      background: var(--color-danger);
+      box-shadow: 0 20px 10px rgba(0, 0, 0, 0.3);
+
+      color: #fff;
       font-size: 14px;
+
+      cursor: pointer;
+      transition: transform 0.2s;
+
+      @include hover {
+        transform: scale(1.1);
+      }
     }
   }
 }
@@ -120,85 +152,19 @@ textarea {
 .actions {
   display: flex;
   gap: 12px;
+
   margin-top: 30px;
 
   @include mobile {
-    margin-top: 10px;
-  }
+    flex-direction: column;
 
-  button {
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .cancel {
-    background: transparent;
-    color: var(--auxiliary-text-color);
-    /* pxtorem-disable-next-line */
-    border: 1px solid var(--auxiliary-text-color);
-
-    @include hover {
-      scale: 1.05;
-    }
-  }
-  .submit {
-    background: var(--accent-text-color);
-    color: var(--main-text-color);
-    /* pxtorem-disable-next-line */
-    border: none;
-
-    @include hover {
-      box-shadow: 0 0 20px var(--accent-text-color);
-      scale: 1.05;
-    }
+    margin-top: 15px;
   }
 }
 
-.textareaWrapper {
-  position: relative;
+// Обертка для растягивания кнопок:
+.btnAction {
+  flex: 1;
+
   width: 100%;
-  margin-bottom: 24px;
-
-  @include mobile {
-    margin-bottom: 10px;
-  }
-
-  textarea {
-    width: 100%;
-    height: 140px;
-    // /* pxtorem-disable-next-line */
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 12px;
-    padding-bottom: 30px;
-    color: var(--color-black);
-    resize: none;
-    font-family: inherit;
-    transition: border-color 0.2s;
-
-    &:focus {
-      border-color: var(--accent-text-color);
-      outline: none;
-    }
-
-    &::placeholder {
-      color: var(--accent-text-color);
-    }
-  }
-
-  .charCount {
-    position: absolute;
-    bottom: 10px;
-    right: 12px;
-    font-size: 0.75rem;
-    color: #666;
-    pointer-events: none; // Чтобы клик сквозь цифры попадал в текстовое поле
-
-    &.warning {
-      color: var(--accent-text-color);
-    }
-  }
 }

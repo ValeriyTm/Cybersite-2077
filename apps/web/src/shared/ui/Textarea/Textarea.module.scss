@@ -16,6 +16,7 @@
   width: 100%;
   padding: 0.75rem 1rem;
   min-height: 44px;
+  position: relative;
 
   font-size: 1rem;
 
@@ -67,4 +68,24 @@
 
 .centered {
   text-align: center;
+}
+
+.textareaWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 24px;
+
+  .charCount {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 0.75rem;
+    color: var(--auxiliary-bg-color-2);
+    pointer-events: none;
+
+    &.warning {
+      color: var(--color-danger);
+      font-weight: 700;
+    }
+  }
 }

@@ -1,10 +1,9 @@
 //Состояния:
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-//API:
-import { $api } from "@/shared/api";
+import { useCreateReview } from "@/features/reviews";
 //Компоненты:
-import { RatingInput } from "@/shared/ui";
+import { Button, RatingInput, Textarea } from "@/shared/ui";
+import { ReviewPhotoSection } from "@/features/reviews";
 //Работа с фокусом:
 import { FocusTrap } from 'focus-trap-react';
 //Порталы для модалки:
@@ -28,6 +27,13 @@ export const ReviewModal = ({
   onClose: () => void;
   isReviewModalOpen: boolean;
 }) => {
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [images, setImages] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+
+  const createReviewMutation = useCreateReview(onClose);
+
   //Блокировка скроллбара:
   useEffect(() => {
     if (!isReviewModalOpen) return;
@@ -37,62 +43,23 @@ export const ReviewModal = ({
     return () => {
       document.body.style.overflow = originalStyle;
     };
-  }, [isReviewModalOpen]);
+  }, [isReviewModalOpen, previews]);
 
-  const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState("");
-  const [images, setImages] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<string[]>([]);
-
-  const queryClient = useQueryClient();
 
   //Обработка выбора фото:
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+
     if (images.length + files.length > 5) {
       alert("Максимум 5 фотографий");
       return;
     }
 
-    const newImages = [...images, ...files];
-    setImages(newImages);
+    setImages((prev) => [...prev, ...files]);
 
     //Создаем URL для превью:
     const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setPreviews([...previews, ...newPreviews]);
-  };
-
-  const mutation = useMutation({
-    mutationFn: (formData: FormData) => $api.post("/reviews", formData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-      toast.success("Отзыв успешно опубликован!");
-      onClose();
-    },
-    onError: (error: any) => {
-      //Берем сообщение, которое прислал бэкенд:
-      const message = error.response?.data?.message || "Ошибка при отправке";
-      toast.error(message);
-    },
-  });
-
-  const handleSubmit = () => {
-    if (comment.length < 5) {
-      return toast.error("Слишком короткий отзыв (минимум 5 символов)");
-    }
-
-    const formData = new FormData();
-
-    //Используем пропсы напрямую:
-    formData.append("orderId", orderId);
-    formData.append("motorcycleId", item.motorcycleId);
-
-    formData.append("rating", rating.toString());
-    formData.append("comment", comment);
-
-    images.forEach((file) => formData.append("images", file));
-
-    mutation.mutate(formData);
+    setPreviews((prev) => [...prev, ...newPreviews]);
   };
 
   //Удаление фото из загружаемых:
@@ -105,6 +72,24 @@ export const ReviewModal = ({
     });
   };
 
+  //Обработчик оптправки ревью:
+  const handleSubmit = () => {
+    if (comment.length < 5) {
+      return toast.error("Слишком короткий отзыв (минимум 5 символов)");
+    }
+
+    const formData = new FormData();
+    formData.append("orderId", orderId);
+    formData.append("motorcycleId", item.motorcycleId);
+    formData.append("rating", rating.toString());
+    formData.append("comment", comment);
+    images.forEach((file) => formData.append("images", file));
+
+    createReviewMutation.mutate(formData);
+  };
+
+  if (!isReviewModalOpen) return null;
+
   return createPortal(
     <FocusTrap active={isReviewModalOpen} focusTrapOptions={{ onDeactivate: onClose }}>
       <div className={styles.overlay}>
@@ -116,55 +101,39 @@ export const ReviewModal = ({
             <RatingInput value={rating} onChange={setRating} />
           </div>
 
-          <div className={styles.textareaWrapper}>
-            <textarea
-              maxLength={2000}
-              placeholder="Напишите ваш отзыв..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-            <span className={styles.charCount}>{comment.length} / 2000</span>
-          </div>
+          <Textarea
+            id="review-text"
+            placeholder="Напишите ваш отзыв..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            maxLength={2000}
+            showCharCount={true} // Передали флаг счетчика
+            label="Текст отзыва"
+            visuallyHidden
+          />
 
-          <div className={styles.photoSection}>
-            <label className={styles.uploadLabel}>
-              <span>📷 Добавить фото (до 5 шт)</span>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleFileChange}
-                hidden
-              />
-            </label>
-
-            <div className={styles.previews}>
-              {previews.map((src, i) => (
-                <div key={i} className={styles.previewItem}>
-                  <img src={src} alt="preview for user review's image" width='70' height='70' />
-                  <button
-                    type="button"
-                    className={styles.removeIcon}
-                    onClick={() => removePhoto(i)}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ReviewPhotoSection
+            images={images}
+            setImages={setImages}
+            previews={previews}
+            setPreviews={setPreviews}
+          />
 
           <div className={styles.actions}>
-            <button onClick={onClose} className={styles.cancel}>
+            <Button type="button" variant="outline-dark" onClick={onClose} className={styles.btnAction}>
               Отмена
-            </button>
-            <button
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
               onClick={handleSubmit}
-              className={styles.submit}
-              disabled={mutation.isPending}
+              disabled={createReviewMutation.isPending}
+              isLoading={createReviewMutation.isPending}
+              loadingText="Отправка..."
+              className={styles.btnAction}
             >
-              {mutation.isPending ? "Отправка..." : "Опубликовать"}
-            </button>
+              Опубликовать
+            </Button>
           </div>
         </div>
       </div>
