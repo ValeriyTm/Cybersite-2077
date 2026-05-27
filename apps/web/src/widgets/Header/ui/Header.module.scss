@@ -1,11 +1,14 @@
 .Header {
-  width: 100%;
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: var(--main-bg-color);
+
   /* pxtorem-disable-next-line */
   border-bottom: 1px solid var(--accent-text-color);
+
+  width: 100%;
+
+  background: var(--main-bg-color);
 }
 
 .container {
@@ -13,12 +16,13 @@
   max-width: var(--container-width);
 }
 
-// ---------------------------------------------------------
-// 1.Верхняя секция Header:
-// ---------------------------------------------------------
+// --------------------------------------------------------- //
+// 1.Верхняя секция Header: //
+// --------------------------------------------------------- //
 .topLine {
   display: flex;
   justify-content: center;
+
   padding-block: 16px;
   /* px-to-rem-disable-next-line */
   /* pxtorem-disable-next-line */
@@ -39,97 +43,24 @@
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+
     @include tablet {
-      gap: 10px;
       flex-direction: column-reverse;
+      gap: 10px;
     }
 
     @include mobile {
       flex-direction: row;
       gap: 10px;
-    }
-  }
-
-  .topNav {
-    display: flex;
-
-    ul {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      list-style-type: none; //Убираем маркеры
-      margin: 0;
-      padding: 0;
-      gap: 15px;
-
-      @include tablet {
-        gap: 10px;
-      }
-    }
-
-    @include tablet {
-      gap: 12px;
-    }
-
-    @include mobile {
-      display: none;
-    }
-
-    li {
-      position: relative;
-      text-align: center;
-
-      a {
-        color: var(--auxiliary-text-color);
-        transition: color 0.2s;
-
-        &.activeLink {
-          color: var(--accent-text-color);
-        }
-
-        @include hover {
-          color: var(--accent-text-color);
-        }
-
-        //Увеличение зоны клика:
-        &::after {
-          content: "";
-          position: absolute;
-          height: 44px;
-          //Растягиваем по ширине на всю ширину основного элемента:
-          left: 0;
-          right: 0;
-          height: 44px;
-          //Центрируем по вертикали:
-          top: 50%;
-          transform: translateY(-50%);
-        }
-
-        //Подчеркивание:----------------
-        &::before {
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: -2px; // Позиция линии
-          width: 0; //В начале ширина 0
-          height: 2px;
-          background-color: var(--accent-text-color);
-          transition: width 0.3s ease; //Анимация изменения ширины
-        }
-
-        @include hover {
-          &::before {
-            width: 100%;
-          }
-        }
-        //-----------------------------
-      }
     }
   }
 
   .logolinkHidden {
-    opacity: 0.9;
     height: 33px;
+
+    background: none;
+
+    opacity: 0.9;
 
     @include mobile-above {
       display: none;
@@ -151,8 +82,10 @@
 .mainLine {
   display: flex;
   justify-content: center;
-  backdrop-filter: blur(10px);
+
   padding-block: 30px;
+
+  backdrop-filter: blur(10px);
 
   @include tablet {
     padding-block: 20px;
@@ -180,8 +113,8 @@
     .leftBotMenu {
       display: flex;
       flex-direction: row;
-      gap: 20px;
       align-items: center;
+      gap: 20px;
 
       @include laptop-s {
         gap: 10px;
@@ -195,8 +128,8 @@
     .rightBotMenu {
       display: flex;
       flex-direction: row;
-      gap: 20px;
       align-items: center;
+      gap: 20px;
 
       @include laptop-s {
         gap: 10px;
@@ -214,13 +147,14 @@
 }
 
 .logo {
-  height: auto;
   width: 100%;
+  height: auto;
+
   opacity: 0.9;
 
   @include hover {
-    opacity: 1;
     scale: 1.1;
+    opacity: 1;
   }
 }
 
@@ -229,428 +163,5 @@
 
   @include mobile {
     display: none;
-  }
-}
-
-//Кнопка каталога:
-.catalogWrapper {
-  position: relative;
-  display: inline-block;
-  align-items: center;
-}
-
-.catalogBtn {
-  flex-shrink: 0;
-  width: 135px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--main-bg-color);
-  color: var(--accent-text-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform 0.2s;
-
-  @include mobile {
-    width: 260px;
-    height: 30px;
-    justify-content: center;
-  }
-
-  @include hover {
-    background-color: var(--auxiliary-bg-color-2);
-  }
-
-  .burger {
-    font-size: 1.2rem;
-  }
-}
-
-//Поиск:
-// .searchBox {
-//   flex-shrink: 0;
-//   min-width: 260px;
-//   flex: 1;
-//   position: relative;
-//   display: flex;
-
-//   @include mobile {
-//     max-width: 200px;
-//   }
-
-//   input {
-//     width: 100%;
-//     background: var(--auxiliary-bg-color-2);
-//     /* pxtorem-disable-next-line */
-//     border: 1px solid #333;
-//     padding: 12px 20px;
-//     border-radius: 8px 0 0 8px;
-//     color: #fff;
-//     outline: none;
-
-//     @include mobile {
-//       height: 40px;
-//     }
-
-//     @include mobile-s {
-//       height: 35px;
-//     }
-
-//     @include hover {
-//       border-color: var(--main-text-color);
-//     }
-
-//     &:focus {
-//       border-color: var(--accent-text-color);
-//     }
-//   }
-
-//   button {
-//     background: var(--main-bg-color);
-//     /* pxtorem-disable-next-line */
-//     border-left: none;
-//     color: var(--accent-text-color);
-//     padding: 0.75rem 20px;
-//     border-radius: 0 8px 8px 0;
-//     cursor: pointer;
-//     font-weight: 600;
-
-//     @include mobile {
-//       padding-block: 0.45rem;
-//     }
-
-//     @include mobile-s {
-//       padding-block: 0.25rem;
-//     }
-
-//     @include hover {
-//       background: var(--auxiliary-bg-color-2);
-//     }
-//   }
-// }
-
-//Блок с данными профиля--------:
-.userActions {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-
-  @include mobile {
-    display: none;
-  }
-}
-
-.profileLink {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 500;
-  height: 44px;
-
-  .userName {
-    display: inline-block;
-    max-width: 210px;
-    white-space: nowrap; //Запрещаем перенос на новую строку
-    overflow: hidden; //Скрываем всё, что не влезло
-    text-overflow: ellipsis; //Добавляем "..."
-  }
-
-  .avatar {
-    flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #222;
-    /* pxtorem-disable-next-line */
-    border: 2px solid rgba(255, 255, 255, 0.1);
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-}
-
-.userInfo {
-  color: var(--main-text-color);
-
-  overflow: hidden;
-
-  @include hover {
-    color: var(--accent-text-color);
-  }
-}
-
-//------------Блок с избранным, корзиной и заказами:
-.userOrders {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  position: relative;
-
-  a {
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -2px; // Позиция линии
-      width: 0; //В начале ширина 0
-      height: 2px;
-      background-color: var(--accent-text-color);
-      transition: width 0.3s ease; //Анимация изменения ширины
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      width: 44px;
-      height: 44px;
-      top: 50%;
-      left: 50%;
-      translate: -50% -50%;
-    }
-  }
-
-  @include tablet {
-    gap: 12px;
-  }
-
-  @include mobile {
-    display: none;
-  }
-
-  .iconBtn {
-    background: none;
-    /* pxtorem-disable-next-line */
-    border: none;
-    color: rgba(10, 10, 10, 0.8);
-    font-size: 1.4rem;
-    cursor: pointer;
-    position: relative;
-    transition: opacity 0.2s;
-
-    @include hover {
-      opacity: 0.7;
-    }
-
-    .counter {
-      position: absolute;
-      top: -7px;
-      right: -7px;
-      background: var(--accent-text-color);
-      color: var(--color-dark);
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 20px;
-      /* pxtorem-disable-next-line */
-      /* pxtorem-disable-next-line */
-      border: 1px solid var(--color-dark);
-      min-width: 18px;
-    }
-  }
-}
-
-//-------------------Стили для выпадающего каталога:
-.dropdown {
-  position: absolute;
-  top: 100%; // Ровно под кнопкой
-  left: 0; // Прижимаем к левому краю кнопки
-  z-index: 1100; //Должен быть выше всех элементов на странице
-
-  @include laptop-s {
-    left: -50%;
-  }
-
-  @include tablet {
-    display: none;
-  }
-}
-
-.dropdownContent {
-  display: flex;
-  // background: var(--color-light);
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  width: 900px;
-  background-color: var(--auxiliary-bg-color-2);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-
-  span {
-    color: var(--main-text-color);
-
-    @include hover {
-      color: var(--accent-text-color);
-    }
-
-    strong {
-      color: var(--accent-text-color);
-      font-weight: bold;
-    }
-  }
-}
-
-//Левая часть:
-.sideNav {
-  width: 220px;
-  /* pxtorem-disable-next-line */
-  border-right: 1px solid var(--accent-text-color);
-  padding: 10px 0;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-
-  span {
-    @include hover {
-      color: var(--color-dark);
-    }
-  }
-
-  @include laptop-s {
-    width: 180px;
-  }
-}
-
-.sideItem {
-  display: flex;
-  align-items: center;
-  padding: 12px 20px;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  @include laptop-s {
-    gap: 8px;
-  }
-
-  img {
-    width: 24px;
-    height: 24px;
-    opacity: 0.7;
-  }
-
-  &.activeSide {
-    background: var(--accent-text-color);
-    color: var(--main-text-color);
-    font-weight: 600;
-    img {
-      opacity: 1;
-      filter: sepia(1) saturate(5) hue-rotate(10deg);
-    }
-  }
-
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .arrow {
-    margin-left: auto;
-    color: var(--auxiliary-text-color);
-
-    &:active {
-      color: var(--main-text-color);
-    }
-  }
-}
-
-//Правая часть:
-.mainPanel {
-  flex: 1;
-  padding: 30px;
-
-  @include laptop-s {
-    padding-block: 20px;
-    padding-inline: 15px;
-  }
-}
-
-.brandsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px 40px;
-
-  @include laptop-s {
-    gap: 10px 10px;
-  }
-}
-
-.brandItem {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  gap: 12px;
-  text-decoration: none;
-  // font-size: 0.95rem;
-  text-align: left;
-
-  .brandIcon {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    @include laptop-s {
-      width: 28px;
-      height: 28px;
-    }
-
-    img {
-      max-width: 100%;
-    }
-  }
-
-  @include hover {
-    color: #000;
-    .brandIcon img {
-      scale: 1.2;
-    }
-  }
-}
-
-//---------------------------------------------------------
-//Переключатели темы:
-.themeSwitcher {
-  display: flex;
-  gap: 10px;
-
-  @include tablet {
-    gap: 5px;
-  }
-
-  .themeWrapper {
-    background-color: transparent;
-    border: none;
-    height: 44px;
-    width: 44px;
-  }
-
-  img {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    transition:
-      filter 0.3s ease,
-      transform 0.2s;
-
-    &.inactive {
-      filter: grayscale(100%);
-
-      @include hover {
-        filter: grayscale(50%);
-      }
-    }
-
-    &.active {
-      filter: grayscale(0%);
-      transform: scale(1.1);
-    }
   }
 }

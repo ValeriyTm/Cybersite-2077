@@ -11,7 +11,7 @@ import { $api } from "../../../../shared/api/api";
 const mockInvalidate = vi.fn(); //vi.fn() - записывает всё, что с ним происходит: сколько раз его вызывали и с какими аргументами.
 const mockQueryClient = {
   invalidateQueries: mockInvalidate,
-  //Создали объект, который имитирует реальный клиент React Query. Теперь, когда твой код вызовет
+  //Создали объект, который имитирует реальный клиент React Query. Теперь, когда код вызовет
   //invalidateQueries, на самом деле сработает шпион mockInvalidate.
 };
 

@@ -1,55 +1,31 @@
 //Состояния:
-import { useState, useMemo, useEffect } from "react";
-import { useAuthStore, useProfile, useProfileActions } from "@/features/auth";
+import { useEffect } from "react";
+import { HeaderUserButton, useAuthStore, useProfile } from "@/features/auth";
 import { useTradingStore } from "@/entities/trading";
 import { useOrderStore } from "@/entities/ordering";
 import { useThemeStore } from "@/entities/session";
 //Роутинг:
 import { Link } from "react-router";
 //Прочее:
-import { TOP_BRANDS } from "../model/items";
+import { getLogoByTheme } from "../model/items";
 //Компоненты:
-import { Avatar, HeaderLink } from "@/shared/ui";
-//Изображения:
-import logoOrange from '@/shared/assets/images/logos/logo-orange.png';
-import logoBlue from '@/shared/assets/images/logos/logo-blue.png';
-import logoRetro from '@/shared/assets/images/logos/logo-retro.png';
-import logoDoom from '@/shared/assets/images/logos/logo-doom.png';
-import themeOrange from '@/shared/assets/images/theme/theme-icon1.png';
-import themeBlue from '@/shared/assets/images/theme/theme-icon4.png';
-import themeRetro from '@/shared/assets/images/theme/theme-icon2.png';
-import themeDoom from '@/shared/assets/images/theme/theme-icon3.png';
-import motoIcon from '@/shared/assets/icons/catalog-icons/moto-icon.png';
-import equipIcon from '@/shared/assets/icons/catalog-icons/equip-icon.png';
-import gearIcon from '@/shared/assets/icons/catalog-icons/gear-icon.webp';
-import scooterIcon from '@/shared/assets/icons/moto_brands/scooter.png';
+import { HeaderCatalog, SearchWithSuggestions } from "@/features/catalog";
+import { HeaderNav } from "./components/HeaderNav";
+import { ThemeSwitcher } from "@/features/session";
 //Стили:
 import styles from "./Header.module.scss";
-import { SearchWithSuggestions } from "@/features/catalog";
-
-type MainCategory = "moto" | "gear" | "parts";
+import { HeaderUserActions } from "@/features/trading";
 
 export const Header = () => {
-  //Состояние открытости выпадающего каталога:
-  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
-  //Состояние выбранной категории:
-  const [activeMainCat, setActiveMainCat] = useState<MainCategory>("moto");
-  //Переключение темы:
-  const { theme, setTheme } = useThemeStore();
-
-  const { activeOrdersCount } = useOrderStore();
+  const { theme } = useThemeStore(); //Переключение темы
 
   const resetOrders = useOrderStore((state) => state.resetOrders);
   const fetchActiveCount = useOrderStore((state) => state.fetchActiveCount); //Получаем актуальные данные по активным заказам
-  const cartItems = useTradingStore((state) => state.cartItems); //Товары в корзине
   const clearTrading = useTradingStore((state) => state.clearTrading);
-  const favoritesCount = useTradingStore((state) => state.favoritesCount);  //Количество избранных товаров
 
   const isAuth = useAuthStore((state) => state.isAuth);
-  const { user, isLoading } = useProfile();
+  const { user } = useProfile();
 
-  const { avatarSrc
-  } = useProfileActions(user);
 
   //Если пользователь логинится, то грузим инфу об активных заказах. Если логаут - обнуляем (в т.ч. корзину и избранное).
   useEffect(() => {
@@ -61,88 +37,24 @@ export const Header = () => {
     }
   }, [isAuth]);
 
-  //Количество товаров в корзине:
-  const cartCount = useMemo(() => {
-    return cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  }, [cartItems]);
+  const logoUrl = getLogoByTheme(theme);  //Путь к лого
 
-  //---------------Иконки смены темы:-----------//
-  const themes = [
-    { id: 'theme-orange', img: themeOrange, title: 'Тема Orange' },
-    { id: 'theme-blue', img: themeBlue, title: 'Тема Blue' },
-    { id: 'theme-retrowave', img: themeRetro, title: 'Тема Retrowave' },
-    { id: 'theme-doom', img: themeDoom, title: 'Тема DOOM' },
-  ];
-  //-----------Логотип:---------------//
-  //Путь к логотипу в зависимости от темы:
-  let logoUrl;
-  switch (theme) {
-    case "theme-orange":
-      logoUrl = logoOrange;
-      break;
-    case "theme-blue":
-      logoUrl = logoBlue;
-      break;
-    case "theme-retrowave":
-      logoUrl = logoRetro;
-      break;
-    case "theme-doom":
-      logoUrl = logoDoom
-  }
-  //----------
-  //Показывать ссылку на страницу администраторов или нет:
-  const isAdmin =
-    user?.role &&
-    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"].includes(user.role);
-  const canSee = isAuth && isAdmin;
-  //--------------------------------------------------------------------------
+  //Показывать ли ссылку на страницу админ-панели:
+  const isAdmin = (user?.role &&
+    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"].includes(user.role)) ? true : false;
+  const canSeeAdmin = isAuth && isAdmin;
+
   return (
     <header className={styles.Header}>
-      {/*1)Верхняя часть: Ссылки */}
+      {/*1)Верхняя часть: навбар и смена темы */}
       <div className={styles.topLine}>
         <div className={styles.container}>
           <div className={styles.topWrapper}>
             {/*1.1)Навбар:*/}
-            <nav className={styles.topNav}>
-              <ul>
-                <li>
-                  <HeaderLink to="/" end>Главная</HeaderLink>
-                </li>
-                <li>
-                  <HeaderLink to="/about">О компании</HeaderLink>
-                </li>
-                <li>
-                  <HeaderLink to="/contacts">Контакты</HeaderLink>
-                </li>
-                <li>
-                  <HeaderLink to="/news">Новости</HeaderLink>
-                </li>
-                <li>
-                  <HeaderLink to="/promos">Промокоды</HeaderLink>
-                </li>
-                <li>
-                  <HeaderLink to="/support">Поддержка</HeaderLink>
-                </li>
-                {canSee && <li>
-                  <HeaderLink to="/admin">Админ</HeaderLink>
-                </li>}
-              </ul>
-            </nav>
+            <HeaderNav canSeeAdmin={canSeeAdmin} />
 
             {/*1.2)Смена темы:*/}
-            <div className={styles.themeSwitcher}>
-              {themes.map((t) => (
-                <button type='button' key={t.id} className={styles.themeWrapper} onClick={() => setTheme(t.id as any)} title={t.title}>
-                  <img
-                    src={t.img}
-                    alt={t.title}
-                    className={theme === t.id ? styles.active : styles.inactive}
-                    width='33'
-                    height='33'
-                  />
-                </button>
-              ))}
-            </div>
+            <ThemeSwitcher />
 
             <Link to="/" className={styles.logolinkHidden}>
               <img src={logoUrl} alt="Main Logo" className={styles.logo} width="102" height="33" />
@@ -162,177 +74,19 @@ export const Header = () => {
                 <img src={logoUrl} alt="Main Logo" className={styles.logo} width="245" height="78" />
               </Link>
 
-              {/*2.2)Кнопка каталога с Hover-меню*/}
-              <div
-                className={styles.catalogWrapper}
-                onMouseEnter={() => setIsCatalogOpen(true)}
-                onMouseLeave={() => setIsCatalogOpen(false)}
-                aria-expanded={isCatalogOpen}
-                aria-controls="catalog-preview"
-              >
-                <Link to="/catalog" className={styles.catalogBtn}>
-                  <span className={styles.burger}>☰</span> Каталог
-                </Link>
+              {/*2.2)Кнопка каталога с hover-меню*/}
+              <HeaderCatalog />
 
-                {/*Статическое выпадающее меню */}
-                {isCatalogOpen && (
-                  <div className={styles.dropdown} id='catalog-preview' hidden={!isCatalogOpen}>
-                    <div className={styles.dropdownContent}>
-                      {/*Левая часть выпадающего меню: Группы товаров*/}
-                      <aside className={styles.sideNav}>
-                        <div
-                          className={`${styles.sideItem} ${activeMainCat === "moto" ? styles.activeSide : ""}`}
-                          onMouseEnter={() => setActiveMainCat("moto")}
-                        >
-                          <img
-                            src={motoIcon}
-                            alt="motorcycle icon"
-                            width='24'
-                            height='24'
-                          />
-                          <span>Мототехника</span>
-                          <span className={styles.arrow}>›</span>
-                        </div>
-
-                        <div className={`${styles.sideItem} ${styles.disabled}`}>
-                          <img
-                            src={equipIcon}
-                            alt="motorcycle equipment icon"
-                            width='24'
-                            height='24'
-                          />
-                          <span>Экипировка</span>
-                          <span className={styles.arrow}>›</span>
-                        </div>
-
-                        <div className={`${styles.sideItem} ${styles.disabled}`}>
-                          <img
-                            src={gearIcon}
-                            alt="gear icon"
-                            width='24'
-                            height='24'
-                          />
-                          <span>Запчасти</span>
-                          <span className={styles.arrow}>›</span>
-                        </div>
-                      </aside>
-
-                      {/*Правая часть выпадающего меню: бренды*/}
-                      <section className={styles.mainPanel}>
-                        {activeMainCat === "moto" ? (
-                          <div className={styles.brandsGrid}>
-                            {TOP_BRANDS.map((brand) => (
-                              <Link
-                                key={brand.slug}
-                                to={`/catalog/motorcycles/${brand.slug}`}
-                                className={styles.brandItem}
-                                onClick={() => setIsCatalogOpen(false)}
-                              >
-                                <div className={styles.brandIcon}>
-                                  <img
-                                    src={brand.logo}
-                                    alt={`moto ${brand.name}`}
-                                    className={styles.motoIcon}
-                                    width='32'
-                                    height='32'
-                                  />
-                                </div>
-                                <span>
-                                  Мотоциклы <strong>{brand.name}</strong>
-                                </span>
-                              </Link>
-                            ))}
-
-                            {/*Кнопка "Прочие бренды" */}
-                            <Link
-                              to="/catalog/motorcycles"
-                              className={styles.brandItem}
-                              onClick={() => setIsCatalogOpen(false)}
-                            >
-                              <div className={styles.brandIcon}>
-                                <img
-                                  src={scooterIcon}
-                                  alt="alternative brand icon"
-                                  width='32'
-                                  height='32'
-                                />
-                              </div>
-                              <span>Прочие бренды</span>
-                            </Link>
-                          </div>
-                        ) : (
-                          <div className={styles.emptyPanel}>
-                            Скоро в продаже...
-                          </div>
-                        )}
-                      </section>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/*2.3)Поиск с подсказками (Autocomplete) */}
+              {/*2.3)Поиск с подсказками (autocomplete) */}
               <SearchWithSuggestions />
             </div>
 
             <div className={styles.rightBotMenu}>
               {/*2.4)Блок пользователя:*/}
-              <div className={styles.userActions}>
-                <Link
-                  to={isAuth ? "/profile" : "/auth"}
-                  className={styles.profileLink}
-                >
-                  <Avatar
-                    src={isAuth ? avatarSrc : null}
-                    alt={user?.name || "Гость"}
-                    size="sm"
-                    isAvatarLoading={isLoading} //Показываем спиннер, пока идет /refresh
-                  />
-
-                  <div className={styles.userInfo} title={user?.name || ''}>
-                    <span className={styles.userName}>
-                      {/* Если авторизован и не грузится — имя, иначе "Войти" */}
-                      {isAuth && user && !isLoading ? user.name : "Войти"}
-                    </span>
-                  </div>
-                </Link>
-              </div>
+              <HeaderUserButton />
 
               {/*2.5)Блок заказов:*/}
-              <div className={styles.userOrders}>
-                {/*Кнопка избранного со счетчиком: */}
-                <Link
-                  to="/profile/favorites"
-                  className={styles.iconBtn}
-                  title="Избранное"
-                >
-                  ❤️
-                  {favoritesCount > 0 && (
-                    <span className={styles.counter}>{favoritesCount}</span>
-                  )}
-                </Link>
-
-                {/*Кнопка корзины со счетчиком:*/}
-                <Link to="/cart" title="Корзина" className={styles.iconBtn}>
-
-                  🛒{" "}
-                  {cartCount > 0 && (
-                    <span className={styles.counter}>{cartCount}</span>
-                  )}
-
-                </Link>
-
-                {/*Кнопка заказов со счетчиком:*/}
-                <Link to="/orders/my" className={styles.iconBtn} title="Мои заказы">
-                  📦
-                  {activeOrdersCount > 0 && (
-                    <span className={`${styles.counter}`}>
-                      {activeOrdersCount}
-                    </span>
-                  )}
-                </Link>
-              </div>
-
+              <HeaderUserActions />
             </div>
           </div>
         </div>

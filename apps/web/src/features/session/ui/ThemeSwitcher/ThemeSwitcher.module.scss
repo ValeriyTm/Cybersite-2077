@@ -1,0 +1,37 @@
+.themeSwitcher {
+  display: flex;
+  gap: 10px;
+
+  @include tablet {
+    gap: 5px;
+  }
+
+  .themeWrapper {
+    background-color: transparent;
+    border: none;
+    height: 44px;
+    width: 44px;
+  }
+
+  img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition:
+      filter 0.3s ease,
+      transform 0.2s;
+
+    &.inactive {
+      filter: grayscale(100%);
+
+      @include hover {
+        filter: grayscale(50%);
+      }
+    }
+
+    &.active {
+      filter: grayscale(0%);
+      transform: scale(1.1);
+    }
+  }
+}

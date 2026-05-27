@@ -1,0 +1,60 @@
+userActions {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  @include mobile {
+    display: none;
+  }
+}
+
+.profileLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  height: 44px;
+
+  font-weight: 500;
+
+  .userName {
+    display: inline-block;
+
+    max-width: 210px;
+    overflow: hidden; //Скрываем всё, что не влезло
+
+    white-space: nowrap; //Запрещаем перенос на новую строку
+    text-overflow: ellipsis; //Добавляем "..."
+  }
+
+  .avatar {
+    flex-shrink: 0;
+
+    /* pxtorem-disable-next-line */
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+
+    width: 38px;
+    height: 38px;
+    overflow: hidden;
+
+    background: #222;
+
+    img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+  }
+}
+
+.userInfo {
+  overflow: hidden;
+
+  color: var(--main-text-color);
+
+  @include hover {
+    color: var(--accent-text-color);
+  }
+}

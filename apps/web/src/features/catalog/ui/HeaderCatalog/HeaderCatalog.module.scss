@@ -1,0 +1,191 @@
+.catalogWrapper {
+  position: relative;
+  display: inline-block;
+  align-items: center;
+}
+
+.catalogBtn {
+  flex-shrink: 0;
+  width: 135px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--main-bg-color);
+  color: var(--accent-text-color);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s;
+
+  @include mobile {
+    width: 260px;
+    height: 30px;
+    justify-content: center;
+  }
+
+  @include hover {
+    box-shadow: 0 0 20px var(--accent-text-color);
+  }
+
+  .burger {
+    font-size: 1.2rem;
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%; // Ровно под кнопкой
+  left: 0; // Прижимаем к левому краю кнопки
+  z-index: 1100; //Должен быть выше всех элементов на странице
+
+  @include laptop-s {
+    left: -50%;
+  }
+
+  @include tablet {
+    display: none;
+  }
+}
+
+.dropdownContent {
+  display: flex;
+  // background: var(--color-light);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 900px;
+  background-color: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+
+  span {
+    color: var(--main-text-color);
+
+    @include hover {
+      color: var(--accent-text-color);
+    }
+
+    strong {
+      color: var(--accent-text-color);
+      font-weight: bold;
+    }
+  }
+}
+
+.sideNav {
+  width: 220px;
+  /* pxtorem-disable-next-line */
+  border-right: 1px solid var(--accent-text-color);
+  padding: 10px 0;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+
+  span {
+    @include hover {
+      color: var(--color-dark);
+    }
+  }
+
+  @include laptop-s {
+    width: 180px;
+  }
+}
+
+.sideItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  @include laptop-s {
+    gap: 8px;
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+    opacity: 0.7;
+  }
+
+  &.activeSide {
+    background: var(--accent-text-color);
+    color: var(--main-text-color);
+    font-weight: 600;
+    img {
+      opacity: 1;
+      filter: sepia(1) saturate(5) hue-rotate(10deg);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .arrow {
+    margin-left: auto;
+    color: var(--auxiliary-text-color);
+
+    &:active {
+      color: var(--main-text-color);
+    }
+  }
+}
+
+.mainPanel {
+  flex: 1;
+  padding: 30px;
+
+  @include laptop-s {
+    padding-block: 20px;
+    padding-inline: 15px;
+  }
+}
+
+.brandsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 40px;
+
+  @include laptop-s {
+    gap: 10px 10px;
+  }
+}
+
+.brandItem {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 12px;
+  text-decoration: none;
+  // font-size: 0.95rem;
+  text-align: left;
+
+  .brandIcon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include laptop-s {
+      width: 28px;
+      height: 28px;
+    }
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  @include hover {
+    color: #000;
+    .brandIcon img {
+      scale: 1.2;
+    }
+  }
+}
