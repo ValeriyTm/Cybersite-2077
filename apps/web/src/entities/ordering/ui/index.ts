@@ -1,2 +1,2 @@
 export * from "./CheckoutOrderPreview";
-export * from "./OrderCard";
+export * from "./OrderItemRow";

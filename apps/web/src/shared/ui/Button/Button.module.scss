@@ -140,10 +140,31 @@
   }
 }
 
+.cancel {
+  color: var(--color-danger);
+
+  background-color: var(--auxiliary-bg-color);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--color-danger);
+
+  @include hover {
+    &:not(:disabled) {
+      color: var(--color-light);
+
+      background-color: var(--color-danger);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px dotted var(--main-text-color);
+  }
+}
+
 .simple {
   color: gray;
   background-color: transparent;
   border: none;
+
   text-decoration: underline;
 
   @include hover {
@@ -154,5 +175,41 @@
 
   &:focus-visible {
     outline: 1px dotted var(--color-light);
+  }
+}
+
+.success {
+  color: var(--color-light);
+  background-color: var(--color-success);
+  border: none;
+
+  @include hover {
+    &:not(:disabled) {
+      /* pxtorem-disable-next-line */
+      border: 1px solid var(--color-light);
+      box-shadow: 0 0 10px var(--color-success);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px dotted var(--main-text-color);
+  }
+}
+
+.review {
+  color: var(--color-dark);
+
+  background-color: var(--accent-text-color);
+
+  @include hover {
+    &:not(:disabled) {
+      color: var(--accent-text-color);
+
+      background-color: var(--main-text-color);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px dotted var(--main-text-color);
   }
 }

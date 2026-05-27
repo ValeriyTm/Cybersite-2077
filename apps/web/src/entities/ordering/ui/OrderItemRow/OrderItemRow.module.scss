@@ -1,0 +1,114 @@
+.productRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  padding: 20px 24px;
+
+  /* pxtorem-disable-next-line */
+  border-bottom: 1px solid #222;
+
+  @include mobile-above {
+    button {
+      max-width: 200px;
+    }
+  }
+
+  @include tablet {
+    gap: 14px;
+
+    padding: 0 10px;
+  }
+
+  @include mobile {
+    flex-direction: column;
+
+    padding-bottom: 10px;
+
+    &:not(:last-child) {
+      margin-bottom: 16px;
+
+      border-bottom: 1px solid var(--auxiliary-text-color);
+    }
+
+    h4 {
+      margin-top: 0;
+    }
+  }
+
+  &:last-child {
+    /* pxtorem-disable-next-line */
+    border-bottom: none;
+  }
+}
+
+.productInfo {
+  flex: 1;
+
+  text-align: left;
+
+  a {
+    text-decoration: none;
+  }
+
+  h4 {
+    margin-bottom: 8px;
+
+    font-size: 1.1rem;
+    color: #fff;
+  }
+
+  p {
+    margin-bottom: 4px;
+
+    font-size: 0.85rem;
+    color: #888;
+
+    span {
+      color: #ccc;
+    }
+  }
+}
+
+.imageWrapper {
+  position: relative;
+
+  flex-shrink: 0;
+
+  width: 90px;
+  height: 90px;
+
+  img {
+    width: 100%;
+    height: 100%;
+
+    /* pxtorem-disable-next-line */
+    border: 1px solid #333;
+    border-radius: 8px;
+
+    object-fit: cover;
+  }
+
+  .quantityBadge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+
+    /* pxtorem-disable-next-line */
+    border: 2px solid #1a1a1a;
+    border-radius: 50%;
+
+    background: var(--accent-text-color);
+
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+}

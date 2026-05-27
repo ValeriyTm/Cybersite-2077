@@ -7,7 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   isLoading?: boolean;
   loadingText?: string;
-  variant?: "primary" | "secondary" | "danger" | "outline" | "outline-dark" | "simple";
+  variant?: "primary" | "secondary" | "danger" | "outline" | "outline-dark" | "simple" | "cancel" | "success" | "review";
   bold?: boolean;
 }
 

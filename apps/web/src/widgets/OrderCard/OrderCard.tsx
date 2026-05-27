@@ -12,16 +12,19 @@ import { $api, API_URL } from "@/shared/api";
 import { ReviewModal } from "@/features/reviews";
 import { PaymentModal } from "@/widgets/PaymentModal";
 //Типы:
-import type { Order, OrderItem } from "../../types/types";
+import type { Order, OrderItem } from "@/entities/ordering/types/types";
 //Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
 //Стили:
 import styles from "./OrderCard.module.scss";
+import { Button } from "@/shared/ui";
+import { OrderItemRow } from "@/entities/ordering";
 
 export const OrderCard = ({ order }: { order: Order }) => {
   //Определяем статус заказа:
   const isDelivered = order.status === "DELIVERED";
   const isCompleted = order.status === "COMPLETED";
+  const isCanceled = order.status === "CANCELED";
   const canCancel = ["PENDING", "PAID"].includes(order.status);
   //Для реализации открытия модалки отзыва:
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -112,108 +115,71 @@ export const OrderCard = ({ order }: { order: Order }) => {
       <div className={styles.mainContent}>
         {/*Левая панель:*/}
         <div className={styles.leftPanel}>
-          <div className={styles.infoGroup}>
-            <span className={styles.label}>Сумма заказа:</span>
-            <span className={styles.value}>
-              {order.totalPrice.toLocaleString()} ₽
-            </span>
+          <div className={`${(isCanceled || isCompleted) ? styles.leftPanelWrapperStatusSolo : styles.leftPanelWrapperStatus}`}>
+            <div className={styles.infoGroup}>
+              <span className={styles.label}>Сумма заказа:</span>
+              <span className={styles.value}>
+                {order.totalPrice.toLocaleString()} ₽
+              </span>
+            </div>
+
+            <div className={styles.infoGroup}>
+              <span className={styles.label}>Статус заказа:</span>
+              <span
+                className={`${styles.status} ${styles[order.status.toLowerCase()]}`}
+              >
+                {translatedStatus}
+              </span>
+            </div>
           </div>
 
-          <div className={styles.infoGroup}>
-            <span className={styles.label}>Статус заказа:</span>
-            <span
-              className={`${styles.status} ${styles[order.status.toLowerCase()]}`}
-            >
-              {translatedStatus}
-            </span>
-          </div>
+          {(!isCanceled && !isCompleted) && <div className={styles.leftPanelWrapper}>
+            {/*Если заказ ожидает оплаты и есть ссылка на оплату — показываем кнопку оплаты: */}
+            {order.status === "PENDING" && order.paymentUrl && (
+              <Button
+                type="button"
+                variant="success"
+                onClick={() => setIsModalOpen(true)}
+                bold
+              >
+                Оплатить заказ
+              </Button>
+            )}
 
-          {/*Если заказ ожидает оплаты и есть ссылка на оплату — показываем кнопку оплаты: */}
-          {order.status === "PENDING" && order.paymentUrl && (
-            <button
-              className={styles.confirmBtn}
-              onClick={() => setIsModalOpen(true)}
-            >
-              Оплатить заказ
-            </button>
-          )}
-
-          {/*Кнопка подтверждения получения заказа (когда товар доставлен):*/}
-          {isDelivered && (
-            <button
-              className={styles.confirmBtn}
-              onClick={() => setOrderToConfirm(order.id)}
-            >
-              Подтвердить получение
-            </button>
-          )}
-          {/*Кнопка отмены заказа:*/}
-          {canCancel && (
-            <button
-              className={styles.cancelBtn}
-              onClick={() => setOrderToCancel(order.id)}
-            >
-              Отменить заказ
-            </button>
-          )}
+            {/*Кнопка подтверждения получения заказа (когда товар доставлен):*/}
+            {isDelivered && (
+              <Button
+                type="button"
+                variant="success"
+                onClick={() => setOrderToConfirm(order.id)}
+              >
+                Подтвердить получение
+              </Button>
+            )}
+            {/*Кнопка отмены заказа:*/}
+            {canCancel && (
+              <Button
+                type="button"
+                variant="cancel"
+                onClick={() => setOrderToCancel(order.id)}
+              >
+                Отменить заказ
+              </Button>
+            )}
+          </div>}
         </div>
 
         {/*Правая панель (товары):*/}
         <div className={styles.itemsList}>
-          {order.items.map((item) => {
-            const imageUrl = Object.keys(item.motorcycle.images).length > 0
-              ? `${API_URL}/static/motorcycles/${item.motorcycle.images.find((img) => img.isMain)!.url}`
-              : defaultMotoImage;
-
-            return (
-              <div key={item.id} className={styles.productRow}>
-                <div className={styles.imageWrapper}>
-                  <img src={imageUrl} loading="lazy" decoding="async" alt={item.motorcycle.model} width='90'
-                    height='90' />
-                  <span className={styles.quantityBadge}>
-                    {item.quantity} шт
-                  </span>
-                </div>
-
-                <div className={styles.productInfo}>
-                  <Link
-                    to={`../catalog/motorcycles/${item.motorcycle.brand.name}/${item.motorcycle.slug}`}
-                  >
-                    <h4>{item.motorcycle.model}</h4>
-                  </Link>
-                  <p>
-                    Артикул: <span>{item.motorcycle.slug}</span>
-                  </p>
-                  <p>
-                    Адрес доставки: <span>{order.address}</span>
-                  </p>
-                </div>
-
-                {/*Кнопка отзыва (вызова модалки отзыва):*/}
-                {isCompleted && (
-                  <button
-                    className={
-                      item.isReviewed ? styles.reviewedBtn : styles.reviewBtn
-                    }
-                    disabled={item.isReviewed}
-                    onClick={() => !item.isReviewed && handleOpenReview(item)}
-                  >
-                    {item.isReviewed ? "Отзыв оставлен ✓" : "Оставить отзыв"}
-                  </button>
-                )}
-
-                {/*Модалка отзыва:*/}
-                {isReviewModalOpen && selectedItem && (
-                  <ReviewModal
-                    orderId={order.id}
-                    item={selectedItem}
-                    isReviewModalOpen={isReviewModalOpen}
-                    onClose={() => setIsReviewModalOpen(false)}
-                  />
-                )}
-              </div>
-            );
-          })}
+          {order.items.map((item) => (
+            <OrderItemRow
+              key={item.id}
+              item={item}
+              orderAddress={order.address}
+              isCompleted={isCompleted}
+              onOpenReviewModal={handleOpenReview}
+            />
+          ))}
         </div>
       </div>
 
@@ -269,8 +235,6 @@ export const OrderCard = ({ order }: { order: Order }) => {
         </div>,
         document.getElementById('modals-root')! //Рендер через портал
       )}
-
-
     </article>
   );
 };

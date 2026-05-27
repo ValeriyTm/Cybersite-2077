@@ -1,0 +1,226 @@
+.orderCard {
+  background: var(--auxiliary-bg-color-2);
+  border-radius: 12px;
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  overflow: hidden;
+  margin-bottom: 24px;
+  transition: border-color 0.3s ease;
+
+  @include hover {
+    border-color: var(--accent-text-color);
+    box-shadow: 0 0 20px var(--accent-text-color);
+  }
+}
+
+.topBar {
+  background: var(--accent-bg-color);
+  padding: 12px 24px;
+  /* pxtorem-disable-next-line */
+  border-bottom: 1px solid var(--accent-text-color);
+  color: var(--main-text-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 160px;
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leftPanel {
+  padding: 24px;
+  background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border-right: 1px solid var(--accent-text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+
+  .leftPanelWrapper,
+  .leftPanelWrapperStatus {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+    width: 100%;
+    align-items: center;
+
+    @include tablet {
+    }
+    button {
+      width: 100%;
+    }
+  }
+
+  .leftPanelWrapperStatus {
+    flex-direction: column;
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+
+  .leftPanelWrapperStatusSolo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include tablet {
+      flex-direction: row;
+    }
+  }
+
+  @include tablet {
+    /* pxtorem-disable-next-line */
+    border: none;
+    flex-direction: row;
+    align-items: center;
+    // justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
+  @include mobile {
+    flex-direction: row;
+  }
+
+  @include mobile-s {
+    gap: 10px;
+  }
+
+  .infoGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    span {
+      &:not(:first-child) {
+        text-align: center;
+      }
+    }
+
+    .label {
+      font-size: 0.75rem;
+      color: var(--auxiliary-text-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .value {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .status {
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      // width: fit-content;
+      text-transform: uppercase;
+
+      &.pending {
+        background: var(--main-bg-color);
+        color: var(--color-orange);
+      }
+      &.canceled {
+        background: var(--main-bg-color);
+        color: var(--color-danger);
+      }
+      &.paid {
+        background: var(--main-bg-color);
+        color: yellow;
+      }
+      &.delivery {
+        background: var(--main-bg-color);
+        color: #7cb4da;
+      }
+      &.delivered {
+        background: var(--main-bg-color);
+        color: var(--color-success);
+      }
+      &.completed {
+        background: var(--main-bg-color);
+        color: #fff;
+      }
+    }
+  }
+}
+
+.itemsList {
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+//--------------Модалка отмены заказа:------------//
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+}
+
+.modalContent,
+.modalContentSuccess {
+  background: var(--auxiliary-bg-color);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.modalContent {
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--color-danger);
+}
+
+.modalContentSuccess {
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--color-success);
+}
+
+.modalTitle,
+.modalTitleSuccess {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  padding-inline: 5px;
+}
+
+.modalTitle {
+  color: var(--color-danger);
+}
+
+.modalTitleSuccess {
+  color: var(--color-success);
+}
+
+.modalText {
+  margin-bottom: 30px;
+  span {
+    color: #888;
+    font-family: monospace;
+  }
+}
+
+.modalActions {
+  display: flex;
+  gap: 15px;
+}

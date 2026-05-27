@@ -92,15 +92,6 @@ export const CartOrderSummary = ({ selectedItems, user }: CartOrderSummaryProps)
         </p>
       )}
 
-      {/* <button
-        type="button"
-        className={styles.checkoutBtn}
-        disabled={selectedItems.length === 0 || hasStockErrorInSelected}
-        onClick={(e) => { e.stopPropagation(); handleOrder(); }}
-      >
-        Перейти к оформлению
-      </button> */}
-
       <Button type="button" variant="primary" disabled={selectedItems.length === 0 || hasStockErrorInSelected} onClick={(e) => { e.stopPropagation(); handleOrder(); }}>
         Перейти к оформлению
       </Button>

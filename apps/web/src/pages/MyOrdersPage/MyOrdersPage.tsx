@@ -7,7 +7,7 @@ import { $api } from "@/shared/api";
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Компоненты:
-import { OrderCard } from "@/entities/ordering";
+import { OrderCard } from "@/widgets/OrderCard";
 import { SelectFilter } from "@/features/catalog";
 //Стили:
 import styles from "./MyOrdersPage.module.scss";
