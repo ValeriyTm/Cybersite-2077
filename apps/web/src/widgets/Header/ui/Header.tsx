@@ -1,7 +1,7 @@
 //Состояния:
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useAuthStore, useProfile, useProfileActions } from "@/features/auth";
-import { useCart, useFavorites, useTradingStore } from "@/entities/trading";
+import { useTradingStore } from "@/entities/trading";
 import { useOrderStore } from "@/entities/ordering";
 import { useThemeStore } from "@/entities/session";
 //Роутинг:
@@ -126,8 +126,6 @@ export const Header = () => {
       setSuggestions([]); //Закрываем подсказки
     }
   };
-
-
 
   //Количество товаров в корзине:
   const cartCount = useMemo(() => {

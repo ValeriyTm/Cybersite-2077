@@ -40,8 +40,8 @@ export const ActionConfirmModal = ({
 
   // Динамически подбираем классы стилей в зависимости от варианта
   const contentClassName = `${styles.modalContent} ${styles[variant]}`;
-  const titleClassName = `${styles.modalTitle} ${styles[`title-${variant}`]}`;
-  const confirmBtnClassName = `${styles.btnConfirm} ${styles[`btn-${variant}`]}`;
+  const titleClassName = `${styles.modalTitle} ${styles['title-' + variant]}`;
+  const confirmBtnClassName = `${styles.btnConfirm} ${styles['btn-' + variant]}`;
 
   return createPortal(
     <div className={styles.modalOverlay} onClick={onCancel}>

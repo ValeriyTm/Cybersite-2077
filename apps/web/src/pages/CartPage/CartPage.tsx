@@ -3,7 +3,7 @@ import { useTradingStore, useCart } from "@/entities/trading";
 import { useState } from "react";
 import { useProfile } from "@/features/auth";
 //Компоненты:
-import { Checkbox, ConfirmModal } from "@/shared/ui";
+import { ActionConfirmModal, Checkbox } from "@/shared/ui";
 import { CartCard } from "@/widgets/CartCard";
 import { CartOrderSummary } from "@/widgets/CartOrderSummary";
 //SEO:
@@ -104,17 +104,21 @@ export const CartPage = () => {
         </div>
 
         {/*Модалка для удаления одного товара из корзины*/}
-        <ConfirmModal
+        <ActionConfirmModal
           isOpen={!!deletingId}
-          title="Вы действительно хотите удалить этот товар из корзины?"
+          variant="danger"
+          title="Подтверждение удаления"
+          description="Вы действительно хотите удалить этот товар из корзины?"
           onConfirm={handleConfirmSingle}
           onCancel={() => setDeletingId(null)}
         />
 
         {/*Модалка для массового удаления товаров из корзины*/}
-        <ConfirmModal
+        <ActionConfirmModal
           isOpen={isBulkDeleteOpen}
-          title={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
+          variant="danger"
+          title="Подтверждение удаления товаров"
+          description={`Удалить выбранные товары (${selectedItems.length} шт.)?`}
           onConfirm={handleConfirmBulk}
           onCancel={() => setIsBulkDeleteOpen(false)}
         />
