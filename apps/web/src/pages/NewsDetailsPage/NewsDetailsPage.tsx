@@ -1,9 +1,9 @@
 //Извлечение параметров URL и роутинг:
 import { Navigate, useParams } from 'react-router';
 //Состояния:
-import { useQuery } from '@tanstack/react-query';
+import { useSpecificNews } from '@/entities/content/api/useSpecificNews';
 //API:
-import { $api, API_URL } from '@/shared/api';
+import { API_URL } from '@/shared/api';
 //SEO:
 import { Helmet } from 'react-helmet-async';
 //Работа с датами:
@@ -17,10 +17,7 @@ import styles from './NewsDetailsPage.module.scss';
 export const NewsDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
 
-  const { data: article, isLoading, isError } = useQuery({
-    queryKey: ['news-article', slug],
-    queryFn: () => $api.get(`/content/news/${slug}`).then(res => res.data)
-  });
+  const { data: article, isLoading, isError } = useSpecificNews(slug);
 
   //SEO:
   const canonicalUrl = `${API_URL}/content/news/${slug}`;
@@ -41,6 +38,7 @@ export const NewsDetailsPage = () => {
         <title>{seoTitle}</title>
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
+
       <article className={styles.article}>
         <header className={styles.header}>
           <div className={styles.meta}>
@@ -74,7 +72,7 @@ export const NewsDetailsPage = () => {
               case 'video':
                 return (
                   <div key={index} className={styles.videoBlock}>
-                    <iframe src={`https://youtube.com{block.value}`} allowFullScreen></iframe>
+                    <iframe src={`https://youtube.com/${block.value}`} allowFullScreen></iframe>
                   </div>
                 );
               default:

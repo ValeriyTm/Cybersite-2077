@@ -1,8 +1,10 @@
 .article {
-  max-width: var(--container-width);
   justify-items: center;
+
   margin: 0 auto;
   padding: 60px 20px;
+
+  max-width: var(--container-width);
 
   @include mobile {
     padding: 20px 10px;
@@ -11,91 +13,109 @@
 
 .header {
   margin-bottom: 40px;
+
   .meta {
     display: flex;
     gap: 20px;
-    font-size: 0.8rem;
-    color: var(--accent-text-color);
-    text-transform: uppercase;
+
     margin-bottom: 15px;
+
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--accent-text-color);
   }
+
   .title {
+    margin-bottom: 30px;
+
     font-size: 3rem;
     font-weight: 900;
     line-height: 1.1;
-    margin-bottom: 30px;
-    text-align: center;
     color: var(--auxiliary-text-color);
+    text-align: center;
 
     @include mobile {
-      font-size: 2rem;
       margin-bottom: 10px;
+
+      font-size: 2rem;
     }
   }
 }
 
 .mainImage {
-  height: 300px;
-  width: 600px;
   justify-self: center;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 4px;
+
+  width: 600px;
+  height: 300px;
   overflow: hidden;
 
   @include mobile {
-    height: 250px;
     width: 500px;
+    height: 250px;
   }
 
   @include mobile-s {
-    height: 250px;
     width: 350px;
+    height: 250px;
   }
 
   img {
     width: 100%;
     height: 100%;
+
     object-fit: cover;
   }
 }
 
 .content {
-  width: 100%;
   justify-items: center;
+
+  width: 100%;
+
   .textBlock {
+    margin-bottom: 25px;
+
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--auxiliary-text-color);
-    margin-bottom: 25px;
   }
 
   .imageBlock {
     margin: 40px 0;
+
     img {
-      width: 100%;
-      border-radius: 8px;
       /* pxtorem-disable-next-line */
       border: 1px solid #222;
+      border-radius: 8px;
+
+      width: 100%;
     }
   }
 
   .videoBlock {
     margin: 40px 0;
+
     aspect-ratio: 16/9;
+
     iframe {
-      width: 100%;
-      height: 100%;
       /* pxtorem-disable-next-line */
       border: 1px solid var(--accent-text-color);
+
+      width: 100%;
+      height: 100%;
     }
   }
 
   .motoWidget {
-    background: #111;
+    margin: 40px 0;
+    padding: 20px;
     /* pxtorem-disable-next-line */
     border-left: 4px solid var(--accent-text-color);
-    padding: 20px;
-    margin: 40px 0;
+
+    background: #111;
   }
 }

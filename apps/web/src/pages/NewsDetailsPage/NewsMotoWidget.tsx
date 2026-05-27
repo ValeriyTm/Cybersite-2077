@@ -1,7 +1,5 @@
-//Состояния:
-import { useQuery } from '@tanstack/react-query';
-//API:
-import { $api } from '@/shared/api';
+//Состояние:
+import { useMotoForNews } from '@/entities/content';
 //Компоненты:
 import { MotorcycleCard } from '@/widgets/MotorcycleCard';
 //Стили:
@@ -9,17 +7,15 @@ import styles from './NewsMotoWidget.module.scss';
 
 export const NewsMotoWidget = ({ motoId }: { motoId: string }) => {
 
-  const { data: moto, isLoading } = useQuery({
-    queryKey: ['news-moto-widget', motoId],
-    queryFn: () => $api.get(`/catalog/motorcycles/${motoId}`).then(res => res.data),
-  });
+  //Получаем данные для мотоцикла:
+  const { data: moto, isLoading } = useMotoForNews(motoId);
 
-  if (isLoading) return <div style={{ height: '300px', background: '#111', borderRadius: '12px' }} />;
+  if (isLoading) return <div className={styles.loading} />;
   if (!moto) return null;
 
   return (
-    <div style={{ margin: '40px 0' }}>
-      <p style={{ color: '#ffffff', marginBottom: '15px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+    <div className={styles.wrapper}>
+      <p >
         Упомянутая модель:
       </p>
       <div className={styles.motoCard}>

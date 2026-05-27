@@ -9,3 +9,20 @@
     width: 300px;
   }
 }
+
+.loading {
+  height: 300px;
+  background: var(--auxiliary-bg-color);
+  border-radius: 12px;
+}
+
+.wrapper {
+  margin: 40px 0;
+
+  p {
+    color: var(--color-light);
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+}
