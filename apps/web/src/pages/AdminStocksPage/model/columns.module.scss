@@ -1,19 +1,24 @@
-.editBtn {
-  border: none !important;
-  height: 44px;
-  width: 44px;
-  margin: 0 !important;
-  border-radius: 50%;
-  color: var(--auxiliary-text-color) !important;
-  background-color: transparent !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+.motorcycleModel {
+  color: var(--color-light);
+}
 
-  @include hover {
-    color: var(--accent-text-color) !important;
-    border: 0.5px solid var(--accent-text-color) !important;
-    border-radius: 50%;
-  }
+.warehouseCity {
+  color: var(--auxiliary-text-color);
+  margin-left: 8px;
+}
+
+.reservedCount {
+  color: var(--auxiliary-text-color);
+}
+
+.quantityLow {
+  color: var(--color-danger) !important;
+}
+
+.quantityMedium {
+  color: var(--color-rating) !important;
+}
+
+.quantityHigh {
+  color: var(--color-success) !important;
 }

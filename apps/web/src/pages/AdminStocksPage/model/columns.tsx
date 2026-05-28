@@ -1,20 +1,18 @@
-
 //Типы:
 import { type ColumnDef } from '@tanstack/react-table';
-//Иконки:
-import { FaEdit } from 'react-icons/fa';
+//Компоненты:
+import { AdminButton } from '@/shared/ui';
 //Типы
 import type { Stock } from '@/entities/admin/types/types';
 //Стили:
 import styles from './columns.module.scss';
-import { AdminButton } from '@/shared/ui';
 
 export const stockColumns = (onEdit: (stock: Stock) => void): ColumnDef<Stock>[] => [
   {
     header: 'Мотоцикл',
     cell: ({ row }) => (
       <div>
-        <div style={{ color: '#fff' }}>{row.original.motorcycle?.model}</div>
+        <div className={styles.motorcycleModel}>{row.original.motorcycle?.model}</div>
       </div>
     )
   },
@@ -23,7 +21,7 @@ export const stockColumns = (onEdit: (stock: Stock) => void): ColumnDef<Stock>[]
     cell: ({ row }) => (
       <div>
         <span>{row.original.warehouse?.name}</span>
-        <span style={{ color: '#555', marginLeft: '8px' }}>({row.original.warehouse?.city})</span>
+        <span className={styles.warehouseCity}>({row.original.warehouse?.city})</span>
       </div>
     )
   },
@@ -32,29 +30,32 @@ export const stockColumns = (onEdit: (stock: Stock) => void): ColumnDef<Stock>[]
     header: 'В наличии',
     cell: ({ getValue }) => {
       const val = Number(getValue());
-      let color;
+
+      // Определяем класс в зависимости от количества
+      let quantityClass = styles.quantityHigh;
       if (val < 3) {
-        color = '#e74c3c';
+        quantityClass = styles.quantityLow;
       } else if (val < 10) {
-        color = '#f39c12';
-      } else {
-        color = '#2ecc71';
+        quantityClass = styles.quantityMedium;
       }
-      return <strong style={{ color }}>{val} шт.</strong>;
+
+      return <strong className={quantityClass}>{val} шт.</strong>;
     }
   },
   {
     accessorKey: 'reserved',
     header: 'Резерв',
-    cell: (info) => <span style={{ color: '#555' }}>{String(info.getValue())} шт.</span>
+    cell: (info) => <span className={styles.reservedCount}>{String(info.getValue())} шт.</span>
   },
   {
     id: 'actions',
     header: '',
     cell: ({ row }) => (
-      <AdminButton variant="edit" title={`Редактировать остатки для ${row.original.motorcycle?.model}`} onClick={() => onEdit(row.original)} />
-
-
+      <AdminButton
+        variant="edit"
+        title={`Редактировать остатки для ${row.original.motorcycle?.model}`}
+        onClick={() => onEdit(row.original)}
+      />
     )
   }
 ];
