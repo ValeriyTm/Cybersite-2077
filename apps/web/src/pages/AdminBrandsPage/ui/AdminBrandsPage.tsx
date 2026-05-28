@@ -1,16 +1,13 @@
 //Состояния:
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-//API:
-import { $api } from "@/shared/api";
+import { useAdminBrands } from "@/entities/admin";
+import { useCallback, useMemo, useState } from "react";
+import { useAdminBrandDelete, useAdminBrandSave } from "@/features/admin";
 //Компоненты:
 import { BrandModal } from "./BrandModal";
-import { DataTable } from "@/shared/ui";
+import { Button, DataTable, Pagination } from "@/shared/ui";
 import { getColumns } from "../model/columns";
 //Типы:
 import { type BrandData } from "@/entities/catalog";
-//Уведомления:
-import { toast } from "react-hot-toast";
 //Стили:
 import styles from "./AdminBrandsPage.module.scss";
 
@@ -19,50 +16,32 @@ export const AdminBrandsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBrand, setEditingBrand] = useState<BrandData | null>(null);
 
-  const queryClient = useQueryClient();
+  //Получаем бренды:
+  const { data, isLoading, error } = useAdminBrands(page);
 
-  //Запрос с учетом страницы:
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-brands", page],
-    queryFn: () =>
-      $api.get(`/admin/brands?page=${page}`).then((res) => res.data),
+  //Удаление бренда:
+  const deleteMutation = useAdminBrandDelete();
+
+  //Создание или обновление бренда:
+  const saveMutation = useAdminBrandSave({
+    editingBrand,
+    setIsModalOpen,
+    setEditingBrand,
   });
 
-  //Мутация удаления:
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => $api.delete(`/admin/brands/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-brands"] }); //Обновляем таблицу
-      toast.success("Бренд удален");
-    },
-    onError: () => toast.error("Ошибка при удалении"),
-  });
 
-  //Мутация для сохранения (создание или апдейт):
-  const saveMutation = useMutation({
-    mutationFn: (formData: BrandData) =>
-      editingBrand
-        ? $api.patch(`/admin/brands/${editingBrand.id}`, formData)
-        : $api.post("/admin/brands", formData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-brands"] });
-      setIsModalOpen(false);
-      setEditingBrand(null);
-      toast.success("Успешно сохранено");
-    },
-  });
-
-  //Прокидываем функцию редактирования в колонки:
-  const handleEdit = (brand: BrandData) => {
+  //Оборачиваем handleEdit в useCallback, т.к. этого требует использование useMemo в getColumns:
+  const handleEdit = useCallback((brand: BrandData) => {
     setEditingBrand(brand);
     setIsModalOpen(true);
-  };
+  }, []); // Пустой массив, так как функции set стабильны
 
   //Передаем функцию удаления в генератор колонок:
-  const columns = getColumns(
-    (id) => deleteMutation.mutate(id), // onDelete
-    (brand) => handleEdit(brand), // onEdit
-  );
+  const columns = useMemo(() => getColumns(
+    (id) => deleteMutation.mutate(id),
+    (brand) => handleEdit(brand),
+  ), [deleteMutation, handleEdit]);
+  //Обернул в useMemo, чтобы не происходил ререндер при пагинации
 
   if (isLoading) return <div className={styles.loader}>Загрузка данных...</div>;
   if (error)
@@ -72,35 +51,26 @@ export const AdminBrandsPage = () => {
     <div className={styles.pageWrapper}>
       <header className={styles.header}>
         <h3>Управление брендами</h3>
-        <button
-          className={styles.addBtn}
+        <Button
+          type="button"
+          variant="outline-dark"
           onClick={() => {
             setEditingBrand(null);
             setIsModalOpen(true);
           }}
         >
           + Новый бренд
-        </button>
+        </Button>
       </header>
-
 
       <DataTable columns={columns} data={data?.data || []} />
 
       {/* Пагинация: */}
-      <div className={styles.paginationControls}>
-        <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-          Назад
-        </button>
-        <span>
-          Страница {page} из {data?.meta?.lastPage || 1}
-        </span>
-        <button
-          disabled={page === data?.meta?.lastPage}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Вперёд
-        </button>
-      </div>
+      <Pagination
+        currentPage={page}
+        totalPages={data?.meta?.lastPage || 1}
+        onPageChange={(newPage) => setPage(newPage)}
+      />
 
       {isModalOpen && (
         <BrandModal

@@ -7,6 +7,7 @@ import { FaEdit } from 'react-icons/fa';
 import type { Stock } from '@/entities/admin/types/types';
 //Стили:
 import styles from './columns.module.scss';
+import { AdminButton } from '@/shared/ui';
 
 export const stockColumns = (onEdit: (stock: Stock) => void): ColumnDef<Stock>[] => [
   {
@@ -51,15 +52,8 @@ export const stockColumns = (onEdit: (stock: Stock) => void): ColumnDef<Stock>[]
     id: 'actions',
     header: '',
     cell: ({ row }) => (
-      <button
-        type="button"
-        style={{ cursor: 'pointer' }}
-        title={`Редактировать остатки для ${row.original.motorcycle?.model}`}
-        className={`${styles.editBtn}`}
-        onClick={() => onEdit(row.original)}
-      >
-        <FaEdit />
-      </button>
+      <AdminButton variant="edit" title={`Редактировать остатки для ${row.original.motorcycle?.model}`} onClick={() => onEdit(row.original)} />
+
 
     )
   }

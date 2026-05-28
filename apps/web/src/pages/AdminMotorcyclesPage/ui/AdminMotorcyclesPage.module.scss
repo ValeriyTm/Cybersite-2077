@@ -13,21 +13,6 @@
     padding-inline: 10px;
   }
 
-  button {
-    color: var(--accent-text-color);
-    border-radius: 10px;
-    /* pxtorem-disable-next-line */
-    border: 1px solid var(--accent-text-color);
-    background-color: var(--main-bg-color);
-    padding: 5px 10px;
-    margin: 5px 10px;
-    min-height: 44px;
-
-    @include hover {
-      box-shadow: 0 0 10px var(--accent-text-color);
-    }
-  }
-
   .header {
     align-items: center;
     justify-items: center;

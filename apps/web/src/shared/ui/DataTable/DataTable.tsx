@@ -7,9 +7,17 @@ import {
 //Стили:
 import styles from "./DataTable.module.scss";
 
+//Расширяем встроенный интерфейс метаданных TanStack Table:
+declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData, TValue> {
+    className?: string;
+  }
+}
+
 interface DataTableProps<TData> {
-  columns: ColumnDef<TData, any>[];
-  data: TData[];
+  readonly columns: ColumnDef<TData, unknown>[];
+  readonly data: TData[];
 }
 
 export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
@@ -28,7 +36,7 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className={(header.column.columnDef.meta as any)?.className || ''}
+                  className={header.column.columnDef.meta?.className || ''}
                 >
                   {flexRender(
                     header.column.columnDef.header,
@@ -45,7 +53,7 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className={(cell.column.columnDef.meta as any)?.className || ''}
+                  className={cell.column.columnDef.meta?.className || ''}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>

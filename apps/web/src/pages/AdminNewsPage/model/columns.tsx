@@ -8,6 +8,7 @@ import type { News } from '@/entities/content';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 //Стили:
 import styles from './columns.module.scss';
+import { AdminButton } from '@/shared/ui';
 
 
 export const newsColumns = (onEdit: (item: News) => void,
@@ -55,29 +56,12 @@ export const newsColumns = (onEdit: (item: News) => void,
       header: 'Действия',
       cell: ({ row }) => (
         <div style={{ display: 'flex', gap: '15px', color: '#f39c12' }}>
-          <button
-            type="button"
-            style={{ cursor: 'pointer' }}
-            title={`Редактировать новость ${row.original.title}`}
-            className={`${styles.editBtn}`}
-            onClick={() => onEdit(row.original)}
-          >
-            <FaEdit />
-          </button>
+          <AdminButton variant="edit" title={`Редактировать новость ${row.original.title}`} onClick={() => onEdit(row.original)} />
 
-          <button
-            type="button"
-            style={{ cursor: 'pointer' }}
-            title={`Удалить новость ${row.original.title}`}
-            className={`${styles.deleteBtn}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(row.original._id);
-            }}
-          >
-            <FaTrash />
-          </button>
-
+          <AdminButton variant="delete" title={`Удалить новость ${row.original.title}`} onClick={(e) => {
+            e.stopPropagation();
+            onDelete(row.original._id);
+          }} />
         </div>
       )
     }

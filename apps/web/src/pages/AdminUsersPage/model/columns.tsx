@@ -5,6 +5,7 @@ import type { Role } from '@repo/database/generated/prisma/client';
 import { FaTrash } from 'react-icons/fa';
 //Стили:
 import styles from './columns.module.scss';
+import { AdminButton } from '@/shared/ui';
 
 interface UserData {
   createdAt: string;
@@ -70,19 +71,12 @@ export const getUserColumns = (
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             {!isSelf && (
-              <button
-                type="button"
-                style={{ cursor: 'pointer' }}
-                title={`Удалить пользователя ${row.original.email}`}
-                className={`${styles.deleteBtn}`}
-                onClick={() => {
-                  if (window.confirm(`Вы уверены, что хотите удалить пользователя ${row.original.email}? Это действие необратимо.`)) {
-                    onDelete(row.original.id);
-                  }
-                }}
-              >
-                <FaTrash />
-              </button>
+              <AdminButton variant="delete" title={`Удалить пользователя ${row.original.email}`} onClick={() => {
+                if (window.confirm(`Вы уверены, что хотите удалить пользователя ${row.original.email}? Это действие необратимо.`)) {
+                  onDelete(row.original.id);
+                }
+              }} />
+
             )}
           </div>
         );

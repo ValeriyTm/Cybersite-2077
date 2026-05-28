@@ -8,6 +8,7 @@ import { FaEdit, FaTrash, FaBox } from "react-icons/fa";
 import toast from "react-hot-toast";
 //Стили:
 import styles from './columns.module.scss';
+import { AdminButton } from '@/shared/ui';
 
 
 export const getMotoColumns = (
@@ -67,26 +68,14 @@ export const getMotoColumns = (
       cell: ({ row }) => (
         <div className={styles.actionsWrapper}>
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
-            <button
-              type="button"
-              style={{ cursor: 'pointer' }}
-              title={`Редактировать модель ${row.original.model}`}
-              className={`${styles.editBtn}`}
-              onClick={() => onEdit(row.original)}
-            >
-              <FaEdit />
-            </button>}
+            <AdminButton variant="edit" title={`Редактировать модель ${row.original.model}`} onClick={() => onEdit(row.original)} />
+          }
+
 
           {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
-            <button
-              type="button"
-              style={{ cursor: 'pointer' }}
-              title={`Удалить модель ${row.original.model}`}
-              className={`${styles.deleteBtn}`}
-              onClick={() => onDelete(row.original.id)}
-            >
-              <FaTrash />
-            </button>}
+            <AdminButton variant="delete" title={`Удалить модель ${row.original.model}`} onClick={() => onDelete(row.original.id)} />
+
+          }
         </div>
       ),
     },
@@ -98,16 +87,7 @@ export const getMotoColumns = (
         return (
           <>
             {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
-              <button
-                type="button"
-                style={{ cursor: 'pointer' }}
-                title={`Редактировать остатки для модели ${row.original.model}`}
-                className={`${styles.stockBtn}`}
-                onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)}
-              >
-                <FaBox />
-              </button>
-
+              <AdminButton variant="stocks" title={`Редактировать остатки для модели ${row.original.model}`} onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)} />
             }
           </>
         );
