@@ -10,7 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   visuallyHidden?: boolean;
   id?: string;
   center?: boolean;
-  variant?: 'dark' | 'light';
+  variant?: 'dark' | 'light' | 'dark-full';
 }
 
 export const Input = ({
@@ -35,7 +35,7 @@ export const Input = ({
         id={inputId}
         {...registration}
         {...props}
-        className={`${styles.input} ${center ? styles.centered : ''} ${variant == 'dark' ? styles.dark : styles.light} ${error ? styles.inputError : ""} ${className || ""}`}
+        className={`${styles.input} ${center ? styles.centered : ''} ${styles[variant]} ${error ? styles.inputError : ""} ${className || ""}`}
       />
       {error?.message && <span className={styles.errorText}>{error.message}</span>}
     </div>

@@ -78,6 +78,13 @@
 .dark {
   background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
-  border: 1.5px solid var(--main-text-color);
+  border: 1px solid var(--main-text-color);
+  color: var(--color-light);
+}
+
+.dark-full {
+  background-color: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 1.5px solid var(--color-dark);
   color: var(--color-light);
 }

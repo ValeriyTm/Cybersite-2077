@@ -701,6 +701,8 @@ export const CreateBrandAdminSchema = z.object({
 export type CreateBrandAdminInput = z.infer<typeof CreateBrandAdminSchema>;
 export type CreateBrandAdminArgs = CreateBrandAdminInput["body"];
 
+//Схема для фронтенда:
+export const CreateBrandAdminFrontendSchema = CreateBrandAdminSchema.shape.body;
 //----------------------------3.8) Схема для обновления бренда:-------------------------------------//
 export const UpdateBrandAdminSchema = z.object({
   body: z.object({

@@ -11,6 +11,7 @@ interface ActionConfirmModalProps {
   variant?: "danger" | "success" | "info";
   confirmText?: string;
   cancelText?: string;
+  isSubmitting?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -22,6 +23,7 @@ export const ActionConfirmModal = ({
   variant = "info",
   confirmText = "Да",
   cancelText = "Назад",
+  isSubmitting = false,
   onConfirm,
   onCancel,
 }: ActionConfirmModalProps) => {
@@ -44,18 +46,18 @@ export const ActionConfirmModal = ({
   const confirmBtnClassName = `${styles.btnConfirm} ${styles['btn-' + variant]}`;
 
   return createPortal(
-    <div className={styles.modalOverlay} onClick={onCancel}>
-      <FocusTrap focusTrapOptions={{ escapeDeactivates: true, onDeactivate: onCancel }}>
+    <div className={styles.modalOverlay} onClick={isSubmitting ? undefined : onCancel}>
+      <FocusTrap focusTrapOptions={{ escapeDeactivates: !isSubmitting, onDeactivate: onCancel }}>
         <div className={contentClassName} onClick={(e) => e.stopPropagation()}>
           <h3 className={titleClassName}>{title}</h3>
           <p className={styles.modalText}>{description}</p>
 
           <div className={styles.modalActions}>
-            <button type="button" className={styles.btnCancel} onClick={onCancel}>
+            <button type="button" className={styles.btnCancel} onClick={onCancel} disabled={isSubmitting}>
               {cancelText}
             </button>
-            <button type="button" className={confirmBtnClassName} onClick={onConfirm}>
-              {confirmText}
+            <button type="button" className={confirmBtnClassName} onClick={onConfirm} disabled={isSubmitting}>
+              {isSubmitting ? "Ждите..." : confirmText}
             </button>
           </div>
         </div>

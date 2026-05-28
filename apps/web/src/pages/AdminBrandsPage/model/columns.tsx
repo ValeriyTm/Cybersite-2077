@@ -31,11 +31,7 @@ export const getColumns = (
           <div className={styles.actionsContainer}>
             <AdminButton variant="edit" title={`Редактировать бренд ${brandName}`} onClick={() => onEdit(row.original)} />
 
-            <AdminButton variant="delete" title={`Удалить бренд ${brandName}`} onClick={() => {
-              if (window.confirm(`Удалить бренд ${brandName}? Это удалит все его мотоциклы.`)) {
-                onDelete(row.original.id);
-              }
-            }} />
+            <AdminButton variant="delete" title={`Удалить бренд ${brandName}`} onClick={() => onDelete(row.original.id)} />
           </div>
         );
       }
