@@ -181,6 +181,7 @@ export class CatalogService {
       select: { id: true },
     });
 
+    //Создаем мотоцикл:
     const newMotorcycle = await prisma.motorcycle.create({
       data: {
         ...newData,
@@ -197,6 +198,28 @@ export class CatalogService {
         },
       },
       include: { images: true, brand: true },
+    });
+
+    //Получаем склады:
+    const warehouses = await prisma.warehouse.findMany({
+      select: { id: true },
+    });
+    if (warehouses.length === 0) {
+      throw new Error("Склады не найдены в базе данных");
+    }
+
+    //Формируем массив записей по остаткам:
+    const stockRecords = warehouses.map((warehouse) => ({
+      motorcycleId: newMotorcycle.id,
+      warehouseId: warehouse.id,
+      quantity: 0,
+      reserved: 0,
+    }));
+
+    //Записываем остатки в БД:
+    await prisma.stock.createMany({
+      data: stockRecords,
+      skipDuplicates: true,
     });
 
     return newMotorcycle;
