@@ -1,0 +1,31 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  justify-items: center;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+
+  text-align: center;
+
+  input {
+    margin-block: 0;
+  }
+
+  button {
+    max-width: 200px;
+  }
+
+  @include tablet-above {
+    text-align: left;
+  }
+
+  @include mobile {
+    flex-direction: column;
+
+    h3 {
+      margin-block: 10px;
+    }
+  }
+}

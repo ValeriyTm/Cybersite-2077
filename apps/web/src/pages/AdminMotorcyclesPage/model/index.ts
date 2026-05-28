@@ -1,0 +1,1 @@
+export { getMotoColumns } from "./columns";

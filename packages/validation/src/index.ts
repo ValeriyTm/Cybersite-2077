@@ -458,16 +458,18 @@ export const createMotorcycleAdminSchema = z.object({
       .min(2, { message: "Имя слишком короткое" })
       .max(30, "Максимум 30 символов для модели")
       .regex(
-        /^[a-zA-Zа-яА-ЯёЁ0-9]+$/,
+        /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/,
         "Для модели используйте только цифры, английские и русские буквы",
       ),
     colors: z.array(
       z
         .string()
         .min(3, { message: "Название цвета слишком короткое" })
-        .max(20, "Максимум 20 символов для цвета"),
+        .max(200, "Максимум 200 символов"),
     ),
-    year: z.string().regex(/^\d{4}$/, "Неверный формат года"),
+    year: z.coerce
+      .number()
+      .positive({ message: "Год должен быть положительным числом" }),
     brandId: z.string(),
     category: z.enum(
       [
@@ -494,18 +496,149 @@ export const createMotorcycleAdminSchema = z.object({
         message: "Выберите корректную категорию мотоцикла",
       },
     ),
-    price: z.string().regex(/^\d+$/, "Цена должна быть числовой строкой"),
-    displacement: z
-      .string()
-      .regex(/^\d+$/, "Объем должен быть числовой строкой"),
-    power: z
-      .string()
-      .regex(
-        /^\d+(\.\d+)?$/,
-        "Мощность должна быть числом (например, 8 или 8.5)",
-      ),
-    coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
-    gearbox: z.enum([
+    price: z.coerce
+      .number()
+      .positive({ message: "Цена должна быть положительным числом" })
+      .default(300000),
+    displacement: z.preprocess(
+      (v) => (v === "" ? 0 : Number(v)),
+      z.number().nonnegative().default(0),
+    ),
+    power: z.preprocess((v) => {
+      if (typeof v === "string") {
+        const cleaned = v.trim().replace(",", ".");
+        if (cleaned === "" || cleaned === "null" || cleaned === "NaN")
+          return null;
+        return Number(cleaned);
+      }
+      return v;
+    }, z.number().positive("Мощность должна быть положительным числом").nullable()),
+    coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"], {
+      message: "Выберите тип системы охлаждения",
+    }),
+    gearbox: z.enum(
+      [
+        "SPEED1",
+        "SPEED2",
+        "SPEED2AUTOMATIC",
+        "SPEED3",
+        "SPEED3AUTOMATIC",
+        "SPEED4",
+        "SPEED4WITHREVERSE",
+        "SPEED5",
+        "SPEED5WITHREVERSE",
+        "SPEED6",
+        "SPEED6WITHREVERSE",
+        "SPEED7",
+        "SPEED8",
+        "AUTOMATIC",
+      ],
+      {
+        message: "Выберите корректный тип коробки передач",
+      },
+    ),
+    transmission: z.enum(["CHAIN", "BELT", "CARDAN"], {
+      message: "Выберите корректный тип привода",
+    }),
+    starter: z.enum(["ELECTRIC", "KICK", "ELECTRIC_KICK"], {
+      message: "Выберите корректный тип стартера",
+    }),
+    comments: z.string().min(1, "Добавьте описание / комментарий"),
+    siteCategory: z.enum(["Мотоциклы", "Мотоэкипировка", "Запчасти"], {
+      message: "Выберите корректную категорию товара",
+    }),
+  }),
+});
+
+type createMotorcycleAdminInput = z.infer<typeof createMotorcycleAdminSchema>;
+//Чистый тип для сервиса:
+export type createMotorcycleAdminArgs = createMotorcycleAdminInput["body"];
+
+//Фронтенд-схема с учетом специфики HTML-форм:
+export const createMotorcycleAdminFrontendSchema = z.object({
+  model: z
+    .string()
+    .trim()
+    .min(2, { message: "Имя слишком короткое" })
+    .max(30, "Максимум 30 символов для модели")
+    .regex(
+      /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/,
+      "Для модели используйте только цифры, английские и русские буквы",
+    ),
+  colors: z
+    .string()
+    .min(3, { message: "Название цвета слишком короткое" })
+    .max(200, "Максимум 200 символов"),
+  year: z.preprocess(
+    (val) =>
+      val === "" || val === null || val === undefined ? undefined : Number(val),
+    z
+      .number({ message: "Год должен быть положительным числом" })
+      .positive({ message: "Год должен быть положительным числом" }),
+  ),
+  brandId: z
+    .string({ message: "Выберите корректный бренд" })
+    .min(1, { message: "Выберите корректный бренд" }),
+  category: z.enum(
+    [
+      "ATV",
+      "ALLROUND",
+      "CLASSIC",
+      "CROSS_MOTOCROSS",
+      "CUSTOM_CRUISER",
+      "ENDURO_OFFROAD",
+      "MINIBIKE_CROSS",
+      "MINIBIKE_SPORT",
+      "NAKED_BIKE",
+      "PROTOTYPE_CONCEPT",
+      "SCOOTER",
+      "SPEEDWAY",
+      "SPORT",
+      "SPORT_TOURING",
+      "SUPER_MOTARD",
+      "TOURING",
+      "TRIAL",
+      "UNSPECIFIED",
+    ],
+    { message: "Выберите корректную категорию мотоцикла" },
+  ),
+  price: z.preprocess(
+    (val) =>
+      val === "" || val === null || val === undefined ? undefined : Number(val),
+    z
+      .number({ message: "Цена должна быть положительным числом" })
+      .positive({ message: "Цена должна быть положительным числом" }),
+  ),
+  displacement: z.preprocess(
+    (val) =>
+      val === "" || val === null || val === undefined ? 0 : Number(val),
+    z
+      .number({ message: "Объем должен быть числом" })
+      .positive({ message: "Объем должен быть положительным числом" })
+      .default(0),
+  ),
+  power: z.preprocess(
+    (val) => {
+      if (typeof val === "string") {
+        const cleaned = val.trim().replace(",", ".");
+        if (cleaned === "null" || cleaned === "" || cleaned === "NaN")
+          return null;
+        return Number(cleaned);
+      }
+      return val === null ? null : Number(val);
+    },
+    z.union([
+      z
+        .number()
+        .positive({ message: "Мощность должна быть положительным числом" }),
+      z.null(),
+    ]),
+  ),
+  coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"], {
+    message: "Выберите тип системы охлаждения",
+  }),
+  gearbox: z.enum(
+    [
       "SPEED1",
       "SPEED2",
       "SPEED2AUTOMATIC",
@@ -520,23 +653,31 @@ export const createMotorcycleAdminSchema = z.object({
       "SPEED7",
       "SPEED8",
       "AUTOMATIC",
-    ]),
-    transmission: z.enum(["CHAIN", "BELT", "CARDAN"]),
-    starter: z.enum(["ELECTRIC", "KICK", "ELECTRIC_KICK"]),
-    comments: z.string(),
-    siteCategory: z.enum(["Мотоциклы", "Мотоэкипировка", "Запчасти"], {
-      message: "Выберите корректную категорию товара",
-    }),
+    ],
+    { message: "Выберите корректный тип коробки передач" },
+  ),
+  transmission: z.enum(["CHAIN", "BELT", "CARDAN"], {
+    message: "Выберите корректный тип привода",
+  }),
+  starter: z.enum(["ELECTRIC", "KICK", "ELECTRIC_KICK"], {
+    message: "Выберите корректный тип стартера",
+  }),
+  comments: z
+    .string({ message: "Добавьте описание / комментарий" })
+    .min(1, { message: "Добавьте описание / комментарий" }),
+
+  siteCategory: z.enum(["Мотоциклы", "Мотоэкипировка", "Запчасти"], {
+    message: "Выберите корректную категорию товара",
   }),
 });
 
-type createMotorcycleAdminInput = z.infer<typeof createMotorcycleAdminSchema>;
-//Чистый тип для сервиса:
-export type createMotorcycleAdminArgs = createMotorcycleAdminInput["body"];
+export type MotoFrontendFormValues = z.infer<
+  typeof createMotorcycleAdminFrontendSchema
+>;
 //----------------------------3.3) Схема для обновления мотоцикла:-------------------------------------//
 export const updateMotorcycleAdminSchema = z.object({
   body: z.object({
-    id: z.string(),
+    // id: z.string(),
     model: z
       .string()
       .trim()
@@ -546,7 +687,7 @@ export const updateMotorcycleAdminSchema = z.object({
         /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/,
         "Для модели используйте только цифры, английские и русские буквы",
       ),
-    slug: z.string(),
+    // slug: z.string(),
     brandId: z.string(),
     category: z.enum(
       [
@@ -575,15 +716,13 @@ export const updateMotorcycleAdminSchema = z.object({
     ),
     year: z.coerce
       .number()
-      .min(1850)
-      .max(2077)
-      .default(() => new Date().getFullYear()),
+      .positive({ message: "Год должен быть положительным числом" }),
     displacement: z.coerce.number().default(0),
     power: z.preprocess(
       (val) => (val === "null" || val === "" || val === "NaN" ? null : val),
       z.coerce.number().nullable(),
     ),
-    engineType: z.string(),
+    // engineType: z.string(),
     coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
     gearbox: z.enum([
       "SPEED1",

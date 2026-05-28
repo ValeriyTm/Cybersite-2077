@@ -1,12 +1,12 @@
 import { useId, type InputHTMLAttributes, type ReactNode } from "react";
-import { type UseFormRegisterReturn, type FieldError } from "react-hook-form";
+import type { UseFormRegisterReturn, FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 //Стили:
 import styles from "./Input.module.scss";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: ReactNode;
   registration?: UseFormRegisterReturn; // Привязка к react-hook-form
-  error?: FieldError; // Объект ошибки из formState.errors
+  error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;  // Объект ошибки из formState.errors
   visuallyHidden?: boolean;
   id?: string;
   center?: boolean;
@@ -37,7 +37,7 @@ export const Input = ({
         {...props}
         className={`${styles.input} ${center ? styles.centered : ''} ${styles[variant]} ${error ? styles.inputError : ""} ${className || ""}`}
       />
-      {error?.message && <span className={styles.errorText}>{error.message}</span>}
+      {error?.message && <span className={styles.errorText}>{String(error.message)}</span>}
     </div>
   );
 };

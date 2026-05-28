@@ -219,7 +219,7 @@ export const createMotorcycle = catchAsync(
     const motorcycle = await catalogService.createMotorcycle(data, files);
 
     //Обновление данных в Elasticsearch:
-    await searchService.indexMotorcycle(motorcycle.id);
+    await searchService.syncMotorcyclesFromAdmin();
 
     res.status(201).json(motorcycle);
   },
@@ -380,14 +380,15 @@ export const deleteUser = catchAsync(
 //Синхронизируем всю БД с Elasticsearch:
 export const globalSearchSync = catchAsync(
   async (_req: AuthRequest, res: Response) => {
-    //Очищаем индекс в Elasticsearch
-    const esUrl = process.env.ELASTICSEARCH_URL || "http://localhost:9200";
-    await fetch(`${esUrl}/motorcycles`, {
-      method: "DELETE",
-    });
+    // //Очищаем индекс в Elasticsearch
+    // const esUrl = process.env.ELASTICSEARCH_URL || "http://localhost:9200";
+    // await fetch(`${esUrl}/motorcycles`, {
+    //   method: "DELETE",
+    // });
 
-    //Вызываем  логику пересоздания индекса и заливки данных
-    await searchService.syncAllMotorcycles();
+    // //Вызываем  логику пересоздания индекса и заливки данных
+    // await searchService.syncAllMotorcycles();
+    await searchService.syncMotorcyclesFromAdmin();
 
     res.json({ message: "Глобальная синхронизация успешно завершена" });
   },

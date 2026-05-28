@@ -45,6 +45,17 @@
   }
 }
 
+//Убираем стрелочки у инпута с типом number::afterinput[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Для Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 // Состояние ошибки
 .inputError {
   border: 2px solid var(--color-danger) !important;
@@ -67,7 +78,6 @@
 }
 
 //-----------Варианты:-------------//
-
 .light {
   background-color: var(--color-light);
   /* pxtorem-disable-next-line */

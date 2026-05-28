@@ -1,1 +1,2 @@
-export { AdminMotorcyclesPage } from "./ui/AdminMotorcyclesPage";
+export * from "./ui";
+export * from "./model";

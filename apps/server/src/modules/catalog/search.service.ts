@@ -571,6 +571,18 @@ export class SearchService {
       operations: bulkDeleteOperations,
     });
   }
+
+  //Обновление данных (вызывается из админ-панели):
+  async syncMotorcyclesFromAdmin() {
+    //Очищаем индекс в Elasticsearch
+    const esUrl = process.env.ELASTICSEARCH_URL || "http://localhost:9200";
+    await fetch(`${esUrl}/motorcycles`, {
+      method: "DELETE",
+    });
+
+    //Вызываем  логику пересоздания индекса и заливки данных
+    await this.syncAllMotorcycles();
+  }
 }
 
 export const searchService = new SearchService();

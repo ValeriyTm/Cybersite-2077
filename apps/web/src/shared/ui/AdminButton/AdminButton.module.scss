@@ -40,3 +40,10 @@
     color: var(--color-success);
   }
 }
+
+.copy {
+  @include hover {
+    box-shadow: 0 0 10px var(--color-light);
+    color: var(--color-light);
+  }
+}

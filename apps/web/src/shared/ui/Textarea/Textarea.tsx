@@ -10,6 +10,7 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 	visuallyHidden?: boolean;
 	id?: string;
 	showCharCount?: boolean; //Показывать ли счетчик символов
+	variant?: 'dark' | 'light' | 'dark-full';
 }
 
 export const Textarea = ({
@@ -23,6 +24,7 @@ export const Textarea = ({
 	showCharCount = false,
 	value,
 	onChange,
+	variant = 'light',
 	...props
 }: TextareaProps) => {
 	const generatedId = useId();
@@ -51,7 +53,7 @@ export const Textarea = ({
 					value={value}
 					onChange={onChange}
 					{...props}
-					className={`${styles.textarea} ${error ? styles.inputError : ""} ${className || ""}`}
+					className={`${styles.textarea} ${error ? styles.inputError : ""} ${className || ""} ${styles[variant]}`}
 				/>
 				{/* Счетчик символов: */}
 				{showCharCount && maxLength && (

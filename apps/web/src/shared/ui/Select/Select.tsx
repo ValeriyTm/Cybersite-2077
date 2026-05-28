@@ -19,8 +19,9 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   visuallyHidden?: boolean;
   id?: string;
   center?: boolean;
-  variant?: 'light' | 'dark';
+  variant?: 'dark' | 'light' | 'dark-full';
   direction?: 'row' | 'column';
+  left?: boolean
 }
 
 export const Select = ({
@@ -36,6 +37,7 @@ export const Select = ({
   center,
   variant = 'light',
   direction = 'column',
+  left = false,
   ...props
 }: SelectProps) => {
   const generatedId = useId();
@@ -43,10 +45,10 @@ export const Select = ({
   const selectId = id || registration?.name || generatedId;
 
   return (
-    <div className={`${direction == 'column' ? styles.parentWrapperColumn : styles.parentWrapperRow}`}>
+    <div className={`${direction == 'column' ? styles.parentWrapperColumn : styles.parentWrapperRow} ${left ? styles.leftLabel : ''}`}>
       <label
         htmlFor={selectId}
-        className={`${styles.label} ${variant == 'dark' ? styles.labelDark : styles.labelLight} ${visuallyHidden ? "visually-hidden" : ""}`}
+        className={`${styles.label} ${(variant == 'dark' || 'dark-full') ? styles.labelDark : styles.labelLight} ${visuallyHidden ? "visually-hidden" : ""}`}
       >
         {label}
       </label>
@@ -56,7 +58,7 @@ export const Select = ({
           id={selectId}
           {...registration}
           {...props}
-          className={`$${styles.select} ${center ? styles.center : ''} ${variant == 'dark' ? styles.dark : styles.light} ${error ? styles.inputError : ""} ${className || ""}`}
+          className={`$${styles.select} ${styles[variant]} ${center ? styles.center : ''} ${variant == 'dark' ? styles.dark : styles.light} ${error ? styles.inputError : ""} ${className || ""}`}
         >
           {/* Рендерим плейсхолдер только если передан флаг showPlaceholder: */}
           {showPlaceholder && <option value="">{placeholder}</option>}

@@ -199,20 +199,6 @@ export class CatalogService {
       include: { images: true, brand: true },
     });
 
-    //Синхронизируем созданную модель с Elasticsearch, чтобы она появилась в поиске:
-    try {
-      // Вызываем метод точечной индексации (который мы ранее исправили на esClient.update)
-      await searchService.indexMotorcycle(newMotorcycle.id);
-      logger.info(
-        `[Elasticsearch] Новая модель ${newMotorcycle.model} успешно добавлена в поисковый индекс.`,
-      );
-    } catch (error) {
-      logger.error(
-        `[Elasticsearch] Ошибка индексации новой модели ID ${newMotorcycle.id}:`,
-        error,
-      );
-    }
-
     return newMotorcycle;
   }
 
@@ -221,23 +207,10 @@ export class CatalogService {
     rawData: updateMotoAdminBodyArgs,
     files: Express.Multer.File[],
     id: string,
-    // mainImageId?: string,
-    // deletedImageIds?: string[],
   ) {
-    //1.Генерируем slug:
-    let slug = rawData.slug;
-    if (rawData.model || rawData.year) {
-      // Подтягиваем текущие данные, если чего-то не хватает в запросе:
-      const current = await prisma.motorcycle.findUnique({
-        where: { id },
-        select: { model: true, year: true },
-      });
-      const model = rawData.model || current?.model;
-      const year = rawData.year || current?.year;
-      slug = slugify(`${model}${year}`);
-    }
+    const slug = slugify(`${rawData.model}${rawData.year}`);
 
-    //2.Удаляем старые изображения:
+    //1.Удаляем старые изображения:
     if (rawData.deletedImageIds && rawData.deletedImageIds.length > 0) {
       const imagesToDelete = await prisma.productImage.findMany({
         where: { id: { in: rawData.deletedImageIds } },
@@ -261,7 +234,7 @@ export class CatalogService {
       });
     }
 
-    //3.Обновляем главное изображение:
+    //2.Обновляем главное изображение:
     if (rawData.mainImageId) {
       await prisma.productImage.updateMany({
         where: { motorcycleId: id },
@@ -273,7 +246,7 @@ export class CatalogService {
       });
     }
 
-    //4.Узнаем, сколько картинок осталось в базе для этого байка, чтобы продолжить нумерацию (например, начать с "-3", если 3 уже есть)
+    //3.Узнаем, сколько картинок осталось в базе для этого байка, чтобы продолжить нумерацию (например, начать с "-3", если 3 уже есть)
     const existingImagesCount = await prisma.productImage.count({
       where: { motorcycleId: id },
     });
@@ -306,10 +279,8 @@ export class CatalogService {
       }),
     );
 
-    //5.Извлекаем из объекта данных все лишние поля (также отключаем оповещения ESLint, что переменные далее не используются):
+    //4.Извлекаем из объекта данных все лишние поля (также отключаем оповещения ESLint, что переменные далее не используются):
     const {
-      // eslint-disable-next-line
-      id: _ignoredId,
       siteCategory,
       // eslint-disable-next-line
       brand,
@@ -332,18 +303,19 @@ export class CatalogService {
       select: { id: true },
     });
 
+    //5.Производим обновление данных:
     const updatedMotorcycle = await prisma.motorcycle.update({
       where: { id },
       data: {
         ...finalData,
-        slug,
+        // slug,
         siteCategoryId: siteCategoryId!.id,
         images: { create: newImages },
       },
       include: { images: true },
     });
 
-    //Синхронизируем Elasticsearch:
+    //6.Синхронизируем Elasticsearch:
     try {
       // Вызываем точечную переиндексацию (метод esClient.update, который мы исправили ранее)
       await searchService.indexMotorcycle(updatedMotorcycle.id);

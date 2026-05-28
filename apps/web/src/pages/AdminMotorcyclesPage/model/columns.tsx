@@ -1,9 +1,6 @@
-//Роутинг:
-import { useNavigate } from 'react-router';
 //Типы:
 import { type ColumnDef } from "@tanstack/react-table";
-//Иконки:
-import { FaEdit, FaTrash, FaBox } from "react-icons/fa";
+import type { MotorcycleEditAdmin } from "@/entities/catalog";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
@@ -12,10 +9,12 @@ import { AdminButton } from '@/shared/ui';
 
 
 export const getMotoColumns = (
-  onEdit: (val: any) => void,
+  onEdit: (val: MotorcycleEditAdmin) => void,
   onDelete: (id: string) => void,
-  userRole: string | undefined,
-): ColumnDef<any>[] => [
+  userRole: string,
+  // navigate: (path: string) => void,
+  onNavigateToStock: (id: string) => void,
+): ColumnDef<MotorcycleEditAdmin>[] => [
     {
       accessorKey: 'id',
       header: 'ID',
@@ -25,19 +24,12 @@ export const getMotoColumns = (
         return (
           <div className={styles.idWrapper}>
             <code className={styles.code}>{id.slice(0, 8)}...</code>
-            <button
-              type="button"
-              title={`Скопировать id товара для модели ${row.original.model}`}
-              style={{ cursor: 'pointer' }}
-              className={styles.copyBtn}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigator.clipboard.writeText(id);
-                toast.success('ID скопирован в буфер!');
-              }}
-            >
-              <FaEdit size={12} />
-            </button>
+            <AdminButton variant="copy" title={`Скопировать id товара для модели ${row.original.model}`} onClick={(e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(id);
+              toast.success('ID скопирован в буфер!');
+            }} />
+
           </div>
         );
       }
@@ -67,12 +59,10 @@ export const getMotoColumns = (
       header: "Действия",
       cell: ({ row }) => (
         <div className={styles.actionsWrapper}>
-          {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
+          {(['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(userRole)) &&
             <AdminButton variant="edit" title={`Редактировать модель ${row.original.model}`} onClick={() => onEdit(row.original)} />
           }
-
-
-          {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
+          {(['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(userRole)) &&
             <AdminButton variant="delete" title={`Удалить модель ${row.original.model}`} onClick={() => onDelete(row.original.id)} />
 
           }
@@ -83,11 +73,10 @@ export const getMotoColumns = (
       id: 'stock',
       header: 'Склад',
       cell: ({ row }) => {
-        const navigate = useNavigate();
         return (
           <>
-            {(userRole === 'MANAGER' || userRole === 'ADMIN' || userRole === 'SUPERADMIN') &&
-              <AdminButton variant="stocks" title={`Редактировать остатки для модели ${row.original.model}`} onClick={() => navigate(`/admin/stocks?motoId=${row.original.id}`)} />
+            {(['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(userRole)) &&
+              <AdminButton variant="stocks" title={`Редактировать остатки для модели ${row.original.model}`} onClick={() => onNavigateToStock(row.original.id)} />
             }
           </>
         );

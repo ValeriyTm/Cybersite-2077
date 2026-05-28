@@ -14,7 +14,7 @@
 .modal {
   padding: 30px;
   /* pxtorem-disable-next-line */
-  border: 1px solid #333;
+  border: 1px solid var(--accent-text-color);
   border-radius: 12px;
 
   width: 100%;

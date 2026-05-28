@@ -4,7 +4,7 @@ import * as adminController from "./admin.controller.js";
 //Middleware:
 import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //Middleware для авторизации
 import { roleMiddleware } from "../../shared/middlewares/roleMiddleware.js"; //Middleware для проверки роли пользователя
-import { productUpload } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
+import { productUpload, newsUpload } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
 import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
@@ -244,7 +244,7 @@ router.get(
 router.post(
   "/news",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
-  productUpload.single("mainImage"),
+  newsUpload.single("mainImage"),
   validate(CreateNewsSchema),
   adminController.createNews,
 );
@@ -253,7 +253,7 @@ router.post(
 router.patch(
   "/news/:id",
   roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
-  productUpload.single("mainImage"),
+  newsUpload.single("mainImage"),
   validate(UpdateNewsSchema),
   adminController.updateNews,
 );
