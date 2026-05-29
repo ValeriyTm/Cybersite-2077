@@ -1,4 +1,5 @@
 import { Button } from "@/shared/ui";
+//Стили:
 import styles from "./TwoFactorAuthCard.module.scss";
 
 interface TwoFactorAuthCardProps {

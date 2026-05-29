@@ -24,7 +24,7 @@ import { GlobalErrorFallback } from "@/shared/ui";
 import "./styles/index.scss";
 
 
-// Создаем клиент React Query:
+//Клиент React Query:
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

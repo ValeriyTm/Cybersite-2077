@@ -149,19 +149,15 @@ describe("Тест хука useProfileActions - действия в профил
   // it("Тест №4. Проверяем функционал удаления аккаунта в профиле", async () => {
   //   //Настраиваем фейковый успешный ответ для метода DELETE:
   //   vi.mocked($api.delete).mockResolvedValue({ data: { success: true } });
-
   //   const { result } = renderHook(() => useProfileActions(mockUser as any));
-
   //   //Данные из формы (DeleteAccountInput):
   //   const deleteData = {
   //     password: "correct-password123",
   //     confirmPassword: "correct-password123",
   //   };
-
   //   await act(async () => {
   //     await result.current.onDeleteAccount(deleteData);
   //   });
-
   //   //Проверяем метод DELETE и структуру { data: ... }:
   //   expect($api.delete).toHaveBeenCalledWith("/identity/auth/delete-account", {
   //     data: { password: deleteData.confirmPassword },

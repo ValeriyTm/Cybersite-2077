@@ -10,7 +10,7 @@
 
   background: var(--main-bg-color);
 
-  color: #fff;
+  color: var(--color-light);
 
   @include mobile-s {
     padding-block: 15px;

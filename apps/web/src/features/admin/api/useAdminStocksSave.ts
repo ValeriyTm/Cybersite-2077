@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 //Типы:
 import type { Stock } from "@/entities/admin/types/types";
 
-interface useAdminStocksSaveProps {
+interface UseAdminStocksSaveProps {
   setIsModalOpen: (data: boolean) => void;
   editingStock: Stock | null;
 }
@@ -14,7 +14,7 @@ interface useAdminStocksSaveProps {
 export const useAdminStocksSave = ({
   setIsModalOpen,
   editingStock,
-}: useAdminStocksSaveProps) => {
+}: UseAdminStocksSaveProps) => {
   const queryClient = useQueryClient();
 
   return useMutation({

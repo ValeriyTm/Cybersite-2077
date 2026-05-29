@@ -19,6 +19,7 @@ export const OrderCard = ({ order }: { order: Order }) => {
   const isDelivered = order.status === "DELIVERED";
   const isCompleted = order.status === "COMPLETED";
   const isCanceled = order.status === "CANCELED";
+  const isDelivery = order.status === "DELIVERY";
   const canCancel = ["PENDING", "PAID"].includes(order.status);
   //Состояние для pre-payment модалки:
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,7 +61,7 @@ export const OrderCard = ({ order }: { order: Order }) => {
       <div className={styles.mainContent}>
         {/*Левая панель:*/}
         <div className={styles.leftPanel}>
-          <div className={`${(isCanceled || isCompleted) ? styles.leftPanelWrapperStatusSolo : styles.leftPanelWrapperStatus}`}>
+          <div className={`${(isCanceled || isCompleted || isDelivery) ? styles.leftPanelWrapperStatusSolo : styles.leftPanelWrapperStatus}`}>
             <div className={styles.infoGroup}>
               <span className={styles.label}>Сумма заказа:</span>
               <span className={styles.value}>
@@ -78,7 +79,7 @@ export const OrderCard = ({ order }: { order: Order }) => {
             </div>
           </div>
 
-          {(!isCanceled && !isCompleted) && <div className={styles.leftPanelWrapper}>
+          {(!isCanceled && !isCompleted && !isDelivery) && <div className={styles.leftPanelWrapper}>
             {/*Если заказ ожидает оплаты и есть ссылка на оплату — показываем кнопку оплаты: */}
             {order.status === "PENDING" && order.paymentUrl && (
               <Button

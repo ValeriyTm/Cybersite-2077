@@ -18,14 +18,7 @@ interface StockEditModalProps {
 }
 
 export const StockEditModal = ({ isOpen, onClose, stock, onSave, isSaving }: StockEditModalProps) => {
-  const [quantity, setQuantity] = useState(0);
-
-  //Синхронизация локального стейта с текущим значением остатка при открытии:
-  useEffect(() => {
-    if (stock) {
-      setQuantity(stock.quantity);
-    }
-  }, [stock, isOpen]);
+  const [quantity, setQuantity] = useState(stock ? stock.quantity : 0);
 
   //Блокировка скроллбара:
   useEffect(() => {

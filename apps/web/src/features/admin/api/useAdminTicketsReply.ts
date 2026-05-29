@@ -7,7 +7,7 @@ import type { Ticket } from "@/entities/support/types/types";
 //Уведомления:
 import toast from "react-hot-toast";
 
-interface useAdminTicketsReplyProps {
+interface UseAdminTicketsReplyProps {
   selectedTicket: Ticket | null;
   setSelectedTicket: (data: Ticket | null) => void;
 }
@@ -21,7 +21,7 @@ interface ReplyMutationVariables {
 export const useAdminTicketsReply = ({
   selectedTicket,
   setSelectedTicket,
-}: useAdminTicketsReplyProps) => {
+}: UseAdminTicketsReplyProps) => {
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -1,4 +1,5 @@
 import { NavLink, type NavLinkProps as RouterNavLinkProps } from "react-router";
+//Стили:
 import styles from "./HeaderLink.module.scss";
 
 interface HeaderLinkProps extends RouterNavLinkProps {

@@ -1,6 +1,9 @@
 import { useState } from "react";
+//API:
 import { API_URL } from "@/shared/api";
+//Изображения:
 import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg';
+//Стили:
 import styles from "./MotorcycleGallery.module.scss";
 
 // Вынесли статическую константу наверх модуля

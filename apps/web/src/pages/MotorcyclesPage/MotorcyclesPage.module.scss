@@ -67,7 +67,7 @@ h5 {
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #f39c12;
+  color: var(--accent-text-color);
   pointer-events: none; //Чтобы клики проходили сквозь него
 
   background: rgba(8, 8, 8, 0.7);

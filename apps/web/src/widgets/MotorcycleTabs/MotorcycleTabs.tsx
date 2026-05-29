@@ -28,6 +28,7 @@ interface MotorcycleTabsProps {
 
 type TabType = "specs" | "description" | "warranty" | "docs" | "reviews";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const MotorcycleTabs = ({ motorcycle, reviews, onDeleteReview, user }: MotorcycleTabsProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("specs");
 

@@ -1,4 +1,5 @@
 import type { DragEvent, ChangeEvent } from "react";
+//Навигация:
 import { Link } from "react-router";
 //Стили:
 import styles from "./FileUpload.module.scss";

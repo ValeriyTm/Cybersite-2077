@@ -5,8 +5,9 @@ import { FocusTrap } from "focus-trap-react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { handleFormError } from '@/shared/lib';
-import { SaveNewsFrontendSchema } from '@repo/validation';
-import type { SaveNewsFrontendType } from '@repo/validation';
+import { SaveNewsFrontendSchema, type SaveNewsFrontendType } from '@repo/validation';
+//API:
+import { API_URL } from '@/shared/api';
 //Компоненты:
 import { AdminButton, Button, Input, Textarea } from '@/shared/ui';
 //Иконки:
@@ -15,7 +16,6 @@ import { FaMotorcycle, FaAlignLeft } from 'react-icons/fa';
 import type { News } from '@/entities/content';
 //Стили:
 import styles from './NewsModal.module.scss';
-import { API_URL } from '@/shared/api';
 
 interface NewsModalProps {
   news: News;
@@ -23,29 +23,17 @@ interface NewsModalProps {
   onSubmit: (formData: FormData) => void;
 }
 
-interface NewsFormFields {
-  title: string;
-  excerpt: string;
-  status: NewsStatus;
-  tags?: string[];
-  content: any;
-}
-
-enum NewsStatus {
-  "DRAFT",
-  "PUBLISHED"
-}
-
 const BASE_URL = `${API_URL}/static/news/`;
 
 export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<NewsFormFields>({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(SaveNewsFrontendSchema),
     defaultValues: {
       title: news?.title || '',
       excerpt: news?.excerpt || '',
-      status: (news?.status as any) || 'DRAFT',
-      tags: news?.tags || []
+      status: String(news?.status) === "PUBLISHED" ? "PUBLISHED" : "DRAFT",
+      tags: news?.tags || [],
+      content: news?.content || []
     }
   });
 
@@ -78,11 +66,11 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
     setBlocks(blocks.filter((_, i) => i !== index));
   };
 
-  const handleFormSubmit = (data: NewsFormFields) => {
+  const handleFormSubmit = (data: SaveNewsFrontendType) => {
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('excerpt', data.excerpt);
-    formData.append('status', String(data.status));
+    formData.append('status', data.status);
     formData.append('content', JSON.stringify(blocks)); //Массив блоков в JSON
     if (mainImage) formData.append('mainImage', mainImage);
 
@@ -106,9 +94,7 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
                 placeholder="Заголовок новости"
                 registration={register("title")}
                 error={errors.title}
-                value={news?.title}
                 required
-                onChange={(e) => setMainImage(e.target.files?.[0] || null)}
                 variant="dark-full"
               />
 
@@ -116,7 +102,6 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
                 label="Текст абзаца новости"
                 placeholder="Краткое превью (для списка)"
                 registration={register("excerpt")}
-                value={news?.excerpt}
                 error={errors.excerpt}
                 rows={2}
                 variant="dark-full"

@@ -20,13 +20,13 @@ export const MainLayout = () => {
   useMetrika(); //Яндекс метрики
 
   const { isLoading } = useProfile();
-  const isAuth = useAuthStore((state) => state.isAuth);
+  const isAuth = useAuthStore((state) => state.isAuth); //Состояние: авторизован ли юзер
 
-  const theme = useThemeStore((state) => state.theme); //Получаем текущую тему
+  const theme = useThemeStore((state) => state.theme); //Состояние: текущая тема
 
 
-  useFavorites(); //Чтобы список избранных товаров подгружался сразу при старте приложения:
-  useCart(); //Чтобы список товаров в корзине подгружался сразу при старте приложения:
+  useFavorites(); //Чтобы список избранных товаров подгружался сразу при старте приложения
+  useCart(); //Чтобы список товаров в корзине подгружался сразу при старте приложения
 
   useEffect(() => {
     //Гарантируем, что класс на body всегда соответствует стору:

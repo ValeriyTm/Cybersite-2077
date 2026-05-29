@@ -92,7 +92,7 @@ export const MotoModal = ({ isOpen, moto, onClose, onSubmit, isPending }: MotoMo
       }
 
       //Если значение null или undefined, отправляем пустую строку:
-      if (value === null || value === undefined) {
+      if (value == null || value == undefined) {
         formData.append(typedKey, "");
       } else {
         formData.append(typedKey, String(value));

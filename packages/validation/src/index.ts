@@ -296,7 +296,7 @@ export const UpdateProfileSchema = z.object({
     })
     .max(new Date(), "Дата не может быть в будущем")
     .nullable(),
-  gender: z.enum(["MALE", "FEMALE"]).nullable(),
+  gender: z.enum(["MALE", "FEMALE"], { message: "Выберите пол" }).nullable(),
 });
 
 // Схема для бэкенда:
@@ -1095,13 +1095,15 @@ export const SaveNewsFrontendSchema = z.object({
     .min(1, { message: "Не менее 1 символа для превью" })
     .max(100, { message: "Не более 100 символов на превью" }), //Краткое превью
   content: z.any(),
-  status: z.preprocess(
-    //Если с фронтенда придет пустая строка, то превратим её в undefined:
-    (val) => (val === "" ? undefined : val),
-    z.enum(["DRAFT", "PUBLISHED"], {
-      message: "Некорректный статус новости",
-    }),
-  ),
+  status: z
+    .string()
+    .transform((val) => (val === "" ? undefined : val))
+    .pipe(
+      z.enum(["DRAFT", "PUBLISHED"], {
+        message: "Некорректный статус новости",
+      }),
+    ),
+
   tags: z
     .array(
       z

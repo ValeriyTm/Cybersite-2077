@@ -37,9 +37,9 @@
 
 .dropdown {
   position: absolute;
-  top: 100%; // Ровно под кнопкой
-  left: 0; // Прижимаем к левому краю кнопки
-  z-index: 1100; //Должен быть выше всех элементов на странице
+  top: 100%;
+  left: 0;
+  z-index: 1100;
 
   @include laptop-s {
     left: -50%;
@@ -52,7 +52,6 @@
 
 .dropdownContent {
   display: flex;
-  // background: var(--color-light);
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   width: 900px;

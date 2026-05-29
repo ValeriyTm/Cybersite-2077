@@ -45,6 +45,18 @@
   justify-content: center;
   gap: 16px;
 
+  @include tablet {
+    border: none;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
+  @include mobile-s {
+    gap: 10px;
+  }
+
   .leftPanelWrapper,
   .leftPanelWrapperStatus {
     display: flex;
@@ -62,7 +74,9 @@
   }
 
   .leftPanelWrapperStatus {
+    display: flex;
     flex-direction: column;
+    text-align: center;
     @include mobile {
       flex-direction: column;
     }
@@ -76,24 +90,6 @@
     @include tablet {
       flex-direction: row;
     }
-  }
-
-  @include tablet {
-    /* pxtorem-disable-next-line */
-    border: none;
-    flex-direction: row;
-    align-items: center;
-    // justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 10px 14px;
-  }
-
-  @include mobile {
-    flex-direction: row;
-  }
-
-  @include mobile-s {
-    gap: 10px;
   }
 
   .infoGroup {
@@ -125,7 +121,6 @@
       font-weight: 700;
       padding: 4px 8px;
       border-radius: 8px;
-      // width: fit-content;
       text-transform: uppercase;
 
       &.pending {
@@ -138,7 +133,7 @@
       }
       &.paid {
         background: var(--main-bg-color);
-        color: yellow;
+        color: var(--color-rating);
       }
       &.delivery {
         background: var(--main-bg-color);
@@ -150,7 +145,7 @@
       }
       &.completed {
         background: var(--main-bg-color);
-        color: #fff;
+        color: var(--color-light);
       }
     }
   }

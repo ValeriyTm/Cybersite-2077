@@ -48,7 +48,7 @@ export const Select = ({
     <div className={`${direction == 'column' ? styles.parentWrapperColumn : styles.parentWrapperRow} ${left ? styles.leftLabel : ''}`}>
       <label
         htmlFor={selectId}
-        className={`${styles.label} ${(variant == 'dark' || 'dark-full') ? styles.labelDark : styles.labelLight} ${visuallyHidden ? "visually-hidden" : ""}`}
+        className={`${styles.label} ${(variant == 'dark' || variant == 'dark-full') ? styles.labelDark : styles.labelLight} ${visuallyHidden ? "visually-hidden" : ""}`}
       >
         {label}
       </label>

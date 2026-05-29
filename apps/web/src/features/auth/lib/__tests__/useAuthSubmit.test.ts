@@ -75,7 +75,9 @@ describe("Тестируем хук useAuthSubmit", () => {
         },
         { email: "test@test.com" },
       );
-    } catch (e) {}
+    } catch (e) {
+      console.log(`Во время теста useAuthSubmit.test.ts возникла ошибка ${e}`);
+    }
 
     //Проверяем, что вызвался тост с ошибкой:
     expect(toast.error).toHaveBeenCalledWith("Ошибка сервера");

@@ -45,33 +45,6 @@ export const ReviewModal = ({
     };
   }, [isReviewModalOpen, previews]);
 
-
-  //Обработка выбора фото:
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-
-    if (images.length + files.length > 5) {
-      alert("Максимум 5 фотографий");
-      return;
-    }
-
-    setImages((prev) => [...prev, ...files]);
-
-    //Создаем URL для превью:
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setPreviews((prev) => [...prev, ...newPreviews]);
-  };
-
-  //Удаление фото из загружаемых:
-  const removePhoto = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-    setPreviews((prev) => {
-      //Освобождаем память от URL.createObjectURL:
-      URL.revokeObjectURL(prev[index]);
-      return prev.filter((_, i) => i !== index);
-    });
-  };
-
   //Обработчик оптправки ревью:
   const handleSubmit = () => {
     if (comment.length < 5) {

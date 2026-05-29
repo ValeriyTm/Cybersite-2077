@@ -3,7 +3,7 @@ export const orderStatusTranslations = {
   PENDING: "Ожидает оплаты",
   CANCELED: "Отменен",
   PAID: "Передача в доставку",
-  DELIVERY: "Осуществляется доставка",
+  DELIVERY: "Доставка",
   DELIVERED: "Можете забирать",
   COMPLETED: "Завершен",
 };

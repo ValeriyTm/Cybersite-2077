@@ -2,13 +2,17 @@
 import { Button } from "@/shared/ui";
 //Типы:
 import type { MotorcycleCart } from "@/entities/catalog";
+import type { DeliveryInfo } from "@/entities/ordering/types/types";
 //Стили:
 import styles from "./CheckoutSummary.module.scss";
 
 interface CheckoutSummaryProps {
   items: MotorcycleCart[];
-  deliveryInfo: any;
-  promoFromCart?: string;
+  deliveryInfo: DeliveryInfo;
+  promoFromCart: {
+    code: string;
+    amount: number;
+  } | null;
   finalOrderPrice: number;
   itemsTotal: number;
   isPending: boolean;
@@ -26,6 +30,8 @@ export const CheckoutSummary = ({
   onCreateOrder,
   onOpenPaymentModal,
 }: CheckoutSummaryProps) => {
+  console.log('deliveryInfo: ', deliveryInfo);
+  console.log('promoFromCart: ', promoFromCart);
   return (
     <aside className={styles.summary}>
       <h3>Ваш заказ</h3>

@@ -21,7 +21,7 @@ userActions {
     display: inline-block;
 
     max-width: 210px;
-    overflow: hidden; //Скрываем всё, что не влезло
+    overflow: hidden;
 
     white-space: nowrap; //Запрещаем перенос на новую строку
     text-overflow: ellipsis; //Добавляем "..."

@@ -28,11 +28,6 @@ export const ProductFiltersSidebar = ({ isOpen, onClose }: ProductFiltersSidebar
       <SelectFilter label="Категория" value={filters.category} options={CATEGORY_OPTIONS} onChange={(val) => updateFilters({ category: val })} />
       <SelectFilter label="Тип привода" value={filters.transmission} options={TRANSMISSION_OPTIONS} onChange={(val) => updateFilters({ transmission: val })} />
 
-      {/* <label className={styles.checkboxFilter}>
-        <input type="checkbox" checked={filters.onlyInStock} onChange={(e) => updateFilters({ onlyInStock: e.target.checked })} />
-        <span className={styles.checkboxLabel}>Только в наличии</span>
-      </label> */}
-
       <Checkbox
         label="Только в наличии"
         checked={filters.onlyInStock}

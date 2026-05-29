@@ -1,5 +1,5 @@
 //Типы:
-import { type UseFormReturn } from "react-hook-form";
+import { type FieldErrors, type UseFormReturn } from "react-hook-form";
 import { type UpdateProfileType } from "@repo/validation";
 import { type IUser } from "@repo/types";
 //Компоненты:
@@ -15,9 +15,9 @@ interface ProfileInfoCardProps {
   user: IUser | null | undefined;
   isEditing: boolean;
   setIsEditing: (value: boolean) => void;
-  profileForm: UseFormReturn<any>;
+  profileForm: UseFormReturn<UpdateProfileType>;
   onSubmit: (data: UpdateProfileType) => Promise<void>;
-  onFormError: (errors: any) => void;
+  onFormError: (errors: FieldErrors<UpdateProfileType>) => void;
 }
 
 export const ProfileInfoCard = ({
@@ -28,6 +28,7 @@ export const ProfileInfoCard = ({
   onSubmit,
   onFormError,
 }: ProfileInfoCardProps) => {
+
   const { register, handleSubmit, control, reset, formState: { errors, isSubmitting } } = profileForm;
 
   return (

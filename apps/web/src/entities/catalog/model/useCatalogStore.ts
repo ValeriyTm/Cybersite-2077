@@ -23,12 +23,10 @@ export const useCatalogStore = create<CatalogState>()(
   devtools(
     persist(
       (set) => ({
-        //Начальные значения:
         viewMode: "grid",
         totalItems: 0,
         isSidebarOpen: true,
 
-        //Экшены:
         setViewMode: (mode) => set({ viewMode: mode }),
 
         setTotalItems: (total) => set({ totalItems: total }),
@@ -39,9 +37,8 @@ export const useCatalogStore = create<CatalogState>()(
           })),
       }),
       {
-        //Сохраняем режим отображения в localStorage:
         name: "catalog-storage",
-        partialize: (state) => ({ viewMode: state.viewMode }), //Сохраняем только режим вида
+        partialize: (state) => ({ viewMode: state.viewMode }),
       },
     ),
   ),

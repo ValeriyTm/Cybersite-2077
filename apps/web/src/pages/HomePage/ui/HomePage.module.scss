@@ -6,7 +6,7 @@
 .container {
   display: grid;
   gap: 5px;
-  border: 2px solid black;
+  border: 2px solid var(--color-dark);
   grid-template-areas:
     "cell-1 cell-2 sidebar-1"
     "cell-3 cell-4 sidebar-1";

@@ -7,7 +7,7 @@ import type { News } from "@/entities/content";
 //Уведомления:
 import toast from "react-hot-toast";
 
-interface useAdminNewsSaveProps {
+interface UseAdminNewsSaveProps {
   editingNews: News | null;
   setIsModalOpen: (data: boolean) => void;
 }
@@ -15,7 +15,7 @@ interface useAdminNewsSaveProps {
 export const useAdminNewsSave = ({
   editingNews,
   setIsModalOpen,
-}: useAdminNewsSaveProps) => {
+}: UseAdminNewsSaveProps) => {
   const queryClient = useQueryClient();
 
   return useMutation({

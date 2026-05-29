@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { $api } from "@/shared/api";
 
 interface UseMotorcycleProps {
-  page?: number; //Опциональное, т.к. есть дефолтное значение
-  limit?: number; //Опциональное, т.к. есть дефолтное значение
+  page?: number;
+  limit?: number;
   search?: string;
 }
 

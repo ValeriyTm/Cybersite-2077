@@ -79,7 +79,7 @@
 
 .inputError {
   /* pxtorem-disable-next-line */
-  border: 2px solid red !important;
+  border: 2px solid var(--color-danger) !important;
 }
 
 .parentWrapperRow {

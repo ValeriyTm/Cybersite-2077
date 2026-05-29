@@ -1,5 +1,3 @@
-//Роутинг:
-import { Link } from "react-router";
 //Состояние:
 import { useAuthStore, useProfile } from "@/features/auth";
 import { useThemeStore } from "@/entities/session";

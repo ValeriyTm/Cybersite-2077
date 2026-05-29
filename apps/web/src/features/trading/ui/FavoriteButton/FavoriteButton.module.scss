@@ -39,8 +39,8 @@
   }
 
   &.active {
-    background: #fff;
-    border-color: #fff;
+    background: var(--color-light);
+    border-color: var(--color-light);
   }
 }
 

@@ -19,6 +19,6 @@ export const useMotorcycleBySlug = ({
           `catalog/motorcycles/${brandSlug?.toLowerCase()}/${slug}`,
         )
         .then((res) => res.data),
-    enabled: !!brandSlug && !!slug, //Запрос не выполнится, пока нет обоих параметров
+    enabled: !!brandSlug && !!slug,
   });
 };

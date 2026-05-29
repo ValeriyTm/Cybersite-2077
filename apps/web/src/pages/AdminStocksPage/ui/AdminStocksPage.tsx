@@ -47,13 +47,18 @@ export const AdminStocksPage = () => {
 
 			<DataTable columns={columns} data={data.data} />
 
-			<StockEditModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-				stock={editingStock}
-				onSave={(quantity) => updateMutation.mutate(quantity)}
-				isSaving={updateMutation.isPending}
-			/>
+			{isModalOpen && (
+				<StockEditModal
+					isOpen={isModalOpen}
+					onClose={() => {
+						setIsModalOpen(false);
+						setEditingStock(null);
+					}}
+					stock={editingStock}
+					onSave={(quantity) => updateMutation.mutate(quantity)}
+					isSaving={updateMutation.isPending}
+				/>
+			)}
 		</div>
 	);
 };

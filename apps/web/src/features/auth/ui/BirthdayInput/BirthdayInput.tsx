@@ -8,7 +8,6 @@ import { HiOutlineCalendar } from "react-icons/hi";
 import styles from "./BirthdayInput.module.scss";
 
 interface BirthdayInputProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>;
   error?: FieldError;
 }
