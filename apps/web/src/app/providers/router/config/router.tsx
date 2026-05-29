@@ -6,7 +6,7 @@ import { HomePage } from '@/pages/HomePage/ui/HomePage';
 import { MainLayout } from "@/app/ui/MainLayout";
 import { ErrorFallback } from "@/shared/ui/ErrorFallback/ErrorFallback";
 import { ProtectedRoute } from '@/app/providers/router/ui/ProtectedRoute.js';
-import { GuestRoute } from '@/app/providers/router/ui/GuestRout.js';
+import { GuestRoute } from '@/app/providers/router/ui/GuestRoute.js';
 
 const ProfilePage = lazy(() => import("@/pages/ProfilePage/ProfilePage").then(m => ({ default: m.ProfilePage })));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));

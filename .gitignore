@@ -42,3 +42,7 @@ info.txt
 
 .VSCodeCounter
 sample-logger.ts
+
+stats.html
+
+apps/server/uploads/support/*

@@ -1,10 +1,39 @@
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
+import { visualizer } from "rollup-plugin-visualizer";
 //Для работы алиасов:
 import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), visualizer({ open: true }) as PluginOption],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("leaflet")) {
+              return "maps-vendor";
+            }
+            if (id.includes("@sentry")) {
+              return "sentry-vendor";
+            }
+            if (id.includes("motion") || id.includes("swiper")) {
+              return "ui-effects-vendor";
+            }
+            if (id.includes("@tanstack/react-query-devtools")) {
+              return "devtools-vendor";
+            }
+            if (id.includes("lodash")) {
+              return "lodash-vendor";
+            }
+
+            //Остальные бибилотеки остаются в базовом vendor:
+            return "vendor";
+          }
+        },
+      },
+    },
+  },
   server: {
     host: true, // Позволяет Nginx из Docker достучаться до Vite
     port: 5173,
