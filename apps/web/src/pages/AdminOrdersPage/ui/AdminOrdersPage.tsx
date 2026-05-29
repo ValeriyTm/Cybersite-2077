@@ -1,46 +1,30 @@
 //Состояния:
 import { useState, type ChangeEvent } from 'react';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { useProfile } from '@/features/auth';
+import { useAdminOrders } from '@/entities/admin';
+import { useAdminOrdersStatus } from '@/features/admin';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui';
+import { DataTable, Input, Pagination, Select } from '@/shared/ui';
 import { getOrderColumns } from '../model/columns';
-//API:
-import { $api } from '@/shared/api';
-//Уведомления:
-import toast from 'react-hot-toast';
+//Категории:
+import { STATUS_OPTIONS } from '../model/items';
+//Типы:
+import type { OrderStatusUp } from '@/entities/admin/types/types';
 //Стили:
 import styles from './AdminOrdersPage.module.scss'
-import type { OrderResponse, OrderStatusUp } from '@/entities/admin/types/types';
 
-
-interface UpdateStatusPayload {
-  id: string;
-  status: OrderStatusUp;
-}
 
 export const AdminOrdersPage = () => {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<OrderStatusUp | ''>('');
   const [email, setEmail] = useState('');
 
-  const queryClient = useQueryClient();
   const { user } = useProfile();
 
-  const { data } = useQuery<OrderResponse>({
-    queryKey: ['admin-orders', page, status, email],
-    queryFn: () => $api.get<OrderResponse>('/admin/orders', { params: { page, status, email } }).then(res => res.data)
-  });
-
-  console.log('data: adm ', data);
-
-  const statusMutation = useMutation<unknown, Error, UpdateStatusPayload>({
-    mutationFn: ({ id, status }) => $api.patch(`/admin/orders/${id}/status`, { status }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
-      toast.success('Статус обновлен');
-    }
-  });
+  //Получаем данные о заказах:
+  const { data } = useAdminOrders(page, status, email);
+  //Мутация изменения статуса заказа:
+  const statusMutation = useAdminOrdersStatus();
 
   const columns = getOrderColumns(
     (id: string, status: OrderStatusUp) => statusMutation.mutate({ id, status }),
@@ -53,33 +37,36 @@ export const AdminOrdersPage = () => {
   return (
     <div className={styles.pageWrapper}>
       <header className={styles.filterBar}>
-        <label htmlFor="order-search" className='visually-hidden'>Поиск заказа по email</label>
-        <input
+        <Input
+          label="Поиск заказа по email пользователя"
           id='order-search'
           type='search'
-          placeholder="Поиск по Email..."
+          title="Поиск по модели мотоцикла"
+          placeholder="🔍 Поиск по Email..."
+          variant="dark"
           onChange={handleEmailChange}
+          visuallyHidden
         />
 
-        <label htmlFor="order-status" className='visually-hidden'>Фильтрация заказа по статусу</label>
-        <select onChange={handleStatusChange} className={styles.statusSelect} id='order-status'>
-          <option value="">Все статусы</option>
-          <option value="PENDING">PENDING</option>
-          <option value="PAID">PAID</option>
-          <option value="CANCELED">CANCELED</option>
-          <option value="DELIVERY">DELIVERY</option>
-          <option value="DELIVERED">DELIVERED</option>
-          <option value="COMPLETED">COMPLETED</option>
-        </select>
+        <Select
+          id="order-status"
+          label="Фильтрация заказа по статусу"
+          options={STATUS_OPTIONS}
+          data-status={status}
+          onChange={handleStatusChange}
+          variant="dark"
+          direction="column"
+          visuallyHidden
+        />
       </header>
 
       <DataTable columns={columns} data={data?.data || []} />
 
-      <div className={styles.pagination}>
-        <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>Назад</button>
-        <span>Страница {page} из {data?.meta?.lastPage || 1}</span>
-        <button disabled={page >= (data?.meta?.lastPage || 1)} onClick={() => setPage(p => p + 1)}>Вперёд</button>
-      </div>
+      <Pagination
+        currentPage={page}
+        totalPages={data?.meta?.lastPage || 1}
+        onPageChange={(newPage) => setPage(newPage)}
+      />
     </div>
   );
 };

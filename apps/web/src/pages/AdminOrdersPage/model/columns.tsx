@@ -1,36 +1,40 @@
 //Типы:
 import { type ColumnDef } from '@tanstack/react-table';
+import type { OrderFromServer, OrderItem, OrderStatusUp } from '@/entities/admin/types/types';
 //Работа с датами:
 import { format } from 'date-fns';
+//Компоненты:
+import { Select } from '@/shared/ui';
+//Категории:
+import { STATUS_SINGLE_OPTIONS } from './items';
 //Стили:
-import styles from './columns.module.scss'
-//Типы:
-import type { OrderFromServer, OrderItem, OrderStatusUp } from '@/entities/admin/types/types';
+import styles from './columns.module.scss';
 
+//Типы:
 export const getOrderColumns = (
   onStatusChange: (id: string, newStatus: OrderStatusUp) => void,
-  userRole: string | undefined): ColumnDef<OrderFromServer>[] => [
+  userRole: string | undefined
+): ColumnDef<OrderFromServer>[] => [
     {
       accessorKey: 'orderNumber',
       header: '№ Заказа',
       meta: { className: styles.hideOnMobile },
-
-      cell: (info) => <span style={{ fontWeight: 'bold' }}>#{info.getValue<string | number>()}</span>,
+      cell: (info) => <span className={styles.orderNumber}>#{info.getValue<string | number>()}</span>,
     },
     {
       header: 'Клиент',
       cell: ({ row }) => (
-        <div style={{ fontSize: '0.85rem' }}>
-          <div>{row.original.user?.name}</div>
-          <div style={{ color: '#666' }}>{row.original.user?.email}</div>
-          <div style={{ color: '#666' }}>{row.original.user?.phone}</div>
+        <div className={styles.clientInfo}>
+          <div className={styles.clientName}>{row.original.user?.name}</div>
+          <div className={styles.clientMeta}>{row.original.user?.email}</div>
+          <div className={styles.clientMeta}>{row.original.user?.phone}</div>
         </div>
       )
     },
     {
       header: 'Товары',
       cell: ({ row }) => (
-        <div style={{ fontSize: '0.8rem' }}>
+        <div className={styles.itemsList}>
           {row.original.items.map((item: OrderItem) => (
             <div key={item.id}>
               • {item.motorcycle.model} ({item.quantity} шт.)
@@ -41,15 +45,20 @@ export const getOrderColumns = (
     },
     {
       header: 'Оплата / Итого',
-      meta: { className: styles.hideOnMobileS },
-      cell: ({ row }) => (
-        <div>
-          <div style={{ color: row.original.paymentStatus === 'succeeded' ? '#2ecc71' : '#e74c3c' }}>
-            {row.original.paymentStatus}
+      meta: { className: styles.hideOnTablet },
+      cell: ({ row }) => {
+        const isSucceeded = row.original.paymentStatus === 'succeeded';
+        const paymentStatusClass = isSucceeded ? styles.statusSucceeded : styles.statusFailed;
+
+        return (
+          <div>
+            <div className={paymentStatusClass}>
+              {row.original.paymentStatus}
+            </div>
+            <div className={styles.totalPrice}>{row.original.totalPrice.toLocaleString()} ₽</div>
           </div>
-          <div style={{ fontWeight: 'bold' }}>{row.original.totalPrice.toLocaleString()} ₽</div>
-        </div>
-      )
+        );
+      }
     },
     {
       accessorKey: 'status',
@@ -57,33 +66,29 @@ export const getOrderColumns = (
       cell: ({ row, getValue }) => {
         const isRestricted = userRole === 'CONTENT_EDITOR' || userRole === 'USER' || userRole === 'MANAGER';
         return (
-          <label className={styles.selectWrapper}>
-            <span className='visually-hidden'>Изменение статуса заказа</span>
-            <select
-              value={String(getValue())}
-              className={styles.statusSelect}
-              disabled={isRestricted}
-              onChange={(e) => onStatusChange(row.original.id, e.target.value as OrderStatusUp)}
-            >
-              <option value="PENDING">PENDING</option>
-              <option value="PAID">PAID</option>
-              <option value="CANCELED">CANCELED</option>
-              <option value="DELIVERY">DELIVERY</option>
-              <option value="DELIVERED">DELIVERED</option>
-              <option value="COMPLETED">COMPLETED</option>
-            </select>
-          </label>
-
+          <Select
+            id="order-single-status"
+            label="Изменение статуса заказа"
+            options={STATUS_SINGLE_OPTIONS}
+            value={String(getValue())}
+            title={String(getValue())}
+            data-status={String(getValue())}
+            onChange={(e) => onStatusChange(row.original.id, e.target.value as OrderStatusUp)}
+            variant="dark"
+            direction="column"
+            disabled={isRestricted}
+            visuallyHidden
+          />
         )
       }
     },
     {
       header: 'Даты',
-      meta: { className: styles.hideOnMobile },
+      meta: { className: styles.hideOnLaptopS },
       cell: ({ row }) => (
-        <div style={{ fontSize: '0.75rem', color: '#888' }}>
+        <div className={styles.datesBlock}>
           <div>Создан: {format(new Date(row.original.createdAt), 'dd.MM.yy HH:mm')}</div>
-          <div style={{ color: '#f39c12' }}>
+          <div className={styles.deliveryDate}>
             Доставка: {format(new Date(row.original.estimatedDate), 'dd.MM.yy')}
           </div>
         </div>
