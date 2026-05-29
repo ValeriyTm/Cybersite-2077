@@ -9,3 +9,5 @@ export { useAdminNewsStatus } from "./useAdminNewsStatus";
 export { useAdminTicketsStatus } from "./useAdminTicketsStatus";
 export { useAdminTicketsReply } from "./useAdminTicketsReply";
 export { useAdminOrdersStatus } from "./useAdminOrdersStatus";
+export { useAdminUsersStatus } from "./useAdminUsersStatus";
+export { useAdminUsersDelete } from "./useAdminUsersDelete";

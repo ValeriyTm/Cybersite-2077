@@ -1,3 +1,9 @@
+.hideOnTablet {
+  @include tablet {
+    display: none !important;
+  }
+}
+
 .hideOnMobile {
   @include mobile {
     display: none !important;
@@ -10,28 +16,31 @@
   }
 }
 
-.deleteBtn {
-  border: none !important;
-  height: 44px;
-  width: 44px;
-  margin: 0 !important;
-  border-radius: 50%;
-  color: var(--auxiliary-text-color) !important;
-  background-color: transparent !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-
-  @include hover {
-    color: var(--color-danger) !important;
-    border: 0.5px solid var(--color-danger) !important;
-    border-radius: 50%;
-  }
+.statusActive {
+  color: var(--color-success);
 }
 
-.statusSelect {
-  min-height: 44px;
-  background-color: var(--auxiliary-bg-color-2);
-  color: var(--main-text-color);
+.statusInactive {
+  color: var(--color-danger);
+}
+
+.disabledSelect {
+  opacity: 0.5;
+}
+
+.actionsContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.centerWrapper {
+  text-align: center;
+}
+
+.emailColumn {
+  max-width: 150px;
+
+  //Перенос текста:
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }

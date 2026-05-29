@@ -1,90 +1,87 @@
 //Состояния:
-import { useProfile } from "@/features/auth";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useProfile } from "@/features/auth";
+import { useAdminUsers } from "@/entities/admin";
+import { useAdminUsersDelete, useAdminUsersStatus } from "@/features/admin";
 //Формирование таблицы:
 import { getUserColumns } from "../model/columns";
-import { DataTable } from "@/shared/ui";
-//API:
-import { $api } from "@/shared/api";
+import { ActionConfirmModal, DataTable, Input, Select } from "@/shared/ui";
+//Категории:
+import { ROLE_OPTIONS } from "../model/items";
 //Типы:
 import type { Role } from "@repo/database/generated/prisma/client";
-//Уведомления:
-import toast from "react-hot-toast";
 //Стили:
 import styles from './AdminUsersPage.module.scss'
-
-// Структура стандартной ошибки от сервера:
-interface ApiErrorResponse {
-	response?: {
-		data?: {
-			message?: string;
-		};
-	};
-}
 
 export const AdminUsersPage = () => {
 	const [role, setRole] = useState<Role | ''>('');
 	const [email, setEmail] = useState('');
+	const [userToDelete, setUserToDelete] = useState<{ id: string; email: string } | null>(null);
+
 	const { user: currentUser } = useProfile();
-	const queryClient = useQueryClient();
 
-	const ROLE = role.toLocaleUpperCase();
+	//Получаем данные о юзерах:
+	const { data } = useAdminUsers(role, email);
+	//Мутация изменения роли юзеру:
+	const roleMutation = useAdminUsersStatus();
+	//Мутация удаления юзера:
+	const deleteMutation = useAdminUsersDelete();
 
-	const { data } = useQuery({
-		queryKey: ['admin-users', role, email],
-		queryFn: () => $api.get('/admin/users', { params: { role: ROLE, email } }).then(res => res.data)
-	});
+	//Обработчик для модалки:
+	const handleConfirmDelete = () => {
+		if (!userToDelete) return;
 
-	const roleMutation = useMutation({
-		mutationFn: ({ id, role }: { id: string; role: Role }) => $api.patch(`/admin/users/${id}/role`, { role }),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-			toast.success('Роль обновлена');
-		},
-		onError: (err: unknown) => {
-			const error = err as ApiErrorResponse
-			toast.error(error.response?.data?.message || 'Ошибка')
-		}
-	});
-
-	const deleteMutation = useMutation({
-		mutationFn: (id: string) => $api.delete(`/admin/users/${id}`),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-			toast.success('Пользователь удален');
-		},
-		onError: (err: unknown) => {
-			const error = err as ApiErrorResponse
-			toast.error(error.response?.data?.message || 'Ошибка при удалении')
-		}
-	});
+		deleteMutation.mutate(userToDelete.id, {
+			onSuccess: () => {
+				setUserToDelete(null);
+			}
+		});
+	};
 
 	const columns = getUserColumns(
 		currentUser!.id,
 		(id, role) => roleMutation.mutate({ id, role }),
-		(id) => deleteMutation.mutate(id)
+		(id, email) => setUserToDelete({ id, email })
 	);
-
 
 	return (
 		<div className={styles.pageWrapper}>
 			<header className={styles.filterBar}>
-				<label htmlFor="email-search-for-users" className='visually-hidden'>Поиск пользовател по email</label>
-				<input id='email-search-for-users' type='search' placeholder="Поиск по email..." onChange={(e) => setEmail(e.target.value)} />
+				<Input
+					label="Поиск пользователя по emai"
+					id="email-search-for-users"
+					title="Поиск пользователя по emai"
+					placeholder="Поиск по email..."
+					type='search'
+					onChange={(e) => setEmail(e.target.value)}
+					variant="dark"
+					visuallyHidden
+				/>
 
-				<label htmlFor="user-role" className='visually-hidden'>Выбор роли для пользователя</label>
-				<select onChange={(e) => setRole(e.target.value as Role)} id='user-role'>
-					<option value="">Все роли</option>
-					<option value="USER">USER</option>
-					<option value="MANAGER">MANAGER</option>
-					<option value="ADMIN">ADMIN</option>
-					<option value="CONTENT_EDITOR">CONTENT_EDITOR</option>
-					<option value="SUPERADMIN">SUPERADMIN</option>
-				</select>
+				<Select
+					id="user-role"
+					label="Выбор роли для пользователя"
+					options={ROLE_OPTIONS}
+					onChange={(e) => setRole(e.target.value as Role)}
+					variant="dark"
+					direction="column"
+					visuallyHidden
+				/>
 			</header>
 
 			<DataTable columns={columns} data={data?.data || []} />
+
+			<ActionConfirmModal
+				isOpen={Boolean(userToDelete)}
+				title="Удаление пользователя"
+				description={`Вы уверены, что хотите удалить пользователя ${userToDelete?.email}? Это действие необратимо.`}
+				variant="danger"
+				confirmText="Удалить"
+				cancelText="Назад"
+				isSubmitting={deleteMutation.isPending}
+				onConfirm={handleConfirmDelete}
+				onCancel={() => setUserToDelete(null)}
+			/>
 		</div>
 	);
 };

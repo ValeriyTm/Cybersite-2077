@@ -4,3 +4,4 @@ export { useAdminStocks } from "./useAdminStocks";
 export { useAdminNews } from "./useAdminNews";
 export { useAdminTickets } from "./useAdminTickets";
 export { useAdminOrders } from "./useAdminOrders";
+export { useAdminUsers } from "./useAdminUsers";
