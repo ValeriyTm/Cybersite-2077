@@ -1,65 +1,39 @@
 //Состояния:
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAdminNews } from '@/entities/admin';
+import { useAdminNewsDelete, useAdminNewsSave, useAdminNewsStatus } from '@/features/admin';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui';
+import { ActionConfirmModal, Button, DataTable } from '@/shared/ui';
 import { newsColumns } from '../model/columns';
-//API:
-import { $api } from '@/shared/api';
 //Компоненты:
-import { NewsModal } from './NewsModal';
+import { NewsModal } from './components';
 //Типы:
 import type { News } from '@/entities/content';
-//Уведомления:
-import toast from 'react-hot-toast';
 //Стили:
 import styles from './AdminNewsPage.module.scss';
 
 export const AdminNewsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNews, setEditingNews] = useState<News | null>(null);
-  const queryClient = useQueryClient();
+  const [deletingNewsId, setDeletingNewsId] = useState<string | null>(null);
+  //Получение новостей:
+  const { data: news } = useAdminNews();
 
-  const { data: news } = useQuery({
-    queryKey: ['admin-news'],
-    queryFn: () => $api.get<News[]>('/admin/news').then(res => res.data)
-  });
-
-  const saveMutation = useMutation({
-    mutationFn: (formData: FormData) =>
-
-      editingNews
-        ? $api.patch(`/admin/news/${editingNews._id}`, formData)
-        : $api.post('/admin/news', formData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-news'] });
-      setIsModalOpen(false);
-      toast.success('Новость сохранена');
-    },
-    onError: () => toast.error('Ошибка при сохранении')
-  });
-
+  //Мутация для создания / обновления новости:
+  const saveMutation = useAdminNewsSave({ editingNews, setIsModalOpen });
+  //Мутация для удаления новости:
+  const deleteMutation = useAdminNewsDelete();
   //Мутация для смены статуса:
-  const statusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) =>
-      $api.patch(`/admin/news/${id}/status`, { status }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-news'] });
-      toast.success('Статус новости изменен');
-    },
-    onError: () => toast.error('Не удалось изменить статус')
-  });
+  const statusMutation = useAdminNewsStatus();
 
-  //Мутация для удаления:
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => $api.delete(`/admin/news/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-news'] });
-      toast.success('Новость успешно удалена');
-    },
-    onError: () => toast.error('Ошибка при удалении новости')
-  });
-
+  //Обработчик подтверждения удаления новости:
+  const handleDeleteConfirm = () => {
+    if (deletingNewsId) {
+      deleteMutation.mutate(deletingNewsId, {
+        onSuccess: () => setDeletingNewsId(null)
+      });
+    }
+  };
 
   const columns = newsColumns(
     (item) => {
@@ -67,10 +41,7 @@ export const AdminNewsPage = () => {
       setIsModalOpen(true);
     },
     (id) => {
-      //Добавляем подтверждение, чтобы не удалить случайно:
-      if (window.confirm("Вы уверены, что хотите удалить эту новость?")) {
-        deleteMutation.mutate(id);
-      }
+      setDeletingNewsId(id);
     },
     (id, status) => statusMutation.mutate({ id, status })
   );
@@ -79,9 +50,13 @@ export const AdminNewsPage = () => {
     <div className={styles.pageWrapper}>
       <header className={styles.header}>
         <h3>Управление новостями</h3>
-        <button className={styles.addBtn} onClick={() => { setEditingNews(null); setIsModalOpen(true); }}>
+        <Button
+          type="submit"
+          variant="outline-dark"
+          onClick={() => { setEditingNews(null); setIsModalOpen(true); }}
+        >
           + Создать новость
-        </button>
+        </Button>
       </header>
 
       <DataTable columns={columns} data={news || []} />
@@ -93,6 +68,18 @@ export const AdminNewsPage = () => {
           onSubmit={(formData: FormData) => saveMutation.mutate(formData)}
         />
       )}
+
+      <ActionConfirmModal
+        isOpen={Boolean(deletingNewsId)}
+        variant="danger"
+        title="Удаление новости"
+        description="Вы уверены, что хотите удалить эту новость? Это действие невозможно отменить."
+        confirmText="Удалить"
+        cancelText="Отмена"
+        isSubmitting={deleteMutation.isPending}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeletingNewsId(null)}
+      />
     </div>
   );
 };

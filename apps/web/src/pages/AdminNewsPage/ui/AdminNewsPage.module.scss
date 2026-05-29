@@ -2,136 +2,18 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
 
-.largeModal {
-  max-width: 800px !important;
-}
+  .header {
+    @include tablet {
+      text-align: center;
 
-.addBtn {
-  color: var(--accent-text-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  background-color: var(--main-bg-color);
-  padding: 10px;
-  border-radius: 10px;
-
-  @include hover {
-    box-shadow: 0 0 10px var(--accent-text-color);
-  }
-}
-
-.mainFields {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 30px;
-  input,
-  textarea {
-    background: var(--color-light);
-    /* pxtorem-disable-next-line */
-    border: 1px solid #333;
-    padding: 12px;
-    color: var(--color-dark);
-    border-radius: 6px;
-  }
-}
-
-.blocksSection {
-  background: #0a0a0a;
-  padding: 20px;
-  border-radius: 8px;
-  /* pxtorem-disable-next-line */
-  border: 1px solid #222;
-  h5 {
-    color: var(--accent-text-color);
-    margin-bottom: 15px;
-    text-transform: uppercase;
-  }
-}
-
-.uuid {
-  background-color: #fff !important;
-}
-
-.blockItem {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  background: #111;
-  padding: 10px;
-  border-radius: 6px;
-  align-items: flex-start;
-
-  .blockType {
-    font-size: 0.7rem;
-    color: var(--color-dark);
-    text-transform: uppercase;
-    width: 80px;
-  }
-  textarea,
-  input {
-    flex: 1;
-    background: transparent;
-    /* pxtorem-disable-next-line */
-    border: 1px solid #222;
-    color: var(--color-dark);
-    padding: 8px;
-  }
-  button {
-    color: var(--color-danger);
-    background: none;
-    /* pxtorem-disable-next-line */
-    border: none;
-    cursor: pointer;
-    padding-top: 10px;
-  }
-}
-
-.blockControls {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-  button {
-    background: var(--color-light);
-    color: var(--color-dark);
-    /* pxtorem-disable-next-line */
-    border: 1px solid #333;
-    padding: 8px 15px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    @include hover {
-      background: var(--accent-text-color);
-      color: #000;
-      border-color: var(--accent-text-color);
+      h3 {
+        margin-block: 10px;
+      }
     }
-  }
-}
 
-.saveBtn {
-  color: var(--accent-text-color);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  background-color: var(--main-bg-color);
-  border-radius: 10px;
-
-  @include hover {
-    opacity: 0.8;
-  }
-}
-
-.cancelBtn {
-  color: var(--color-danger);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--color-danger);
-  background-color: var(--main-bg-color);
-  border-radius: 10px;
-  margin-right: 20px;
-
-  @include hover {
-    opacity: 0.8;
+    button {
+      max-width: 250px;
+    }
   }
 }
