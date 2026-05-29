@@ -9,7 +9,7 @@ import "leaflet/dist/leaflet.css"; //Стили для карты leaflet
 
 //Инициализируем Sentry:
 Sentry.init({
-  dsn: "https://b44d6de4137905503cadc4ef8f0efbc9@o4511443256213504.ingest.de.sentry.io/4511443266371664",
+  dsn: import.meta.env.VITE_SENTRY_DSN,
 
   integrations: [
     Sentry.browserTracingIntegration(),
