@@ -1,5 +1,5 @@
 //Состояния:
-import { useState, type ChangeEvent } from 'react';
+import { useMemo, useState, type ChangeEvent } from 'react';
 import { useProfile } from '@/features/auth';
 import { useAdminOrders } from '@/entities/admin';
 import { useAdminOrdersStatus } from '@/features/admin';
@@ -8,6 +8,8 @@ import { DataTable, Input, Pagination, Select } from '@/shared/ui';
 import { getOrderColumns } from '../model/columns';
 //Категории:
 import { STATUS_OPTIONS } from '../model/items';
+//Дебаунс поиска:
+import { debounce } from 'lodash';
 //Типы:
 import type { OrderStatusUp } from '@/entities/admin/types/types';
 //Стили:
@@ -17,12 +19,13 @@ import styles from './AdminOrdersPage.module.scss'
 export const AdminOrdersPage = () => {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<OrderStatusUp | ''>('');
-  const [email, setEmail] = useState('');
+  const [emailSearch, setEmailSearch] = useState('');
+  const [debouncedEmail, setDebouncedEmail] = useState('');
 
   const { user } = useProfile();
 
   //Получаем данные о заказах:
-  const { data } = useAdminOrders(page, status, email);
+  const { data } = useAdminOrders(page, status, debouncedEmail);
   //Мутация изменения статуса заказа:
   const statusMutation = useAdminOrdersStatus();
 
@@ -31,8 +34,18 @@ export const AdminOrdersPage = () => {
     user?.role
   );
 
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handleStatusChange = (e: ChangeEvent<HTMLSelectElement>) => setStatus(e.target.value as OrderStatusUp | '');
+
+  //Дебаунс для поиска
+  const updateSearch = useMemo(
+    () => debounce((val: string) => setDebouncedEmail(val), 500),
+    []
+  );
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailSearch(e.target.value);
+    updateSearch(e.target.value);
+  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -44,6 +57,7 @@ export const AdminOrdersPage = () => {
           title="Поиск по модели мотоцикла"
           placeholder="🔍 Поиск по Email..."
           variant="dark"
+          value={emailSearch}
           onChange={handleEmailChange}
           visuallyHidden
         />
