@@ -175,7 +175,9 @@ describe("Тест №2. Проверка валидации входа (Zod-с�
     if (!result.success) {
       const formatted = result.error.format();
       // Проверяем, что ошибка именно в поле email
-      expect(formatted.email?._errors[0]).toBe("Некорректный email или пароль");
+      expect(formatted.body?.email?._errors[0]).toBe(
+        "Некорректный email или пароль",
+      );
     }
   });
 

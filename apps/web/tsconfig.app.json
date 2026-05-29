@@ -48,6 +48,11 @@
     "src",
     "vite-env.d.ts",
     "../../packages/validation/**/*.ts",
-    "cypress"
+    "cypress",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
+    "cypress.config.ts",
+    "vitest.shims.d.ts",
+    "vitest.workspace.ts"
   ]
 }

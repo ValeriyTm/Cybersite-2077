@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AddToCartButton } from "./AddToCartButton";
 
 const meta = {
@@ -11,7 +11,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Initial: Story = {
   args: {
-    data: { id: "99", model: "Honda CB500", price: 500000 },
+    data: {
+      id: "99",
+      model: "Honda CB500",
+      price: 500000,
+      slug: "honda-cb500",
+      totalInStock: 5,
+      year: 2023,
+    },
   },
 };
 

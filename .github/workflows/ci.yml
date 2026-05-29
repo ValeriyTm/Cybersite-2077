@@ -32,18 +32,24 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
 
-      # 5. Проверка типов TypeScript на фронтенде
+      # 5. Проверка линтером клиентского кода
+      - name: Run Lint Frontend
+        run: npm run lint:js -w web
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      # 6. Проверка типов TypeScript на фронтенде
       - name: Type check Frontend
         run: npm run type-check -w web
 
-      # 6. Проверка типов TypeScript на бэкенде
+      # 7. Проверка типов TypeScript на бэкенде
       - name: Type check Backend
         run: npm run type-check -w server
 
-      # 7. Запуск Unit-тестов и интеграционных тестов на фронтенде
+      # 8. Запуск Unit-тестов и интеграционных тестов на фронтенде
       - name: Run Unit Tests Frontend
         run: npm run test -w web
 
-      # 8. Сборка фронтенда
+      # 9. Сборка фронтенда
       - name: Build Web App
         run: npm run build -w web

@@ -1,4 +1,4 @@
-// import { StrictMode } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 //Сбор логов:
 import * as Sentry from "@sentry/react";
@@ -23,7 +23,7 @@ Sentry.init({
 });
 
 createRoot(document.getElementById("root")!).render(
-  // <StrictMode>
-  <App />,
-  // </StrictMode>
+  <StrictMode>
+    <App />,
+  </StrictMode>
 );

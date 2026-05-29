@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { MotorcycleCard } from "./MotorcycleCard";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MotorcycleItem } from "./MotorcycleItem";
 
 const meta = {
-  title: "Entities/Catalog/MotorcycleCard",
-  component: MotorcycleCard,
+  title: "Entities/Catalog/MotorcycleItem",
+  component: MotorcycleItem,
   tags: ["autodocs"],
-} satisfies Meta<typeof MotorcycleCard>;
+} satisfies Meta<typeof MotorcycleItem>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -48,18 +48,7 @@ export const ListView: Story = {
   },
 };
 
-//3.Без изображения:
-export const NoImage: Story = {
-  args: {
-    viewMode: "grid",
-    data: {
-      ...DefaultGrid.args!.data!,
-      mainImage: "",
-    },
-  },
-};
-
-//4.Длинное название (проверка верстки):
+//3.Длинное название (проверка верстки):
 export const LongName: Story = {
   args: {
     viewMode: "grid",

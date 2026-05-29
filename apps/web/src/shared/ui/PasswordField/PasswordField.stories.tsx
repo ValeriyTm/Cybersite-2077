@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PasswordField } from "./PasswordField";
 
 const meta: Meta<typeof PasswordField> = {
@@ -13,9 +13,9 @@ const meta: Meta<typeof PasswordField> = {
     label: "Пароль",
     registration: {
       name: "password",
-      onChange: async () => {},
-      onBlur: async () => {},
-      ref: () => {},
+      onChange: async () => { },
+      onBlur: async () => { },
+      ref: () => { },
     } as any,
   },
 };
