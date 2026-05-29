@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+import { type UseFormReturn } from "react-hook-form";
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------1) Модуль Auth-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////
@@ -290,21 +290,31 @@ export const UpdateProfileSchema = z.object({
       "Введите корректный номер телефона",
     ) //Телефон: Необязательный "+"" в начале. Первая цифра от 1 до 9. Всего от 2 до 15 цифр (международный стандарт E.164):
     .nullable(),
-  birthday: z.coerce
-    .date({
-      message: "Введите корректную дату",
-    })
-    .max(new Date(), "Дата не может быть в будущем")
-    .nullable(),
+  birthday: z
+    .union([z.date(), z.string(), z.null()])
+    .transform((val) => (val ? new Date(val) : null))
+    .pipe(
+      z
+        .date({ message: "Введите корректную дату" })
+        .max(new Date(), "Дата не может быть в будущем")
+        .nullable(),
+    ),
   gender: z.enum(["MALE", "FEMALE"], { message: "Выберите пол" }).nullable(),
 });
+
+export type UpdateProfileType = z.infer<typeof UpdateProfileSchema>;
+export type UpdateProfileInputType = z.input<typeof UpdateProfileSchema>;
+export type UpdateProfileFormType = UseFormReturn<
+  z.input<typeof UpdateProfileSchema>,
+  any,
+  UpdateProfileType
+>;
 
 // Схема для бэкенда:
 export const BackendUpdateProfileSchema = z.object({
   body: UpdateProfileSchema,
 });
 
-export type UpdateProfileType = z.infer<typeof UpdateProfileSchema>;
 ////-----------------------------------------------------------------------------------------------////
 ////--------------------------2) Модуль Catalog-------------------------------------------------------////
 ////-----------------------------------------------------------------------------------------------////

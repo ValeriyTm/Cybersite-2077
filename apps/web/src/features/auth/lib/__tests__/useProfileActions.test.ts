@@ -93,7 +93,9 @@ describe("Тест хука useProfileActions - действия в профил
     await act(async () => {
       await result.current.onSubmit({
         name: "Ivan Updated",
+        phone: "+79991003344",
         birthday: null,
+        gender: "MALE",
       });
       //Имитируем нажатие кнопки «Сохранить». В этот момент хук внутри себя берет токен капчи, шлет запрос через $api.patch и ждет ответа.
     });
@@ -146,6 +148,7 @@ describe("Тест хука useProfileActions - действия в профил
     });
   });
 
+  //Раскомментировать при необходимости проверки функционала удаления аккаунта:
   // it("Тест №4. Проверяем функционал удаления аккаунта в профиле", async () => {
   //   //Настраиваем фейковый успешный ответ для метода DELETE:
   //   vi.mocked($api.delete).mockResolvedValue({ data: { success: true } });
@@ -191,14 +194,13 @@ describe("Тест хука useProfileActions - действия в профил
       await result.current.handleAvatarChange(event);
     });
 
-    // 4. ПРОВЕРКИ:
-    // Проверяем, что запрос ушел на правильный эндпоинт
+    //4. Проверяем, что запрос ушел на правильный эндпоинт
     expect($api.post).toHaveBeenCalledWith(
       "/identity/profile/avatar",
       expect.any(FormData),
     );
 
-    // САМОЕ ВАЖНОЕ (Пункт 10.1): инвалидация, чтобы картинка обновилась в UI
+    //Инвалидация, чтобы картинка обновилась в UI
     await waitFor(() => {
       expect(mockInvalidate).toHaveBeenCalledWith({ queryKey: ["profile"] });
     });

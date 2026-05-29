@@ -182,7 +182,7 @@ export const CheckoutPage = () => {
           {/*Правая панель - итого:*/}
           <CheckoutSummary
             items={legalSelectedItems}
-            deliveryInfo={deliveryInfo}
+            deliveryInfo={deliveryInfo!}
             promoFromCart={promoFromCart}
             finalOrderPrice={finalOrderPrice}
             itemsTotal={itemsTotal}

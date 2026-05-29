@@ -9,14 +9,15 @@ describe("TradingStore", () => {
   it("Должно увеличиваться количество товара, если товар уже в корзине", () => {
     const moto = {
       id: "1",
+      quantity: 1,
       model: "Yamaha",
       price: 1000,
       image: "",
       brandSlug: "yamaha",
-      quantity: 1,
       slug: "yamaha2009",
       selected: true,
       totalInStock: 4,
+      year: 2000,
     };
 
     useTradingStore.getState().addToCartLocally(moto);

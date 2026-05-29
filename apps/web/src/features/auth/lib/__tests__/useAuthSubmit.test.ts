@@ -76,7 +76,9 @@ describe("Тестируем хук useAuthSubmit", () => {
         { email: "test@test.com" },
       );
     } catch (e) {
-      console.log(`Во время теста useAuthSubmit.test.ts возникла ошибка ${e}`);
+      console.log(
+        `Во время теста useAuthSubmit.test.ts возникла ошибка ${e}. Так и должно быть!`,
+      );
     }
 
     //Проверяем, что вызвался тост с ошибкой:

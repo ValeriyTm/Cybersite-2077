@@ -14,6 +14,7 @@ import {
   type UpdateProfileType,
   type ChangePasswordType,
   type DeleteAccountType,
+  type UpdateProfileInputType,
 } from "@repo/validation";
 //Состояния:
 import { useEffect, useMemo, useState } from "react";
@@ -51,7 +52,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   const [verificationCode, setVerificationCode] = useState("");
   //----------------Инициализация форм------------
   ////Основная форма профиля:
-  const profileForm = useForm({
+  const profileForm = useForm<UpdateProfileInputType, any, UpdateProfileType>({
     resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
       name: user?.name || "",
@@ -148,7 +149,6 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   //Функция-обработчик ошибок валидации:
   const onFormError = (formErrors: FieldErrors<UpdateProfileType>) => {
     //formErrors - объект со всеми ошибками полей, которые нашел Zod.
-    // console.log("Ошибки валидации:", formErrors); //Убрать перед продакшеном
 
     //Берем первую ошибку из списка:
     const fieldError = Object.values(formErrors)[0];

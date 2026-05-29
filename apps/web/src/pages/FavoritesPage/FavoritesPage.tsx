@@ -1,4 +1,3 @@
-import React from "react";
 //Состояния:
 import { useTradingStore, useFavoritesPage } from "@/entities/trading";
 //Компоненты:
