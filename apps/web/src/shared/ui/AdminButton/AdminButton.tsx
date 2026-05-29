@@ -1,5 +1,5 @@
 //Иконки:
-import { FaEdit, FaTrash, FaBox, FaCopy } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaBox, FaCopy, FaReply } from 'react-icons/fa';
 //Стили:
 import styles from './AdminButton.module.scss';
 
@@ -7,11 +7,12 @@ const iconMap = {
   edit: <FaEdit />,
   delete: <FaTrash />,
   stocks: <FaBox />,
-  copy: <FaCopy />
+  copy: <FaCopy />,
+  reply: <FaReply />
 };
 
 interface AdminButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: "edit" | "delete" | "stocks" | "copy";
+  variant: "edit" | "delete" | "stocks" | "copy" | "reply";
 }
 
 export const AdminButton = ({

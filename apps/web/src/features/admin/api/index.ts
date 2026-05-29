@@ -6,3 +6,5 @@ export { useAdminStocksSave } from "./useAdminStocksSave";
 export { useAdminNewsSave } from "./useAdminNewsSave";
 export { useAdminNewsDelete } from "./useAdminNewsDelete";
 export { useAdminNewsStatus } from "./useAdminNewsStatus";
+export { useAdminTicketsStatus } from "./useAdminTicketsStatus";
+export { useAdminTicketsReply } from "./useAdminTicketsReply";

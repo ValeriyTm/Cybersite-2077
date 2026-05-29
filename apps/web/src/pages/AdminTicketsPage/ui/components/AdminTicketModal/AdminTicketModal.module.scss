@@ -1,0 +1,187 @@
+//Модалка в общем:
+.modalOverlay {
+  position: fixed;
+  z-index: 9999; //Поверх всего
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 650px;
+
+    background: var(--auxiliary-bg-color);
+    /* pxtorem-disable-next-line */
+    border: 1px solid #333;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+
+    animation: modalAppear 0.3s ease-out;
+  }
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+//Header:
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px;
+
+  /* pxtorem-disable-next-line */
+  border-bottom: 1px solid var(--accent-text-color);
+
+  h4 {
+    margin: 0;
+
+    color: var(--accent-text-color);
+    text-transform: uppercase;
+  }
+
+  .closeBtn {
+    position: relative;
+
+    font-size: 1.2rem;
+    color: var(--auxiliary-text-color);
+    cursor: pointer;
+
+    background: none;
+    /* pxtorem-disable-next-line */
+    border: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+
+      width: 44px;
+      height: 44px;
+    }
+
+    @include hover {
+      color: var(--main-text-color);
+    }
+  }
+}
+
+//Вопрос от пользователя:
+.ticketInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  padding: 20px;
+
+  /* pxtorem-disable-next-line */
+  border-bottom: 1px solid #222;
+
+  .infoRow {
+    color: var(--auxiliary-text-color);
+    font-size: 0.9rem;
+
+    strong {
+      margin-right: 5px;
+
+      color: var(--color-light);
+    }
+  }
+
+  .messageBox {
+    padding: 15px;
+
+    background: var(--auxiliary-bg-color-2);
+    /* pxtorem-disable-next-line */
+    border: 1px solid #222;
+    border-radius: 8px;
+
+    strong {
+      color: var(--accent-text-color);
+    }
+
+    p {
+      margin-top: 8px;
+
+      color: var(--auxiliary-text-color);
+      line-height: 1.5;
+    }
+  }
+}
+
+//Блок вложений:
+.attachmentsBlock {
+  margin-top: 10px;
+
+  .fileList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 10px;
+  }
+
+  .fileLink {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 6px 12px;
+
+    color: var(--auxiliary-text-color);
+    font-size: 0.8rem;
+    text-decoration: none;
+
+    background: var(--auxiliary-bg-color-2);
+    /* pxtorem-disable-next-line */
+    border: 1px solid var(--accent-text-color);
+    border-radius: 4px;
+    transition: 0.2s;
+
+    @include hover {
+      color: var(--main-text-color);
+
+      background: var(--accent-text-color);
+      border-color: var(--accent-text-color);
+    }
+  }
+}
+
+//Ответ:
+.answerArea {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 20px;
+}
+
+//Кнопки подтверждения/выхода:
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+
+  padding: 0 20px 20px 20px;
+}

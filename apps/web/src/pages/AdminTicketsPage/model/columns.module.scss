@@ -1,92 +1,76 @@
+.hideOnTablet {
+  @include tablet {
+    display: none !important;
+  }
+}
+
 .hideOnMobile {
   @include mobile {
     display: none !important;
   }
 }
 
-.hideOnMobileS {
-  @include mobile-s {
-    display: none !important;
-  }
-}
-
 .senderCell {
+  max-width: 140px;
+
   font-size: 0.85rem;
+  //Перенос текста:
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
   .userName {
-    font-weight: bold;
     color: var(--main-text-color);
+    font-weight: bold;
   }
+
   .userEmail {
-    color: #666;
+    color: var(--auxiliary-text-color);
   }
+
   .userPhone {
-    color: #444;
+    color: var(--auxiliary-text-color);
     font-size: 0.8rem;
   }
 }
 
 .categoryBadge {
-  font-size: 0.75rem;
-  background: #222;
   padding: 2px 8px;
-  border-radius: 4px;
+
   color: var(--accent-text-color);
+  font-size: 0.75rem;
+
+  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
-  border: 1px solid #333;
+  border: 1px solid var(--auxiliary-text-color);
+  border-radius: 4px;
 }
 
 .descriptionWrapper {
   max-width: 200px;
+
   .descriptionText {
+    color: var(--color-light);
     font-size: 0.85rem;
-    color: #ccc;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 }
 
-.statusSelect {
-  background: transparent;
-  /* pxtorem-disable-next-line */
-  border: 1px solid #333;
-  padding: 4px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  min-height: 44px;
-
+select {
   &[data-status="OPEN"] {
-    color: #e74c3c;
+    color: var(--color-danger) !important;
   }
+
   &[data-status="IN_PROGRESS"] {
     color: #3498db;
   }
+
   &[data-status="RESOLVED"] {
-    color: #2ecc71;
+    color: var(--color-success);
   }
 }
 
-.replyBtn {
-  border: none !important;
-  height: 44px;
-  width: 44px;
-  margin: 0 !important;
-  border-radius: 50%;
-  color: var(--auxiliary-text-color) !important;
-  background-color: transparent !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-
-  @include hover {
-    color: var(--accent-text-color) !important;
-    border: 0.5px solid var(--accent-text-color) !important;
-    border-radius: 50%;
-  }
-
-  &[data-resolved="true"] {
-    opacity: 0.3;
-    pointer-events: none;
-  }
+.actionsCell {
+  max-width: 50px;
 }

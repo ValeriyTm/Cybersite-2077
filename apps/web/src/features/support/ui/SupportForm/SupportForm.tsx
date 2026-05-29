@@ -164,7 +164,6 @@ export const SupportForm = () => {
 					error={errors.description}
 				/>
 
-
 				{/*Кастомный инпут для файлов */}
 				<FileUpload
 					files={files}

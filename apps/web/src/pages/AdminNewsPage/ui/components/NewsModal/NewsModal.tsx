@@ -3,13 +3,14 @@ import { createPortal } from "react-dom";
 import { FocusTrap } from "focus-trap-react";
 //Работа с формами:
 import { useForm } from 'react-hook-form';
+//Компоненты:
+import { AdminButton, Button, Input, Textarea } from '@/shared/ui';
 //Иконки:
 import { FaMotorcycle, FaAlignLeft } from 'react-icons/fa';
 //Типы:
 import type { News } from '@/entities/content';
 //Стили:
 import styles from './NewsModal.module.scss';
-import { AdminButton, Button, Input, Textarea } from '@/shared/ui';
 
 interface NewsModalProps {
   news: News;

@@ -20,7 +20,8 @@
   transition: all 0.2s ease;
 }
 
-.edit {
+.edit,
+.reply {
   @include hover {
     box-shadow: 0 0 10px var(--accent-text-color);
     color: var(--accent-text-color);

@@ -1,0 +1,46 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  justify-items: center;
+
+  width: 100%;
+  padding: 20px;
+
+  background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  border-radius: 12px;
+
+  @include mobile {
+    p {
+      text-align: center;
+    }
+  }
+
+  @include mobile {
+    flex-direction: column;
+  }
+
+  .titleBlock {
+    h3 {
+      margin: 0;
+
+      color: var(--main-text-color);
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    p {
+      margin: 5px 0 0 0;
+
+      color: var(--auxiliary-text-color);
+      font-size: 0.9rem;
+    }
+  }
+
+  input {
+    background-color: var(--main-bg-color);
+  }
+}

@@ -1,13 +1,10 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { FaReply, FaPaperclip } from 'react-icons/fa';
+//Компоненты:
+import { AdminButton, Select } from '@/shared/ui';
+//Иконки:
+import { FaPaperclip } from 'react-icons/fa';
 //Стили:
 import styles from './columns.module.scss';
-
-/**
- * Генерирует колонки для таблицы тикетов.
- * @param onStatusChange - функция для смены статуса (вызывает statusMutation)
- * @param onReply - функция для открытия модалки ответа
- */
 
 const CATEGORY_LABELS: Record<string, string> = {
   COOPERATION: 'Сотрудничество',
@@ -16,6 +13,13 @@ const CATEGORY_LABELS: Record<string, string> = {
   TECHNICAL: 'Технический вопрос',
   OTHER: 'Другое'
 };
+
+const STATUS_OPTIONS = [
+  { value: "OPEN", label: "Открыт" },
+  { value: "IN_PROGRESS", label: "В процессе" },
+  { value: "RESOLVED", label: "Решен" },
+  { value: "CLOSED", label: "Отменен" },
+];
 
 export const getTicketColumns = (
   onStatusChange: (id: string, status: string) => void,
@@ -30,7 +34,7 @@ export const getTicketColumns = (
             {row.original.firstName} {row.original.lastName}
           </div>
           <div className={styles.userEmail}>{row.original.email}</div>
-          <div className={`${styles.userPhone} ${styles.hideOnMobile}`}>
+          <div className={`${styles.userPhone} ${styles.hideOnTablet}`}>
             {row.original.phone || '—'}
           </div>
         </div>
@@ -39,7 +43,7 @@ export const getTicketColumns = (
     {
       accessorKey: 'category',
       header: 'Категория',
-      meta: { className: styles.hideOnMobile }, //Скроем всю колонку на мобилках
+      meta: { className: styles.hideOnTablet },
       cell: (info) => (
         <span className={styles.categoryBadge}>
           {CATEGORY_LABELS[String(info.getValue())] || String(info.getValue())}
@@ -70,21 +74,17 @@ export const getTicketColumns = (
       cell: ({ row, getValue }) => {
         const status = String(getValue());
         return (
-          <>
-            <label htmlFor="ticket-status" className='visually-hidden'>Изменение статуса тикета</label>
-            <select
-              id='ticket-status'
-              value={status}
-              className={styles.statusSelect}
-              data-status={status}
-              onChange={(e) => onStatusChange(row.original.id, e.target.value)}
-            >
-              <option value="OPEN">Открыт</option>
-              <option value="IN_PROGRESS">В процессе</option>
-              <option value="RESOLVED">Решен</option>
-              <option value="CLOSED">Отменен</option>
-            </select>
-          </>
+          <Select
+            id="status-select"
+            label="Изменение статуса тикета:"
+            options={STATUS_OPTIONS}
+            value={status}
+            data-status={status}
+            onChange={(e) => onStatusChange(row.original.id, e.target.value)}
+            variant="dark"
+            direction="column"
+            visuallyHidden
+          />
         );
       }
     },
@@ -93,19 +93,15 @@ export const getTicketColumns = (
       header: '',
       cell: ({ row }) => (
         <div className={styles.actionsCell}>
-          <button
+          <AdminButton
             type="button"
-            style={{ cursor: 'pointer' }}
+            variant="reply"
             title={`Ответить на тикет от ${row.original.email}`}
-            className={styles.replyBtn}
             data-resolved={row.original.status === 'RESOLVED'}
             onClick={(e) => {
               e.stopPropagation();
               onReply(row.original);
-            }}
-          >
-            <FaReply />
-          </button>
+            }} />
         </div>
       )
     }
