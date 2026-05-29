@@ -687,7 +687,6 @@ export const updateMotorcycleAdminSchema = z.object({
         /^[a-zA-Zа-яА-ЯёЁ0-9 ]+$/,
         "Для модели используйте только цифры, английские и русские буквы",
       ),
-    // slug: z.string(),
     brandId: z.string(),
     category: z.enum(
       [
@@ -722,7 +721,6 @@ export const updateMotorcycleAdminSchema = z.object({
       (val) => (val === "null" || val === "" || val === "NaN" ? null : val),
       z.coerce.number().nullable(),
     ),
-    // engineType: z.string(),
     coolingSystem: z.enum(["AIR", "LIQUID", "OIL_AIR"]),
     gearbox: z.enum([
       "SPEED1",
@@ -1085,6 +1083,35 @@ export const CreateNewsSchema = z.object({
 type CreateNewsInput = z.infer<typeof CreateNewsSchema>;
 //Чистый тип для сервиса:
 export type CreateNewsArgs = CreateNewsInput["body"];
+
+//Схема для фронтенда:
+export const SaveNewsFrontendSchema = z.object({
+  title: z
+    .string()
+    .min(1, { message: "Заголовок слишком короткий" })
+    .max(50, { message: "Не более 50 символов на заголовок" }), //Заголовок новости
+  excerpt: z
+    .string()
+    .min(1, { message: "Не менее 1 символа для превью" })
+    .max(100, { message: "Не более 100 символов на превью" }), //Краткое превью
+  content: z.any(),
+  status: z.preprocess(
+    //Если с фронтенда придет пустая строка, то превратим её в undefined:
+    (val) => (val === "" ? undefined : val),
+    z.enum(["DRAFT", "PUBLISHED"], {
+      message: "Некорректный статус новости",
+    }),
+  ),
+  tags: z
+    .array(
+      z
+        .string()
+        .min(1, { message: "tag не должен быть пустой строкой" })
+        .max(36, "Максимум 36 символов для tag"),
+    )
+    .optional(),
+});
+export type SaveNewsFrontendType = z.infer<typeof SaveNewsFrontendSchema>;
 
 //----------------------------13.20) Схема для обновления новости:-------------------------------------//
 export const UpdateNewsSchema = z.object({

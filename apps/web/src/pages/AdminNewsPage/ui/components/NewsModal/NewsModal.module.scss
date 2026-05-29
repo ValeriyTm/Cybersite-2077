@@ -146,3 +146,27 @@
     align-items: center;
   }
 }
+
+//Изображение (превью):
+.imageUploadWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.imagePreview {
+  p {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+}
+
+.previewImg {
+  max-width: 200px;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #444;
+}

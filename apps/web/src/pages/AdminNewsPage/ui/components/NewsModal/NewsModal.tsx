@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from "react-dom";
 import { FocusTrap } from "focus-trap-react";
-//Работа с формами:
+//Работа с формами и валидацией:
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { handleFormError } from '@/shared/lib';
+import { SaveNewsFrontendSchema } from '@repo/validation';
+import type { SaveNewsFrontendType } from '@repo/validation';
 //Компоненты:
 import { AdminButton, Button, Input, Textarea } from '@/shared/ui';
 //Иконки:
@@ -11,6 +15,7 @@ import { FaMotorcycle, FaAlignLeft } from 'react-icons/fa';
 import type { News } from '@/entities/content';
 //Стили:
 import styles from './NewsModal.module.scss';
+import { API_URL } from '@/shared/api';
 
 interface NewsModalProps {
   news: News;
@@ -23,6 +28,7 @@ interface NewsFormFields {
   excerpt: string;
   status: NewsStatus;
   tags?: string[];
+  content: any;
 }
 
 enum NewsStatus {
@@ -30,9 +36,17 @@ enum NewsStatus {
   "PUBLISHED"
 }
 
+const BASE_URL = `${API_URL}/static/news/`;
+
 export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
-  const { register, handleSubmit } = useForm<NewsFormFields>({
-    defaultValues: news || { title: '', excerpt: '', status: 'DRAFT', tags: [] }
+  const { register, handleSubmit, formState: { errors } } = useForm<NewsFormFields>({
+    resolver: zodResolver(SaveNewsFrontendSchema),
+    defaultValues: {
+      title: news?.title || '',
+      excerpt: news?.excerpt || '',
+      status: (news?.status as any) || 'DRAFT',
+      tags: news?.tags || []
+    }
   });
 
   //Cтейт для блоков контента:
@@ -80,7 +94,10 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
       <FocusTrap focusTrapOptions={{ onDeactivate: onClose, escapeDeactivates: true }}>
         <div className={`${styles.modal} ${styles.largeModal}`} onClick={(e) => e.stopPropagation()}>
           <h4>{news ? 'Редактировать новость' : 'Создать публикацию'}</h4>
-          <form onSubmit={handleSubmit(handleFormSubmit)}>
+          <form onSubmit={handleSubmit(
+            handleFormSubmit,
+            (errors) => handleFormError(errors, 'news-modal-error')
+          )}>
             {/*1) Header:*/}
             <div className={styles.mainFields}>
               <Input
@@ -88,6 +105,8 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
                 title="Заголовок новости"
                 placeholder="Заголовок новости"
                 registration={register("title")}
+                error={errors.title}
+                value={news?.title}
                 required
                 onChange={(e) => setMainImage(e.target.files?.[0] || null)}
                 variant="dark-full"
@@ -97,9 +116,35 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
                 label="Текст абзаца новости"
                 placeholder="Краткое превью (для списка)"
                 registration={register("excerpt")}
+                value={news?.excerpt}
+                error={errors.excerpt}
                 rows={2}
                 variant="dark-full"
               />
+
+              {/*Превью для существующей обложки:*/}
+              {news?.mainImage && !mainImage && (
+                <div className={styles.imagePreview}>
+                  <p>Текущая обложка:</p>
+                  <img
+                    src={`${BASE_URL}${news.mainImage}`}
+                    alt="Текущая обложка новости"
+                    className={styles.previewImg}
+                  />
+                </div>
+              )}
+
+              {/*Превью для новой обложки:*/}
+              {mainImage && (
+                <div className={styles.imagePreview}>
+                  <p>Новая обложка (нажмите «Опубликовать» для сохранения):</p>
+                  <img
+                    src={URL.createObjectURL(mainImage)}
+                    alt="Превью новой обложки"
+                    className={styles.previewImg}
+                  />
+                </div>
+              )}
 
               <Input
                 label="Обложка новости:"
@@ -122,6 +167,7 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
                         label="Текст абзаца новости"
                         placeholder="Введите текст..."
                         variant="dark-full"
+                        value={block.value}
                         onChange={(e) => updateBlock(index, e.target.value)}
                         visuallyHidden
                       />
