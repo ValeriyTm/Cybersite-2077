@@ -9,3 +9,16 @@
     display: none !important;
   }
 }
+
+.promoCode {
+  color: var(--color-rating);
+}
+
+.client {
+  max-width: 150px;
+
+  //Перенос текста:
+  word-wrap: break-word; //Старый стандарт
+  overflow-wrap: break-word; //Современный стандарт
+  word-break: break-all; //Разрывает слово в любом месте (если нужно)
+}

@@ -5,3 +5,5 @@ export { useAdminNews } from "./useAdminNews";
 export { useAdminTickets } from "./useAdminTickets";
 export { useAdminOrders } from "./useAdminOrders";
 export { useAdminUsers } from "./useAdminUsers";
+export { useAdminPromos } from "./useAdminPromos";
+export { useAdminPersonalDiscounts } from "./useAdminPersonalDiscounts";

@@ -1,28 +1,33 @@
 //Состояния:
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { useProfile } from '@/features/auth';
+import { useAdminPersonalDiscounts, useAdminPromos } from '@/entities/admin';
+import { useAdminDiscountsGeneration } from '@/features/admin';
 //Формирование таблицы:
-import { DataTable } from '@/shared/ui';
 import { promoColumns, personalColumns } from '../model/columns';
-//API:
-import { $api } from '@/shared/api';
+//Компоненты:
+import { Button, DataTable, Input } from '@/shared/ui';
 //Дебаунс поиска:
 import { debounce } from 'lodash';
 //Иконки:
 import { FaMagic, FaTicketAlt, FaUserTag } from 'react-icons/fa';
-//Уведомления:
-import toast from 'react-hot-toast';
 //Стили:
 import styles from './AdminDiscountsPage.module.scss';
 
 export const AdminDiscountsPage = () => {
   const [emailSearch, setEmailSearch] = useState('');
   const [debouncedEmail, setDebouncedEmail] = useState('');
-  const queryClient = useQueryClient();
 
   const { user } = useProfile();
   const userRole = user?.role;
+
+  //Данные о промокодах:
+  const { data: promos } = useAdminPromos();
+  //Данные о персональных скидках:
+  const { data: personal } = useAdminPersonalDiscounts(debouncedEmail);
+  //Мутация генерации новых промокодов и персональных скидок:
+  const generateMutation = useAdminDiscountsGeneration();
+
 
   //Дебаунс для поиска
   const updateSearch = useMemo(
@@ -30,36 +35,10 @@ export const AdminDiscountsPage = () => {
     []
   );
 
-
-  const { data: promos } = useQuery({
-    queryKey: ['admin-promos'],
-    queryFn: () => $api.get('/admin/promos').then(res => res.data)
-  });
-
-  const { data: personal } = useQuery({
-    queryKey: ['admin-personal', debouncedEmail],
-    queryFn: () => $api.get('/admin/personal-discounts', {
-      params: { email: debouncedEmail }
-    }).then(res => res.data)
-  });
-
-  const generateMutation = useMutation({
-    mutationFn: () => $api.post('/discount/force-generate'),
-    onSuccess: () => {
-      toast.success('Массовая генерация запущена!');
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['admin-promos'] });
-        queryClient.invalidateQueries({ queryKey: ['admin-personal'] });
-      }, 2000); //Даем время воркерам отработать
-    }
-  });
-
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailSearch(e.target.value);
     updateSearch(e.target.value);
   };
-
-
 
   return (
     <div className={styles.pageWrapper}>
@@ -70,19 +49,21 @@ export const AdminDiscountsPage = () => {
           {(userRole == 'ADMIN' || userRole == 'SUPERADMIN') && <p>Можно запустить генерацию новых промокодов (старые деактивируются), глобальной скидки (старая заменяется) и персональных скидок (появляются дополнительные)</p>}
         </div>
         {(userRole == 'ADMIN' || userRole == 'SUPERADMIN') &&
-          <button
-            className={styles.magicBtn}
+          <Button
+            type="button"
+            variant="primary"
             onClick={() => generateMutation.mutate()}
             disabled={generateMutation.isPending}
           >
             <FaMagic /> {generateMutation.isPending ? 'Генерация...' : 'Запустить алгоритм скидок'}
-          </button>}
+          </Button>
+        }
       </header>
 
       <div className={styles.contentGrid}>
         <section className={styles.tableSection}>
           <div className={styles.sectionHeader}>
-            <FaTicketAlt /> <h4>Общие промокоды</h4>
+            <h4><FaTicketAlt /> Общие промокоды</h4>
           </div>
           <DataTable columns={promoColumns} data={promos || []} />
         </section>
@@ -90,18 +71,18 @@ export const AdminDiscountsPage = () => {
         <section className={styles.tableSection}>
           <div className={styles.sectionHeader}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flex: 1 }}>
-              <FaUserTag /> <h4>Персональные скидки</h4>
+              <h4> <FaUserTag />  Персональные скидки</h4>
             </div>
 
-            {/*Инпут поиска по Email:*/}
-            <label htmlFor="email-search-for-discounts" className='visually-hidden'>Поиск скидок по email</label>
-            <input
-              id='email-search-for-discounts'
+            <Input
+              label="Поиск скидок по email"
+              id="email-search-for-discounts"
               type="text"
-              placeholder="🔍 Найти по email клиента..."
-              className={styles.miniSearch}
               value={emailSearch}
+              placeholder="🔍 Найти по email клиента..."
               onChange={handleEmailChange}
+              variant="dark"
+              visuallyHidden
             />
           </div>
           <DataTable columns={personalColumns} data={personal || []} />
