@@ -11,3 +11,4 @@ export { useAdminTicketsReply } from "./useAdminTicketsReply";
 export { useAdminOrdersStatus } from "./useAdminOrdersStatus";
 export { useAdminUsersStatus } from "./useAdminUsersStatus";
 export { useAdminUsersDelete } from "./useAdminUsersDelete";
+export { useAdminSyncDB } from "./useAdminSyncDB";

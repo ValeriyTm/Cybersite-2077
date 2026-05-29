@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { FocusTrap } from "focus-trap-react";
 //Стили:
 import styles from "./ActionConfirmModal.module.scss";
-import { useEffect } from "react";
+
 
 interface ActionConfirmModalProps {
   isOpen: boolean;
@@ -56,6 +57,7 @@ export const ActionConfirmModal = ({
             <button type="button" className={styles.btnCancel} onClick={onCancel} disabled={isSubmitting}>
               {cancelText}
             </button>
+
             <button type="button" className={confirmBtnClassName} onClick={onConfirm} disabled={isSubmitting}>
               {isSubmitting ? "Ждите..." : confirmText}
             </button>

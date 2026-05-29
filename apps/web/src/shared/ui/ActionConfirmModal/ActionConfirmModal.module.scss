@@ -1,50 +1,59 @@
 .modalOverlay {
   position: fixed;
+  z-index: 5000;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(5px);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 5000;
+
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
 }
 
 .modalContent {
-  background: var(--auxiliary-bg-color);
-  border-radius: 20px;
-  padding: 30px;
-  max-width: 400px;
   width: 90%;
+  max-width: 400px;
+  padding: 30px;
+
   text-align: center;
+
+  background: var(--auxiliary-bg-color);
   border: 1px solid var(--accent-text-color);
+  border-radius: 20px;
   transition: all 0.3s ease;
 
   // Варианты рамок:
   &.danger {
     border-color: var(--color-danger);
   }
+
   &.success {
     border-color: var(--color-success);
   }
+
   &.info {
     border-color: var(--accent-text-color);
   }
 }
 
 .modalTitle {
+  margin-top: 0;
+  margin-bottom: 20px;
+
   font-size: 1.2rem;
   text-transform: uppercase;
-  margin-bottom: 20px;
   letter-spacing: 2px;
-  margin-top: 0;
 
   // Варианты цветов заголовков:
   &.title-danger {
     color: var(--color-danger);
   }
+
   &.title-success {
     color: var(--color-success);
   }
+
   &.title-info {
     color: var(--accent-text-color);
   }
@@ -52,6 +61,7 @@
 
 .modalText {
   margin-bottom: 30px;
+
   color: var(--main-text-color);
   font-size: 0.95rem;
   line-height: 1.5;
@@ -60,6 +70,7 @@
 .modalActions {
   display: flex;
   gap: 15px;
+
   margin-top: 16px;
 }
 
@@ -67,50 +78,66 @@
 .btnConfirm {
   flex: 1;
   padding: 12px;
-  cursor: pointer;
+
+  font-size: 0.9rem;
   font-weight: bold;
   text-transform: uppercase;
+  cursor: pointer;
+
   border-radius: 8px;
-  font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
 .btnCancel {
+  color: var(--auxiliary-text-color);
+
   background: transparent;
   border: 1px solid #444;
-  color: var(--auxiliary-text-color);
 
   @include hover {
     color: var(--main-text-color);
+
     border-color: #666;
   }
 }
 
 .btnConfirm {
-  border: none;
-  color: #000;
+  color: var(--color-dark);
 
-  // Варианты кнопок подтверждения:
+  border: none;
+
+  //---------Варианты кнопок:--------------//
   &.btn-danger {
+    color: var(--color-light);
+
     background: var(--color-danger);
-    color: #fff;
+
     @include hover {
       opacity: 0.9;
       box-shadow: 0 0 15px var(--color-danger);
     }
   }
+
   &.btn-success {
     background: var(--color-success);
+
     @include hover {
       opacity: 0.9;
       box-shadow: 0 0 15px var(--color-success);
     }
   }
+
   &.btn-info {
     background: var(--accent-text-color);
+
     @include hover {
       opacity: 0.9;
       box-shadow: 0 0 15px var(--accent-text-color);
     }
   }
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

@@ -1,27 +1,27 @@
 //Состояния:
-import { useMutation } from '@tanstack/react-query';
-//API:
-import { $api } from '@/shared/api';
+import { useState } from 'react';
+import { useAdminSyncDB } from '@/features/admin';
+//Компоненты:
+import { ActionConfirmModal, Button } from '@/shared/ui';
 //Иконки:
 import { FaSync } from 'react-icons/fa';
-//Уведомления:
-import toast from 'react-hot-toast';
 //Стили:
 import styles from './AdminStatsPage.module.scss';
 
 export const AdminStatsPage = () => {
-  const syncMutation = useMutation({
-    mutationFn: () => $api.post('/admin/sync-search/global'),
-    onMutate: () => {
-      toast.loading('Запущена полная переиндексация...', { id: 'sync' });
-    },
-    onSuccess: () => {
-      toast.success('Поиск полностью синхронизирован!', { id: 'sync' });
-    },
-    onError: () => {
-      toast.error('Ошибка при синхронизации', { id: 'sync' });
-    }
-  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //Мутация запуска синхронизации на сервере:
+  const syncMutation = useAdminSyncDB();
+
+  //Функция запуска синхронизации:
+  const handleConfirmSync = () => {
+    syncMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsModalOpen(false);
+      }
+    });
+  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -33,19 +33,28 @@ export const AdminStatsPage = () => {
           <p>Удаляет текущие данные из поискового движка (Elasticsearch) и по-новому заполняет данными из основной базы данных (PostgreSQL). Используйте, если поиск работает некорректно.</p>
         </div>
 
-        <button
-          className={styles.syncBtn}
-          onClick={() => {
-            if (confirm('Это действие удалит индекс поиска и пересоздаст его. Продолжить?')) {
-              syncMutation.mutate();
-            }
-          }}
+        <Button
+          type="submit"
+          variant="primary"
+          onClick={() => setIsModalOpen(true)}
           disabled={syncMutation.isPending}
         >
           <FaSync className={syncMutation.isPending ? styles.spin : ''} />
           {syncMutation.isPending ? 'Синхронизация...' : 'Запустить переиндексацию'}
-        </button>
+        </Button>
       </div>
+
+      <ActionConfirmModal
+        isOpen={isModalOpen}
+        title="Синхронизация базы данных"
+        description="Это действие удалит текущий индекс поиска в Elasticsearch и пересоздаст его на основе PostgreSQL. Вы уверены, что хотите продолжить?"
+        variant="info"
+        confirmText="Продолжить"
+        cancelText="Назад"
+        isSubmitting={syncMutation.isPending}
+        onConfirm={handleConfirmSync}
+        onCancel={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

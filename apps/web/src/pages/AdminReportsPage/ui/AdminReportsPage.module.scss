@@ -1,71 +1,19 @@
 .pageWrapper {
   max-width: 900px;
+
+  h3 {
+    margin-block: 15px;
+  }
 }
 
 .subtitle {
-  color: var(--main-text-color);
   margin-bottom: 40px;
+
+  color: var(--main-text-color);
 }
 
 .reportsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 25px;
-}
-
-.reportCard {
-  background: var(--auxiliary-bg-color-2);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  border-radius: 12px;
-  display: flex;
-  overflow: hidden;
-  transition: transform 0.2s;
-
-  @include hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 10px var(--accent-text-color);
-  }
-}
-
-.iconWrapper {
-  width: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--main-text-color);
-}
-
-.cardInfo {
-  padding: 20px;
-  flex: 1;
-
-  h4 {
-    margin: 0 0 10px 0;
-    color: var(--main-text-color);
-  }
-  p {
-    font-size: 0.85rem;
-    color: var(--auxiliary-text-color);
-    margin-bottom: 20px;
-    line-height: 1.4;
-  }
-
-  button {
-    background: transparent;
-    /* pxtorem-disable-next-line */
-    border: 1px solid var(--auxiliary-text-color);
-    color: var(--main-text-color);
-    padding: 10px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-
-    @include hover {
-      background: var(--accent-text-color);
-      color: #000;
-      border-color: var(--accent-text-color);
-    }
-  }
 }

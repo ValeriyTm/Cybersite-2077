@@ -42,7 +42,8 @@
     }
 
     &:disabled {
-      background-color: #f5f5f5;
+      background-color: var(--auxiliary-text-color);
+      color: var(--color-dark);
 
       opacity: 0.7;
 

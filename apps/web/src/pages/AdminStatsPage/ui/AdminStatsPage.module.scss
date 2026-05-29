@@ -1,5 +1,8 @@
 .pageWrapper {
-  width: 100%;
+  align-self: center;
+  justify-self: center;
+
+  width: 90%;
   max-width: var(--container-width);
 
   @include mobile {
@@ -11,36 +14,9 @@
       justify-items: center;
     }
   }
-}
 
-.syncBtn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--accent-text-color);
-  color: var(--main-text-color);
-  /* pxtorem-disable-next-line */
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-  margin-top: 20px;
-
-  @include mobile {
-    padding: 6px 12px;
-  }
-
-  @include hover {
-    &:not(:disabled) {
-      opacity: 0.8;
-    }
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  .cardInfo {
+    margin-bottom: 20px;
   }
 }
 
@@ -59,6 +35,7 @@
 
 h3 {
   margin-block: 10px;
+
   @include mobile {
     text-align: center;
   }

@@ -1,0 +1,49 @@
+.reportCard {
+  display: flex;
+
+  background: var(--auxiliary-bg-color-2);
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s;
+
+  @include hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 10px var(--accent-text-color);
+  }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100px;
+
+  color: var(--main-text-color);
+}
+
+.cardInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 5px;
+
+  padding: 20px;
+
+  h4 {
+    margin: 0 0 10px 0;
+
+    color: var(--main-text-color);
+  }
+
+  p {
+    margin-bottom: 20px;
+
+    color: var(--auxiliary-text-color);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+}
