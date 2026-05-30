@@ -54,7 +54,11 @@ export const useProfileActions = (user: IUser | null | undefined) => {
   const [verificationCode, setVerificationCode] = useState("");
   //----------------Инициализация форм------------
   ////Основная форма профиля:
-  const profileForm = useForm<UpdateProfileInputType, any, UpdateProfileType>({
+  const profileForm = useForm<
+    UpdateProfileInputType,
+    undefined,
+    UpdateProfileType
+  >({
     resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
       name: user?.name || "",

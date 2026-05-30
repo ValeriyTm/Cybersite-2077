@@ -16,7 +16,7 @@ const meta: Meta<typeof PasswordField> = {
       onChange: async () => { },
       onBlur: async () => { },
       ref: () => { },
-    } as any,
+    },
   },
 };
 
@@ -33,7 +33,7 @@ export const Default: Story = {
 //2) Состояние с ошибкой:
 export const WithError: Story = {
   args: {
-    error: { type: "required", message: "Пароль слишком простой" } as any,
+    error: { type: "required", message: "Пароль слишком простой" },
   },
 };
 

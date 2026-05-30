@@ -72,14 +72,29 @@ vi.mock("../../model/auth-store", () => ({
 
 //2) Тесты:
 describe("Тест хука useProfileActions - действия в профиле", () => {
-  const mockUser = { id: "1", name: "Ivan", email: "ivan@test.com" };
+  const mockUser = {
+    email: "vova@mail.com",
+    name: "vova",
+    id: "user-id",
+    phone: "+7999...",
+    birthday: "date",
+    gender: "FEMALE",
+    role: "USER",
+    isActivated: true,
+    avatarUrl: null,
+    createdAt: "date",
+    is2FAEnabled: false,
+    defaultAddress: null,
+    defaultLat: null,
+    defaultLng: null,
+  } as const;
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("Тест №1. Должна произойти инициализация компонента profileForm данными пользователя", () => {
-    const { result } = renderHook(() => useProfileActions(mockUser as any));
+    const { result } = renderHook(() => useProfileActions(mockUser));
     expect(result.current.profileForm.getValues("name")).toBe("Ivan");
   });
 
@@ -87,7 +102,7 @@ describe("Тест хука useProfileActions - действия в профил
     //Настраиваем фейковый успешный ответ от сервера:
     vi.mocked($api.patch).mockResolvedValue({ data: { success: true } });
 
-    const { result } = renderHook(() => useProfileActions(mockUser as any));
+    const { result } = renderHook(() => useProfileActions(mockUser));
 
     //act заставляет Vitest дождаться, пока все изменения стейтов внутри хука завершатся, прежде чем идти дальше:
     await act(async () => {
@@ -117,7 +132,7 @@ describe("Тест хука useProfileActions - действия в профил
     // 1. Настраиваем фейковый успешный ответ для смены пароля (POST запрос)
     vi.mocked($api.post).mockResolvedValue({ data: { success: true } });
 
-    const { result } = renderHook(() => useProfileActions(mockUser as any));
+    const { result } = renderHook(() => useProfileActions(mockUser));
 
     //Данные для смены пароля:
     const passwordData = {
@@ -152,7 +167,7 @@ describe("Тест хука useProfileActions - действия в профил
   // it("Тест №4. Проверяем функционал удаления аккаунта в профиле", async () => {
   //   //Настраиваем фейковый успешный ответ для метода DELETE:
   //   vi.mocked($api.delete).mockResolvedValue({ data: { success: true } });
-  //   const { result } = renderHook(() => useProfileActions(mockUser as any));
+  //   const { result } = renderHook(() => useProfileActions(mockUser));
   //   //Данные из формы (DeleteAccountInput):
   //   const deleteData = {
   //     password: "correct-password123",
@@ -179,7 +194,7 @@ describe("Тест хука useProfileActions - действия в профил
       data: { avatarUrl: "/uploads/avatars/new-avatar.jpg" },
     });
 
-    const { result } = renderHook(() => useProfileActions(mockUser as any));
+    const { result } = renderHook(() => useProfileActions(mockUser));
 
     // 2. Имитируем выбор файла пользователем
     const file = new File(["hello"], "avatar.png", { type: "image/png" });

@@ -3,6 +3,8 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { AdminButton, Select } from '@/shared/ui';
 //Иконки:
 import { FaPaperclip } from 'react-icons/fa';
+//Типы:
+import type { Ticket } from '@/entities/support/types/types';
 //Стили:
 import styles from './columns.module.scss';
 
@@ -23,8 +25,8 @@ const STATUS_OPTIONS = [
 
 export const getTicketColumns = (
   onStatusChange: (id: string, status: string) => void,
-  onReply: (ticket: any) => void
-): ColumnDef<any>[] => [
+  onReply: (ticket: Ticket) => void
+): ColumnDef<Ticket>[] => [
     {
       accessorKey: 'sender',
       header: 'Отправитель',

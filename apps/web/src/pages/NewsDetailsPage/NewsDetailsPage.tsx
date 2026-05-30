@@ -14,6 +14,28 @@ import { NewsMotoWidget } from './NewsMotoWidget';
 //Стили:
 import styles from './NewsDetailsPage.module.scss';
 
+interface TextBlock {
+  type: 'text';
+  value: string;
+}
+
+interface ImageBlock {
+  type: 'image';
+  value: string;
+}
+
+interface MotorcycleBlock {
+  type: 'motorcycle';
+  value: string; //ID мотоцикла
+}
+
+interface VideoBlock {
+  type: 'video';
+  value: string; // Идентификатор видео YouTube
+}
+
+type ContentBlock = TextBlock | ImageBlock | MotorcycleBlock | VideoBlock;
+
 export const NewsDetailsPage = () => {
   const { slug } = useParams<{ slug: string }>();
 
@@ -57,7 +79,7 @@ export const NewsDetailsPage = () => {
         </header>
 
         <div className={styles.content}>
-          {article.content.map((block: any, index: number) => {
+          {article.content.map((block: ContentBlock, index: number) => {
             switch (block.type) {
               case 'text':
                 return <p key={index} className={styles.textBlock}>{block.value}</p>;

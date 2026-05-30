@@ -4,6 +4,14 @@ import axios from "axios";
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 //Данные о пользователе и токене:
 import { useAuthStore } from "@/features/auth";
+//Библиотека для всплывающих уведомлений:
+import { toast } from "react-hot-toast";
+//Типы:
+import type { AxiosError } from "axios";
+
+interface RefreshResponse {
+  accessToken: string;
+}
 
 //Чистый домен сервера:
 export const API_URL = import.meta.env.VITE_API_URL;
@@ -28,7 +36,7 @@ $api.interceptors.request.use((config) => {
 });
 
 //Обработка ошибки 401:
-const refreshAuthLogic = (failedRequest: any) => {
+const refreshAuthLogic = (failedRequest: AxiosError) => {
   const url = failedRequest.response?.config?.url || "";
   const token = useAuthStore.getState().accessToken;
 
@@ -59,7 +67,7 @@ const refreshAuthLogic = (failedRequest: any) => {
     //Используем чистый axios, а не $api, т.к. не нужно прикреплять просроченный access токен
     axios
       //Обращаемся к refresh-эндпоинту:
-      .post(
+      .post<RefreshResponse>(
         `${API_URL}/api/identity/auth/refresh`, //URL
         {}, //Body
         { withCredentials: true }, //Config (настройки)
@@ -72,11 +80,13 @@ const refreshAuthLogic = (failedRequest: any) => {
         useAuthStore.getState().setAuth(accessToken);
 
         //Берем изначальный упавший запрос (failedRequest) и вставляем в него уже новый токен:
-        failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+        if (failedRequest.response?.config?.headers) {
+          failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+        }
 
         return Promise.resolve();
       })
-      .catch((err) => {
+      .catch((err: AxiosError) => {
         //Если сервер что-то ответил (например, 400, 403, 500) — это сбой сессии.
         // Если err.response нет, значит сервер оффлайн или пропал интернет.
         if (err.response) {
@@ -85,8 +95,7 @@ const refreshAuthLogic = (failedRequest: any) => {
             delete $api.defaults.headers.common.Authorization; // Стираем заголовки и кэш, чтобы прервать любые зависшие запросы очереди
           }
         } else {
-          // Сервер оффлайн — логируем, но clearAuth() НЕ ВЫЗЫВАЕМ!
-          console.warn("🌐 Сервер бэкенда недоступен. Ожидание сети...");
+          toast.error("🌐 Сервер бэкенда недоступен. Ожидание сети..");
         }
         return Promise.reject(err);
       })
