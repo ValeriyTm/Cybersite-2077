@@ -4,7 +4,7 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  useMapEvents,
+  // useMapEvents,
   Popup,
   Tooltip,
 } from "react-leaflet";
@@ -17,6 +17,7 @@ import type { Warehouse } from "@repo/database/generated/prisma/client";
 //Стили:
 import styles from './DeliveryMapModal.module.scss';
 import { Button } from "@/shared/ui";
+import { MapListener } from "../../api/useMapClickHandler";
 
 const DefaultIcon = L.icon({
   iconUrl: icon,
@@ -55,50 +56,6 @@ export const DeliveryMapModal = ({
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
-  //Обработчик клика по карте:
-  const MapEvents = () => {
-    useMapEvents({
-      click: async (e) => {
-        setTempCoords(e.latlng);
-        setLoading(true);
-        try {
-          //Обратное геокодирование через Nominatim (получаем адрес по координатам):
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${e.latlng.lat}&lon=${e.latlng.lng}&accept-language=ru`,
-            {
-              headers: {
-                //Nominatim просит указывать User-Agent (указываю название проекта):
-                "User-Agent": "CyberSite-2077",
-              },
-            },
-          );
-          if (!res.ok) throw new Error("Ошибка сервера геокодинга");
-
-          const data = await res.json();
-
-          //Бывает, что Nominatim возвращает 200 OK, но с пустой ошибкой внутри:
-          if (data.error) throw new Error(data.error);
-
-          //Ограничиваем зону выбора лишь границами РФ:
-          if (data.address && data.address.country_code !== "ru") {
-            setAddress("Доставка осуществляется только по территории РФ");
-            setTempCoords(null); //Убираем метку, если она вне РФ
-            return;
-          }
-
-          setAddress(data.display_name || "Адрес не найден");
-          setTempCoords(e.latlng);
-        } catch (err) {
-          setAddress("Ошибка определения адреса");
-          console.log(`Ошибка определения адреса: ${err}`)
-        } finally {
-          setLoading(false);
-        }
-      },
-    });
-    return null;
-  };
-
   return (
     <div className={`"map-modal-overlay" ${styles.modalOverlayStyle}`}>
       <div className={`"map-modal-content" ${styles.modalContentStyle}`}>
@@ -112,29 +69,25 @@ export const DeliveryMapModal = ({
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-            {/*Метки складов:*/}
-            {warehouses.map((wh) => (
-              <Marker
-                key={wh.id}
-                position={[wh.lat, wh.lng]}
-                icon={warehouseIcon}
-              >
-                {/*Тултип при наведении:*/}
-                <Tooltip direction="top" offset={[0, -32]} opacity={1}>
-                  <span>
-                    Склад: {wh.name}
-                  </span>
-                </Tooltip>
+            <MapListener
+              setTempCoords={setTempCoords}
+              setLoading={setLoading}
+              setAddress={setAddress}
+            />
 
-                {/*Попап при клике:*/}
+
+            {/* Метки складов: */}
+            {warehouses.map((wh) => (
+              <Marker key={wh.id} position={[wh.lat, wh.lng]} icon={warehouseIcon}>
+                <Tooltip direction="top" offset={[0, -32]} opacity={1}>
+                  <span>Склад: {wh.name}</span>
+                </Tooltip>
                 <Popup>Склад: {wh.name}</Popup>
               </Marker>
             ))}
 
-            {/*Метка пользователя: */}
+            {/* Метка пользователя */}
             {tempCoords && <Marker position={tempCoords} />}
-
-            <MapEvents />
           </MapContainer>
         </div>
 
