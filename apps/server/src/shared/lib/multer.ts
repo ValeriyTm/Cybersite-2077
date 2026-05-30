@@ -83,7 +83,7 @@ export const createMulter = ({
           } else {
             //Сохранение документов напрямую из буфера памяти:
             //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
-            //eslint-disable-next-line security/detect-non-literal-fs-filename
+            // eslint-disable-next-line security/detect-non-literal-fs-filename
             await fs.promises.writeFile(filePath, file.buffer);
           }
 

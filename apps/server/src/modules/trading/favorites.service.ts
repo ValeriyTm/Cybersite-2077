@@ -77,6 +77,8 @@ export class FavoritesService {
       return {
         ...moto,
         totalInStock,
+        //Т.к. index генерируется не клиентом, а автоматически методом .map(), то отключаем линтер:
+        // eslint-disable-next-line security/detect-object-injection
         discountData: allDiscountData[index], // Берем данные из пакетного ответа по индексу
       };
     });

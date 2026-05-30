@@ -91,7 +91,7 @@ export class ProfileService {
       const oldPath = path.join(process.cwd(), user.avatarUrl);
       try {
         //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
-        //eslint-disable-next-line security/detect-non-literal-fs-filename
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         await fs.unlink(oldPath); //Удаляем старый путь
       } catch (e) {
         logger.error("Не удалось удалить старый аватар:", e);

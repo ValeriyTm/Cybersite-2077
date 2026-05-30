@@ -216,7 +216,7 @@ export class AuthService {
         const filePath = path.join(process.cwd(), relativePath);
 
         //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
-        //eslint-disable-next-line security/detect-non-literal-fs-filename
+        // eslint-disable-next-line security/detect-non-literal-fs-filename
         await fs.unlink(filePath); // Удаляем файл
 
         logger.info("Avatar Deleted", {

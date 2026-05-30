@@ -43,10 +43,8 @@ export default tseslint.config(
     },
     //Тут активируем конкретные проверки для TypeScript:
     rules: {
-      "sonarjs/pseudo-random": "warn", //Разрешаем Math.random
-      "sonarjs/no-clear-text-protocols": "warn", //Разрешаем http (чтобы не мешало сборке в dev)
-
-      "@typescript-eslint/no-explicit-any": "warn", //Разрешаем явные any
+      "sonarjs/pseudo-random": "off", //Разрешаем Math.random, т.к. в проекте эта конструкция не используется в местах, связанных с безопасностью
+      "sonarjs/no-clear-text-protocols": "off", //Разрешаем http, т.к. это PET-проект
 
       //Запрещает оставлять неиспользуемые переменные, но позволяет создавать такие переменные, если их имя начинается с "_". Это удобно для случаев, когда нужно объявить переменную, но она не будет использоваться (например, для интерфейсов или типов):
       "@typescript-eslint/no-unused-vars": [

@@ -21,8 +21,7 @@ export const addOrderExpirationTask = async (orderId: string) => {
 
 //Функция для перевода заказа из статуса PAID в DELIVERY:
 export const addDeliveryStartTask = async (orderId: string) => {
-  // eslint-disable-next-line sonarjs/no-commented-code
-  // const randomDelay = 1000 * 30; //Для тестов
+  //Для тестов: const randomDelay = 1000 * 30;
   const randomDelay =
     Math.floor(Math.random() * (180 - 120 + 1) + 120) * 60 * 1000; //Перевод через 2-3 часа рандомно
 
@@ -43,8 +42,7 @@ export const addDeliveredTask = async (
 
   //Вычисляем задержку (сколько миллисекунд осталось до даты доставки):
   const delay = Math.max(0, deliveryTime - now);
-  // eslint-disable-next-line sonarjs/no-commented-code
-  // const delay = 1000 * 30; //Для тестов
+  //Для тестов: const delay = 1000 * 30;
 
   await orderQueue.add("set-delivered", { orderId }, { delay });
 

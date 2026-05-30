@@ -56,6 +56,8 @@ export class TelegramService {
             },
           );
 
+          //Отключаем линтер, т.к. ссылка внутренняя и безопасна:
+          // eslint-disable-next-line security/detect-non-literal-fs-filename
           await fs.unlink(pdfPath);
         } catch (error) {
           await ctx.reply("❌ Ошибка при генерации отчета");
@@ -95,7 +97,10 @@ export class TelegramService {
           );
 
           //Чистим сервер от временных файлов:
+          //Отключаем линтер, т.к. ссылка внутренняя и безопасна:
+          // eslint-disable-next-line security/detect-non-literal-fs-filename
           await fs.unlink(pdfPath);
+          // eslint-disable-next-line security/detect-non-literal-fs-filename
           await fs.unlink(excelPath);
 
           await ctx.reply("✅ Все файлы успешно отправлены.");

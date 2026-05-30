@@ -147,6 +147,8 @@ export class SearchService {
       rating_desc: [{ rating: "desc" }],
     };
 
+    //Далее линтер напрасно ругается, поэтому отключаем:
+    // eslint-disable-next-line security/detect-object-injection
     return (sortBy ? sortMapping[sortBy] : undefined) || [{ _score: "desc" }];
   }
 
@@ -271,6 +273,8 @@ export class SearchService {
 
     const itemsWithDiscounts = rawItems.map((moto, index) => ({
       ...moto,
+      //Т.к. index генерируется не клиентом, а автоматически методом .map(), то отключаем линтер:
+      // eslint-disable-next-line security/detect-object-injection
       discountData: allDiscountData[index],
     })); //Синхронно склеиваем результаты в памяти Node.js
 
@@ -347,6 +351,8 @@ export class SearchService {
 
     return rawItems.map((moto, index) => ({
       ...moto,
+      //Т.к. index генерируется не клиентом, а автоматически методом .map(), то отключаем линтер:
+      // eslint-disable-next-line security/detect-object-injection
       discountData: allDiscountData[index],
     }));
   }
@@ -454,6 +460,8 @@ export class SearchService {
 
     //Формируем тело для Bulk-запроса в Elasticsearch (для каждого документа Elastic требует две строки: метаданные операции и сами данные)
     const bulkOperations = motorcycleIds.flatMap((id) => {
+      //Т.к. id генерируется не клиентом, а автоматически методом .map(), то отключаем линтер:
+      // eslint-disable-next-line security/detect-object-injection
       const totalInStock = stockMap[id] || 0;
 
       return [

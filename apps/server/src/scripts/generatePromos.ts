@@ -58,6 +58,8 @@ async function generatePromos() {
         //Синхронный цикл в памяти Node.js:
         for (const user of users) {
           const randomIndex = Math.floor(Math.random() * bikesCount);
+          //Т.к. randomIndex генерируется не клиентом, а нами, то отключаем линтер:
+          // eslint-disable-next-line security/detect-object-injection
           const randomBike = allBikes[randomIndex];
 
           discountsToInsert.push({

@@ -39,7 +39,7 @@ export const createTicket = catchAsync(
         await Promise.all(
           files.map((file) =>
             //Eslint ругается, т.к. не знает, что мы формируем путь на сервере, а не на клиенте, поэтому:
-            //eslint-disable-next-line security/detect-non-literal-fs-filename
+            // eslint-disable-next-line security/detect-non-literal-fs-filename
             fs
               .unlink(file.path)
               .catch((err) =>

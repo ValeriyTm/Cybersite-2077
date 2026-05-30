@@ -9,6 +9,7 @@ export const CursorTrail = () => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setDots((prev) => {
+        // eslint-disable-next-line sonarjs/pseudo-random
         const newDot = { x: e.clientX, y: e.clientY, id: Math.random() };
         //Ограничиваем количество: берем последние 10 штук + новая
         const limited = prev.length > 10 ? prev.slice(-10) : prev;

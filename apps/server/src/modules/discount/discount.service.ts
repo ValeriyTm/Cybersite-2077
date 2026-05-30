@@ -112,6 +112,8 @@ export class DiscountService {
     for (const user of users) {
       // Выбираем случайный байк из массива в памяти:
       const randomIndex = Math.floor(Math.random() * bikesCount);
+      //Т.к. index генерируется не клиентом, а нами, то отключаем линтер:
+      // eslint-disable-next-line security/detect-object-injection
       const randomBike = allBikes[randomIndex];
 
       //Формируем данные для пакетной вставки:
