@@ -16,7 +16,7 @@ import { logger } from "./shared/lib/logger.js";
 //Для Prometheus:
 import client from "prom-client";
 //Роутеры для модулей:
-import { identityRouter } from "./modules/identity/identity.routes.js";
+import identityRouter from "./modules/identity/identity.routes.js";
 import catalogRouter from "./modules/catalog/catalog.routes.js";
 import tradingRouter from "./modules/trading/trading.routes.js";
 import warehouseRouter from "./modules/warehouse/warehouse.routes.js";

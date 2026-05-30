@@ -11,5 +11,5 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # 4. Открываем 80 порт для внешнего мира
 EXPOSE 80
 
-# 5. Запускаем Nginx (команда по умолчанию для этого образа)
+# 5. Запускаем Nginx:
 CMD ["nginx", "-g", "daemon off;"]

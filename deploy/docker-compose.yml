@@ -7,37 +7,37 @@ services:
       - "host.docker.internal:host-gateway"
     ports:
       - "80:80"
-    # volumes:
-    #   # Nginx отдаёт файлы фронтенда напрямую:
-    #   - ../apps/web/dist:/usr/share/nginx/html
+    volumes:
+      #   # Nginx отдаёт файлы фронтенда напрямую:
+      - ../apps/web/dist:/usr/share/nginx/html
     networks:
       - cybersite_net
     depends_on:
       - grafana
       # - server
   # ------------Бэкенд:--------------- #
-  # server:
-  #   build:
-  #     context: .. # Поднимаемся в корень проекта
-  #     dockerfile: Dockerfile
-  #     target: base # Выбираем стадию, где только зависимости
-  #   container_name: cybersite_server
-  #   restart: unless-stopped
-  #   env_file: ../.env # Файл .env из корня проекта
-  #   environment:
-  #     - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4318/v1/traces
-  #     - OTEL_SERVICE_NAME=cybersite-server
-  #   volumes:
-  #     - ../apps/server:/app/apps/server # Прокидываем код для Hot Reload
-  #     - ../packages:/app/packages
-  #   # Переопределяем команду запуска из Dockerfile на "вотч-режим"
-  #   command: npm run dev --workspace=apps/server
-  #   depends_on:
-  #     - postgres
-  #     - redis
-  #     - mongodb
-  #   networks:
-  #     - cybersite_net
+  server:
+    build:
+      context: .. # Поднимаемся в корень проекта
+      dockerfile: Dockerfile
+      target: base # Выбираем стадию, где только зависимости
+    container_name: cybersite_server
+    restart: unless-stopped
+    env_file: ../.env # Файл .env из корня проекта
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4318/v1/traces
+      - OTEL_SERVICE_NAME=cybersite-server
+    volumes:
+      - ../apps/server:/app/apps/server # Прокидываем код для Hot Reload
+      - ../packages:/app/packages
+    # Переопределяем команду запуска из Dockerfile на "вотч-режим"
+    command: npm run dev --workspace=apps/server
+    depends_on:
+      - postgres
+      - redis
+      - mongodb
+    networks:
+      - cybersite_net
   # # ------------Фронтенд:--------------- #
   # web:
   #   build:

@@ -11,4 +11,4 @@ router.use("/auth", authRouter);
 //Роуты для подмодуля профиля пользователя:
 router.use("/profile", profileRoutes);
 
-export { router as identityRouter };
+export default router;
