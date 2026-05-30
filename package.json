@@ -16,6 +16,11 @@
     "test": "vitest",
     "test:ui": "vitest --ui"
   },
+  "overrides": {
+    "axios": "^1.7.9",
+    "follow-redirects": "^1.15.6",
+    "protobufjs": "^7.4.0"
+  },
   "devDependencies": {
     "@types/uuid": "^10.0.0",
     "@vitest/ui": "^4.1.1",

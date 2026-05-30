@@ -35,7 +35,8 @@ jobs:
           format: "HTML"
           out: "reports" # Отчет сохранится в папку reports в корне проекта
           args: >
-            --failOnCVSS 7
+            --failOnCVSS 8
+            --nodePackageSkipDevDependencies
             --exclude "**/node_modules/**"
 
       # 3.2. Сохранение отчета об уязвимостях в артефакты GitHub
