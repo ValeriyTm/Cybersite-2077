@@ -1,12 +1,12 @@
 //Очередь:
-import { Queue } from "bullmq";
+import { ConnectionOptions, Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 //Логирование:
 import { logger } from "../../shared/lib/logger.js";
 
 export const reportsQueue = new Queue("reports-queue", {
-  connection: redis,
+  connection: redis as unknown as ConnectionOptions,
 });
 
 export const initReportsSchedule = async () => {

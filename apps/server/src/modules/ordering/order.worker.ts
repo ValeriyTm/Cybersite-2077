@@ -1,5 +1,5 @@
 //Воркер:
-import { Worker } from "bullmq";
+import { ConnectionOptions, Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
@@ -99,7 +99,7 @@ export const orderWorker = new Worker(
       );
     }
   },
-  { connection: redis }, //Указываем воркеру, к какому именно экземпляру Redis ему нужно
+  { connection: redis as unknown as ConnectionOptions }, //Указываем воркеру, к какому именно экземпляру Redis ему нужно
   //подключиться, чтобы «слушать» задачи.
 );
 

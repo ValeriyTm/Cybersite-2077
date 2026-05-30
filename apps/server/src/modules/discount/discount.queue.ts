@@ -1,10 +1,10 @@
 //Очередь:
-import { Queue } from "bullmq";
+import { ConnectionOptions, Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 
 export const discountQueue = new Queue("discount-tasks", {
-  connection: redis,
+  connection: redis as unknown as ConnectionOptions,
 });
 
 //Инициализируем повторяющиеся задачи:

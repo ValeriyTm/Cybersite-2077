@@ -1,10 +1,10 @@
 //Очередь:
-import { Queue } from "bullmq";
+import { ConnectionOptions, Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 
 export const supportCleanupQueue = new Queue("support-cleanup", {
-  connection: redis,
+  connection: redis as unknown as ConnectionOptions,
 });
 
 //Функция для планирования удаления файлов модуля Support (через 30 дней после закрытия вопроса):

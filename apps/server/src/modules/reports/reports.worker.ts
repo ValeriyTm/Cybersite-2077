@@ -1,5 +1,5 @@
 //Воркер:
-import { Worker } from "bullmq";
+import { ConnectionOptions, Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 //Основной сервис модуля Reports:
@@ -76,5 +76,5 @@ export const reportsWorker = new Worker(
       await telegramService.sendMessage(message);
     }
   },
-  { connection: redis },
+  { connection: redis as unknown as ConnectionOptions },
 );

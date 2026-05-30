@@ -1,5 +1,5 @@
 //Очередь:
-import { Queue } from "bullmq";
+import { ConnectionOptions, Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 //Логирование:
@@ -7,7 +7,7 @@ import { logger } from "../../shared/lib/logger.js";
 
 // Создаем очередь для заказов
 export const orderQueue = new Queue("order-tasks", {
-  connection: redis,
+  connection: redis as unknown as ConnectionOptions,
 });
 
 //Функция для добавления задачи "отменить не оплаченный заказ через час":

@@ -1,5 +1,5 @@
 //Воркер:
-import { Worker } from "bullmq";
+import { ConnectionOptions, Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
@@ -55,5 +55,5 @@ export const supportCleanupWorker = new Worker(
 
     logger.info(`Очистка файлов для тикета ${ticketId} завершена!`);
   },
-  { connection: redis },
+  { connection: redis as unknown as ConnectionOptions },
 );

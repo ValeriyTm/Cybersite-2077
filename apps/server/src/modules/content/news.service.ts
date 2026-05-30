@@ -88,7 +88,7 @@ export class NewsService {
     title: string;
     excerpt: string;
     content: string;
-    status: string;
+    status: "DRAFT" | "PUBLISHED";
     file: Express.Multer.File | undefined;
     tags?: string[];
     userId?: string;

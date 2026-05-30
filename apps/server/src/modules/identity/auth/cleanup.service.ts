@@ -1,11 +1,13 @@
 //---------Сервис для удаления из БД неподтвержденных аккаунтов, которые были созданы более 7 дней назад:
 //Очередь:
-import { Queue } from "bullmq";
+import { ConnectionOptions, Queue } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../../shared/lib/redis.js";
 import { logger } from "../../../shared/lib/logger.js";
 
-const cleanupQueue = new Queue("cleanup-queue", { connection: redis });
+const cleanupQueue = new Queue("cleanup-queue", {
+  connection: redis as unknown as ConnectionOptions,
+});
 
 export class CleanupService {
   static async init() {

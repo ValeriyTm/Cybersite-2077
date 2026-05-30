@@ -1,5 +1,5 @@
 //Воркер:
-import { Worker } from "bullmq";
+import { ConnectionOptions, Worker } from "bullmq";
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 //Основной сервис модуля Discount:
@@ -26,7 +26,7 @@ export const discountWorker = new Worker(
     }
   },
   {
-    connection: redis,
+    connection: redis as unknown as ConnectionOptions,
     lockDuration: 60000, //Устанавливаем lockDuration в 60 секунд, чтобы предотвратить повторное выполнение задачи другим воркером в случае сбоя
   },
 );
