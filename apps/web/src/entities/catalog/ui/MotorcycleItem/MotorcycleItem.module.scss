@@ -1,22 +1,25 @@
 .Card {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+
   width: 100%;
   min-width: 320px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgb(255 255 255 / 5%);
   border-radius: 12px;
-  overflow: hidden;
+
   text-decoration: none;
+
+  background: var(--auxiliary-bg-color-2);
 
   transition: all 0.3s ease;
 
   @include hover {
+    transform: translateY(-5px);
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
-    transform: translateY(-5px);
 
     .img {
       transform: scale(1.05);
@@ -26,18 +29,15 @@
 
 .imageBox {
   position: relative;
-
-  height: 180px;
-
-  background: var(--main-bg-color);
   overflow: hidden;
+  height: 180px;
+  background: var(--main-bg-color);
 }
 
 .img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-
   transition: transform 0.5s ease;
 }
 
@@ -47,14 +47,14 @@
   left: 10px;
 
   padding: 4px 8px;
+  border-radius: 4px;
 
   font-size: 0.7rem;
   font-weight: 700;
-  text-transform: uppercase;
   color: #000;
+  text-transform: uppercase;
 
   background: var(--accent-text-color);
-  border-radius: 4px;
 }
 
 .presence {
@@ -63,36 +63,36 @@
   left: 10px;
 
   padding: 4px 8px;
+  border-radius: 4px;
 
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--color-light);
 
   background: var(--accent-text-color);
-  border-radius: 4px;
 }
 
 .info {
   display: flex;
   flex-direction: column;
-  padding: 16px;
   gap: 12px;
+  padding: 16px;
 }
 
 .model {
+  overflow: hidden;
+
   margin: 0;
 
   font-size: 1.2rem;
   color: var(--main-text-color);
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
 }
 
 .specs {
   display: flex;
   gap: 12px;
-
   color: var(--auxiliary-text-color);
 }
 
@@ -100,6 +100,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   margin-top: auto;
   padding-top: 12px;
 }
@@ -107,42 +108,44 @@
 .rating {
   display: flex;
   flex-direction: row;
-
   color: var(--color-rating);
 }
 
 .listView {
+  transform: none !important; // В списке анимация поднятия не нужна
+
   display: flex;
   flex-direction: row;
+  gap: 20px;
   align-items: center;
+
   min-height: 60px;
   padding: 12px 24px;
   padding-right: 25px;
-  gap: 20px;
-
-  transform: none !important; //В списке анимация поднятия не нужна
 
   .info,
   .infoFav {
     display: flex;
     flex-direction: row;
+    gap: 40px;
     align-items: center;
     justify-content: space-between !important;
+
     width: 100%;
     padding: 0;
-    gap: 40px;
   }
 
   .info {
     @media (width <= 1350px) {
       flex-direction: column;
-      padding-top: 10px;
       gap: 10px;
+      padding-top: 10px;
 
       .footer {
         padding-top: 10px;
+
         /* pxtorem-disable-next-line */
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid rgb(255 255 255 / 5%);
       }
     }
   }
@@ -150,13 +153,14 @@
   .infoFav {
     @media (width <= 900px) {
       flex-direction: column;
-      padding-top: 10px;
       gap: 10px;
+      padding-top: 10px;
 
       .footer {
         padding-top: 10px;
+
         /* pxtorem-disable-next-line */
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid rgb(255 255 255 / 5%);
       }
     }
   }
@@ -164,8 +168,8 @@
   .mainTitleGroup {
     display: flex;
     flex: 2;
-    align-items: center;
     gap: 15px;
+    align-items: center;
 
     @include desktop {
       max-width: 450px;
@@ -176,13 +180,13 @@
     }
 
     @include laptop-s {
-      max-width: 380px;
       gap: 10px;
+      max-width: 380px;
     }
 
     @include tablet {
-      max-width: 240px;
       gap: 7px;
+      max-width: 240px;
     }
 
     @include mobile-s {
@@ -194,9 +198,10 @@
   .footer {
     display: flex;
     flex: 1;
-    justify-content: flex-end;
-    padding: 0;
     gap: 20px;
+    justify-content: flex-end;
+
+    padding: 0;
 
     @include mobile {
       gap: 0;
@@ -210,29 +215,28 @@
 
 .ratingAndAction {
   display: flex;
-  align-items: center;
   gap: 15px;
+  align-items: center;
 }
 
 .badgeDiscount {
   position: absolute;
+  z-index: 10;
   right: 10px;
   bottom: 10px;
-  z-index: 10;
 
   padding: 4px 10px;
+  border-radius: 4px;
 
   font-size: 0.8rem;
   font-weight: 900;
   color: #fff;
 
   background: #2da109;
-  border-radius: 4px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 30%);
 
   &.personal {
     color: #f80000;
-
     background: #f39c12;
   }
 }
@@ -240,8 +244,8 @@
 .priceBlock {
   display: flex;
   flex-direction: column;
-  min-width: 120px;
   gap: 2px;
+  min-width: 120px;
 
   .oldPrice {
     font-size: 0.9rem;

@@ -1,31 +1,35 @@
 .burger {
-  width: 40px;
-  height: 21px;
+  cursor: pointer;
+
+  position: fixed;
+  z-index: 3000;
+  top: 15px;
+  right: 20px;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: none;
-  /* pxtorem-disable-next-line */
-  border: none;
-  cursor: pointer;
-  z-index: 1400;
 
   box-sizing: content-box;
+  width: 40px;
+  height: 21px;
   padding: 4px;
 
-  position: fixed;
-  top: 15px;
-  right: 20px;
-  z-index: 3000;
+  /* pxtorem-disable-next-line */
+  border: none;
+
+  background: none;
 
   &::after {
     content: "";
+
     position: absolute;
-    height: 44px;
-    width: 44px;
     top: 50%;
     left: 50%;
     translate: -50% -50%;
+
+    width: 44px;
+    height: 44px;
   }
 
   @include hover {
@@ -38,8 +42,10 @@
 
   span {
     display: block;
+
     width: 100%;
     height: 2px;
+
     background-color: var(--accent-bg-color);
 
     transition: all 0.3s ease-in-out;
@@ -49,9 +55,11 @@
     span:nth-child(1) {
       transform: translateY(9px) rotate(45deg);
     }
+
     span:nth-child(2) {
       opacity: 0;
     }
+
     span:nth-child(3) {
       transform: translateY(-9px) rotate(-45deg);
     }

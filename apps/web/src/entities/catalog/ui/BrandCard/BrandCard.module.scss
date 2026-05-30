@@ -2,13 +2,16 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+
   padding: 18px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgb(255 255 255 / 5%);
   border-radius: 12px;
+
   text-decoration: none;
+
+  background: var(--auxiliary-bg-color-2);
 
   transition: all 0.3s ease;
 
@@ -17,10 +20,10 @@
   }
 
   @include hover {
-    background: var(--auxiliary-bg-color-2);
-    border-color: var(--accent-text-color);
-    box-shadow: 0 0 20px var(--accent-text-color);
     transform: scale(1.02);
+    border-color: var(--accent-text-color);
+    background: var(--auxiliary-bg-color-2);
+    box-shadow: 0 0 20px var(--accent-text-color);
   }
 }
 
@@ -33,13 +36,12 @@ p {
 .text {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 }
 
 .name {
-  margin: 0 0 8px 0;
-
+  margin: 0 0 8px;
   font-size: 1.4rem;
   color: var(--accent-text-color);
   text-align: center;
@@ -48,10 +50,10 @@ p {
 .info {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
+  align-items: center;
 
-  color: rgba(255, 255, 255, 0.4);
+  color: rgb(255 255 255 / 40%);
 }
 
 .dot {
@@ -59,17 +61,19 @@ p {
 }
 
 .frame {
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 50px;
   height: 50px;
-  overflow: hidden;
 
-  background-color: white;
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 20%;
+
+  background-color: white;
 }
 
 .logo {
@@ -81,9 +85,8 @@ p {
 .content {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-items: center;
   gap: 20px;
+  place-items: center center;
 }
 
 .count {

@@ -1,7 +1,7 @@
 // @use "./functions" as *;
 
-//------------------------------Размеры экрана:------------------------//
-//Брейкпоинты (все, что выше - Desktop XL):
+// ------------------------------Размеры экрана:------------------------//
+// Брейкпоинты (все, что выше - Desktop XL):
 $desktop: 1599.98px;
 $laptop: 1440.98px;
 $laptop-s: 1199.92px;
@@ -9,85 +9,85 @@ $tablet: 1023.98px;
 $mobile: 767.98px;
 $mobile-s: 480.98px;
 
-//Для экранов менее 1600px:
+// Для экранов менее 1600px:
 @mixin desktop {
   @media (width <= $desktop) {
     @content;
   }
 }
 
-//Для экранов 1441px и более:
+// Для экранов 1441px и более:
 @mixin laptop-above {
   @media (width > $laptop) {
     @content;
   }
 }
 
-//Для экранов менее 1441px:
+// Для экранов менее 1441px:
 @mixin laptop {
   @media (width <= $laptop) {
     @content;
   }
 }
 
-//Для экранов 1200px и более:
+// Для экранов 1200px и более:
 @mixin laptop-s-above {
   @media (width > $laptop-s) {
     @content;
   }
 }
 
-//Для экранов менее 1200px:
+// Для экранов менее 1200px:
 @mixin laptop-s {
   @media (width <= $laptop-s) {
     @content;
   }
 }
 
-//Для экранов 1024px и более:
+// Для экранов 1024px и более:
 @mixin tablet-above {
   @media (width > $tablet) {
     @content;
   }
 }
 
-//Для экранов менее 1024px:
+// Для экранов менее 1024px:
 @mixin tablet {
   @media (width <= $tablet) {
     @content;
   }
 }
 
-//Для экранов 768px и более:
+// Для экранов 768px и более:
 @mixin mobile-above {
   @media (width > $mobile) {
     @content;
   }
 }
 
-//Для экранов менее 768px:
+// Для экранов менее 768px:
 @mixin mobile {
   @media (width <= $mobile) {
     @content;
   }
 }
 
-//Для экранов 481px и более:
+// Для экранов 481px и более:
 @mixin mobile-s-above {
   @media (width > $mobile-s) {
     @content;
   }
 }
 
-//Для экранов менее 481px:
+// Для экранов менее 481px:
 @mixin mobile-s {
   @media (width <= $mobile-s) {
     @content;
   }
 }
 
-//-------------------------------------------------------------------//
-//Реализует эффекты при наведении на устройствах с поддержкой hover и при активации на устройствах без поддержки hover (например, мобильных):
+// -------------------------------------------------------------------//
+// Реализует эффекты при наведении на устройствах с поддержкой hover и при активации на устройствах без поддержки hover (например, мобильных):
 @mixin hover($hasActiveEffectOnMobile: true) {
   @media (any-hover: hover) {
     &:hover {
@@ -95,7 +95,7 @@ $mobile-s: 480.98px;
     }
   }
 
-  @if ($hasActiveEffectOnMobile) {
+  @if $hasActiveEffectOnMobile {
     @media (any-hover: none) {
       &:active {
         @content;

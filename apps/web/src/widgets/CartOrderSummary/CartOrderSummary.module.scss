@@ -1,13 +1,16 @@
 .summary {
-  background: var(--auxiliary-bg-color-2);
-  padding: 30px;
-  border-radius: 16px;
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
   position: sticky;
   top: 120px;
-  width: 100%;
+
   box-sizing: border-box;
+  width: 100%;
+  padding: 30px;
+
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  border-radius: 16px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include hover {
     box-shadow: 0 10px 30px var(--accent-text-color);
@@ -22,60 +25,69 @@
   }
 
   h3 {
-    color: var(--main-text-color);
-    font-size: 1.5rem;
-    margin-bottom: 10px;
     margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: var(--main-text-color);
 
     @include laptop-s {
-      text-align: center;
       font-size: 2rem;
+      text-align: center;
     }
   }
 
   & > button {
-    max-width: none;
     width: 100%;
+    max-width: none;
   }
 
   .summaryRow {
     display: flex;
     justify-content: space-between;
+
     margin-bottom: 15px;
-    color: var(--auxiliary-text-color);
+
     font-size: 1rem;
+    color: var(--auxiliary-text-color);
 
     &.total {
       margin-top: 25px;
       padding-top: 20px;
+
       /* pxtorem-disable-next-line */
       border-top: 1px solid #333;
-      color: var(--main-text-color);
+
       font-size: 1.4rem;
       font-weight: 800;
+      color: var(--main-text-color);
     }
   }
 }
 
 .warning {
-  color: var(--color-danger);
+  margin-block: 10px;
+
   font-size: 0.85rem;
   font-weight: 500;
-  margin-block: 10px;
   line-height: 1.4;
+  color: var(--color-danger);
 }
 
 .checkoutBtn {
-  width: 100%;
-  background: var(--accent-text-color);
-  color: var(--main-text-color);
-  border: none;
-  padding: 18px;
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: 1.1rem;
   cursor: pointer;
+
+  width: 100%;
   margin-top: 20px;
+  padding: 18px;
+  border: none;
+  border-radius: 10px;
+
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--main-text-color);
+
+  background: var(--accent-text-color);
+
   transition: all 0.2s;
 
   @include mobile-s {
@@ -84,28 +96,31 @@
 
   @include hover {
     &:not(:disabled) {
-      opacity: 0.8;
       transform: translateY(-2px);
+      opacity: 0.8;
     }
   }
 
   &:disabled {
-    opacity: 0.3;
     cursor: not-allowed;
-    background: var(--auxiliary-text-color);
     color: #000;
+    opacity: 0.3;
+    background: var(--auxiliary-text-color);
   }
 }
 
 .promoSection {
+  display: flex;
+  flex-direction: column;
+
   margin: 20px 0;
   padding: 15px;
-  background: var(--main-bg-color);
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-text-color);
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
+
+  background: var(--main-bg-color);
 
   @include laptop-s {
     text-align: center;
@@ -113,10 +128,11 @@
 
   .inputGroup {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
     flex-direction: column;
+    gap: 10px;
     align-items: center;
+
+    margin-top: 10px;
 
     input {
       margin-block: 0;
@@ -138,32 +154,37 @@
 
     @include mobile {
       flex-direction: column;
-
       align-items: center;
     }
   }
 
   .successMsg {
     margin-top: 10px;
-    color: var(--color-success);
+
     font-size: 0.85rem;
     font-weight: 600;
+    color: var(--color-success);
     text-align: center;
   }
 }
 
 .removeBtn {
-  background-color: #c0676f;
-  border: none;
-  color: var(--color-light);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
   cursor: pointer;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+
   font-size: 10px;
+  color: var(--color-light);
+
+  background-color: #c0676f;
+
   transition: background-color 0.2s;
 
   @include hover {

@@ -1,7 +1,7 @@
-//Модалка в общем:
+// Модалка в общем:
 .modalOverlay {
   position: fixed;
-  z-index: 9999; //Поверх всего
+  z-index: 9999; // Поверх всего
   inset: 0;
 
   display: flex;
@@ -10,7 +10,7 @@
 
   padding: 20px;
 
-  background: rgba(0, 0, 0, 0.85);
+  background: rgb(0 0 0 / 85%);
   backdrop-filter: blur(4px);
 
   .modal {
@@ -20,11 +20,12 @@
     width: 100%;
     max-width: 650px;
 
-    background: var(--auxiliary-bg-color);
     /* pxtorem-disable-next-line */
     border: 1px solid #333;
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+
+    background: var(--auxiliary-bg-color);
+    box-shadow: 0 20px 60px rgb(0 0 0 / 80%);
 
     animation: modalAppear 0.3s ease-out;
   }
@@ -32,16 +33,17 @@
 
 @keyframes modalAppear {
   from {
-    opacity: 0;
     transform: translateY(20px);
+    opacity: 0;
   }
+
   to {
-    opacity: 1;
     transform: translateY(0);
+    opacity: 1;
   }
 }
 
-//Header:
+// Header:
 .modalHeader {
   display: flex;
   align-items: center;
@@ -54,24 +56,26 @@
 
   h4 {
     margin: 0;
-
     color: var(--accent-text-color);
     text-transform: uppercase;
   }
 
   .closeBtn {
-    position: relative;
-
-    font-size: 1.2rem;
-    color: var(--auxiliary-text-color);
     cursor: pointer;
 
-    background: none;
+    position: relative;
+
     /* pxtorem-disable-next-line */
     border: none;
 
+    font-size: 1.2rem;
+    color: var(--auxiliary-text-color);
+
+    background: none;
+
     &::after {
       content: "";
+
       position: absolute;
       top: 50%;
       left: 50%;
@@ -87,7 +91,7 @@
   }
 }
 
-//Вопрос от пользователя:
+// Вопрос от пользователя:
 .ticketInfo {
   display: flex;
   flex-direction: column;
@@ -99,12 +103,11 @@
   border-bottom: 1px solid #222;
 
   .infoRow {
-    color: var(--auxiliary-text-color);
     font-size: 0.9rem;
+    color: var(--auxiliary-text-color);
 
     strong {
       margin-right: 5px;
-
       color: var(--color-light);
     }
   }
@@ -112,10 +115,10 @@
   .messageBox {
     padding: 15px;
 
-    background: var(--auxiliary-bg-color-2);
     /* pxtorem-disable-next-line */
     border: 1px solid #222;
     border-radius: 8px;
+    background: var(--auxiliary-bg-color-2);
 
     strong {
       color: var(--accent-text-color);
@@ -123,14 +126,13 @@
 
     p {
       margin-top: 8px;
-
-      color: var(--auxiliary-text-color);
       line-height: 1.5;
+      color: var(--auxiliary-text-color);
     }
   }
 }
 
-//Блок вложений:
+// Блок вложений:
 .attachmentsBlock {
   margin-top: 10px;
 
@@ -138,50 +140,48 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-
     margin-top: 10px;
   }
 
   .fileLink {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
 
     padding: 6px 12px;
 
-    color: var(--auxiliary-text-color);
-    font-size: 0.8rem;
-    text-decoration: none;
-
-    background: var(--auxiliary-bg-color-2);
     /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     border-radius: 4px;
+
+    font-size: 0.8rem;
+    color: var(--auxiliary-text-color);
+    text-decoration: none;
+
+    background: var(--auxiliary-bg-color-2);
+
     transition: 0.2s;
 
     @include hover {
-      color: var(--main-text-color);
-
-      background: var(--accent-text-color);
       border-color: var(--accent-text-color);
+      color: var(--main-text-color);
+      background: var(--accent-text-color);
     }
   }
 }
 
-//Ответ:
+// Ответ:
 .answerArea {
   display: flex;
   flex-direction: column;
   gap: 10px;
-
   padding: 20px;
 }
 
-//Кнопки подтверждения/выхода:
+// Кнопки подтверждения/выхода:
 .modalActions {
   display: flex;
-  justify-content: flex-end;
   gap: 15px;
-
-  padding: 0 20px 20px 20px;
+  justify-content: flex-end;
+  padding: 0 20px 20px;
 }

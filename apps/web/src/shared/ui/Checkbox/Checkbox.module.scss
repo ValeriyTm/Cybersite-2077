@@ -2,42 +2,42 @@
   display: flex;
   flex-direction: column;
   margin: 20px 0;
-
   text-align: left;
 }
 
 .checkboxLabel {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-
   cursor: pointer;
+
+  position: relative;
+
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
 
   // Увеличенная невидимая область клика вокруг чекбокса
   &::after {
+    content: "";
+
     position: absolute;
+    z-index: 1;
     top: 50%;
     right: 0;
     left: 0;
-    z-index: 1;
-    height: 44px;
-
-    content: "";
     transform: translateY(-50%);
+
+    height: 44px;
   }
 
   input {
+    cursor: pointer;
+
     position: relative;
     z-index: 2; // Чтобы инпут был выше невидимой области клика
 
-    accent-color: var(--accent-text-color);
-
     width: 18px;
     height: 18px;
-    accent-color: var(--accent-text-color);
 
-    cursor: pointer;
+    accent-color: var(--accent-text-color);
 
     &.inputError {
       border-radius: 2px;
@@ -56,7 +56,6 @@
   position: relative;
   z-index: 2; // Ссылки внутри текста должны быть кликабельны
   flex: 1;
-
   line-height: 1.4;
 
   a {
@@ -80,7 +79,6 @@
 .errorText {
   display: block;
   margin-top: 4px;
-
   font-size: 12px;
   color: var(--color-danger);
 }
@@ -90,20 +88,21 @@
 }
 
 .single {
+  position: relative;
   width: 18px;
   height: 18px;
   accent-color: var(--accent-text-color);
 
-  position: relative;
-
   &::after {
     content: "";
+
     position: absolute;
-    width: 44px;
-    height: 44px;
     top: 50%;
     left: 50%;
     translate: -50% -50%;
+
+    width: 44px;
+    height: 44px;
   }
 
   @include hover {

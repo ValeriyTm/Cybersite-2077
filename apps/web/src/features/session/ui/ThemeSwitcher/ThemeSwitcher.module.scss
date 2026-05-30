@@ -7,16 +7,16 @@
   }
 
   .themeWrapper {
-    background-color: transparent;
-    border: none;
-    height: 44px;
     width: 44px;
+    height: 44px;
+    border: none;
+    background-color: transparent;
   }
 
   img {
+    cursor: pointer;
     width: 30px;
     height: 30px;
-    cursor: pointer;
     transition:
       filter 0.3s ease,
       transform 0.2s;
@@ -30,8 +30,8 @@
     }
 
     &.active {
-      filter: grayscale(0%);
       transform: scale(1.1);
+      filter: grayscale(0%);
     }
   }
 }

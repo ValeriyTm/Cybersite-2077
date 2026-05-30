@@ -16,9 +16,8 @@
 
 .client {
   max-width: 150px;
+  word-break: break-all; // Разрывает слово в любом месте (если нужно)
 
-  //Перенос текста:
-  word-wrap: break-word; //Старый стандарт
-  overflow-wrap: break-word; //Современный стандарт
-  word-break: break-all; //Разрывает слово в любом месте (если нужно)
+  // Перенос текста: // Старый стандарт
+  overflow-wrap: break-word; // Современный стандарт
 }

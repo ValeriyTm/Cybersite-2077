@@ -5,12 +5,15 @@
 
 .toggleWrapper {
   display: flex;
-  background: var(--auxiliary-bg-color-2);
+
+  margin-bottom: 24px;
+  padding: 4px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 24px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include mobile {
     margin-inline: 10px;
@@ -18,14 +21,19 @@
 }
 
 .toggleButton {
+  cursor: pointer;
+
   flex: 1;
+
   padding: 10px;
+
   /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
-  cursor: pointer;
-  background: transparent;
+
   color: var(--auxiliary-text-color);
+
+  background: transparent;
 
   transition:
     background-color 0.3s ease,
@@ -36,20 +44,26 @@
 .isActive {
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
-  background: var(--basic-gradient);
-  color: var(--main-text-color);
-  -webkit-text-stroke: 0.1px black;
+
   font-size: 20px;
+  color: var(--main-text-color);
+
+  background: var(--basic-gradient);
+
+  -webkit-text-stroke: 0.1px black;
 }
 
 .formCard {
-  background: var(--auxiliary-bg-color-2);
+  padding: 32px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
-  padding: 32px;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+
   text-align: center;
+
+  background: var(--auxiliary-bg-color-2);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 5%);
 
   @include mobile {
     margin-inline: 10px;
@@ -70,10 +84,13 @@
   &::before,
   &::after {
     content: "";
+
     flex: 1;
+
     height: 1px;
-    background: var(--accent-text-color);
     margin: 0 10px;
+
+    background: var(--accent-text-color);
   }
 }
 

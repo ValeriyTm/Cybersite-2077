@@ -1,7 +1,7 @@
 .productRow {
   display: flex;
-  align-items: center;
   gap: 24px;
+  align-items: center;
 
   padding: 20px 24px;
 
@@ -16,18 +16,15 @@
 
   @include tablet {
     gap: 14px;
-
     padding: 0 10px;
   }
 
   @include mobile {
     flex-direction: column;
-
     padding-bottom: 10px;
 
     &:not(:last-child) {
       margin-bottom: 16px;
-
       border-bottom: 1px solid var(--auxiliary-text-color);
     }
 
@@ -44,7 +41,6 @@
 
 .productInfo {
   flex: 1;
-
   text-align: left;
 
   a {
@@ -53,14 +49,12 @@
 
   h4 {
     margin-bottom: 8px;
-
     font-size: 1.1rem;
     color: var(--color-light);
   }
 
   p {
     margin-bottom: 4px;
-
     font-size: 0.85rem;
     color: #888;
 
@@ -72,9 +66,7 @@
 
 .imageWrapper {
   position: relative;
-
   flex-shrink: 0;
-
   width: 90px;
   height: 90px;
 
@@ -105,10 +97,10 @@
     border: 2px solid #1a1a1a;
     border-radius: 50%;
 
-    background: var(--accent-text-color);
-
-    color: #000;
     font-size: 0.75rem;
     font-weight: 900;
+    color: #000;
+
+    background: var(--accent-text-color);
   }
 }

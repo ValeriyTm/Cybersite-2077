@@ -1,26 +1,28 @@
 .section {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  padding: 25px;
-  box-sizing: border-box;
   gap: 20px;
 
-  background: var(--auxiliary-bg-color-2);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 25px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 16px;
 
+  background: var(--auxiliary-bg-color-2);
+
   h3 {
-    padding-bottom: 15px;
     margin-top: 0;
     margin-bottom: 20px;
+    padding-bottom: 15px;
+
+    /* pxtorem-disable-next-line */
+    border-bottom: 1px solid rgb(255 255 255 / 10%);
 
     font-size: 1.3rem;
     color: #fff;
-
-    /* pxtorem-disable-next-line */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
     @include mobile {
       margin: 0;
@@ -37,13 +39,14 @@
 .miniItem {
   display: flex;
   justify-content: space-between;
+
   padding: 12px 0;
 
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
-
   /* pxtorem-disable-next-line */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgb(255 255 255 / 3%);
+
+  font-size: 1rem;
+  color: rgb(255 255 255 / 70%);
 
   @include mobile-s {
     flex-direction: column;

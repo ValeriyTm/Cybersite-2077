@@ -9,61 +9,75 @@
   height: 100%;
 
   :global(.swiper-pagination) {
-    bottom: 25px !important; //Поднимаем точки выше от нижнего края
+    bottom: 25px !important; // Поднимаем точки выше от нижнего края
   }
 
-  //Точки пагинации:
+  // Точки пагинации:
   :global(.swiper-pagination-bullet) {
     position: relative; /* Обязательно для работы ::before */
-    background: var(--accent-text-color);
-    height: 20px;
+
+    display: inline-flex;
+
     width: 20px;
+    height: 20px;
+
     /* pxtorem-disable-next-line */
     border: 2px solid black;
-    display: inline-flex;
+
+    background: var(--accent-text-color);
 
     &::before {
       content: "";
+
       position: absolute;
-      width: 44px;
-      height: 44px;
       top: 50%;
       left: 50%;
       translate: -50% -50%;
+
+      width: 44px;
+      height: 44px;
     }
   }
 }
 
 .slide {
   position: relative;
-  width: 100%;
-  height: 100%;
+
   display: flex;
   justify-content: center;
-  background: var(--accent-text-color); //Скрываем задний текст
+
+  width: 100%;
+  height: 100%;
+
+  background: var(--accent-text-color); // Скрываем задний текст
 
   img {
     height: 100%;
-    object-fit: cover; // Фото заполнит всё пространство
+
     /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
+    object-fit: cover; // Фото заполнит всё пространство
   }
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+
   display: flex;
   align-items: center;
 
+  background: linear-gradient(to top, rgb(0 0 0 / 80%), transparent);
+
   h2 {
-    color: var(--main-text-color);
-    -webkit-text-stroke: 1px var(--accent-text-color);
+    padding-left: 20px;
+
     font-size: 3rem;
+    color: var(--main-text-color);
     text-transform: uppercase;
     letter-spacing: 2px;
-    padding-left: 20px;
+
+    -webkit-text-stroke: 1px var(--accent-text-color);
 
     @include mobile-s {
       font-size: 2rem;

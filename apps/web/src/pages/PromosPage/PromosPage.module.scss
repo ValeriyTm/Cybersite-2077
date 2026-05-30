@@ -1,8 +1,7 @@
 .container {
+  max-width: var(--container-width);
   margin: 40px auto;
   padding: 0 20px;
-
-  max-width: var(--container-width);
 
   @include tablet {
     text-align: center;
@@ -15,13 +14,11 @@
 
 .title {
   margin-bottom: 10px;
-
   font-size: 2.5rem;
 }
 
 .subtitle {
   margin-bottom: 40px;
-
   color: var(--auxiliary-text-color);
 
   @include mobile {
@@ -36,20 +33,20 @@
 }
 
 .emptyState {
+  max-width: 600px;
   margin: 0 auto;
   padding: 60px 20px;
+
   /* pxtorem-disable-next-line */
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgb(255 255 255 / 10%);
   border-radius: 12px;
-
-  max-width: 600px;
-
-  background: var(--auxiliary-bg-color-2);
 
   font-size: 1.1rem;
   line-height: 1.5;
   color: var(--auxiliary-text-color);
   text-align: center;
+
+  background: var(--auxiliary-bg-color-2);
 }
 
 .loader {

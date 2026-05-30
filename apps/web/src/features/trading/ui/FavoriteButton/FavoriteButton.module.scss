@@ -1,73 +1,81 @@
-//Вариант кнопки для режима grid:
+// Вариант кнопки для режима grid:
 .favoriteBtn {
+  cursor: pointer;
+
   position: absolute;
+  z-index: 10;
   top: 10px;
   right: 10px;
-  z-index: 10;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 32px;
   height: 32px;
 
-  font-size: 14px;
-  cursor: pointer;
-
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
   /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(255 255 255 / 10%);
   border-radius: 50%;
+
+  font-size: 14px;
+
+  background: rgb(0 0 0 / 50%);
+  backdrop-filter: blur(4px);
 
   transition: all 0.2s ease;
 
   &::after {
+    content: "";
+
     position: absolute;
     top: 50%;
     left: 50%;
+    transform: translate(-50%, -50%);
+
     width: 44px;
     height: 44px;
-
-    content: "";
-    transform: translate(-50%, -50%);
   }
 
   @include hover {
-    background: rgba(0, 0, 0, 0.8);
     transform: scale(1.1);
+    background: rgb(0 0 0 / 80%);
   }
 
   &.active {
-    background: var(--color-light);
     border-color: var(--color-light);
+    background: var(--color-light);
   }
 }
 
-//Вариант кнопки для режима list:
+// Вариант кнопки для режима list:
 .listFavoriteBtn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 5px;
-
-  font-size: 1.2rem;
   cursor: pointer;
 
-  background: none;
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  padding: 5px;
   border: none;
+
+  font-size: 1.2rem;
+
+  background: none;
 
   transition: transform 0.2s;
 
   &::after {
+    content: "";
+
     position: absolute;
     top: 50%;
     left: 50%;
+    transform: translate(-50%, -50%);
+
     width: 44px;
     height: 44px;
-
-    content: "";
-    transform: translate(-50%, -50%);
   }
 
   @include hover {
@@ -76,33 +84,36 @@
 }
 
 .detailsFavoriteBtn {
+  cursor: pointer;
+
   display: flex;
+  gap: 8px;
   align-items: center;
   justify-content: center;
+
   width: 100%;
   min-height: 44px;
   padding: 8px 24px;
-  gap: 8px;
 
-  font-size: 14px;
-  text-align: center;
-  color: var(--main-text-color);
-  cursor: pointer;
-
-  background: var(--main-bg-color);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-text-color);
   border-radius: 10px;
 
+  font-size: 14px;
+  color: var(--main-text-color);
+  text-align: center;
+
+  background: var(--main-bg-color);
+
   transition: all 0.2s ease;
 
   @include hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
   }
 
   &.active {
-    background: rgba(255, 71, 87, 0.1);
     border-color: #ff4757;
+    background: rgb(255 71 87 / 10%);
 
     span {
       color: #ff4757;

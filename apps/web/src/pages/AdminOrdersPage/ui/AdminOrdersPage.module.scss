@@ -10,10 +10,11 @@
 
   padding: 15px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 8px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include mobile-s {
     flex-direction: column;

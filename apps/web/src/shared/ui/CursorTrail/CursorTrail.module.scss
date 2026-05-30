@@ -1,16 +1,19 @@
 .dot {
+  pointer-events: none;
+  will-change: transform, opacity, left, top;
+
   position: fixed;
+  z-index: 9999;
+
   width: 4px;
   height: 4px;
-  background-color: var(--accent-text-color);
-  pointer-events: none;
-  z-index: 9999;
   border-radius: 50%;
+
+  background-color: var(--accent-text-color);
   box-shadow:
     0 0 8px var(--reserve-text-color),
     0 0 15px #0d0208;
 
   // Плавное изменение при обновлении стейта:
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform, opacity, left, top;
 }

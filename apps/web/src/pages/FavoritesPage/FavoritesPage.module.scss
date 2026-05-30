@@ -6,31 +6,32 @@
   padding: 0 20px;
 
   h1 {
-    padding-bottom: 15px;
     margin-bottom: 30px;
+    padding-bottom: 15px;
+
+    /* pxtorem-disable-next-line */
+    border-bottom: 1px solid rgb(255 255 255 / 10%);
 
     font-size: 2rem;
     color: var(--accent-text-color);
-
-    /* pxtorem-disable-next-line */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  margin-bottom: 40px;
   gap: 12px;
+  margin-bottom: 40px;
 }
 
 .empty {
   display: flex;
   flex-direction: column;
+  gap: 20px;
   align-items: center;
   justify-content: center;
+
   padding: 100px 0;
-  gap: 20px;
 
   font-size: 1.2rem;
   color: var(--main-text-color);

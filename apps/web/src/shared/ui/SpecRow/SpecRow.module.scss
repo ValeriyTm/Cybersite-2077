@@ -1,14 +1,16 @@
 .specRow {
   display: flex;
-  justify-content: space-between;
   align-items: baseline;
+  justify-content: space-between;
+
   padding-bottom: 8px;
+
   /* pxtorem-disable-next-line */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgb(255 255 255 / 5%);
 
   span {
-    color: var(--auxiliary-text-color);
     font-size: 0.9rem;
+    color: var(--auxiliary-text-color);
     text-transform: uppercase;
     letter-spacing: 1px;
 
@@ -26,6 +28,6 @@
 }
 
 .noData {
-  color: var(--auxiliary-text-color);
   font-weight: normal;
+  color: var(--auxiliary-text-color);
 }

@@ -12,15 +12,14 @@
 
 .senderCell {
   max-width: 140px;
-
   font-size: 0.85rem;
-  //Перенос текста:
-  word-wrap: break-word;
+
+  // Перенос текста:
   overflow-wrap: break-word;
 
   .userName {
-    color: var(--main-text-color);
     font-weight: bold;
+    color: var(--main-text-color);
   }
 
   .userEmail {
@@ -28,32 +27,34 @@
   }
 
   .userPhone {
-    color: var(--auxiliary-text-color);
     font-size: 0.8rem;
+    color: var(--auxiliary-text-color);
   }
 }
 
 .categoryBadge {
   padding: 2px 8px;
 
-  color: var(--accent-text-color);
-  font-size: 0.75rem;
-
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-text-color);
   border-radius: 4px;
+
+  font-size: 0.75rem;
+  color: var(--accent-text-color);
+
+  background: var(--auxiliary-bg-color-2);
 }
 
 .descriptionWrapper {
   max-width: 200px;
 
   .descriptionText {
-    color: var(--color-light);
-    font-size: 0.85rem;
-    white-space: nowrap;
     overflow: hidden;
+
+    font-size: 0.85rem;
+    color: var(--color-light);
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 

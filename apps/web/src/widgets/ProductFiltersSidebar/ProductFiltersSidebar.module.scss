@@ -1,6 +1,6 @@
 .Sidebar {
-  width: 300px;
   flex-shrink: 0;
+  width: 300px;
 
   @include laptop-s {
     display: none;
@@ -9,21 +9,23 @@
 
 .SidebarMobile {
   position: fixed;
-  top: 201px;
   z-index: 1500;
+  top: 201px;
 
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+
   width: 300px;
   height: 745px;
-  flex-shrink: 0;
   padding: 10px 20px;
 
-  background-color: var(--main-bg-color);
   /* pxtorem-disable-next-line */
   border: 2px solid var(--accent-text-color);
   border-radius: 20px;
-  overflow-y: auto;
+
+  background-color: var(--main-bg-color);
 
   @include laptop-s-above {
     display: none;
@@ -31,16 +33,18 @@
 }
 
 .filterMobileBtn {
-  padding: 5px 20px;
-  margin-top: 5px;
-
-  color: var(--accent-text-color);
   cursor: pointer;
 
-  background-color: var(--main-bg-color);
+  margin-top: 5px;
+  padding: 5px 20px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 10px;
+
+  color: var(--accent-text-color);
+
+  background-color: var(--main-bg-color);
 
   @include laptop-s-above {
     display: none;
@@ -51,10 +55,10 @@
   margin-bottom: 14px;
 
   font-size: 1.4rem;
-  letter-spacing: 1px;
+  color: var(--main-text-color);
   text-align: center;
   text-transform: uppercase;
-  color: var(--main-text-color);
+  letter-spacing: 1px;
 
   @include laptop-s {
     margin-block: 0;
@@ -62,6 +66,8 @@
 }
 
 .exitSidebar {
+  cursor: pointer;
+
   position: absolute;
   top: 12px;
   right: 15px;
@@ -69,15 +75,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 20px;
   height: 20px;
-
-  color: var(--main-text-color);
-  cursor: pointer;
 
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 50%;
+
+  color: var(--main-text-color);
 
   @include hover {
     color: var(--accent-text-color);
@@ -85,15 +91,18 @@
 }
 
 .checkboxFilter {
+  cursor: pointer;
+
   position: relative;
+
   display: flex;
-  align-items: center;
-  padding-inline: 0;
-  padding-block: 0 16px;
   gap: 10px;
+  align-items: center;
+
+  padding-block: 0 16px;
+  padding-inline: 0;
 
   color: var(--main-text-color);
-  cursor: pointer;
 
   transition: transform 0.2s;
 
@@ -102,14 +111,15 @@
   }
 
   &::after {
+    content: "";
+
     position: absolute;
     top: 50%;
     right: 0;
     left: 0;
-    height: 44px;
-
-    content: "";
     transform: translateY(-50%);
+
+    height: 44px;
   }
 
   input[type="checkbox"] {
@@ -124,8 +134,8 @@
 
   .checkboxLabel {
     font-size: 1rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
     color: var(--auxiliary-text-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 }

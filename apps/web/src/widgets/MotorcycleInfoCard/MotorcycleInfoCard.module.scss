@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   text-align: center;
 
   p {
@@ -11,7 +10,7 @@
 }
 
 .title {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
 
   font-size: 3.5rem;
   font-weight: 900;
@@ -25,14 +24,15 @@
 
 .brandBadge {
   display: inline-block;
-  padding: 6px 16px;
+
   margin-bottom: 24px;
+  padding: 6px 16px;
+  border-radius: 4px;
 
   font-weight: 800;
   color: #000;
 
   background: var(--accent-text-color);
-  border-radius: 4px;
 
   @include mobile {
     margin-bottom: 10px;
@@ -41,7 +41,6 @@
 
 .price {
   margin-bottom: 10px;
-
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--accent-text-color);
@@ -55,7 +54,6 @@
 
 .personalDiscount {
   padding-bottom: 10px;
-
   font-weight: 700;
   font-style: italic;
   color: green;
@@ -65,29 +63,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
   // justify-content: space-between;
   width: 100%;
-  padding: 25px;
   margin: 15px 0;
+  padding: 25px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 15px;
 
+  background: var(--auxiliary-bg-color-2);
+
   @include mobile {
     width: 90%;
-    padding: 10px;
     margin-inline: 20px;
+    padding: 10px;
   }
 }
 
 .buttons {
   display: flex;
+  gap: 15px;
   align-items: center;
   justify-content: space-between;
+
   width: 100%;
-  gap: 15px;
 
   @include mobile {
     flex-direction: column;

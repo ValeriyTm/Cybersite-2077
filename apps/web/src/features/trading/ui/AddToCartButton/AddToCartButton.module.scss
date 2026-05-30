@@ -1,22 +1,23 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
-  min-height: 46px; //Фиксируем высоту, чтобы UI не прыгал при смене кнопок
   gap: 12px;
+  align-items: center;
+
+  width: 100%;
+  min-height: 46px; // Фиксируем высоту, чтобы UI не прыгал при смене кнопок
 }
 
-//Бейдж "В корзине" (для варианта card)
+// Бейдж "В корзине" (для варианта card)
 .addedBadge {
   display: flex;
-  align-items: center;
   gap: 4px;
+  align-items: center;
 
   font-size: 0.8rem;
   font-weight: 600;
-  white-space: nowrap;
   color: var(--color-success);
+  white-space: nowrap;
 
   &::before {
     content: "✓";
@@ -24,30 +25,33 @@
 }
 
 .addBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 10px 8px;
-  gap: 10px;
-
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--main-text-color);
   cursor: pointer;
 
-  background: var(--accent-text-color);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  padding: 10px 8px;
+
   /* pxtorem-disable-next-line */
   border: none;
   border-radius: 10px;
 
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--main-text-color);
+
+  background: var(--accent-text-color);
+
   transition: all 0.2s ease;
 
   @include hover {
-    opacity: 0.9;
-    scale: 1.05;
-    box-shadow: 0 5px 15px rgba(243, 156, 18, 0.2);
     transform: translateY(-2px);
+    scale: 1.05;
+    opacity: 0.9;
+    box-shadow: 0 5px 15px rgb(243 156 18 / 20%);
   }
 
   &:active {
@@ -55,9 +59,8 @@
   }
 
   &:disabled {
-    color: #666;
     cursor: not-allowed;
-
+    color: #666;
     background-color: var(--auxiliary-text-color);
   }
 }
@@ -66,14 +69,15 @@
   position: relative;
 
   &::after {
+    content: "";
+
     position: absolute;
     top: 50%;
     left: 50%;
+    translate: -50% -50%;
+
     width: 44px;
     height: 44px;
-
-    content: "";
-    translate: -50% -50%;
   }
 }
 
@@ -81,42 +85,46 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   width: 120px;
   padding: 4px;
 
-  background: var(--main-bg-color);
   /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgb(255 255 255 / 5%);
   border-radius: 10px;
 
+  background: var(--main-bg-color);
+
   button {
+    cursor: pointer;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     width: 32px;
     height: 32px;
 
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--main-text-color);
-    cursor: pointer;
-
-    background: var(--auxiliary-bg-color-2);
     /* pxtorem-disable-next-line */
     border: none;
     border-radius: 8px;
 
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--main-text-color);
+
+    background: var(--auxiliary-bg-color-2);
+
     transition: all 0.2s;
 
     @include hover {
-      background: #444;
       color: var(--accent-text-color);
+      background: #444;
     }
 
     &:disabled {
-      color: transparent;
-
       cursor: not-allowed;
+      color: transparent;
     }
   }
 
@@ -125,19 +133,20 @@
 
     font-size: 1rem;
     font-weight: 700;
-    text-align: center;
     color: var(--main-text-color);
+    text-align: center;
   }
 }
 
 @keyframes showUp {
   from {
-    opacity: 0;
     transform: scale(0.9) translateY(5px);
+    opacity: 0;
   }
+
   to {
-    opacity: 1;
     transform: scale(1) translateY(0);
+    opacity: 1;
   }
 }
 

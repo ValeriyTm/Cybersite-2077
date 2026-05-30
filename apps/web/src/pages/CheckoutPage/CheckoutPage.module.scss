@@ -11,7 +11,6 @@
 
   .title {
     margin-bottom: 30px;
-
     font-size: 2.2rem;
     font-weight: 800;
     color: var(--accent-text-color);
@@ -25,8 +24,8 @@
 .content {
   display: grid;
   grid-template-columns: 1fr 400px;
-  align-items: flex-start;
   gap: 30px;
+  align-items: flex-start;
 
   @include tablet {
     grid-template-columns: 1fr;
@@ -35,6 +34,5 @@
 
 .warehousesErrorMsg {
   padding: 40px;
-
   text-align: center;
 }

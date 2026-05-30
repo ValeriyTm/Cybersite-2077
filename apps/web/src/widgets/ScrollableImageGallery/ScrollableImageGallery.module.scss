@@ -1,9 +1,7 @@
 .wrapper {
-  padding: 20px 0;
-
-  width: 100%;
   overflow: hidden;
-
+  width: 100%;
+  padding: 20px 0;
   background: var(--auxiliary-bg-color-2);
 
   @include mobile {
@@ -12,36 +10,34 @@
 }
 
 .scrollContainer {
+  scrollbar-color: var(--accent-text-color) var(--main-bg-color); /* Цвет ползунка и цвет дорожки */
+
+  // --- Для Firefox --- // Тонкий скроллбар для Firefox
+  scrollbar-width: thin; // Толщина: auto, thin, none
+  scroll-snap-type: x mandatory; // Плавный скролл и "прилипание"
+
+  overflow-x: auto;
   display: flex;
   gap: 15px;
 
   padding: 0 20px;
-  overflow-x: auto;
 
-  //--- Для Firefox ---
-  scrollbar-width: thin; //Тонкий скроллбар для Firefox
-  scrollbar-width: thin; //Толщина: auto, thin, none
-  scrollbar-color: var(--accent-text-color) var(--main-bg-color); /* Цвет ползунка и цвет дорожки */
-  scroll-snap-type: x mandatory; //Плавный скролл и "прилипание"
-
-  //--- Для Chrome, Safari, Edge ---
+  // --- Для Chrome, Safari, Edge ---
   &::-webkit-scrollbar {
-    width: 8px; //Ширина для вертикального скролла
-    height: 8px; //Высота для горизонтального скролла
+    width: 8px; // Ширина для вертикального скролла
+    height: 8px; // Высота для горизонтального скролла
   }
 
   &::-webkit-scrollbar-track {
     border-radius: 10px;
-
     background: #333; /* Цвет дорожки */
   }
 
   &::-webkit-scrollbar-thumb {
     /* pxtorem-disable-next-line */
-    border: 2px solid #333; //Отступ вокруг ползунка (имитация gap)
+    border: 2px solid #333; // Отступ вокруг ползунка (имитация gap)
     border-radius: 10px;
-
-    background: var(--accent-text-color); //Цвет ползунка
+    background: var(--accent-text-color); // Цвет ползунка
   }
 
   &::-webkit-scrollbar-thumb:hover {
@@ -50,24 +46,24 @@
 }
 
 .item {
-  flex: 0 0 300px; //Жесткая ширина ячейки
   scroll-snap-align: start;
+
+  overflow: hidden;
+  flex: 0 0 300px; // Жесткая ширина ячейки
 
   width: auto; // Сохраняем логику flex-basis без перебивания явной шириной
   height: 200px;
-  overflow: hidden;
+
   // border-radius: 8px;
 
   @include mobile {
     flex: 0 0 200px;
-
     height: 133px;
   }
 
   a {
     display: block;
-
-    line-height: 0; //Убираем лишний отступ снизу под картинкой
+    line-height: 0; // Убираем лишний отступ снизу под картинкой
 
     &:focus-visible {
       outline: 2px solid var(--accent-text-color);
@@ -78,7 +74,6 @@
   img {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
     transition: transform 0.3s ease;
 

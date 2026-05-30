@@ -1,29 +1,35 @@
 .userOrders {
+  position: relative;
   display: flex;
   flex-direction: row;
   gap: 20px;
-  position: relative;
 
   a {
     &::before {
       content: "";
+
       position: absolute;
-      left: 0;
       bottom: -2px; // Позиция линии
-      width: 0; //В начале ширина 0
+      left: 0;
+
+      width: 0; // В начале ширина 0
       height: 2px;
+
       background-color: var(--accent-text-color);
-      transition: width 0.3s ease; //Анимация изменения ширины
+
+      transition: width 0.3s ease; // Анимация изменения ширины
     }
 
     &::after {
       content: "";
+
       position: absolute;
-      width: 44px;
-      height: 44px;
       top: 50%;
       left: 50%;
       translate: -50% -50%;
+
+      width: 44px;
+      height: 44px;
     }
   }
 
@@ -36,13 +42,18 @@
   }
 
   .iconBtn {
-    background: none;
+    cursor: pointer;
+
+    position: relative;
+
     /* pxtorem-disable-next-line */
     border: none;
-    color: rgba(10, 10, 10, 0.8);
+
     font-size: 1.4rem;
-    cursor: pointer;
-    position: relative;
+    color: rgb(10 10 10 / 80%);
+
+    background: none;
+
     transition: opacity 0.2s;
 
     @include hover {
@@ -53,15 +64,19 @@
       position: absolute;
       top: -7px;
       right: -7px;
-      background: var(--accent-text-color);
-      color: var(--color-dark);
-      font-size: 0.7rem;
-      font-weight: 800;
+
+      min-width: 18px;
       padding: 2px 6px;
-      border-radius: 20px;
+
       /* pxtorem-disable-next-line */
       border: 1px solid var(--color-dark);
-      min-width: 18px;
+      border-radius: 20px;
+
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--color-dark);
+
+      background: var(--accent-text-color);
     }
   }
 }

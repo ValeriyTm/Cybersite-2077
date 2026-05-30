@@ -1,21 +1,23 @@
 .card {
-  padding: 10px 30px;
   margin-bottom: 20px;
+  padding: 10px 30px;
+
+  /* pxtorem-disable-next-line */
+  border: 1px solid var(--accent-text-color);
+  border-radius: 20px;
 
   color: var(--main-text-color);
 
   background-color: var(--auxiliary-bg-color-2);
-  /* pxtorem-disable-next-line */
-  border: 1px solid var(--accent-text-color);
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgb(0 0 0 / 5%);
 }
 
 .row {
   display: grid;
   grid-template-columns: 140px 1fr;
-  align-items: center;
   gap: 400px;
+  align-items: center;
+
   padding: 22px 0;
 
   /* pxtorem-disable-next-line */
@@ -31,14 +33,15 @@
 
   @include mobile-s {
     grid-template-columns: 1fr;
-    justify-items: center;
     gap: 10px;
+    justify-items: center;
+
     padding: 8px 0;
 
-    //Перенос текста:
-    word-wrap: break-word; //Старый стандарт
-    overflow-wrap: break-word; //Современный стандарт
-    word-break: break-all; //Разрывает слово в любом месте (если нужно)
+    word-break: break-all; // Разрывает слово в любом месте (если нужно)
+
+    // Перенос текста: // Старый стандарт
+    overflow-wrap: break-word; // Современный стандарт
   }
 
   &:last-child {
@@ -50,11 +53,11 @@
 .label {
   display: flex;
   flex-shrink: 2;
-  align-items: center;
   gap: 12px;
+  align-items: center;
 
-  color: var(--auxiliary-text-color);
   font-size: 14px;
+  color: var(--auxiliary-text-color);
 
   @include mobile-s {
     gap: 6px;
@@ -66,15 +69,15 @@
   text-align: center;
 
   .readonly {
-    color: var(--auxiliary-text-color);
     cursor: not-allowed;
+    color: var(--auxiliary-text-color);
   }
 
   select {
     text-align: center;
 
     &:hover {
-      box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+      box-shadow: 0 0 10px 0 var(--accent-text-color);
     }
 
     &:focus-visible {
@@ -85,8 +88,8 @@
 
 .actions {
   display: flex;
-  justify-content: center;
   gap: 15px;
+  justify-content: center;
   margin-top: 20px;
 
   @include mobile {
@@ -98,13 +101,14 @@
   width: 100%;
   padding: 8px 12px;
 
+  /* pxtorem-disable-next-line */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
   font-family: inherit;
   font-size: 1rem;
   color: var(--color-dark);
 
-  /* pxtorem-disable-next-line */
-  border: 1px solid #ddd;
-  border-radius: 8px;
   outline: none;
 
   &:focus {
@@ -114,6 +118,5 @@
 
 .requiredStar {
   margin-left: 4px;
-
   color: var(--color-danger);
 }

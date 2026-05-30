@@ -1,56 +1,66 @@
 .wrapper {
-  height: 100vh;
+  position: relative;
+
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  background-color: var(--main-bg-color);
-  color: var(--main-text-color);
+
+  height: 100vh;
   padding: 20px;
-  overflow: hidden;
-  position: relative;
+
+  color: var(--main-text-color);
+  text-align: center;
+
+  background-color: var(--main-bg-color);
 }
 
 .glitchIcon {
-  font-size: 80px;
   margin-bottom: 20px;
-  filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.5));
+  font-size: 80px;
+  filter: drop-shadow(0 0 10px rgb(231 76 60 / 50%));
   animation: shake 0.5s infinite alternate;
 }
 
 .title {
-  font-size: 2rem;
   margin-bottom: 10px;
+
+  font-size: 2rem;
+  color: var(--color-danger);
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--color-danger);
 }
 
 .description {
-  color: var(--auxiliary-text-color);
   max-width: 400px;
-  line-height: 1.6;
   margin-bottom: 30px;
+  line-height: 1.6;
+  color: var(--auxiliary-text-color);
 }
 
 .refreshBtn {
+  cursor: pointer;
+
   padding: 14px 32px;
-  font-size: 14px;
-  font-weight: 700;
-  background: transparent;
-  color: var(--accent-text-color);
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 4px;
-  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-text-color);
   text-transform: uppercase;
+
+  background: transparent;
+
   transition: all 0.3s ease;
 
   @include hover {
-    background: var(--accent-text-color);
     color: #000;
-    box-shadow: 0 0 20px rgba(243, 156, 18, 0.4);
+    background: var(--accent-text-color);
+    box-shadow: 0 0 20px rgb(243 156 18 / 40%);
   }
 }
 
@@ -58,6 +68,7 @@
   0% {
     transform: translate(1px, 1px) rotate(0deg);
   }
+
   100% {
     transform: translate(-1px, -2px) rotate(-1deg);
   }

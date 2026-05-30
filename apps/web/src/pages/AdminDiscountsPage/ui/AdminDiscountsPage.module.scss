@@ -1,16 +1,17 @@
 .header {
   display: flex;
+  gap: 20px;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
 
   margin-bottom: 40px;
   padding: 30px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include mobile {
     flex-direction: column;
@@ -19,7 +20,6 @@
   @include mobile {
     h3 {
       margin-block: 10px;
-
       text-align: center;
     }
   }
@@ -34,15 +34,15 @@
 .tableSection {
   padding: 20px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
+  background: var(--auxiliary-bg-color-2);
 
   .sectionHeader {
     display: flex;
-    align-items: center;
     gap: 10px;
+    align-items: center;
 
     margin-bottom: 20px;
 
@@ -50,7 +50,6 @@
 
     h4 {
       margin: 0;
-
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -72,7 +71,6 @@
 
   h4 {
     margin: 0;
-
     text-transform: uppercase;
   }
 }

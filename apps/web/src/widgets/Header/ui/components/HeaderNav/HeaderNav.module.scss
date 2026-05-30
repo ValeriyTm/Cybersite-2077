@@ -4,11 +4,13 @@
   ul {
     display: flex;
     flex-direction: row;
+    gap: 15px;
     align-items: center;
-    list-style-type: none; //Убираем маркеры
+
     margin: 0;
     padding: 0;
-    gap: 15px;
+
+    list-style-type: none; // Убираем маркеры
 
     @include tablet {
       gap: 10px;
@@ -31,6 +33,39 @@
       color: var(--auxiliary-text-color);
       transition: color 0.2s;
 
+      // Увеличение зоны клика:
+      &::after {
+        content: "";
+
+        position: absolute;
+
+        // Центрируем по вертикали:
+        top: 50%;
+        right: 0;
+
+        // Растягиваем по ширине на всю ширину основного элемента:
+        left: 0;
+        transform: translateY(-50%);
+
+        height: 44px;
+      }
+
+      // Подчеркивание:----------------
+      &::before {
+        content: "";
+
+        position: absolute;
+        bottom: -2px; // Позиция линии
+        left: 0;
+
+        width: 0; // В начале ширина 0
+        height: 2px;
+
+        background-color: var(--accent-text-color);
+
+        transition: width 0.3s ease; // Анимация изменения ширины
+      }
+
       &.activeLink {
         color: var(--accent-text-color);
       }
@@ -39,38 +74,13 @@
         color: var(--accent-text-color);
       }
 
-      //Увеличение зоны клика:
-      &::after {
-        content: "";
-        position: absolute;
-        height: 44px;
-        //Растягиваем по ширине на всю ширину основного элемента:
-        left: 0;
-        right: 0;
-        height: 44px;
-        //Центрируем по вертикали:
-        top: 50%;
-        transform: translateY(-50%);
-      }
-
-      //Подчеркивание:----------------
-      &::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -2px; // Позиция линии
-        width: 0; //В начале ширина 0
-        height: 2px;
-        background-color: var(--accent-text-color);
-        transition: width 0.3s ease; //Анимация изменения ширины
-      }
-
       @include hover {
         &::before {
           width: 100%;
         }
       }
-      //-----------------------------
+
+      // -----------------------------
     }
   }
 }

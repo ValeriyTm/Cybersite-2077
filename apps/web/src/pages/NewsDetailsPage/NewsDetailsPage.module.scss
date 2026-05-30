@@ -1,10 +1,8 @@
 .article {
   justify-items: center;
-
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 60px 20px;
-
-  max-width: var(--container-width);
 
   @include mobile {
     padding: 20px 10px;
@@ -21,8 +19,8 @@
     margin-bottom: 15px;
 
     font-size: 0.8rem;
-    text-transform: uppercase;
     color: var(--accent-text-color);
+    text-transform: uppercase;
   }
 
   .title {
@@ -36,22 +34,21 @@
 
     @include mobile {
       margin-bottom: 10px;
-
       font-size: 2rem;
     }
   }
 }
 
 .mainImage {
+  overflow: hidden;
   justify-self: center;
+
+  width: 600px;
+  height: 300px;
 
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 4px;
-
-  width: 600px;
-  height: 300px;
-  overflow: hidden;
 
   @include mobile {
     width: 500px;
@@ -66,19 +63,16 @@
   img {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
   }
 }
 
 .content {
   justify-items: center;
-
   width: 100%;
 
   .textBlock {
     margin-bottom: 25px;
-
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--auxiliary-text-color);
@@ -88,34 +82,33 @@
     margin: 40px 0;
 
     img {
+      width: 100%;
+
       /* pxtorem-disable-next-line */
       border: 1px solid #222;
       border-radius: 8px;
-
-      width: 100%;
     }
   }
 
   .videoBlock {
+    aspect-ratio: 16/9;
     margin: 40px 0;
 
-    aspect-ratio: 16/9;
-
     iframe {
-      /* pxtorem-disable-next-line */
-      border: 1px solid var(--accent-text-color);
-
       width: 100%;
       height: 100%;
+
+      /* pxtorem-disable-next-line */
+      border: 1px solid var(--accent-text-color);
     }
   }
 
   .motoWidget {
     margin: 40px 0;
     padding: 20px;
+
     /* pxtorem-disable-next-line */
     border-left: 4px solid var(--accent-text-color);
-
     background: #111;
   }
 }

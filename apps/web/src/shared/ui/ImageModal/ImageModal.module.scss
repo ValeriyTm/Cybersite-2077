@@ -1,52 +1,52 @@
 .overlay {
+  cursor: zoom-out;
+
   position: fixed;
-  inset: 0;
   z-index: 2000;
+  inset: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: rgba(0, 0, 0, 0.9);
+  background: rgb(0 0 0 / 90%);
   backdrop-filter: blur(10px);
-
-  cursor: zoom-out;
 }
 
 .container {
   position: relative;
-
   max-width: 90vw;
   max-height: 90vh;
 
   img {
+    cursor: default;
+
     max-width: 100%;
     max-height: 90vh;
-
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     border-radius: 4px;
 
     object-fit: contain;
-    cursor: default;
+    box-shadow: 0 0 30px rgb(0 0 0 / 50%);
   }
 }
 
 .closeBtn {
+  cursor: pointer;
+
   position: absolute;
   top: -40px;
   right: -40px;
 
   padding: 10px;
+
   /* pxtorem-disable-next-line */
   border: none;
-
-  background: none;
 
   font-size: 40px;
   line-height: 1;
   color: var(--color-light);
 
-  cursor: pointer;
+  background: none;
 
   @include mobile {
     top: 0;
@@ -59,40 +59,38 @@
 }
 
 .navBtn {
+  cursor: pointer;
+  user-select: none;
+
   position: absolute;
-  top: 50%;
   z-index: 2010;
+  top: 50%;
+  transform: translateY(-50%);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  transform: translateY(-50%);
-
-  /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-
   width: 50px;
   height: 50px;
 
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px); // Эффект стекла
+  /* pxtorem-disable-next-line */
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 50%;
 
   font-size: 30px;
   color: var(--color-light);
 
-  cursor: pointer;
-  user-select: none;
+  background: rgb(255 255 255 / 10%);
+  backdrop-filter: blur(10px); // Эффект стекла
+
   transition: all 0.3s ease;
 
   @include hover {
-    border-color: var(--accent-text-color);
-
-    background: rgba(255, 255, 255, 0.2);
-
     transform: translateY(-50%) scale(1.1);
+    border-color: var(--accent-text-color);
     color: var(--accent-text-color);
+    background: rgb(255 255 255 / 20%);
   }
 
   &:active {
@@ -100,7 +98,7 @@
   }
 }
 
-//Позиционирование кнопок (выносим их за пределы фото)
+// Позиционирование кнопок (выносим их за пределы фото)
 .prevBtn {
   left: -70px;
 }
@@ -109,21 +107,21 @@
   right: -70px;
 }
 
-//Счётчик 1/5 внизу
+// Счётчик 1/5 внизу
 .counter {
   position: absolute;
   bottom: -40px;
   left: 50%;
+  transform: translateX(-50%);
 
   padding: 4px 12px;
   border-radius: 20px;
 
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.5);
-
   font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgb(255 255 255 / 60%);
+
+  background: rgb(0 0 0 / 50%);
 }
 
 @include tablet {
@@ -136,6 +134,6 @@
   }
 
   .navBtn {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgb(0 0 0 / 40%);
   }
 }

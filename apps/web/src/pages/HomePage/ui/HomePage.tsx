@@ -70,6 +70,7 @@ export const HomePage = () => {
             <MainCarousel />
           </div>
 
+
           <InfoCell
             imageSrc={teamBanner2}
             altText="Подготовка мотоцикла к упаковке"

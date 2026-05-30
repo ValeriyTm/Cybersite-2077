@@ -2,15 +2,15 @@
 
 body {
   @include fluid-text(18, 14);
-  background-color: var(--main-bg-color);
-  cursor: var(--cursor-path), auto; //Кастомный курсор
 
-  scrollbar-gutter: stable; //Чтобы страница не прыгала по горизонтали при скрытии скроллбара
+  cursor: var(--cursor-path), auto; // Кастомный курсор
+  scrollbar-gutter: stable; // Чтобы страница не прыгала по горизонтали при скрытии скроллбара
+  background-color: var(--main-bg-color);
 
   input,
   textarea,
   select {
-    @include fluid-text(18, 16); //Борьба с зумом на iPhone
+    @include fluid-text(18, 16); // Борьба с зумом на iPhone
   }
 
   input::placeholder {
@@ -30,9 +30,8 @@ h5,
 .h5,
 h6,
 .h6 {
-  color: var(--main-text-color);
-  font-family: var(--font-family-base);
   font-family: var(--main-text-font);
+  color: var(--main-text-color);
 }
 
 p,
@@ -91,17 +90,19 @@ h6,
   @include fluid-text(20, 16);
 }
 
-//Отключаем анимацию, если пользователь в настройках операционной системы режим «Уменьшение движения»:
+// Отключаем анимацию, если пользователь в настройках операционной системы режим «Уменьшение движения»:
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
   ::after {
-    animation-delay: -1ms !important;
-    animation-duration: 1ms !important;
-    animation-iteration-count: 1 !important;
-    background-attachment: initial !important;
     scroll-behavior: auto !important;
-    transition-duration: 0s !important;
+
+    background-attachment: initial !important;
+
     transition-delay: 0s !important;
+    transition-duration: 0s !important;
+    animation-duration: 1ms !important;
+    animation-delay: -1ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

@@ -1,14 +1,17 @@
 .card {
-  background-color: var(--auxiliary-bg-color-2);
-  color: var(--color-light);
+  max-width: 350px;
+  margin: 20px;
   padding: 20px;
-  border-radius: 12px;
+
   /* pxtorem-disable-next-line */
   border-left: 4px solid var(--accent-text-color);
-  max-width: 350px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+
   font-family: sans-serif;
-  margin: 20px;
+  color: var(--color-light);
+
+  background-color: var(--auxiliary-bg-color-2);
+  box-shadow: 0 4px 15px rgb(0 0 0 / 30%);
 
   @include laptop {
     margin: 10px;
@@ -21,11 +24,11 @@
 
 .header {
   display: flex;
-  align-items: center;
   gap: 15px;
+  align-items: center;
   margin-bottom: 15px;
 
-  @media (max-width: 650px) {
+  @media (width <= 650px) {
     margin-bottom: 5px;
   }
 }
@@ -33,10 +36,12 @@
 .avatar {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
+
   /* pxtorem-disable-next-line */
   border: 2px solid var(--accent-text-color);
+  border-radius: 50%;
+
+  object-fit: cover;
 }
 
 .name {
@@ -46,8 +51,8 @@
 }
 
 .stars {
-  font-size: 1.2rem;
   margin-top: 4px;
+  font-size: 1.2rem;
 }
 
 .starActive {
@@ -59,13 +64,13 @@
 }
 
 .text {
-  line-height: 1.6;
-  font-size: 18px;
-  color: var(--main-text-color);
   margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--main-text-color);
 
-  @media (max-width: 650px) {
-    line-height: 1.2;
+  @media (width <= 650px) {
     font-size: 16px !important;
+    line-height: 1.2;
   }
 }

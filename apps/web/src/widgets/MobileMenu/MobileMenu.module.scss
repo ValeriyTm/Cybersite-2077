@@ -1,14 +1,18 @@
 .overlay {
   position: fixed;
+  z-index: 1200;
   top: 0;
   left: 0;
+
+  display: flex;
+  justify-content: flex-end; // Меню выезжает справа
+
   width: 100%;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
+
+  background: rgb(0 0 0 / 70%);
   backdrop-filter: blur(8px);
-  z-index: 1200;
-  display: flex;
-  justify-content: flex-end; //Меню выезжает справа
+
   animation: fadeIn 0.3s ease;
 }
 
@@ -20,11 +24,14 @@ p {
   width: 80%;
   max-width: 300px;
   height: 100%;
-  background: var(--main-bg-color);
+  padding: 40px 30px; // Отступ сверху, чтобы не перекрывать бургер
+
   /* pxtorem-disable-next-line */
   border-left: 2px solid var(--accent-color);
-  padding: 40px 30px; //Отступ сверху, чтобы не перекрывать бургер
+
+  background: var(--main-bg-color);
   box-shadow: -10px 0 30px var(--glow-color);
+
   animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -40,18 +47,18 @@ p {
   gap: 25px;
 
   ul {
-    list-style-type: none; //Убираем маркеры
     margin: 0;
     padding: 0;
+    list-style-type: none; // Убираем маркеры
     li {
       padding-block: 2px;
     }
   }
 
   a {
-    color: var(--auxiliary-text-color);
     display: block;
     padding-block: 10px;
+    color: var(--auxiliary-text-color);
 
     @include hover {
       color: var(--accent-text-color);
@@ -60,12 +67,14 @@ p {
 }
 
 .placeholder {
-  color: var(--accent-color);
-  font-family: monospace;
-  font-size: 0.9rem;
+  padding: 20px;
+
   /* pxtorem-disable-next-line */
   border: 1px dashed var(--accent-color);
-  padding: 20px;
+
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--accent-color);
   text-align: center;
 }
 
@@ -73,6 +82,7 @@ p {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -82,6 +92,7 @@ p {
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }

@@ -1,15 +1,14 @@
 @use "sass:math";
 
-//Функция для динамической подстройки шрифта в зависимости от экрана:
+// Функция для динамической подстройки шрифта в зависимости от экрана:
 @function fluid($max: 100, $min: 10) {
-  $maxViewportWidth: 1520; //Максимальная ширина текстового блока (max-ширина контейнера самого широкого breakpoint)
-  $minViewportWidth: 360; //Минимальная ширина текстового блока
+  $maxViewportWidth: 1520; // Максимальная ширина текстового блока (max-ширина контейнера самого широкого breakpoint)
+  $minViewportWidth: 360; // Минимальная ширина текстового блока
 
   $maxSize: math.div($max, 16);
   $minSize: math.div($min, 16);
   $maxWidth: math.div($maxViewportWidth, 16);
   $minWidth: math.div($minViewportWidth, 16);
-
   $slope: math.div(($maxSize - $minSize), ($maxWidth - $minWidth));
   $yAxisIntersection: -$minWidth * $slope + $minSize;
 
@@ -20,7 +19,7 @@
   );
 }
 
-//Функция для преобразования px в rem (не требуется с плагином pxtorem для PostCSS).
+// Функция для преобразования px в rem (не требуется с плагином pxtorem для PostCSS).
 // @function rem($pixel) {
 //   @if math.is-unitless($pixel) {
 //     @return math.div($pixel, 16) + rem;

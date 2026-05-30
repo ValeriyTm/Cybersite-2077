@@ -3,6 +3,7 @@
 
   margin-bottom: 20px;
   padding: 20px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 30px;
@@ -12,7 +13,6 @@
   .btnWrapper {
     display: flex;
     justify-content: end;
-
     width: 100%;
 
     button {
@@ -24,22 +24,21 @@
 .header {
   display: flex;
   justify-content: space-between;
-
   margin-bottom: 15px;
 }
 
 .user {
   display: flex;
-  align-items: center;
   gap: 12px;
+  align-items: center;
 
   .avatar {
+    width: 40px;
+    height: 40px;
+
     /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
     border-radius: 50%;
-
-    width: 40px;
-    height: 40px;
 
     object-fit: cover;
   }
@@ -56,7 +55,6 @@
   .date {
     display: block;
     margin-bottom: 4px;
-
     font-size: 0.85rem;
     color: var(--auxiliary-text-color);
   }
@@ -75,36 +73,37 @@
   }
 
   .toggleText {
+    cursor: pointer;
+
     margin-top: 5px;
     padding: 0;
+
     /* pxtorem-disable-next-line */
     border: none;
-
-    background: none;
 
     color: var(--accent-text-color);
     text-decoration: underline;
 
-    cursor: pointer;
+    background: none;
   }
 }
 
 .images {
   display: flex;
   gap: 10px;
-
   margin-top: 15px;
 
   img {
-    /* pxtorem-disable-next-line */
-    border: 1px solid var(--auxiliary-text-color);
-    border-radius: 5px;
+    cursor: pointer;
 
     width: 80px;
     height: 80px;
 
+    /* pxtorem-disable-next-line */
+    border: 1px solid var(--auxiliary-text-color);
+    border-radius: 5px;
+
     object-fit: cover;
-    cursor: pointer;
 
     @include hover {
       scale: 1.1;

@@ -1,12 +1,12 @@
 .Header {
   position: sticky;
-  top: 0;
   z-index: 1000;
+  top: 0;
+
+  width: 100%;
 
   /* pxtorem-disable-next-line */
   border-bottom: 1px solid var(--accent-text-color);
-
-  width: 100%;
 
   background: var(--main-bg-color);
 }
@@ -22,27 +22,27 @@
 .topLine {
   display: flex;
   justify-content: center;
-
   padding-block: 16px;
+
   /* px-to-rem-disable-next-line */
+
   /* pxtorem-disable-next-line */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
 
   @include tablet {
     padding-block: 14px;
   }
 
   @include mobile {
-    padding-inline-start: 30px;
-    padding-inline-end: 150px;
+    padding-inline: 30px 150px;
   }
 
   .topWrapper {
     display: flex;
     flex-direction: row;
+    gap: 20px;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
 
     @include tablet {
       flex-direction: column-reverse;
@@ -57,10 +57,8 @@
 
   .logolinkHidden {
     height: 33px;
-
-    background: none;
-
     opacity: 0.9;
+    background: none;
 
     @include mobile-above {
       display: none;
@@ -82,9 +80,7 @@
 .mainLine {
   display: flex;
   justify-content: center;
-
   padding-block: 30px;
-
   backdrop-filter: blur(10px);
 
   @include tablet {
@@ -98,9 +94,9 @@
   .mainWrapper {
     display: flex;
     flex-direction: row;
+    gap: 20px;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
 
     @include laptop-s {
       gap: 10px;
@@ -113,8 +109,8 @@
     .leftBotMenu {
       display: flex;
       flex-direction: row;
-      align-items: center;
       gap: 20px;
+      align-items: center;
 
       @include laptop-s {
         gap: 10px;
@@ -128,8 +124,8 @@
     .rightBotMenu {
       display: flex;
       flex-direction: row;
-      align-items: center;
       gap: 20px;
+      align-items: center;
 
       @include laptop-s {
         gap: 10px;
@@ -149,7 +145,6 @@
 .logo {
   width: 100%;
   height: auto;
-
   opacity: 0.9;
 
   @include hover {

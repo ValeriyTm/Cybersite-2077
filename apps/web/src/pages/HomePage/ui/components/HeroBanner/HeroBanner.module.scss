@@ -18,31 +18,35 @@
 }
 
 .mainBannerPartLeft {
-  width: 100%;
   overflow: hidden;
+  width: 100%;
 
   img {
+    width: 100%;
     max-width: none;
     height: 100%;
-    width: 100%;
     object-fit: cover;
   }
 }
 
 .mainBannerPartRight {
-  width: 100%;
-  flex-grow: 1;
   position: relative;
+
   display: flex;
-  justify-content: center;
+  flex-grow: 1;
   align-items: center;
+  justify-content: center;
+
+  width: 100%;
 
   .bannerImageText {
-    max-width: 100%;
-    height: auto;
-    opacity: 0.9;
     position: absolute;
     top: 20%;
+
+    max-width: 100%;
+    height: auto;
+
+    opacity: 0.9;
 
     @include mobile {
       top: 40%;
@@ -53,21 +57,24 @@
   }
 
   .attentionBlock {
-    display: flex;
-    flex-direction: column;
     position: absolute;
     bottom: 0%;
     left: 50%;
+    translate: -50% -50%;
+
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    translate: -50% -50%;
+
     width: 100%;
     padding-inline: 10px;
 
     span {
-      color: var(--accent-text-color);
       font-size: 28px;
       font-weight: 800;
+      color: var(--accent-text-color);
+
       -webkit-text-stroke: 0.5px var(--auxiliary-text-color);
 
       @include mobile {
@@ -76,15 +83,17 @@
     }
   }
 
-  //Парадная кнопка:
+  // Парадная кнопка:
   .attentionWrapper {
-    background: var(--banner-gradient);
-    height: 50px;
-    width: 150px; //146px
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
+    width: 150px; // 146px
+    height: 50px;
     border-radius: 10px;
+
+    background: var(--banner-gradient);
 
     @include hover {
       background: var(--button-gradient);

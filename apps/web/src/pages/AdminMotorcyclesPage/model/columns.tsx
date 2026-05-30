@@ -46,7 +46,7 @@ export const getMotoColumns = (
         </div>
       ),
     },
-    { accessorKey: "category", header: "Категория", meta: { className: styles.hideOnMobile }, },
+    { accessorKey: "category", header: "Категория", meta: { className: styles.hideOnTablet }, },
     {
       accessorKey: "price",
       header: "Цена",

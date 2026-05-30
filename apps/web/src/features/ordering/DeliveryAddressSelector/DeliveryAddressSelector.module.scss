@@ -1,28 +1,30 @@
 .section {
   display: flex;
   flex-direction: column;
-  padding: 25px;
-  margin-bottom: 25px;
   gap: 20px;
 
-  background: var(--auxiliary-bg-color-2);
+  margin-bottom: 25px;
+  padding: 25px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 16px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include mobile {
     margin-bottom: 15px;
   }
 
   h3 {
-    padding-bottom: 15px;
     margin-bottom: 20px;
-
-    font-size: 1.3rem;
-    color: var(--color-light);
+    padding-bottom: 15px;
 
     /* pxtorem-disable-next-line */
     border-bottom: 1px solid #333;
+
+    font-size: 1.3rem;
+    color: var(--color-light);
 
     @include mobile {
       margin: 0;
@@ -37,13 +39,13 @@
 
   .currentAddress {
     padding: 10px;
+    border-radius: 8px;
 
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--accent-text-color);
 
-    background: rgba(243, 156, 18, 0.1);
-    border-radius: 8px;
+    background: rgb(243 156 18 / 10%);
   }
 
   button {

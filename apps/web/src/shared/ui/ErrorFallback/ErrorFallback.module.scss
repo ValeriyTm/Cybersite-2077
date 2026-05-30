@@ -9,17 +9,20 @@
 
   p,
   pre {
-    color: var(--main-text-color);
     font-size: 1.2rem;
+    color: var(--main-text-color);
   }
 
   button {
     margin-bottom: 10px;
-    color: var(--accent-text-color);
+    padding: 5px 10px;
+
     /* pxtorem-disable-next-line */
     border: 1px solid var(--accent-text-color);
-    padding: 5px 10px;
     border-radius: 15px;
+
+    color: var(--accent-text-color);
+
     background-color: var(--main-bg-color);
 
     @include hover {
@@ -28,8 +31,8 @@
   }
 
   .errorImg {
-    width: 60%;
     justify-self: center;
+    width: 60%;
     margin-bottom: 10px;
   }
 }

@@ -1,3 +1,9 @@
+.hideOnTablet {
+  @include tablet {
+    display: none !important;
+  }
+}
+
 .hideOnMobile {
   @include mobile {
     display: none !important;
@@ -12,12 +18,12 @@
 
 .idWrapper {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 
   .code {
-    color: var(--auxiliary-text-color);
     font-size: 0.75rem;
+    color: var(--auxiliary-text-color);
   }
 }
 
@@ -30,17 +36,20 @@
 .editBtn,
 .deleteBtn,
 .stockBtn {
-  border: none !important;
-  height: 44px;
-  width: 44px;
-  margin: 0 !important;
-  border-radius: 50%;
-  color: var(--auxiliary-text-color) !important;
-  background-color: transparent !important;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  width: 44px;
+  height: 44px;
+  margin: 0 !important;
   padding: 0;
+  border: none !important;
+  border-radius: 50%;
+
+  color: var(--auxiliary-text-color) !important;
+
+  background-color: transparent !important;
 
   @include hover {
     box-shadow: none !important;
@@ -49,32 +58,32 @@
 
 .copyBtn {
   @include hover {
-    color: var(--main-text-color) !important;
     border: 0.5px solid var(--main-text-color) !important;
     border-radius: 50%;
+    color: var(--main-text-color) !important;
   }
 }
 
 .editBtn {
   @include hover {
-    color: var(--accent-text-color) !important;
     border: 0.5px solid var(--accent-text-color) !important;
     border-radius: 50%;
+    color: var(--accent-text-color) !important;
   }
 }
 
 .deleteBtn {
   @include hover {
-    color: var(--color-danger) !important;
     border: 0.5px solid var(--color-danger) !important;
     border-radius: 50%;
+    color: var(--color-danger) !important;
   }
 }
 
 .stockBtn {
   @include hover {
-    color: var(--color-success) !important;
     border: 0.5px solid var(--color-success) !important;
     border-radius: 50%;
+    color: var(--color-success) !important;
   }
 }

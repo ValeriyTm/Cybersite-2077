@@ -1,10 +1,13 @@
 .banner {
-  background: var(--banner-gradient);
-  padding-block: 10px;
-  width: 100%;
   z-index: 100;
+
   display: flex;
   justify-content: center;
+
+  width: 100%;
+  padding-block: 10px;
+
+  background: var(--banner-gradient);
 
   @include mobile {
     padding-block: 6px;
@@ -17,9 +20,10 @@
     .content {
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
       gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+
       width: 100%;
       margin: 0 auto;
 
@@ -29,8 +33,8 @@
 
       @include mobile-s {
         flex-direction: column;
-        text-align: center;
         gap: 5px;
+        text-align: center;
       }
     }
   }

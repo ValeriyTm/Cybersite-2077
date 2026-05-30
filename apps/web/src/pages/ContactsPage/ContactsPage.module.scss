@@ -9,7 +9,6 @@
 
   .info {
     width: 100%;
-
     text-align: center;
 
     h1 {
@@ -23,13 +22,11 @@
 
   p {
     margin-bottom: 10px;
-
     text-align: center;
   }
 
   .map {
     z-index: 10;
-
     width: 60%;
 
     @include laptop-s {
@@ -37,20 +34,18 @@
     }
 
     @include tablet {
-      padding-inline: 15px;
-
       width: 100%;
+      padding-inline: 15px;
     }
   }
 
   .imgContainer {
     justify-self: center;
 
-    margin-bottom: 20px;
-
+    aspect-ratio: 2 / 1;
     width: 100%;
     max-width: 700px;
-    aspect-ratio: 2 / 1;
+    margin-bottom: 20px;
 
     img {
       width: 100%;
@@ -63,7 +58,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
   margin-bottom: 20px;
 
   a {

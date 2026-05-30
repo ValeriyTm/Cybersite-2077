@@ -11,15 +11,15 @@
 }
 
 .title {
-  color: var(--color-light);
   font-weight: bold;
+  color: var(--color-light);
 }
 
 .statusSelect {
-  background: transparent;
   /* pxtorem-disable-next-line */
   border: 1px solid #333;
   border-radius: 4px;
+  background: transparent;
 
   &.draft {
     color: var(--color-rating);
@@ -33,6 +33,5 @@
 .actions {
   display: flex;
   gap: 15px;
-
   color: var(--color-rating);
 }

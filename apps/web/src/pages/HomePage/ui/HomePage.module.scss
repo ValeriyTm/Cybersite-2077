@@ -2,15 +2,15 @@
   background: var(--basic-gradient);
 }
 
-// Главная сетка Grid для ячеек
 .container {
   display: grid;
-  gap: 5px;
-  border: 2px solid var(--color-dark);
   grid-template-areas:
     "cell-1 cell-2 sidebar-1"
     "cell-3 cell-4 sidebar-1";
   grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+
+  border: 2px solid var(--color-dark);
 
   @include tablet {
     grid-template-areas:
@@ -29,21 +29,23 @@
       "cell-3"
       "cell-4";
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(300px, auto) minmax(300px, auto);
   }
 }
 
 .cell1 {
-  grid-area: cell-1;
+  position: relative;
+
+  overflow: hidden;
   display: flex;
+  grid-area: cell-1;
   flex-direction: column;
   justify-items: center;
-  text-align: center;
-  border: 1px solid var(--accent-text-color);
-  overflow: hidden;
-  position: relative;
-  max-height: 400px;
+
   width: 100%;
+  max-height: 400px;
+  border: 1px solid var(--accent-text-color);
+
+  text-align: center;
 
   @include tablet {
     max-height: 350px;
@@ -53,8 +55,8 @@
   }
 
   .teamImage {
-    max-width: none;
     width: 100%;
+    max-width: none;
     height: 100%;
     object-fit: fill;
   }
@@ -63,16 +65,19 @@
 .cell3 {
   grid-area: cell-3;
 }
+
 .cell4 {
   grid-area: cell-4;
 }
 
 .sidebar {
-  grid-area: sidebar-1;
-  border: 1px solid var(--accent-text-color);
-  overflow: hidden;
   position: relative;
+
+  overflow: hidden;
+  grid-area: sidebar-1;
+
   width: 100%;
+  border: 1px solid var(--accent-text-color);
 
   @include tablet {
     max-height: 400px;
@@ -80,9 +85,9 @@
 }
 
 .textMain {
-  color: var(--accent-text-color);
-  font-size: 20px;
   padding-top: 10px;
+  font-size: 20px;
+  color: var(--accent-text-color);
 
   @include mobile {
     padding-top: 5px;
@@ -90,24 +95,29 @@
 }
 
 .brands {
-  background-color: var(--auxiliary-bg-color-2);
-  font-weight: 700;
-  font-size: 30px;
   padding-top: 10px;
-  color: var(--accent-text-color);
-  -webkit-text-stroke: 1px var(--color-black);
   padding-left: 15px;
 
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--accent-text-color);
+
+  background-color: var(--auxiliary-bg-color-2);
+
+  -webkit-text-stroke: 1px var(--color-black);
+
   @include mobile {
-    font-weight: 500;
-    font-size: 24px;
-    text-align: center;
     padding-inline: 5px;
+
+    font-size: 24px;
+    font-weight: 500;
     line-height: normal;
+    text-align: center;
   }
 
   @include mobile-s {
     font-size: 20px;
+
     -webkit-text-stroke: 0.5px var(--color-black);
   }
 }
@@ -117,16 +127,19 @@
   height: 8px;
   background-image: url("@/shared/assets/images/decoration/texture-orange.png");
 }
+
 .decoration-blue {
   width: 100%;
   height: 8px;
   background-image: url("@/shared/assets/images/decoration/texture-blue.png");
 }
+
 .decoration-retro {
   width: 100%;
   height: 40px;
   background-image: url("@/shared/assets/images/decoration/texture-retro.png");
 }
+
 .decoration-doom {
   width: 100%;
   height: 8px;

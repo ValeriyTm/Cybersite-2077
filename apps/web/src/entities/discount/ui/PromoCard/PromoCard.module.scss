@@ -1,12 +1,13 @@
 .promoCard {
   padding: 24px;
+
   /* pxtorem-disable-next-line */
   border: 2px dashed var(--accent-text-color);
   border-radius: 12px;
 
-  background: var(--auxiliary-bg-color-2);
-
   text-align: center;
+
+  background: var(--auxiliary-bg-color-2);
 
   transition: border-color 0.3s;
 
@@ -20,7 +21,6 @@
 
   .amount {
     margin-bottom: 15px;
-
     font-size: 2rem;
     font-weight: 900;
     color: var(--accent-text-color);
@@ -48,9 +48,8 @@
     }
 
     button {
-      border-radius: 4px;
-
       max-width: 100px;
+      border-radius: 4px;
 
       @include hover {
         box-shadow: 0 0 10px var(--accent-text-color);

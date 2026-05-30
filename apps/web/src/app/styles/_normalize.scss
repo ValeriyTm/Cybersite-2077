@@ -39,6 +39,7 @@ body,
 :where(fieldset[class]) {
   margin-left: 0;
   padding: 0;
+
   /* pxtorem-disable-next-line */
   border: none;
 }
@@ -70,7 +71,7 @@ p {
   Внешний отступ вниз для параграфа без атрибута class,
   который расположен не последним среди своих соседних элементов
  */
-p:where(:not([class]):not(:last-child)) {
+p:where(:not([class], :last-child)) {
   margin-bottom: var(--paragraphMarginBottom);
 }
 
@@ -96,15 +97,16 @@ button {
 
 html {
   /**
-    Пригодится в большинстве ситуаций
-    (когда, например, нужно будет "прижать" футер к низу сайта)
-   */
-  height: 100%;
-  /**
     Убираем скачок интерфейса по горизонтали
     при появлении / исчезновении скроллбара
    */
   scrollbar-gutter: stable;
+
+  /**
+    Пригодится в большинстве ситуаций
+    (когда, например, нужно будет "прижать" футер к низу сайта)
+   */
+  height: 100%;
 }
 
 /**
@@ -121,6 +123,7 @@ body {
     (когда, например, нужно будет "прижать" футер к низу сайта)
    */
   min-height: 100%;
+
   /**
     Унифицированный интерлиньяж
    */
@@ -146,10 +149,11 @@ label {
   Приводим к единому цвету svg-элементы
  */
 [fill] {
-  fill: currentColor;
+  fill: currentcolor;
 }
+
 [stroke] {
-  stroke: currentColor;
+  stroke: currentcolor;
 }
 
 /**
@@ -167,9 +171,9 @@ svg * {
   *,
   ::before,
   ::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

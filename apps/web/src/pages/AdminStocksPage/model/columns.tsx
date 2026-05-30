@@ -10,6 +10,7 @@ import styles from './columns.module.scss';
 export const stockColumns = (onEdit: (stock: Stock) => void): ColumnDef<Stock>[] => [
   {
     header: 'Мотоцикл',
+    meta: { className: styles.hideOnMobile },
     cell: ({ row }) => (
       <div>
         <div className={styles.motorcycleModel}>{row.original.motorcycle?.model}</div>
@@ -45,6 +46,7 @@ export const stockColumns = (onEdit: (stock: Stock) => void): ColumnDef<Stock>[]
   {
     accessorKey: 'reserved',
     header: 'Резерв',
+    meta: { className: styles.hideOnMobileS },
     cell: (info) => <span className={styles.reservedCount}>{String(info.getValue())} шт.</span>
   },
   {

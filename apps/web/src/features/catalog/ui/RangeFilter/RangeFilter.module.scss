@@ -7,14 +7,14 @@
 
   font-size: 0.9rem;
   font-weight: 600;
-  text-transform: uppercase;
   color: var(--auxiliary-text-color);
+  text-transform: uppercase;
 }
 
 .inputs {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 }
 
 .input {
@@ -22,14 +22,15 @@
   height: 44px;
   padding: 4px 12px;
 
-  font-size: 0.9rem;
-  color: var(--main-text-color);
-  outline: none;
-
-  background: var(--main-bg-color);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-text-color);
   border-radius: 8px;
+
+  font-size: 0.9rem;
+  color: var(--main-text-color);
+
+  background: var(--main-bg-color);
+  outline: none;
 
   transition: border-color 0.2s;
 
@@ -37,8 +38,15 @@
     color: var(--auxiliary-text-color);
   }
 
+  // Убираем стрелочки у инпута number:
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+
   &:hover {
-    box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+    box-shadow: 0 0 10px 0 var(--accent-text-color);
   }
 
   &:focus-visible {
@@ -47,17 +55,8 @@
 
   &:disabled {
     cursor: not-allowed;
-
-    background-color: #f5f5f5;
     opacity: 0.7;
-  }
-
-  //Убираем стрелочки у инпута number:
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    margin: 0;
-
-    -webkit-appearance: none;
+    background-color: #f5f5f5;
   }
 }
 

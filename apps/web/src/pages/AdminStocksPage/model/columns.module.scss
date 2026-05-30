@@ -3,8 +3,8 @@
 }
 
 .warehouseCity {
-  color: var(--auxiliary-text-color);
   margin-left: 8px;
+  color: var(--auxiliary-text-color);
 }
 
 .reservedCount {
@@ -21,4 +21,16 @@
 
 .quantityHigh {
   color: var(--color-success) !important;
+}
+
+.hideOnMobile {
+  @include mobile {
+    display: none !important;
+  }
+}
+
+.hideOnMobileS {
+  @include mobile-s {
+    display: none !important;
+  }
 }

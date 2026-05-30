@@ -1,24 +1,23 @@
 .selectWrapper {
   position: relative;
-
   width: 100%;
 
   select {
-    /* pxtorem-disable-next-line */
-    padding: 10px 40px 10px 12px;
-    border-radius: 8px;
+    cursor: pointer;
 
     width: 100%;
     min-height: 44px;
 
-    font-size: 1rem;
-    outline: none;
+    /* pxtorem-disable-next-line */
+    padding: 10px 40px 10px 12px;
+    border-radius: 8px;
 
-    cursor: pointer;
+    font-size: 1rem;
+
     /* Скрываем стандартную стрелку браузера */
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    outline: none;
+
     transition:
       border-color 0.2s,
       box-shadow 0.2s;
@@ -33,7 +32,7 @@
     }
 
     &:hover {
-      box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+      box-shadow: 0 0 10px 0 var(--accent-text-color);
     }
 
     &:focus-visible {
@@ -42,12 +41,10 @@
     }
 
     &:disabled {
-      background-color: var(--auxiliary-text-color);
-      color: var(--color-dark);
-
-      opacity: 0.7;
-
       cursor: not-allowed;
+      color: var(--color-dark);
+      opacity: 0.7;
+      background-color: var(--auxiliary-text-color);
     }
   }
 
@@ -56,23 +53,26 @@
   }
 
   .arrow {
+    /* Стрелочка не должна перехватывать клики мыши, они должны идти на сам select */
+    pointer-events: none;
+
     position: absolute;
     top: 50%;
     right: 16px;
-
     transform: translateY(-50%);
 
     width: 0;
     height: 0;
-    /* pxtorem-disable-next-line */
-    border-left: 5px solid transparent;
-    /* pxtorem-disable-next-line */
-    border-right: 5px solid transparent;
+
     /* pxtorem-disable-next-line */
     border-top: 6px solid var(--accent-text-color);
 
-    /* Стрелочка не должна перехватывать клики мыши, они должны идти на сам select */
-    pointer-events: none;
+    /* pxtorem-disable-next-line */
+    border-right: 5px solid transparent;
+
+    /* pxtorem-disable-next-line */
+    border-left: 5px solid transparent;
+
     transition: transform 0.2s ease;
   }
 }
@@ -85,22 +85,22 @@
 .parentWrapperRow {
   display: flex;
   flex-direction: row;
-  align-items: center;
   gap: 10px;
+  align-items: center;
 }
 
 .parentWrapperColumn {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 4px;
+  align-items: center;
 }
 
 .leftLabel {
   align-items: start !important;
 }
 
-//------Варианты:--------//
+// ------Варианты:--------//
 .labelLight {
   color: var(--color-dark);
 }
@@ -109,30 +109,24 @@
   color: var(--color-light);
 }
 
-//-----------Варианты:-------------//
+// -----------Варианты:-------------//
 .light {
   /* pxtorem-disable-next-line */
   border: 1.5px solid var(--auxiliary-bg-color-2);
-
-  background-color: var(--color-light);
-
   color: var(--color-dark);
+  background-color: var(--color-light);
 }
 
 .dark {
   /* pxtorem-disable-next-line */
   border: 1px solid var(--main-text-color);
-
-  background-color: var(--auxiliary-bg-color-2);
-
   color: var(--color-light);
+  background-color: var(--auxiliary-bg-color-2);
 }
 
 .dark-full {
   /* pxtorem-disable-next-line */
   border: 1.5px solid var(--color-dark);
-
-  background-color: var(--auxiliary-bg-color-2);
-
   color: var(--color-light);
+  background-color: var(--auxiliary-bg-color-2);
 }

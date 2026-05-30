@@ -1,16 +1,16 @@
 .header {
   display: flex;
-  align-items: center;
+  place-items: center center;
   justify-content: space-between;
-  justify-items: center;
 
   width: 100%;
   padding: 20px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include mobile {
     p {
@@ -26,17 +26,16 @@
     h3 {
       margin: 0;
 
-      color: var(--main-text-color);
       font-size: 1.5rem;
+      color: var(--main-text-color);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     p {
-      margin: 5px 0 0 0;
-
-      color: var(--auxiliary-text-color);
+      margin: 5px 0 0;
       font-size: 0.9rem;
+      color: var(--auxiliary-text-color);
     }
   }
 

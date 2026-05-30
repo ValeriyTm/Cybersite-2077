@@ -1,9 +1,9 @@
 .loaderWrapper {
   display: flex;
   flex-direction: column;
+  gap: 20px;
   align-items: center;
   justify-content: center;
-  gap: 20px;
 
   width: 100%;
   min-height: 600px;
@@ -14,18 +14,19 @@
   height: 50px;
 
   /* pxtorem-disable-next-line */
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid rgb(255 255 255 / 10%);
   border-top-color: var(--accent-text-color);
   border-radius: 50%;
-  box-shadow: 0 0 15px rgba(243, 156, 18, 0.2);
+
+  box-shadow: 0 0 15px rgb(243 156 18 / 20%);
 
   animation: spin 1s ease-in-out infinite;
 }
 
 .text {
-  color: var(--auxiliary-text-color);
   font-size: 1rem;
   font-weight: 500;
+  color: var(--auxiliary-text-color);
   text-transform: uppercase;
   letter-spacing: 1px;
 
@@ -43,6 +44,7 @@
   100% {
     opacity: 0.5;
   }
+
   50% {
     opacity: 1;
   }

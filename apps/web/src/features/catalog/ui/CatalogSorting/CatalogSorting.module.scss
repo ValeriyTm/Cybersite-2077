@@ -1,8 +1,9 @@
 .sorting {
   display: flex;
   flex-direction: row;
-  align-items: center;
   gap: 12px;
+  align-items: center;
+
   margin-block: 10px;
 }
 
@@ -14,24 +15,29 @@
 }
 
 .sortSelect {
-  background: var(--main-bg-color);
+  cursor: pointer;
+
+  height: 44px;
+  padding: 8px 16px;
+  padding-right: 40px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
-  color: var(--main-text-color);
-  padding: 8px 16px;
   border-radius: 8px;
-  font-size: 0.9rem;
-  height: 44px;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  appearance: none; // Убираем стандартную стрелку браузера
 
-  //Кастомная стрелочка:
+  font-size: 0.9rem;
+  color: var(--main-text-color);
+
+  appearance: none; // Убираем стандартную стрелку браузера
+  background: var(--main-bg-color);
+
+  // Кастомная стрелочка:
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://w3.org' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23f39c12' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  padding-right: 40px;
+  outline: none;
+
+  transition: all 0.3s ease;
 
   @include hover {
     border-color: var(--accent-text-color);
@@ -39,11 +45,11 @@
 
   &:focus {
     border-color: var(--accent-text-color);
-    box-shadow: 0 0 10px rgba(243, 156, 18, 0.1);
+    box-shadow: 0 0 10px rgb(243 156 18 / 10%);
   }
 
   option {
-    background: var(--main-bg-color);
     color: var(--main-text-color);
+    background: var(--main-bg-color);
   }
 }

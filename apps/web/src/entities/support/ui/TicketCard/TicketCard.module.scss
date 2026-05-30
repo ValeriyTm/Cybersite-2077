@@ -9,9 +9,9 @@
 
 .question {
   small {
-    color: var(--accent-text-color);
-    margin-block: 10px;
     display: inline-block;
+    margin-block: 10px;
+    color: var(--accent-text-color);
   }
 
   p {
@@ -27,8 +27,8 @@
 }
 
 .waiting {
-  color: var(--auxiliary-text-color);
   font-style: italic;
+  color: var(--auxiliary-text-color);
 }
 
 .status {
@@ -38,34 +38,40 @@
   font-weight: 700;
 
   &.OPEN {
+    color: var(--color-light);
     background: #3498db;
-    color: var(--color-light);
   }
+
   &.IN_PROGRESS {
+    color: var(--color-light);
     background: #f39c12;
-    color: var(--color-light);
   }
+
   &.RESOLVED {
+    color: var(--color-light);
     background: var(--color-success);
-    color: var(--color-light);
   }
+
   &.CLOSED {
-    background: var(--auxiliary-text-color);
     color: var(--color-light);
+    background: var(--auxiliary-text-color);
   }
 }
 
 .ticketCard {
   display: flex;
   flex-direction: column;
-  background: var(--auxiliary-bg-color-2);
+  justify-self: center;
+
+  width: 98%;
   margin-bottom: 20px;
   padding: 20px;
-  border-radius: 8px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
-  width: 98%;
-  justify-self: center;
+  border-radius: 8px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include hover {
     box-shadow: 0 0 10px var(--accent-text-color);
@@ -75,6 +81,7 @@
 .answer {
   margin-top: 10px;
   padding-top: 15px;
+
   /* pxtorem-disable-next-line */
   border-top: 1px dashed #444;
 }

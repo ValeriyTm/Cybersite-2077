@@ -1,50 +1,49 @@
 .actionButton {
+  cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
+  width: 44px;
+  height: 44px;
   margin: 0;
   padding: 0;
   border: none;
   border-radius: 50%;
-  border-radius: 50%;
-
-  width: 44px;
-  height: 44px;
-
-  background-color: transparent;
 
   color: var(--auxiliary-text-color);
 
-  cursor: pointer;
+  background-color: transparent;
+
   transition: all 0.2s ease;
 }
 
 .edit,
 .reply {
   @include hover {
-    box-shadow: 0 0 10px var(--accent-text-color);
     color: var(--accent-text-color);
+    box-shadow: 0 0 10px var(--accent-text-color);
   }
 }
 
 .delete {
   @include hover {
-    box-shadow: 0 0 10px var(--color-danger);
     color: var(--color-danger);
+    box-shadow: 0 0 10px var(--color-danger);
   }
 }
 
 .stocks {
   @include hover {
-    box-shadow: 0 0 10px var(--color-success);
     color: var(--color-success);
+    box-shadow: 0 0 10px var(--color-success);
   }
 }
 
 .copy {
   @include hover {
-    box-shadow: 0 0 10px var(--color-light);
     color: var(--color-light);
+    box-shadow: 0 0 10px var(--color-light);
   }
 }

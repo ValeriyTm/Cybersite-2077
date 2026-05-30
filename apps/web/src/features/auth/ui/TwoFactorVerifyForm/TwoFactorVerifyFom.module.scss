@@ -2,18 +2,15 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-
   animation: fadeIn 0.3s ease-out;
 }
 
 .header {
   margin-bottom: 10px;
-
   text-align: center;
 
   h3 {
     margin-bottom: 8px;
-
     font-size: 1.5rem;
     color: var(--accent-text-color);
   }
@@ -25,21 +22,21 @@
   }
 }
 
-//Класс для OTP-инпута:
+// Класс для OTP-инпута:
 .otpInput {
   input {
     height: 60px;
     padding: 12px;
 
-    font-size: 1.8rem; //Крупный шрифт для читаемости
+    font-size: 1.8rem; // Крупный шрифт для читаемости
     font-weight: 700;
-    letter-spacing: 0.5rem; //Разнос цифр (как в банковских приложениях)
     text-align: center;
+    letter-spacing: 0.5rem; // Разнос цифр (как в банковских приложениях)
 
     &::placeholder {
       font-size: 1rem;
       font-weight: 400;
-      letter-spacing: normal; //Плейсхолдер обычный
+      letter-spacing: normal; // Плейсхолдер обычный
       opacity: 0.5;
     }
   }
@@ -50,6 +47,7 @@
     transform: translateY(10px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

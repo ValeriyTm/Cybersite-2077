@@ -1,10 +1,11 @@
 .pagination {
   display: flex;
   flex-wrap: wrap;
+  gap: 12px;
   align-items: center;
   justify-content: center;
+
   margin-top: 40px;
-  gap: 12px;
 
   @include mobile-s {
     flex-wrap: wrap;
@@ -19,18 +20,20 @@
 }
 
 .pageBtn {
+  cursor: pointer;
+
   width: auto;
   min-width: 40px;
   height: 40px;
 
-  font-weight: 500;
-  color: var(--main-text-color);
-  cursor: pointer;
-
-  background: var(--main-bg-color);
   /* pxtorem-disable-next-line */
   border: 1px solid #333;
   border-radius: 8px;
+
+  font-weight: 500;
+  color: var(--main-text-color);
+
+  background: var(--main-bg-color);
 
   transition: all 0.2s ease;
 
@@ -39,31 +42,34 @@
   }
 
   &.active {
-    font-weight: 700;
-    color: var(--color-dark);
     cursor: default;
 
-    background: var(--accent-text-color);
     border-color: var(--accent-text-color);
+
+    font-weight: 700;
+    color: var(--color-dark);
+
+    background: var(--accent-text-color);
   }
 }
 
 .navBtn {
+  cursor: pointer;
+
   width: 40px;
   height: 40px;
 
-  font-size: 1.2rem;
-  color: var(--accent-text-color);
-  cursor: pointer;
-
-  background: transparent;
   /* pxtorem-disable-next-line */
   border: 1px solid var(--auxiliary-bg-color-2);
   border-radius: 8px;
 
+  font-size: 1.2rem;
+  color: var(--accent-text-color);
+
+  background: transparent;
+
   &:disabled {
     cursor: not-allowed;
-
     opacity: 0.3;
   }
 }

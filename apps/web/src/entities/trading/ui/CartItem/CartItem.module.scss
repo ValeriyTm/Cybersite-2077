@@ -1,12 +1,13 @@
-//Элементы корзины:
+// Элементы корзины:
 .cartWrapper {
   display: flex;
   flex-direction: column;
-  margin-block: 20px;
 
-  background: var(--auxiliary-bg-color-2);
+  margin-block: 20px;
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
+
+  background: var(--auxiliary-bg-color-2);
 
   @include hover {
     box-shadow: 0 0 20px var(--accent-text-color);
@@ -28,9 +29,10 @@
     "check image top price"
     "check image bot price";
   grid-template-columns: 1fr 3fr 10fr 120px;
-  align-items: center;
-  padding: 20px;
   gap: 20px;
+  align-items: center;
+
+  padding: 20px;
 
   transition:
     transform 0.2s,
@@ -44,10 +46,10 @@
       "top top top"
       "bot bot bot";
     grid-template-columns: 1fr 4fr 4fr;
-    align-items: center;
-    justify-items: center;
-    padding-inline: 10px;
     gap: 10px;
+    place-items: center center;
+
+    padding-inline: 10px;
   }
 
   .checkboxWrapper {
@@ -55,13 +57,14 @@
   }
 
   .itemImg {
+    overflow: hidden;
     grid-area: image;
+
     width: 120px;
     height: 80px;
+    border-radius: 8px;
 
     background: var(--color-dark);
-    border-radius: 8px;
-    overflow: hidden;
 
     img {
       width: 100%;
@@ -71,11 +74,11 @@
   }
 
   .actions {
-    grid-area: bot;
     display: flex;
+    grid-area: bot;
     flex-direction: row;
-    justify-content: space-between;
     gap: 15px;
+    justify-content: space-between;
 
     @include mobile {
       justify-content: center;
@@ -83,30 +86,33 @@
 
     .btnGroup {
       display: flex;
-      align-items: center;
       gap: 20px;
+      align-items: center;
     }
 
     .deleteBtn {
       position: relative;
+
       padding: 2px 16px;
 
-      color: var(--color-danger);
-
-      background-color: var(--auxiliary-bg-color-2);
       /* pxtorem-disable-next-line */
       border: 1px solid var(--color-danger);
       border-radius: 6px;
 
+      color: var(--color-danger);
+
+      background-color: var(--auxiliary-bg-color-2);
+
       &::after {
+        content: "";
+
         position: absolute;
         top: 50%;
         right: -2px;
         left: -2px;
-        height: 44px;
-
-        content: "";
         transform: translateY(-50%);
+
+        height: 44px;
       }
 
       @include hover {
@@ -116,10 +122,10 @@
   }
 
   .itemInfo {
-    grid-area: top;
-    align-self: center;
     display: flex;
+    grid-area: top;
     flex-wrap: wrap;
+    align-self: center;
 
     @include mobile {
       justify-self: center;
@@ -129,9 +135,9 @@
       margin-bottom: 0;
 
       font-size: 1.3rem;
+      color: var(--main-text-color);
       text-align: left;
       text-decoration: none;
-      color: var(--main-text-color);
 
       @include hover {
         color: var(--accent-text-color);
@@ -139,26 +145,25 @@
     }
   }
 
-  //Блок цены:
+  // Блок цены:
   .priceBlock {
-    grid-area: price;
     display: flex;
+    grid-area: price;
     flex-direction: column;
-
     text-align: right;
 
     .currentPrice {
       margin-bottom: 4px;
-
       font-size: 0.85rem;
       color: var(--color-light);
     }
 
     .oldPrice {
       font-size: 0.7rem;
-      text-decoration: line-through;
+
       // color: var(--auxiliary-text-color);
       color: var(--color-danger);
+      text-decoration: line-through;
     }
 
     .totalItemPrice {

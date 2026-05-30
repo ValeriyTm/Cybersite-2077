@@ -6,8 +6,8 @@
   .row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    margin-top: 10px;
     gap: 20px;
+    margin-top: 10px;
 
     @include mobile {
       grid-template-columns: 1fr;
@@ -19,6 +19,7 @@
       transform: translateY(-5px);
       opacity: 0;
     }
+
     to {
       transform: translateY(0);
       opacity: 1;

@@ -18,8 +18,8 @@
 
   h4 {
     color: var(--accent-text-color);
-    text-decoration: underline;
     text-align: center;
+    text-decoration: underline;
   }
 
   p {
@@ -29,10 +29,10 @@
 
 ol,
 ul {
-  padding-left: 0;
   margin-left: 0;
-  list-style-position: inside;
+  padding-left: 0;
   text-align: left;
+  list-style-position: inside;
 }
 
 footer {

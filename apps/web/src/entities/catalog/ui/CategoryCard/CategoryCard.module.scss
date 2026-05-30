@@ -1,16 +1,21 @@
 .CategoryCard {
+  cursor: pointer;
+
   position: relative;
+
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+
   height: 420px;
 
-  background-color: var(--auxiliary-bg-color);
   /* pxtorem-disable-next-line */
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgb(255 255 255 / 8%);
   border-radius: 20px;
-  overflow: hidden;
+
   text-decoration: none;
-  cursor: pointer;
+
+  background-color: var(--auxiliary-bg-color);
 
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -32,13 +37,13 @@
   }
 
   @include hover {
+    transform: translateY(-8px);
     border-color: var(--accent-text-color);
     box-shadow: 0 0 20px var(--accent-text-color);
-    transform: translateY(-8px);
 
     .image {
-      filter: grayscale(0%) brightness(0.7);
       transform: scale(1.1);
+      filter: grayscale(0%) brightness(0.7);
     }
 
     .title {
@@ -49,20 +54,18 @@
 
 .imageWrapper {
   position: absolute;
-  inset: 0;
   z-index: 1;
+  inset: 0;
 
-  //Градиентная подложка, чтобы текст всегда читался:
+  // Градиентная подложка, чтобы текст всегда читался:
   &::after {
+    content: "";
     position: absolute;
     inset: 0;
-
-    content: "";
-
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.95) 0%,
-      rgba(0, 0, 0, 0.4) 40%,
+      rgb(0 0 0 / 95%) 0%,
+      rgb(0 0 0 / 40%) 40%,
       transparent 100%
     );
   }
@@ -71,8 +74,8 @@
 .image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 
+  object-fit: cover;
   filter: grayscale(100%) brightness(0.5);
 
   transition: all 0.6s ease;
@@ -80,14 +83,16 @@
 
 .content {
   position: absolute;
+  z-index: 2;
   bottom: 0;
   left: 0;
-  z-index: 2;
+
   display: flex;
   flex-direction: column;
+  gap: 8px;
+
   width: 100%;
   padding: 30px;
-  gap: 8px;
 }
 
 .title {
@@ -95,9 +100,9 @@
 
   font-size: 2rem;
   font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
   color: var(--color-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 
   transition: color 0.3s ease;
 }
@@ -108,10 +113,10 @@
   font-size: 1rem;
   font-weight: 500;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgb(255 255 255 / 50%);
 }
 
 .notReady {
-  color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
+  color: rgb(255 255 255 / 30%);
 }

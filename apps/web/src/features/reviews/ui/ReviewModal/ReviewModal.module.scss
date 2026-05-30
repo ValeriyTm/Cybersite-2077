@@ -1,27 +1,27 @@
 .overlay {
   position: fixed;
-  inset: 0;
   z-index: 5000; // Подняли чуть выше, чтобы гарантированно перекрывать всё
+  inset: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: rgba(0, 0, 0, 0.85);
+  background: rgb(0 0 0 / 85%);
   backdrop-filter: blur(5px);
 }
 
 .modal {
+  width: 90%;
+  max-width: 500px;
   padding: 32px;
+
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
 
-  width: 90%;
-  max-width: 500px;
-
   background: var(--auxiliary-bg-color-2);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 40px rgb(0 0 0 / 50%);
 
   @include mobile {
     padding: 20px;
@@ -46,6 +46,7 @@
 
   label {
     display: block;
+
     margin-bottom: 8px;
 
     font-size: 0.9rem;
@@ -64,31 +65,33 @@
 }
 
 .uploadLabel {
+  cursor: pointer;
+
   display: inline-block;
+
+  box-sizing: border-box;
+  width: 100%;
   margin-top: 20px;
   padding: 12px 20px;
+
   /* pxtorem-disable-next-line */
   border: 1px dashed var(--auxiliary-text-color);
   border-radius: 8px;
-
-  width: 100%;
-  box-sizing: border-box;
-
-  background: var(--main-bg-color);
 
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--auxiliary-text-color);
   text-align: center;
 
-  cursor: pointer;
+  background: var(--main-bg-color);
+
   transition: all 0.2s;
 
   @include hover {
-    /* pxtorem-disable-next-line */
-    border-style: solid;
     border-color: var(--accent-text-color);
 
+    /* pxtorem-disable-next-line */
+    border-style: solid;
     color: var(--main-text-color);
   }
 }
@@ -97,12 +100,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-
   margin-top: 16px;
 
   .previewItem {
     position: relative;
-
     width: 70px;
     height: 70px;
 
@@ -111,13 +112,15 @@
       height: 100%;
 
       /* pxtorem-disable-next-line */
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgb(255 255 255 / 10%);
       border-radius: 6px;
 
       object-fit: cover;
     }
 
     .removeIcon {
+      cursor: pointer;
+
       position: absolute;
       top: -6px;
       right: -6px;
@@ -126,20 +129,18 @@
       align-items: center;
       justify-content: center;
 
+      width: 20px;
+      height: 20px;
       margin: 0;
       border: none;
       border-radius: 50%;
 
-      width: 20px;
-      height: 20px;
+      font-size: 14px;
+      color: var(--color-light);
 
       background: var(--color-danger);
-      box-shadow: 0 20px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 10px rgb(0 0 0 / 30%);
 
-      color: var(--color-light);
-      font-size: 14px;
-
-      cursor: pointer;
       transition: transform 0.2s;
 
       @include hover {
@@ -152,12 +153,10 @@
 .actions {
   display: flex;
   gap: 12px;
-
   margin-top: 30px;
 
   @include mobile {
     flex-direction: column;
-
     margin-top: 15px;
   }
 }
@@ -165,6 +164,5 @@
 // Обертка для растягивания кнопок:
 .btnAction {
   flex: 1;
-
   width: 100%;
 }

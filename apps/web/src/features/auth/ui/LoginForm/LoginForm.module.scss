@@ -1,9 +1,10 @@
 .labelWithLink {
   display: flex;
+  gap: 10px;
   align-items: center;
   justify-content: space-between;
+
   width: 100%;
-  gap: 10px;
 }
 
 .forgotLink {

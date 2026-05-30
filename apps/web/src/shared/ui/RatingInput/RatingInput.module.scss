@@ -1,20 +1,20 @@
 .ratingGroup {
   display: inline-flex;
-  flex-direction: row-reverse; //Разворачиваем, чтобы работал селектор "~"
-  justify-content: flex-end;
+  flex-direction: row-reverse; // Разворачиваем, чтобы работал селектор "~"
   gap: 10px;
+  justify-content: flex-end;
 
   .radioInput {
-    //Скрываем инпут:
+    // Скрываем инпут:
     position: absolute;
 
-    padding: 0;
-    margin: -1px;
-    border: 0;
+    overflow: hidden;
 
     width: 1px;
     height: 1px;
-    overflow: hidden;
+    margin: -1px;
+    padding: 0;
+    border: 0;
 
     clip: rect(0, 0, 0, 0);
 
@@ -25,16 +25,16 @@
 
     // Фокус для доступности (чтобы при Tab было видно, где мы)
     &:focus-visible ~ .starLabel {
+      border-radius: 4px;
       outline: 2px solid var(--accent-color, var(--accent-text-color));
       outline-offset: 4px;
-      border-radius: 4px;
     }
   }
 
   .starLabel {
-    position: relative;
-
     cursor: pointer;
+
+    position: relative;
 
     font-size: 30px;
     color: var(--color-light);
@@ -43,6 +43,7 @@
 
     &::after {
       content: "";
+
       position: absolute;
       top: 50%;
       left: 50%;

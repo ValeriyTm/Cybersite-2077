@@ -1,9 +1,8 @@
 .container {
-  margin: 0 auto;
-  padding: 120px 20px 60px;
-
   width: 100%;
   max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 120px 20px 60px;
 }
 
 .title {
@@ -17,11 +16,9 @@
 }
 
 .divider {
-  margin: 20px 0 50px;
-
   width: 60px;
   height: 4px;
-
+  margin: 20px 0 50px;
   background: var(--accent-text-color);
 }
 
@@ -32,20 +29,20 @@
 }
 
 .emptyState {
+  max-width: 600px;
   margin: 0 auto;
   padding: 60px 20px;
+
   /* pxtorem-disable-next-line */
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgb(255 255 255 / 10%);
   border-radius: 12px;
-
-  max-width: 600px;
-
-  background: var(--auxiliary-bg-color-2);
 
   font-size: 1.1rem;
   line-height: 1.5;
   color: var(--auxiliary-text-color);
   text-align: center;
+
+  background: var(--auxiliary-bg-color-2);
 }
 
 .loader {

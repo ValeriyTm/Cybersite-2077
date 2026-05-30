@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-
   text-align: left;
 }
 
@@ -14,13 +13,13 @@
 
 .input {
   width: 100%;
-  padding: 0.5rem 1rem; //Было 0.75rem 1rem
   min-height: 44px;
   margin-bottom: 1.25rem;
+  padding: 0.5rem 1rem; // Было 0.75rem 1rem
+  border-radius: 8px;
 
   font-size: 1rem;
 
-  border-radius: 8px;
   outline: none;
 
   transition: all 0.2s ease-in-out;
@@ -30,7 +29,7 @@
   }
 
   &:hover {
-    box-shadow: 0px 0px 10px 0px var(--accent-text-color);
+    box-shadow: 0 0 10px 0 var(--accent-text-color);
   }
 
   &:focus-visible {
@@ -39,21 +38,20 @@
 
   &:disabled {
     cursor: not-allowed;
-
-    background-color: #f5f5f5;
     opacity: 0.7;
+    background-color: #f5f5f5;
   }
 }
 
-//Убираем стрелочки у инпута с типом number::afterinput[type="number"]::-webkit-outer-spin-button,
+// Убираем стрелочки у инпута с типом number::afterinput[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
   margin: 0;
+  appearance: none;
 }
 
 /* Для Firefox */
 input[type="number"] {
-  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 // Состояние ошибки
@@ -61,13 +59,12 @@ input[type="number"] {
   border: 2px solid var(--color-danger) !important;
 
   &:focus {
-    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1) !important;
+    box-shadow: 0 0 0 4px rgb(220 53 69 / 10%) !important;
   }
 }
 
 .errorText {
   margin-top: -2px;
-
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--color-danger) !important;
@@ -77,24 +74,24 @@ input[type="number"] {
   text-align: center;
 }
 
-//-----------Варианты:-------------//
+// -----------Варианты:-------------//
 .light {
-  background-color: var(--color-light);
   /* pxtorem-disable-next-line */
   border: 1.5px solid var(--auxiliary-bg-color-2);
   color: var(--color-dark);
+  background-color: var(--color-light);
 }
 
 .dark {
-  background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--main-text-color);
   color: var(--color-light);
+  background-color: var(--auxiliary-bg-color-2);
 }
 
 .dark-full {
-  background-color: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1.5px solid var(--color-dark);
   color: var(--color-light);
+  background-color: var(--auxiliary-bg-color-2);
 }

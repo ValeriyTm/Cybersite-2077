@@ -2,28 +2,31 @@
 @use "helpers" as *;
 
 :root {
-  //Шрифты отдельно:
+  // Шрифты отдельно:
   --font-family-base: "Tektur", sans-serif;
-  --font-family-doom: "Jura", sans-serif; //DOOM
-  --font-family-retro: "KellySlab", sans-serif; //Retrowave
+  --font-family-doom: "Jura", sans-serif; // DOOM
+  --font-family-retro: "KellySlab", sans-serif; // Retrowave
 
-  //Цвета:
-  --color-light: #ffffff;
-  --color-dark: #000000;
+  // Цвета:
+  --color-light: #fff;
+  --color-dark: #000;
   --color-orange: #f16717;
   --color-danger: #e7110a;
   --color-rating: #f1c40f;
   --color-success: #2ecc71;
 
-  //Анимация:
+  // Анимация:
   --transition-duration: 0.2s;
 
-  //Темы:
+  // ----------------------Контейнер:-----------------------------//
+  --container-width: 1520px;
+
+  // Темы:
   body.theme-orange {
     --main-text-color: var(--color-light);
     --accent-text-color: var(--color-orange);
-    --auxiliary-text-color: rgba(255, 255, 255, 0.4);
-    --reserve-text-color: rgb(236, 176, 45);
+    --auxiliary-text-color: rgb(255 255 255 / 40%);
+    --reserve-text-color: rgb(236 176 45);
     --main-bg-color: #111;
     --accent-bg-color: var(--color-orange);
     --auxiliary-bg-color: #1a1a1a;
@@ -31,15 +34,15 @@
     --main-text-font: var(--font-family-base);
     --banner-gradient: linear-gradient(90deg, #f5220b 0%, #cf7703 100%);
     --button-gradient: linear-gradient(90deg, #df6a0b 0%, #cfc31e 100%);
-    --basic-gradient: linear-gradient(to bottom right, black, rgb(245, 94, 7));
+    --basic-gradient: linear-gradient(to bottom right, black, rgb(245 94 7));
     --cursor-path: url("@/shared/assets/icons/cursors/cursor-orange.png");
   }
 
   body.theme-blue {
     --main-text-color: var(--color-light);
     --accent-text-color: #3263cc;
-    --auxiliary-text-color: rgba(255, 255, 255, 0.4);
-    --reserve-text-color: rgb(42, 149, 192);
+    --auxiliary-text-color: rgb(255 255 255 / 40%);
+    --reserve-text-color: rgb(42 149 192);
     --main-bg-color: #111;
     --accent-bg-color: #3263cc;
     --auxiliary-bg-color: #1a1a1a;
@@ -47,16 +50,16 @@
     --main-text-font: var(--font-family-base);
     --banner-gradient: linear-gradient(90deg, #5177e0 0%, #8c54f3 100%);
     --button-gradient: linear-gradient(90deg, #4f6ab6 0%, #212eaa 100%);
-    --basic-gradient: linear-gradient(to bottom right, black, rgb(54, 96, 235));
+    --basic-gradient: linear-gradient(to bottom right, black, rgb(54 96 235));
     --cursor-path: url("@/shared/assets/icons/cursors/cursor-blue.png");
   }
 
   body.theme-retrowave {
     --main-text-color: var(--color-light);
     --accent-text-color: #ee31bf;
-    --auxiliary-text-color: rgba(255, 255, 255, 0.438);
-    --reserve-text-color: rgb(247, 252, 0);
-    --main-bg-color: rgb(117, 14, 185);
+    --auxiliary-text-color: rgb(255 255 255 / 43.8%);
+    --reserve-text-color: rgb(247 252 0);
+    --main-bg-color: rgb(117 14 185);
     --accent-bg-color: #c41348;
     --auxiliary-bg-color: #1a1a1a;
     --auxiliary-bg-color-2: #390569;
@@ -64,13 +67,13 @@
     --banner-gradient: linear-gradient(90deg, #5816c2 0%, #ee31bf 100%);
     --button-gradient: linear-gradient(
       to bottom right,
-      rgb(255, 81, 0),
-      rgb(220, 233, 42)
+      rgb(255 81 0),
+      rgb(220 233 42)
     );
     --basic-gradient: linear-gradient(
       to bottom right,
-      rgb(70, 29, 146),
-      rgb(192, 34, 82)
+      rgb(70 29 146),
+      rgb(192 34 82)
     );
     --cursor-path: url("@/shared/assets/icons/cursors/cursor-retro.png");
   }
@@ -78,7 +81,7 @@
   body.theme-doom {
     --main-text-color: var(--color-light);
     --accent-text-color: #b90d0d;
-    --auxiliary-text-color: rgba(255, 255, 255, 0.4);
+    --auxiliary-text-color: rgb(255 255 255 / 40%);
     --reserve-text-color: #ff0800;
     --main-bg-color: var(--color-dark);
     --accent-bg-color: #a70b0b;
@@ -87,35 +90,32 @@
     --main-text-font: var(--font-family-doom);
     --banner-gradient: linear-gradient(90deg, #ff3c3c 0%, #b60b0b 100%);
     --button-gradient: linear-gradient(90deg, #ac6a07 0%, #d31717 100%);
-    --basic-gradient: linear-gradient(to bottom right, black, rgb(189, 7, 7));
+    --basic-gradient: linear-gradient(to bottom right, black, rgb(189 7 7));
     --cursor-path: url("@/shared/assets/icons/cursors/cursor-doom.png");
   }
 
-  //----------------------Контейнер:-----------------------------//
-  --container-width: 1520px;
-
-  //На 1600px и менее:
+  // На 1600px и менее:
   @include desktop {
     --container-width: 1320px;
   }
 
-  //На 1441px и менее:
+  // На 1441px и менее:
   @include laptop {
     --container-width: 1140px;
   }
 
-  //На 1200px и менее:
+  // На 1200px и менее:
   @include laptop-s {
     --container-width: 960px;
   }
 
-  //На 1024px и менее:
+  // На 1024px и менее:
   @include tablet {
     --container-width: 720px;
   }
 
-  //На 768px и менее стремимся к контейнеру в width 100% с небольшими отступами (16-24px) по бокам
-  //---------------------------------------------------------------//
+  // На 768px и менее стремимся к контейнеру в width 100% с небольшими отступами (16-24px) по бокам
+  // ---------------------------------------------------------------//
 
   //   --100vw: calc(100vw - var(--scrollbar-width));
 }

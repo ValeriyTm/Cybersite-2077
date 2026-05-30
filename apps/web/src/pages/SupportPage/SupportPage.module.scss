@@ -1,19 +1,19 @@
 .supportWrapper {
   max-width: 800px;
-  padding: 40px;
   margin: 60px auto;
+  padding: 40px;
 
-  background: var(--auxiliary-bg-color-2);
   /* pxtorem-disable-next-line */
   border: 1px solid var(--accent-text-color);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+  background: var(--auxiliary-bg-color-2);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 50%);
 
   @include tablet {
-    padding: 30px;
-    margin-block: 16px;
     width: 95%;
-
+    margin-block: 16px;
+    padding: 30px;
     text-align: center;
   }
 
@@ -21,14 +21,13 @@
     margin-bottom: 20px;
 
     font-size: 2rem;
+    color: var(--color-light);
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--color-light);
   }
 
   .subtitle {
     margin-bottom: 40px;
-
     font-size: 0.95rem;
     color: var(--auxiliary-text-color);
   }

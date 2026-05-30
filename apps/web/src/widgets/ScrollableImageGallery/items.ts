@@ -6,7 +6,7 @@ import hondaLogo from "@/shared/assets/images/scrollGallery/honda.png";
 import kawasakiLogo from "@/shared/assets/images/scrollGallery/kawasaki.png";
 import ktmLogo from "@/shared/assets/images/scrollGallery/ktm.png";
 import suzukiLogo from "@/shared/assets/images/scrollGallery/suzuki.png";
-import yamahaLogo from "@/shared/assets/images/scrollGallery/bmw.png";
+import yamahaLogo from "@/shared/assets/images/scrollGallery/yamaha.png";
 
 interface ImageItem {
   id: number;
