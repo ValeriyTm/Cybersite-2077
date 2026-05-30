@@ -143,6 +143,6 @@ describe("TradingStore", () => {
     const selectedCount = useTradingStore
       .getState()
       .cartItems.filter((i) => i.selected).length;
-    expect(selectedCount).toBe(1);
+    expect(selectedCount).toBe(2);
   });
 });

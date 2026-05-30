@@ -64,12 +64,14 @@ input[type="number"] {
 }
 
 .errorText {
+  position: relative;
+  top: -20px;
+
   margin-top: -2px;
+
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--color-danger) !important;
-  position: relative;
-  top: -20px;
 }
 
 .centered {

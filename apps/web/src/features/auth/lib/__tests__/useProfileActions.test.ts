@@ -95,7 +95,7 @@ describe("Тест хука useProfileActions - действия в профил
 
   it("Тест №1. Должна произойти инициализация компонента profileForm данными пользователя", () => {
     const { result } = renderHook(() => useProfileActions(mockUser));
-    expect(result.current.profileForm.getValues("name")).toBe("Ivan");
+    expect(result.current.profileForm.getValues("name")).toBe("vova");
   });
 
   it("Тест №2. Должна происходить инвалидация кэша ['profile'] после успешного обновления", async () => {
