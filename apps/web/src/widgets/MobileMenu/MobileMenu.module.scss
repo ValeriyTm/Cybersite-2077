@@ -13,7 +13,7 @@
   background: rgb(0 0 0 / 70%);
   backdrop-filter: blur(8px);
 
-  animation: fadeIn 0.3s ease;
+  animation: fade-in 0.3s ease;
 }
 
 p {
@@ -32,7 +32,7 @@ p {
   background: var(--main-bg-color);
   box-shadow: -10px 0 30px var(--glow-color);
 
-  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slide-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logolink {
@@ -78,7 +78,7 @@ p {
   text-align: center;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
   }
@@ -88,7 +88,7 @@ p {
   }
 }
 
-@keyframes slideIn {
+@keyframes slide-in {
   from {
     transform: translateX(100%);
   }

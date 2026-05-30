@@ -31,29 +31,35 @@ jobs:
         run: npx prisma generate --schema=./packages/database/prisma/schema.prisma
 
       # 5. Проверка линтером серверного кода
-      - name: Run Lint Backend
+      - name: Run EsLint Backend
         run: npm run lint -w server
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
 
       # 6. Проверка линтером клиентского кода
-      - name: Run Lint Frontend
+      - name: Run EsLint Frontend
         run: npm run lint:js -w web
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
 
-      # 7. Проверка типов TypeScript на фронтенде
+      # 7. Проверка линтером клиентских стилей
+      - name: Run StyleLint Frontend
+        run: npm run lint:style -w web
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      # 8. Проверка типов TypeScript на фронтенде
       - name: Type check Frontend
         run: npm run type-check -w web
 
-      # 8. Проверка типов TypeScript на бэкенде
+      # 9. Проверка типов TypeScript на бэкенде
       - name: Type check Backend
         run: npm run type-check -w server
 
-      # 9. Запуск Unit-тестов и интеграционных тестов на фронтенде
+      # 10. Запуск Unit-тестов и интеграционных тестов на фронтенде
       - name: Run Unit Tests Frontend
         run: npm run test -w web
 
-      # 10. Сборка фронтенда
+      # 11. Сборка фронтенда
       - name: Build Web App
         run: npm run build -w web

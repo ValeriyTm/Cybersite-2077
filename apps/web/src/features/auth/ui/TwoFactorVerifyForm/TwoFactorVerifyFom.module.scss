@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: fadeIn 0.3s ease-out;
+  animation: fade-in 0.3s ease-out;
 }
 
 .header {
@@ -42,7 +42,7 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     transform: translateY(10px);
     opacity: 0;

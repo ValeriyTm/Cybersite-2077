@@ -13,12 +13,11 @@
   border: 2px solid var(--color-dark);
 
   @include tablet {
-    grid-template-areas:
-      "sidebar-1 sidebar-1"
-      "cell-1 cell-2"
-      "cell-3 cell-4";
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto minmax(300px, auto) minmax(300px, auto);
+    grid-template:
+      "sidebar-1 sidebar-1" auto
+      "cell-1 cell-2" minmax(300px, auto)
+      "cell-3 cell-4" minmax(300px, auto)
+      / 1fr 1fr;
   }
 
   @include mobile {
