@@ -12,5 +12,8 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    env: {
+      LOKI_URL: "http://loki:3100",
+    },
   },
 });

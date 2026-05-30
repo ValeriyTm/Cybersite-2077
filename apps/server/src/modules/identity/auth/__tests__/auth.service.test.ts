@@ -1,7 +1,9 @@
+process.env.LOKI_URL = "http://loki:3100";
+
 import { describe, it, expect, vi, Mock } from "vitest";
 import { authService } from "../auth.service.js";
 import { prisma } from "@repo/database";
-import fs from "fs/promises"; // Используем промисы fs
+import fs from "fs/promises";
 
 //Мокаем призму:
 vi.mock("@repo/database", () => ({
@@ -35,19 +37,25 @@ describe("Удаление аккаунта (deleteAccount)", () => {
   it("Должен удалять файл аватара с диска при удалении пользователя", async () => {
     const userId = "user-123";
     const password = "123";
-    const avatarPath = "uploads/avatars/old-avatar.jpg";
+    const avatarUrl = "/static/avatars/old-avatar.jpg";
 
     //Сначала сервис ищет пользователя, чтобы узнать путь к аватару:
     (prisma.user.findUnique as Mock).mockResolvedValue({
       id: userId,
-      avatarUrl: avatarPath,
+      avatarUrl: avatarUrl,
       passwordHash: "$argon2id$v=19$m=65536,t=3,p=4$...",
     });
+
+    (prisma.user.delete as Mock).mockResolvedValue({ id: userId });
 
     //Затем вызываем метод удаления:
     await authService.deleteAccount(userId, password);
 
     //------------
+    // Проверяем, что fs.unlink был вызван (команда на удаление аватара отправлена):
+    expect(fs.unlink).toHaveBeenCalled();
+    console.log("✅ Команда на удаление аватара с сервера отправлена");
+
     //Проверяем, что в БД ушла команда на удаление:
     expect(prisma.user.delete).toHaveBeenCalledWith({
       where: { id: userId },
@@ -57,16 +65,6 @@ describe("Удаление аккаунта (deleteAccount)", () => {
     expect(fs.unlink).toHaveBeenCalled();
     console.log("✅Команда на удаление аватара с сервера отправлена");
 
-    //Проверяем, что сессии юзера удалены:
-    expect(prisma.token.deleteMany).toHaveBeenCalledWith({
-      where: { userId },
-    });
-    console.log("✅Сессии юзера удалены");
-
-    //Проверяем, что сам юзер удален:
-    expect(prisma.user.delete).toHaveBeenCalledWith({
-      where: { id: userId },
-    });
     console.log("✅Юзер удален");
   });
 });

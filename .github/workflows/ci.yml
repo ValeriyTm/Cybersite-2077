@@ -81,6 +81,10 @@ jobs:
       - name: Run Unit Tests Frontend
         run: npm run test -w web
 
-      # 12. Сборка фронтенда
+      # 12. Запуск Unit-тестов на бэкенде
+      - name: Run Unit Tests Backend
+        run: npm run test -w server
+
+      # 13. Сборка фронтенда
       - name: Build Web App
         run: npm run build -w web

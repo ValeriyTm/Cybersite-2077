@@ -38,21 +38,6 @@ services:
       - mongodb
     networks:
       - cybersite_net
-  # # ------------Фронтенд:--------------- #
-  # web:
-  #   build:
-  #     context: ..
-  #     dockerfile: Dockerfile
-  #     target: base
-  #   volumes:
-  #     - ../apps/web:/app/apps/web
-  #     - /app/apps/web/node_modules
-  #     - /app/node_modules
-  #     - ../packages:/app/packages
-  #   ports:
-  #     - "5173:5173"
-  #   # Запускаем Vite напрямую, чтобы был Hot Reload в браузере
-  #   command: npm run dev --workspace=apps/web -- --host 0.0.0.0
 
   # ------------Базы данных:--------------- #
 
