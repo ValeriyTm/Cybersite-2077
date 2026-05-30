@@ -1,14 +1,14 @@
 //Работа с IMask:
-import { Controller, type Control, type FieldError } from "react-hook-form";
+import { Controller, type Control, type FieldError, type FieldValues, type Path } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 //Иконки:
 import { HiOutlinePhone } from "react-icons/hi";
 //Стили:
 import styles from "./PhoneInput.module.scss";
 
-interface PhoneInputProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+interface PhoneInputProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: Path<TFieldValues>;
   error?: FieldError;
   id?: string;
   required?: boolean;
@@ -16,14 +16,15 @@ interface PhoneInputProps {
   center?: boolean;
 }
 
-export const PhoneInput = ({
+export const PhoneInput = <TFieldValues extends FieldValues>({
   control,
+  name,
   error,
   id = "phone-input",
   required = false,
   className = "",
   center,
-}: PhoneInputProps) => {
+}: PhoneInputProps<TFieldValues>) => {
   return (
     <div className={`${styles.row} ${className}`.trim()}>
       <div className={styles.label}>
@@ -35,7 +36,7 @@ export const PhoneInput = ({
       <div className={styles.value}>
         <Controller
           control={control}
-          name="phone"
+          name={name}
           render={({ field: { onChange, value } }) => (
             <IMaskInput
               id={id}

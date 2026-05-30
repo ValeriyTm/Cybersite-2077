@@ -1,18 +1,22 @@
 //Работа с IMask:
-import { Controller, type Control, type FieldError } from "react-hook-form";
-import { IMaskInput } from "react-imask";
+import { Controller, type Control, type FieldError, type FieldValues, type Path } from "react-hook-form"; import { IMaskInput } from "react-imask";
 import IMask from "imask";
 //Иконки:
 import { HiOutlineCalendar } from "react-icons/hi";
 //Стили:
 import styles from "./BirthdayInput.module.scss";
 
-interface BirthdayInputProps {
-  control: Control<any>;
+interface BirthdayInputProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: Path<TFieldValues>;
   error?: FieldError;
 }
 
-export const BirthdayInput = ({ control, error }: BirthdayInputProps) => {
+export const BirthdayInput = <TFieldValues extends FieldValues>({
+  control,
+  name,
+  error,
+}: BirthdayInputProps<TFieldValues>) => {
   return (
     <div className={styles.row}>
       <div className={styles.label}>
@@ -24,7 +28,7 @@ export const BirthdayInput = ({ control, error }: BirthdayInputProps) => {
       <div className={styles.value}>
         <Controller
           control={control}
-          name="birthday"
+          name={name}
           render={({ field: { onChange, value } }) => (
             <IMaskInput
               id="birthday-input"
@@ -41,7 +45,7 @@ export const BirthdayInput = ({ control, error }: BirthdayInputProps) => {
                 const [d, m, y] = str.split(".");
                 return new Date(Number(y), Number(m) - 1, Number(d));
               }}
-              value={value instanceof Date ? value.toLocaleDateString("ru-RU") : ""}
+              value={(value as unknown) instanceof Date ? value.toLocaleDateString("ru-RU") : ""}
               onAccept={(_, mask) => onChange(mask.typedValue)}
               className={error ? styles.inputError : styles.maskInput}
             />

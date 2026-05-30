@@ -140,6 +140,7 @@ export const SupportForm = () => {
 			<PhoneInput
 				control={control}
 				error={errors.phone}
+				name="phone"
 				id="phone"
 			/>
 

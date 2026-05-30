@@ -60,6 +60,7 @@ export const ProfileInfoCard = ({
           <PhoneInput
             control={control}
             error={errors.phone}
+            name="phone"
             required={true}
             center
           />
@@ -72,7 +73,7 @@ export const ProfileInfoCard = ({
 
         {/* День рождения */}
         {isEditing ? (
-          <BirthdayInput control={control} error={errors.birthday} />
+          <BirthdayInput control={control} name="birthday" error={errors.birthday} />
         ) : (
           <div className={styles.row}>
             <div className={styles.label}><HiOutlineUser /> День рождения</div>
