@@ -8,7 +8,7 @@ export interface INews extends Document {
   excerpt: string;
   content: Array<{
     type: "text" | "image" | "video" | "motorcycle";
-    value: any;
+    value: string;
   }>;
   tags: string[];
   status: "DRAFT" | "PUBLISHED";

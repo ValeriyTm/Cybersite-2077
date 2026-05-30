@@ -157,7 +157,8 @@ export class CatalogService {
         //Асинхронно переименовываем файл на диске:
         // eslint-disable-next-line security/detect-non-literal-fs-filename
         await fs.rename(oldPath, newPath);
-      } catch (err: any) {
+      } catch (error) {
+        const err = error as NodeJS.ErrnoException;
         //Если файла не существовало (например, сбой загрузки Multer, т.е., например, массив files не пустой, но на самом диске файла физически не оказалось), игнорируем ошибку ENOENT.
         //Остальные системные ошибки пробрасываем дальше.
         if (err.code !== "ENOENT") throw err;

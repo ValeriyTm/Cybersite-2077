@@ -1,5 +1,6 @@
 //Клиент призмы для работы с PostgreSQL:
 import { prisma, Role } from "@repo/database";
+import { Prisma } from "@repo/database/generated/prisma";
 
 export class AdminService {
   //---------------------Работа с остатками:-------------
@@ -37,7 +38,7 @@ export class AdminService {
     const { role, email, skip, limit } = data;
 
     //Настройка фильтров:
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
     if (role) where.role = role;
     if (email) where.email = { contains: String(email), mode: "insensitive" };
 

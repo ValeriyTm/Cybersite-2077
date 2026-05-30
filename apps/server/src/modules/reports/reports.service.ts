@@ -17,34 +17,27 @@ export class ReportsService {
       take: 5,
     });
 
-    //Обогащаем данными о моделях:
-    let enrichedTopSellers = [] as any;
+    const topBikeIds = topSellers.map((item) => item.motorcycleId);
 
-    if (topSellers.length > 0) {
-      const topBikeIds = topSellers.map((item) => item.motorcycleId);
+    const motorcycles = await prisma.motorcycle.findMany({
+      where: { id: { in: topBikeIds } },
+      select: {
+        id: true,
+        model: true,
+        brand: { select: { name: true } },
+      },
+    });
 
-      const motorcycles = await prisma.motorcycle.findMany({
-        where: { id: { in: topBikeIds } },
-        select: {
-          id: true,
-          model: true,
-          brand: { select: { name: true } },
-        },
-      });
+    //Создаем карту в памяти для моментального поиска по ID за O(1):
+    const bikeMap = new Map(motorcycles.map((m) => [m.id, m]));
 
-      //Создаем карту в памяти для моментального поиска по ID за O(1):
-      const bikeMap = new Map(motorcycles.map((m) => [m.id, m]));
-
-      enrichedTopSellers = topSellers.map((item) => {
-        const moto = bikeMap.get(item.motorcycleId);
-        return {
-          model: moto
-            ? `${moto.brand.name} ${moto.model}`
-            : "Неизвестная модель",
-          quantity: item._sum.quantity || 0,
-        };
-      });
-    }
+    const enrichedTopSellers = topSellers.map((item) => {
+      const moto = bikeMap.get(item.motorcycleId);
+      return {
+        model: moto ? `${moto.brand.name} ${moto.model}` : "Неизвестная модель",
+        quantity: item._sum.quantity || 0,
+      };
+    });
 
     //2) Складской отчет (критические остатки):
     const lowStock = await prisma.stock.findMany({

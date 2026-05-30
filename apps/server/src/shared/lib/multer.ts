@@ -37,7 +37,7 @@ export const createMulter = ({
     limits: { fileSize: maxSizeMb * 1024 * 1024, files: maxFiles },
     fileFilter: (_req, file, cb) => {
       if (allowedMimeTypes.includes(file.mimetype)) cb(null, true);
-      else cb(new AppError(400, errorMsg) as any);
+      else cb(new AppError(400, errorMsg));
     },
   });
 

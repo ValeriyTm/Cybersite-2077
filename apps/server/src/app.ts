@@ -67,9 +67,11 @@ app.use(
           try {
             const logData = JSON.parse(message);
             logger.info("HTTP Request", logData); // Отправляем как объект
-          } catch (e: any) {
+          } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : String(e);
+
             logger.error("Morgan JSON parsing error", {
-              error: e.message,
+              error: errorMessage,
               rawMessage: message.trim(),
             });
           }

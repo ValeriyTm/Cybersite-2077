@@ -2,7 +2,7 @@
 //Клиент Redis для работы с быстрым хранилищем:
 import { redis } from "../../shared/lib/redis.js";
 //Клиент призмы для работы с PostgreSQL:
-import { prisma } from "@repo/database";
+import { Motorcycle, prisma } from "@repo/database";
 //Типы:
 import { MotorcycleFullServer } from "@repo/types";
 
@@ -22,6 +22,24 @@ type MotorcycleFromDB = Omit<
   //Возвращаем правильный тип для изображений:
   images: MotorcycleFullServer["images"];
 };
+
+interface MotorcycleAlternative {
+  id: string | undefined;
+  model?: string;
+  slug?: string;
+  brand?: string;
+  brandSlug?: string;
+  category?: string;
+  year?: number;
+  price?: number;
+  displacement?: number;
+  createdAt?: string;
+  power?: number;
+  transmission?: string;
+  rating?: number;
+  mainImage?: string;
+  totalInStock?: number;
+}
 
 export class DiscountLogic {
   //Метод вычисляет финальную цену мотоцикла для конкретного пользователя:
@@ -67,7 +85,10 @@ export class DiscountLogic {
   }
 
   //Метод для работы с большим количеством данных:
-  async calculateFinalPricesBulk(motorcycles: any[], userId?: string) {
+  async calculateFinalPricesBulk(
+    motorcycles: Motorcycle[] | MotorcycleAlternative[],
+    userId?: string,
+  ) {
     if (!motorcycles || motorcycles.length === 0) return [];
 
     //Запрашиваем глобальную скидку из Redis для всех товаров сразу:
@@ -81,12 +102,12 @@ export class DiscountLogic {
     const personalSalesMap = new Map<string, number>();
 
     if (userId) {
-      const motoIds = motorcycles.map((m) => m.id);
+      const motoIds = motorcycles.map((m) => m.id) as string[];
 
       const personalSales = await prisma.personalDiscount.findMany({
         where: {
           userId,
-          motorcycleId: { in: motoIds }, // РЕШЕНИЕ N+1
+          motorcycleId: { in: motoIds },
           expiresAt: { gt: new Date() },
         },
       });
@@ -108,7 +129,7 @@ export class DiscountLogic {
       }
 
       //Проверяем персональную скидку из нашей Map:
-      const personalDiscountPercent = personalSalesMap.get(motorcycle.id);
+      const personalDiscountPercent = personalSalesMap.get(motorcycle.id!);
       if (
         personalDiscountPercent &&
         personalDiscountPercent > appliedDiscount
@@ -118,7 +139,7 @@ export class DiscountLogic {
 
       //Применяем процентную скидку:
       if (appliedDiscount > 0) {
-        finalPrice = Math.round(finalPrice * (1 - appliedDiscount / 100));
+        finalPrice = Math.round(finalPrice! * (1 - appliedDiscount / 100));
       }
 
       return {

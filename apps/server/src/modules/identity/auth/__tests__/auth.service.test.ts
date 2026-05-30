@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, Mock } from "vitest";
 import { authService } from "../auth.service.js";
 import { prisma } from "@repo/database";
 import fs from "fs/promises"; // Используем промисы fs
@@ -38,7 +38,7 @@ describe("Удаление аккаунта (deleteAccount)", () => {
     const avatarPath = "uploads/avatars/old-avatar.jpg";
 
     //Сначала сервис ищет пользователя, чтобы узнать путь к аватару:
-    (prisma.user.findUnique as any).mockResolvedValue({
+    (prisma.user.findUnique as Mock).mockResolvedValue({
       id: userId,
       avatarUrl: avatarPath,
       passwordHash: "$argon2id$v=19$m=65536,t=3,p=4$...",

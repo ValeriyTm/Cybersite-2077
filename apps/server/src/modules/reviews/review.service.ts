@@ -121,9 +121,11 @@ export class ReviewService {
             //Наш путь безопасен, поэтому можем успокоить линтер
             // eslint-disable-next-line
             await fs.unlink(fullPath);
-          } catch (error: any) {
+          } catch (error) {
+            const err = error as NodeJS.ErrnoException;
+
             // Игнорируем ошибку, если файл уже удален с диска
-            if (error.code !== "ENOENT") throw error;
+            if (err.code !== "ENOENT") throw err;
           }
         }),
       );

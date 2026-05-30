@@ -38,6 +38,7 @@ import {
   UpdateUserStatusAdminParamsArgs,
 } from "@repo/validation";
 import { Statistics } from "../reports/types.js";
+import { OrderStatus, TicketStatus } from "@repo/database";
 //Главный сервис модуля Admin:
 import { adminService } from "./admin.service.js";
 //Сервисы модуля Reports:
@@ -291,7 +292,7 @@ export const getOrders = catchAsync(async (req: AuthRequest, res: Response) => {
   const [orders, total] = await orderService.getOrders(
     skip,
     limit,
-    status,
+    status as OrderStatus,
     email,
   );
 
@@ -444,7 +445,7 @@ export const getTickets = catchAsync(
     const {
       page = 1,
       limit = 10,
-      status = "",
+      status = "" as TicketStatus,
       email = "",
     } = req.query as unknown as GetTicketsAdminArgs;
     const skip = (page - 1) * limit;

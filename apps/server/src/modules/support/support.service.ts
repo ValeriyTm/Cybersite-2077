@@ -1,5 +1,6 @@
 //Клиент призмы для работы с PostgreSQL:
 import { prisma, TicketCategory, TicketStatus } from "@repo/database";
+import { Prisma } from "@repo/database/generated/prisma";
 //Очередь для удаления закрытых тикетов:
 import { scheduleTicketCleanup } from "./support.queue.js";
 
@@ -79,10 +80,10 @@ export class SupportService {
   async getTickets(
     skip: number,
     limit: number,
-    status?: string,
+    status?: TicketStatus,
     email?: string,
   ) {
-    const where: any = {};
+    const where: Prisma.SupportTicketWhereInput = {};
     if (status) where.status = status;
     if (email) {
       where.email = { contains: String(email), mode: "insensitive" };

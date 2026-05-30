@@ -12,13 +12,15 @@ import { estypes } from "@elastic/elasticsearch";
 //Логирование:
 import { logger } from "src/shared/lib/logger.js";
 
+import { QueryDslQueryContainer } from "@elastic/elasticsearch/lib/api/types";
+
 //Подключаемся к контейнеру:
 export const esClient = new Client({ node: process.env.ELASTIC_NODE });
 
 interface ElasticQuery {
   bool: {
-    must: Record<string, any>[];
-    filter: Record<string, any>[];
+    must: QueryDslQueryContainer[];
+    filter: QueryDslQueryContainer[];
   };
 }
 
@@ -266,6 +268,7 @@ export class SearchService {
       rawItems,
       userId,
     ); //Получаем скидки одним пакетным запросом для всей страницы выдачи
+
     const itemsWithDiscounts = rawItems.map((moto, index) => ({
       ...moto,
       discountData: allDiscountData[index],

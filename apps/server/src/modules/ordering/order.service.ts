@@ -398,11 +398,11 @@ export class OrderService {
   async getOrders(
     skip: number,
     limit: number,
-    status?: string,
+    status?: OrderStatus,
     email?: string,
   ) {
     //Формируем фильтры:
-    const where: any = {};
+    const where: Prisma.OrderWhereInput = {};
     if (status) where.status = status;
     if (email) {
       where.customerEmail = {

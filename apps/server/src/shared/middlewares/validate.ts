@@ -4,7 +4,13 @@ import fs from "fs/promises";
 //Логирование:
 import { logger } from "../lib/logger.js";
 
-export const validate = (schema: ZodType) => {
+interface ValidationResult {
+  body?: unknown;
+  query?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+}
+
+export const validate = (schema: ZodType<ValidationResult>) => {
   return async (
     req: Request,
     res: Response,
@@ -25,24 +31,21 @@ export const validate = (schema: ZodType) => {
       });
 
       //Для отладки:
-      const safeParsed = parsed as any;
-
-      //Для отладки:
-      // logger.debug("Отвалидированные данные, safeParsed: ", safeParsed);
+      // logger.debug("Отвалидированные данные, parsed: ", parsed);
 
       //2.Безопасная перезапись через дескрипторы свойств:
-      if (safeParsed.query) {
+      if (parsed.query) {
         Object.defineProperty(req, "query", {
-          value: safeParsed.query,
+          value: parsed.query,
           writable: true,
           configurable: true,
           enumerable: true,
         });
       }
 
-      if (safeParsed.params) {
+      if (parsed.params) {
         Object.defineProperty(req, "params", {
-          value: safeParsed.params,
+          value: parsed.params,
           writable: true,
           configurable: true,
           enumerable: true,
@@ -50,8 +53,8 @@ export const validate = (schema: ZodType) => {
       }
 
       //Приводим req.body к валидному виду (теперь там только то, что пропустил Zod):
-      if (safeParsed.body) {
-        req.body = safeParsed.body;
+      if (parsed.body) {
+        req.body = parsed.body;
       }
 
       next();

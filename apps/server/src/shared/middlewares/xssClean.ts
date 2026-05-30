@@ -7,41 +7,44 @@ import { JSDOM } from "jsdom";
 //Типы:
 import { Request, Response, NextFunction } from "express";
 
+type DOMPurifyWindow = Parameters<typeof createDOMPurify>[0];
+
 //Создание виртуального окна браузера:
 const window = new JSDOM("").window;
 //Инициализация очистителя, привязанного к виртуальному окну:
-const DOMPurify = createDOMPurify(window as any);
+const DOMPurify = createDOMPurify(window as unknown as DOMPurifyWindow);
 
 //Рекурсивная функция для глубокой очистки объектов и массивов:
-const sanitizeValue = (value: any): any => {
+const sanitizeValue = <T>(value: T): T => {
   //1. Если это строка — очищаем её через DOMPurify:
   if (typeof value === "string") {
     return DOMPurify.sanitize(value, {
       ALLOWED_TAGS: [],
       ALLOWED_ATTR: [],
-    });
+    }) as unknown as T;
   }
 
   //2. Если это массив — рекурсивно очищаем каждый элемент:
   if (Array.isArray(value)) {
-    return value.map((item) => sanitizeValue(item));
+    return value.map((item) => sanitizeValue(item)) as unknown as T;
   }
 
   //3. Если это объект (и не null) — рекурсивно очищаем его свойства:
-  if (typeof value === "object" && value !== null) {
-    const sanitizedObj: Record<string, any> = {};
+  if (typeof value === "object" && value != null) {
+    const sanitizedObj: Record<string, unknown> = {};
 
     Object.keys(value).forEach((key) => {
       if (key === "__proto__" || key === "constructor") {
         return;
       }
 
+      const objKey = key as keyof typeof value;
       //Отключаем на следующей стоке линтер, т.к. он не распознает, что у нас уже добавлена защита
       // eslint-disable-next-line
-      sanitizedObj[key] = sanitizeValue(value[key]);
+      sanitizedObj[key] = sanitizeValue(value[objKey]);
     });
 
-    return sanitizedObj;
+    return sanitizedObj as unknown as T;
   }
 
   //4. Для всех остальных типов (number, boolean и т.д.) возвращаем как есть:
