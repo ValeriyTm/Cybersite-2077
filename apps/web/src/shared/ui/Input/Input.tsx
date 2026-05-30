@@ -6,7 +6,7 @@ import styles from "./Input.module.scss";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: ReactNode;
   registration?: UseFormRegisterReturn; // Привязка к react-hook-form
-  error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;  // Объект ошибки из formState.errors
+  error?: FieldError | Merge<FieldError, FieldErrorsImpl<Record<string, unknown>>>;  // Объект ошибки из formState.errors
   visuallyHidden?: boolean;
   id?: string;
   center?: boolean;
@@ -27,6 +27,7 @@ export const Input = ({
   const generatedId = useId();
 
   const inputId = id || registration?.name || generatedId;
+  const errorMessage = error && 'message' in error ? String(error.message) : undefined;
 
   return (
     <div className={styles.field}>
@@ -37,7 +38,7 @@ export const Input = ({
         {...props}
         className={`${styles.input} ${center ? styles.centered : ''} ${styles[variant]} ${error ? styles.inputError : ""} ${className || ""}`}
       />
-      {error?.message && <span className={styles.errorText}>{String(error.message)}</span>}
+      {errorMessage && <span className={styles.errorText}>{String(errorMessage)}</span>}
     </div>
   );
 };

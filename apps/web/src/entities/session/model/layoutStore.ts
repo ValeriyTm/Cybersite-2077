@@ -9,6 +9,6 @@ interface LayoutState {
 
 export const useLayoutStore = create<LayoutState>((set) => ({
   isMenuOpen: false,
-  toggleMenu: () => set((state: any) => ({ isMenuOpen: !state.isMenuOpen })),
+  toggleMenu: () => set((state) => ({ isMenuOpen: !state.isMenuOpen })),
   closeMenu: () => set({ isMenuOpen: false }),
 }));

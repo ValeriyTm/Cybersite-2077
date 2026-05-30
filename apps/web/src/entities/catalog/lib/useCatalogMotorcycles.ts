@@ -4,9 +4,27 @@ import { $api } from "@/shared/api";
 //Типы:
 import { type MotorcycleResponse } from "@/entities/catalog";
 
+interface MotoFilters {
+  page: number;
+  limit: number;
+  search: string;
+  sortBy: string;
+  minPrice: number | undefined;
+  maxPrice: number | undefined;
+  minYear: number | undefined;
+  maxYear: number | undefined;
+  minDisplacement: number | undefined;
+  maxDisplacement: number | undefined;
+  minPower: number | undefined;
+  maxPower: number | undefined;
+  category: string | undefined;
+  transmission: string | undefined;
+  onlyInStock: boolean;
+}
+
 interface UseCatalogMotorcyclesProps {
   brandSlug: string | undefined;
-  filters: Record<string, any>;
+  filters: MotoFilters;
 }
 
 export const useCatalogMotorcycles = ({

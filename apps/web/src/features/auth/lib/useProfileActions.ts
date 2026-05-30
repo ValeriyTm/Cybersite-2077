@@ -4,6 +4,8 @@ import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 //React Query:
 import { useQueryClient } from "@tanstack/react-query";
+//Логгер:
+import * as Sentry from "@sentry/react";
 //Тип для возвращаемого значения%
 import { type IUser } from "@repo/types";
 //Схемы валидации Zod:
@@ -182,9 +184,9 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       toast.success("Аватар обновлен");
       //Выходим из режима редактирования:
       setIsEditing(false);
-    } catch (e) {
+    } catch (error) {
       toast.error("Ошибка загрузки файла");
-      console.log(`Произошла ошибка ${e}`);
+      Sentry.captureException(error);
     } finally {
       //Выключаем лоадер:
       setIsAvatarLoading(false);
@@ -230,9 +232,9 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       const res = await $api.post("/identity/auth/2fa/setup");
       //Записываем полученный url QR-кода в локальный стейт:
       setQrCode(res.data.qrCodeUrl);
-    } catch (e) {
+    } catch (error) {
       toast.error("Ошибка при генерации QR-кода");
-      console.log(`Произошла ошибка ${e}`);
+      Sentry.captureException(error);
     }
   };
 

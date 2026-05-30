@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type ThemeType =
+export type ThemeType =
   | "theme-orange"
   | "theme-blue"
   | "theme-retrowave"

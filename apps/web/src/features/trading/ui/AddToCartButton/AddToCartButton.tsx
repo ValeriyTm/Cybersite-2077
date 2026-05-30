@@ -42,8 +42,8 @@ export const AddToCartButton = ({
   const handleOrder = () => {
     const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
 
-    if (typeof window !== 'undefined' && (window as any).ym) {
-      (window as any).ym(metricaId, 'reachGoal', 'CLICK-CART');
+    if (typeof window !== 'undefined' && window.ym) {
+      window.ym(metricaId, 'reachGoal', 'CLICK-CART');
     }
   };
 

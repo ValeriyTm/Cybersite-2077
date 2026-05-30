@@ -18,7 +18,6 @@ export const CartPage = () => {
   const { user } = useProfile(); // Достаем данные профиля
 
   const { cartItems } = useTradingStore();
-  console.log('cartItems: ', cartItems);
 
   const {
     removeItem,

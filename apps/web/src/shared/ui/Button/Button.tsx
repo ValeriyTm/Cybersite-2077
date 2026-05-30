@@ -40,7 +40,7 @@ export const Button = ({
       <Link
         to={isButtonDisabled ? "#" : to} // Блокируем переход, если кнопка в режиме загрузки или disabled
         className={`${combinedClassName} ${isButtonDisabled ? styles.disabledLink : ""}`}
-        {...(props as any)}
+        {...(props)}
       >
         {isLoading ? loadingText || "Загрузка..." : children}
       </Link>

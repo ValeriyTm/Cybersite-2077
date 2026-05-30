@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import { REASON_OPTIONS } from "../../model/constants";
 //reCAPTCHA:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+//Логгер:
+import * as Sentry from "@sentry/react";
 //Компоненты:
 import { PhoneInput, Input, Textarea, Button, Select, FileUpload } from "@/shared/ui";
 //Уведомления:
@@ -91,18 +93,15 @@ export const SupportForm = () => {
 
 			//5) Положительное уведомление юзеру:
 			toast.success("Ваше обращение принято! Мы ответим в ближайшее время.");
-		} catch (e) {
+		} catch (error) {
 			toast.error("Ошибка при отправке. Попробуйте позже.");
-			console.log(`Произошла ошибка ${e}`)
+			Sentry.captureException(error);
 		}
 	};
 
 	return (
 		<form
-			onSubmit={handleSubmit(
-				onSubmit,
-				(errors) => console.log("Ошибки валидации формы:", errors)
-			)}
+			onSubmit={handleSubmit(onSubmit)}
 			className={styles.form}
 		>
 			<div className={styles.row}>

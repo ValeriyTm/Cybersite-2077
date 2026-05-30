@@ -60,8 +60,8 @@ export const CartOrderSummary = ({ selectedItems, user }: CartOrderSummaryProps)
 
     //Я.Метрика:
     const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
-    if (typeof window !== "undefined" && (window as any).ym) {
-      (window as any).ym(metricaId, "reachGoal", "ORDER_CLICK");
+    if (typeof window !== "undefined" && window.ym) {
+      window.ym(metricaId, "reachGoal", "ORDER_CLICK");
     }
 
     navigate("/checkout", {

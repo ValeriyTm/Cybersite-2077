@@ -1,6 +1,6 @@
 //Состояния:
 import { GoogleAuthButton, useAuthStore, useProfile } from "@/features/auth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 //Роутинг:
 import { useNavigate, useSearchParams, useLocation } from "react-router";
 //Библиотека для показа всплывающих уведомлений:
@@ -27,36 +27,20 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  //Из клиентского стора берем только статус авторизации и метод его установки:
   const { isAuth, setAuth } = useAuthStore();
-  //Из серверного стора берем refetch, чтобы принудительно обновить данные после Google OAuth:
   const { refetch } = useProfile();
 
   //Логика определения режима (Login/Register) (извлекаем параметры из URL):
-  const isActivated = searchParams.get("activated") === "true"; //Проверяем, пришел ли пользователь по ссылке из письма для активации почты.
-  const tokenFromUrl = searchParams.get("token"); // Проверка наличия токена после OAuth
+  const isActivated = searchParams.get("activated") === "true";
+  const tokenFromUrl = searchParams.get("token");
+
+  // Флаг, чтобы гарантировать однократную обработку токена из URL
+  const processingToken = useRef(false);
 
   //Если в URL есть токен (после Google) или флаг активации, сразу показываем форму «Входа» (login), иначе — «Регистрацию»:
   const [mode, setMode] = useState<"login" | "register">(
     initialMode || (isActivated || !!tokenFromUrl ? "login" : "register"),
   );
-
-  //Обработка успешного OAuth (если вернулись с токеном в URL):
-  useEffect(() => {
-    //Если в ссылке есть токен (Google вернул пользователя на фронтенд):
-    if (tokenFromUrl && !isAuth) {
-      // Сначала сохраняем токен в клиентском сторе:
-      setAuth(tokenFromUrl);
-
-      // Затем заставляем React Query скачать данные пользователя с сервера:
-      refetch().then(() => {
-        toast.success("Вход через Google выполнен!");
-        //Редирект на страницу профиля:
-        navigate("/profile", { replace: true });
-      });
-    }
-  }, [tokenFromUrl, isAuth, setAuth, refetch, navigate]);
-  //tokenFromUrl и isAuth - прямые зависимости. setAuth, refetch, navigate - это функции, а в React принято добавлять их в зависимости, если они используются внутри useEffect.
 
   // Если пользователь уже залогинился (или уже был залогинен), уводим его отсюда (редирект) сразу на страницу профиля:
   useEffect(() => {
@@ -65,6 +49,26 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
     }
   }, [isAuth, navigate, tokenFromUrl]);
   //Функция роутера navigate добавлена в массив для порядка (требование правил React Hooks), но на деле она стабильна и сама по себе повторных запусков не вызывает.
+
+
+  //Обработка успешного OAuth (если вернулись с токеном в URL):
+  useEffect(() => {
+    //Если в ссылке есть токен (Google вернул пользователя на фронтенд):
+    if (tokenFromUrl && !isAuth && !processingToken.current) {
+      // Сначала сохраняем токен в клиентском сторе:
+      setAuth(tokenFromUrl);
+
+      // Затем заставляем React Query скачать данные пользователя с сервера:
+      refetch().then(() => {
+        toast.success("Вход через Google выполнен!");
+        navigate("/profile", { replace: true });
+      }).catch(() => {
+        toast.error("Ошибка обновления профиля");
+        processingToken.current = false;
+      });
+    }
+  }, [tokenFromUrl, isAuth, setAuth, refetch, navigate]);
+  //tokenFromUrl и isAuth - прямые зависимости. setAuth, refetch, navigate - это функции, а в React принято добавлять их в зависимости, если они используются внутри useEffect.
 
   //Уведомление об активации почты (если состояние активации меняется, то выводим уведомление):
   useEffect(() => {
@@ -82,12 +86,7 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
     //Используем window.location.href, так как это переход на другой домен, а не внутренний роут.
   };
 
-  //Пока идет редирект, можно вернуть null или спиннер
   if (isAuth && !tokenFromUrl) return null;
-
-  const handleSuccess = () => {
-    console.log("Действие успешно завершено!");
-  };
 
   return (
     <>
@@ -126,7 +125,7 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
           </div>
           {/* Рендерим нужную форму: */}
           {mode === "login" ? (
-            <LoginForm onSuccess={handleSuccess} onVerify2FA={handleSuccess} />
+            <LoginForm onSuccess={() => { }} onVerify2FA={() => { }} />
           ) : (
             <RegisterForm onSuccess={() => setMode("login")} />
           )}

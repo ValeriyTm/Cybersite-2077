@@ -23,12 +23,16 @@ export const useMotorcycleFilters = () => {
     onlyInStock: searchParams.get("onlyInStock") === "true",
   };
 
+  type FilterValues = Partial<
+    Record<keyof typeof filters, string | number | boolean | null>
+  >;
+
   //Функция обновления URL:
-  const updateFilters = (newValues: Record<string, any>) => {
+  const updateFilters = (newValues: FilterValues) => {
     const params = new URLSearchParams(searchParams); //Берем все текущие GET-параметры из URL, чтобы не потерять те, которые мы сейчас не меняем
 
     Object.entries(newValues).forEach(([key, value]) => {
-      if (value !== undefined && value !== "" && value !== null) {
+      if (value != undefined && value !== "" && value != null) {
         params.set(key, String(value));
         //Если значение фильтра передано (не пустое, не null, не undefined), оно добавляется в URL или перезаписывает старое через params.set
       } else {

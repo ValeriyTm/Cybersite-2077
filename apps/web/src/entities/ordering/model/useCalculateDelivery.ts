@@ -5,6 +5,11 @@ import { $api } from "@/shared/api";
 import toast from "react-hot-toast";
 //Типы:
 import type { DeliveryResponse } from "../types/types";
+import type { AxiosError } from "axios";
+
+interface ApiErrorResponse {
+  message?: string;
+}
 
 interface CalculatePayload {
   lat: number;
@@ -15,7 +20,11 @@ interface CalculatePayload {
 export const useCalculateDelivery = (
   onSuccessCallback: (data: DeliveryResponse) => void,
 ) => {
-  return useMutation({
+  return useMutation<
+    DeliveryResponse,
+    AxiosError<ApiErrorResponse>,
+    CalculatePayload
+  >({
     mutationFn: async (payload: CalculatePayload) => {
       return $api
         .post<DeliveryResponse>("/warehouse/calculate", payload)
@@ -24,7 +33,7 @@ export const useCalculateDelivery = (
     onSuccess: (data) => {
       onSuccessCallback(data);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       const message =
         error.response?.data?.message || "Ошибка при расчете доставки";
       toast.error(message);

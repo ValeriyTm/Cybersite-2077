@@ -14,7 +14,7 @@ export const ThemeSwitcher = () => {
           type="button"
           key={t.id}
           className={styles.themeWrapper}
-          onClick={() => setTheme(t.id as any)}
+          onClick={() => setTheme(t.id)}
           title={t.title}
         >
           <img
