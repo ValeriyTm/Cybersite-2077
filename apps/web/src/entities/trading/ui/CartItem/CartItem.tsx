@@ -2,14 +2,14 @@
 import { useCart } from '@/entities/trading/api';
 //Роутинг:
 import { Link } from "react-router";
-//API:
-import { API_URL } from '@/shared/api'
 //Компоненты:
 import { Checkbox } from '@/shared/ui';
 //Типы:
 import { type MotorcycleCart } from "@/entities/catalog";
+//API:
+import { API_URL } from "@/shared/api";
 //Изображения:
-import defaultMotoImage from '@/shared/assets/images/defaults/default-card-icon.jpg'
+import defaultMotoImage from "@/shared/assets/images/defaults/default-card-icon.jpg";
 //Стили:
 import styles from './CartItem.module.scss'
 
@@ -20,8 +20,12 @@ export interface CartCardProps {
   actionButtonSlot?: React.ReactNode;  //Слот для кнопки "Корзины"
 }
 
-export const CartItem = ({ data, handleDeletingId, favoriteButtonSlot,
-  actionButtonSlot }: CartCardProps) => {
+export const CartItem = (
+  { data,
+    handleDeletingId,
+    favoriteButtonSlot,
+    actionButtonSlot
+  }: CartCardProps) => {
   const {
     toggleSelect,
   } = useCart();
@@ -54,8 +58,6 @@ export const CartItem = ({ data, handleDeletingId, favoriteButtonSlot,
             single
           />
         </div>
-
-
 
         {/*Img:*/}
         <div className={styles.itemImg}>

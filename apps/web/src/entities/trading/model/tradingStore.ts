@@ -70,7 +70,7 @@ export const useTradingStore = create<TradingState>()(
     cartItems: [],
 
     //Добавление в корзину:
-    addToCartLocally: (item: MotorcycleCart) => {
+    addToCartLocally: (item: AddToCartLocally) => {
       //Достаем из хранилища текущий массив объектов корзины cartItems:
       const { cartItems } = get();
       //Ищем в массиве объект, у которого id совпадает с переданным. Если нашли — он сохранится в existing:
@@ -88,7 +88,7 @@ export const useTradingStore = create<TradingState>()(
         });
       } else {
         //Если товара в корзине ещё нет, то создаем новый массив, куда копируем старые элементы и добавляем новый объект с id и quantity:
-        set({ cartItems: [...cartItems, item] });
+        set({ cartItems: [...cartItems, item as unknown as MotorcycleCart] });
       }
     },
 

@@ -15,7 +15,7 @@
   width: 100%;
   min-height: 44px;
   margin-bottom: 1.25rem;
-  padding: 0.5rem 1rem; // Было 0.75rem 1rem
+  padding: 0.5rem 1rem;
   border-radius: 8px;
 
   font-size: 1rem;
@@ -68,6 +68,8 @@ input[type="number"] {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--color-danger) !important;
+  position: relative;
+  top: -20px;
 }
 
 .centered {

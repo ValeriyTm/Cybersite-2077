@@ -8,6 +8,8 @@ import { createTicketFrontendSchema, type createTicketServiceArgs } from "@repo/
 import { $api } from "@/shared/api";
 //Работа с формами:
 import { useForm } from "react-hook-form";
+//Категории:
+import { REASON_OPTIONS } from "../../model/constants";
 //reCAPTCHA:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 //Компоненты:
@@ -16,7 +18,6 @@ import { PhoneInput, Input, Textarea, Button, Select, FileUpload } from "@/share
 import toast from "react-hot-toast";
 //Стили:
 import styles from "./SupportForm.module.scss";
-import { REASON_OPTIONS } from "../../model/constants";
 
 export const SupportForm = () => {
 	const [files, setFiles] = useState<File[]>([]);
@@ -97,92 +98,90 @@ export const SupportForm = () => {
 	};
 
 	return (
-		<>
-			<form
-				onSubmit={handleSubmit(
-					onSubmit,
-					(errors) => console.log("Ошибки валидации формы:", errors)
-				)}
-				className={styles.form}
-			>
-				<div className={styles.row}>
-					{/* Имя */}
-					<Input
-						label="Ваше имя"
-						visuallyHidden
-						placeholder="Имя"
-						registration={register("firstName")}
-						error={errors.firstName}
-						className={styles.nameInput}
-					/>
-
-					{/* Фамилия */}
-					<Input
-						label="Ваша фамилия"
-						visuallyHidden
-						placeholder="Фамилия"
-						registration={register("lastName")}
-						error={errors.lastName}
-					/>
-				</div>
-
-				{/* Email */}
+		<form
+			onSubmit={handleSubmit(
+				onSubmit,
+				(errors) => console.log("Ошибки валидации формы:", errors)
+			)}
+			className={styles.form}
+		>
+			<div className={styles.row}>
+				{/* Имя */}
 				<Input
-					label="Ваш email"
+					label="Ваше имя"
 					visuallyHidden
-					placeholder="Email"
-					readOnly={!!user}
-					registration={register("email")}
-					error={errors.email}
+					placeholder="Имя"
+					registration={register("firstName")}
+					error={errors.firstName}
+					className={styles.nameInput}
 				/>
 
-				{/*Номер телефона:*/}
-				<PhoneInput
-					control={control}
-					error={errors.phone}
-					id="phone"
-				/>
-
-				{/* Указание причины обращения */}
-				<Select
-					label="Выберите причину обращения"
+				{/* Фамилия */}
+				<Input
+					label="Ваша фамилия"
 					visuallyHidden
-					placeholder="Выберите причину обращения"
-					showPlaceholder={true}
-					registration={register("category")}
-					error={errors.category}
-					options={REASON_OPTIONS}
-					variant="light"
+					placeholder="Фамилия"
+					registration={register("lastName")}
+					error={errors.lastName}
 				/>
+			</div>
 
-				{/* Область ввода сообщения */}
-				<Textarea
-					label="Введите ваш вопрос"
-					visuallyHidden
-					placeholder="Суть вопроса..."
-					registration={register("description")}
-					error={errors.description}
-				/>
+			{/* Email */}
+			<Input
+				label="Ваш email"
+				visuallyHidden
+				placeholder="Email"
+				readOnly={!!user}
+				registration={register("email")}
+				error={errors.email}
+			/>
 
-				{/*Кастомный инпут для файлов */}
-				<FileUpload
-					files={files}
-					setFiles={setFiles}
-					isDragActive={isDragActive}
-					setIsDragActive={setIsDragActive}
-					isUserLoggedIn={!!user}
-				/>
+			{/*Номер телефона:*/}
+			<PhoneInput
+				control={control}
+				error={errors.phone}
+				id="phone"
+			/>
 
-				<Button
-					type="submit"
-					variant="primary" // Можно опустить, так как дефолтное значение "primary"
-					isLoading={isSubmitting}
-					loadingText="Отправка..."
-					className={styles.subBtn}
-				>
-					Отправить запрос
-				</Button>
-			</form>
-		</>
+			{/* Указание причины обращения */}
+			<Select
+				label="Выберите причину обращения"
+				visuallyHidden
+				placeholder="Выберите причину обращения"
+				showPlaceholder={true}
+				registration={register("category")}
+				error={errors.category}
+				options={REASON_OPTIONS}
+				variant="light"
+			/>
+
+			{/* Область ввода сообщения */}
+			<Textarea
+				label="Введите ваш вопрос"
+				visuallyHidden
+				placeholder="Суть вопроса..."
+				registration={register("description")}
+				error={errors.description}
+			/>
+
+			{/*Кастомный инпут для файлов */}
+			<FileUpload
+				files={files}
+				setFiles={setFiles}
+				isDragActive={isDragActive}
+				setIsDragActive={setIsDragActive}
+				isUserLoggedIn={!!user}
+			/>
+
+			<Button
+				type="submit"
+				variant="primary" // Можно опустить, так как дефолтное значение "primary"
+				isLoading={isSubmitting}
+				loadingText="Отправка..."
+				className={styles.subBtn}
+			>
+				Отправить запрос
+			</Button>
+		</form>
 	);
 };

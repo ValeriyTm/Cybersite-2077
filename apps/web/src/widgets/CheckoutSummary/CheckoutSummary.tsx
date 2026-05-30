@@ -30,8 +30,6 @@ export const CheckoutSummary = ({
   onCreateOrder,
   onOpenPaymentModal,
 }: CheckoutSummaryProps) => {
-  console.log('deliveryInfo: ', deliveryInfo);
-  console.log('promoFromCart: ', promoFromCart);
   return (
     <aside className={styles.summary}>
       <h3>Ваш заказ</h3>
