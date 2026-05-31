@@ -586,7 +586,7 @@ export class SearchService {
   //Обновление данных (вызывается из админ-панели):
   async syncMotorcyclesFromAdmin() {
     //Очищаем индекс в Elasticsearch
-    const esUrl = process.env.ELASTICSEARCH_URL || "http://localhost:9200";
+    const esUrl = process.env.ELASTIC_NODE || "http://localhost:9200";
     await fetch(`${esUrl}/motorcycles`, {
       method: "DELETE",
     });

@@ -133,7 +133,7 @@ erDiagram
   String warehouseId FK
   String customerEmail
   String customerName
-  String customerPhone "nullable"
+  String customerPhone
   DateTime createdAt
   DateTime updatedAt
 }

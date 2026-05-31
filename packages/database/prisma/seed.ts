@@ -2,7 +2,7 @@
 import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/index.js";
+import { PrismaClient, Role } from "../generated/prisma/index.js";
 import * as argon2 from "argon2";
 
 import fs from "node:fs";
@@ -30,31 +30,60 @@ const slugify = (text: string) =>
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //-------------------Функция сидирования:-----------
 async function main() {
-  //1)-------Создаём дефолтного админа в табилце Users:-------------
-  //Email для дефолтного админа:
-  const adminEmail = "admin@cybersite2077.com";
+  //1)-------Создаём дефолтных юзеров в табилце Users:-------------
+  const defaultUsers = [
+    {
+      email: "admin@cybersite2077.com",
+      name: "superadmin",
+      password: "AdminPassword2077!",
+      role: "SUPERADMIN",
+    },
+    {
+      email: "tester@example.com",
+      name: "tester",
+      password: "PASSword888@",
+      role: "USER",
+    },
+    {
+      email: "manager@example.com",
+      name: "manager",
+      password: "PASSword888@",
+      role: "MANAGER",
+    },
+    {
+      email: "editor@example.com",
+      name: "editor",
+      password: "passWORD222@",
+      role: "CONTENT_EDITOR",
+    },
+    {
+      email: "admin@example.com",
+      name: "admin",
+      password: "456privatePASS*",
+      role: "ADMIN",
+    },
+  ];
 
-  const existingAdmin = await prisma.user.findUnique({
-    where: { email: adminEmail },
-  });
-
-  if (!existingAdmin) {
-    //Пароль для дефолтного админа:
-    const hashedPassword = await argon2.hash("AdminPassword2077!");
-
-    //Создаём в БД дефолтного админа:
-    await prisma.user.create({
-      data: {
-        name: "SuperAdmin",
-        email: adminEmail,
-        passwordHash: hashedPassword,
-        role: "SUPERADMIN",
-        isActivated: true,
-      },
+  for (const user of defaultUsers) {
+    const existing = await prisma.user.findUnique({
+      where: { email: user.email },
     });
-    console.log("✅ Дефолтный админ создан");
-  } else {
-    console.log("ℹ️ Дефолтный админ уже существует");
+
+    if (!existing) {
+      const hashedPassword = await argon2.hash(user.password);
+      await prisma.user.create({
+        data: {
+          name: user.name,
+          email: user.email,
+          passwordHash: hashedPassword,
+          role: user.role as Role,
+          isActivated: true,
+        },
+      });
+      console.log(`✅ Пользователь ${user.name} создан`);
+    } else {
+      console.log(`ℹ️ Пользователь ${user.name} уже существует`);
+    }
   }
 
   //2)-------Создаём категорию мотоциклов:-------------

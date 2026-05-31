@@ -281,7 +281,7 @@ export class CatalogService {
         isMain: true, // Ищем именно главное фото
       },
     });
-    // Если главных картинок не осталось, то первая новая картинка станет главной:
+    //Если главных картинок не осталось, то первая новая картинка станет главной:
     const shouldAssignNewMain = hasMainImage === 0;
     //Добавляем новые файлы:
     const newImages = await Promise.all(
@@ -309,8 +309,6 @@ export class CatalogService {
       // eslint-disable-next-line
       brand,
       // eslint-disable-next-line
-      images,
-      // eslint-disable-next-line
       createdAt,
       // eslint-disable-next-line
       updatedAt,
@@ -332,7 +330,6 @@ export class CatalogService {
       where: { id },
       data: {
         ...finalData,
-        // slug,
         siteCategoryId: siteCategoryId!.id,
         images: { create: newImages },
       },

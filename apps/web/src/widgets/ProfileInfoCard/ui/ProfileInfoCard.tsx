@@ -63,6 +63,7 @@ export const ProfileInfoCard = ({
             name="phone"
             required={true}
             center
+            variant="profile"
           />
         ) : (
           <div className={styles.row}>

@@ -45,9 +45,6 @@ export class PaymentService {
         //Уменьшаем суммы, чтобы ЮKassa пропустила, т.к. испольуем тестовый ЛК, а у него стоят лимиты по суммам
         currency: "RUB",
       },
-      // payment_method_data: {
-      //   type: "bank_card",
-      // },
       confirmation: {
         //Что делаем после платежа - редиректим на указанный URL:
         type: "redirect",

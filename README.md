@@ -1,10 +1,12 @@
 # Cybersite-2077
-![Логотип приложения](/assets/MainLogo.png)
+
+![Main Logo](./assets/MainLogo.png)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 #### Frontend
-![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white) 
+
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![React Router](https://img.shields.io/badge/React_Router-CA4245?logo=reactrouter&logoColor=white)
@@ -14,8 +16,10 @@
 ![Sass](https://img.shields.io/badge/Sass-CC6699?logo=sass&logoColor=white)
 ![PostCSS](https://img.shields.io/badge/PostCSS-DD3A0A?logo=postcss&logoColor=white)
 ![Stylelint](https://img.shields.io/badge/Stylelint-263238?logo=stylelint&logoColor=white)
+
 #### Backend
-![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white) 
+
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Docker-336791?logo=postgresql&logoColor=white)
 ![PostGIS](https://img.shields.io/badge/PostGIS-Extension-336791?logo=postgresql&logoColor=white)
@@ -25,20 +29,26 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-Docker-47A248?logo=mongodb&logoColor=white)
 ![Mongoose](https://img.shields.io/badge/Mongoose-ODM-880000?logo=mongoose&logoColor=white)
 ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-Docker-005571?logo=elasticsearch&logoColor=white)
+
 #### Testing
+
 ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)
 ![React Testing Library](https://img.shields.io/badge/RTL-Testing-E33332?logo=testinglibrary&logoColor=white)
 ![Storybook](https://img.shields.io/badge/Storybook-FF4785?logo=storybook&logoColor=white)
 ![Chromatic](https://img.shields.io/badge/Chromatic-FF5D5B)
 ![Cypress](https://img.shields.io/badge/Cypress-17202C?logo=cypress&logoColor=white)
+
 #### Tooling
+
 ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)
 ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=black)
 ![Zod](https://img.shields.io/badge/Zod-3E67B1)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?logo=openapiinitiative&logoColor=white)
 ![Turborepo](https://img.shields.io/badge/Turborepo-000000?logo=turborepo&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
+
 #### DevOps
+
 ![Docker](https://img.shields.io/badge/Docker-Container-2496ED?logo=docker&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-Docker-009639?logo=nginx&logoColor=white)
 ![Prometheus](https://img.shields.io/badge/Prometheus-Docker-E6522C?logo=prometheus&logoColor=white)
@@ -46,472 +56,467 @@
 ![Grafana Loki](https://img.shields.io/badge/Loki-Docker-F46800?logo=grafana&logoColor=white)
 ![Grafana Tempo](https://img.shields.io/badge/Tempo-Docker-F46800?logo=grafana&logoColor=white)
 
-
 Read this in other languages:
 
-- [English (not yet)](./assets/README_ENG.md)
+- [Russian](./assets/README_RUS.md)
 
 ## Project Description
 
-### Core Concept (Общий концепт)
+### Core Concept
 
-Концептуально текущий пет-проект является E-commerce площадкой компании (сайт для реализации товаров дистанционным способом / фирменный интернет-магазин). Полностью с нуля разработан дизайн всего приложения, а также написан фронтенд и бэкенд-код. Весь код запускается в контейнерах Docker, настроен процесс CI. 
-Структурно проект состоит из следующих модулей: Identity (аутентификация, авторизация, профиль пользователя), Catalog (каталог; основной товар - мотоциклы: 518 брендов, 35k+ позиций), Trading (избранное, корзина), Ordering (оформления заказов), Warehouse (остатки товаров,работа с геокартой), Payment (интеграция с ЮKassa), Discount (скидки и промокоды), Notifications (уведомления в ТГ), Reviews(отзывы на товары), Support (функционал обращения в поддержку от юзеров), Content (публикация новостей на сайте), Reports (генерация отчетов по основным бизнес-метрикам), Admin (кастомная админ-панель для работы с данными в БД (бренды, номенклатура товара, остатки, пользователи), ручной генерации отчетов, скидок, контента, работы с тикетами поддержки и управлением заказами). Реализованный функционал практически полностью соответствует функционалу production-проектов, за исключением некоторых моментов, для реализации которых написаны заглушки (доставка; оплата реализована только через тестовый кабинет ЮKassa).
+Conceptually, the current pet project is the company's e-commerce platform (a website for remote product sales/branded online store). The entire application design was developed from scratch, and the front-end and back-end code were written. All code runs in Docker containers, and a CI process is configured.
+Structurally, the project consists of the following modules: Identity (authentication, authorization, user profile), Catalog (catalog; main product - motorcycles: 518 brands, 35k+ positions), Trading (favorites, cart), Ordering (order processing), Warehouse (product balances, working with a geomap), Payment (integration with ЮKassa), Discount (discounts and promo codes), Notifications (notifications in TG), Reviews (product reviews), Support (functionality for contacting support from users), Content (publishing news on the site), Reports (generation of reports on key business metrics), Admin (custom admin panel for working with data in the database (brands, product nomenclature, balances, users), manual generation of reports, discounts, content, working with support tickets and order management). The implemented functionality almost completely corresponds to the functionality of production projects, with the exception of some points for which stubs were written (delivery; payment is implemented only through the ЮKassa test account).
 
+### Architecture
 
-### Architecture (Архитектура)
+The project is built on the Fullstack Monorepo principle, using the FSD (Feature-Sliced ​​Design) architectural methodology on the frontend and Layered Architecture within a modular monolith on the backend. Interaction between the client and server components of the application is accomplished via a RESTful API. CSS Modules is used for frontend styling.
 
-Проект построен по принципу Fullstack Monorepo с использованием архитектурной методологии FSD (Feature-Sliced Design) на фронтенде и Layered Architecture (слоистая архитектура) внутри модульного монолита на бэкенде. Взаимодействие клиентской и серверной частей приложения осуществляется по RESTful API. Для написания стилей на фронтенде используется подход CSS Modules.
+- Using Turborepo allows you to divide your code into reusable packages: client application, API server, common data schema, unified validation schemes, common types, etc.
+- Using the FSD methodology increases code scalability, makes code predictable, and simplifies testing.
+- Using CSS Modules allows you to write styles for each component separately (component-based approach), making the style classes for each component unique.
+- A modular monolith is a method of horizontally dividing code (based on business logic), making it easy to move any of them into a separate microservice in the future, as they are not mixed with each other. A layered architecture is a method of vertically dividing each module. In this architecture, all application functions are located in a single codespace and run as a single process, but all code is strictly divided into independent modules that communicate with each other through clearly defined entry points. A modular monolith allows for rapid code writing, paving the way for a subsequent transition to a microservice architecture.
 
-- Использование Turborepo позволяет делить код на переиспользуемые пакеты: клиентское приложение, API-сервер, общую схему данных, единые схемы валидации, общие типы и т.п.
-- Использование методологии FSD повышает масштабируемость кода, делает код предсказуемым и упрощает тестирование.
-- Использование CSS Modules позволяет писать стили, для каждого компонента отдельно (компонентный подход), делая классы стилей для каждого компонента уникальными.
-- Модульный монолит является способом горизонтального деления кода (по бизнес-логике), что позволяет легко вынести любой из них в отдельный микросервис в будущем, так как они не перемешаны друг с другом. Слоистая архитектура является способом вертикального деления внутри каждого модуля. В такой архитектуре все функции приложения находятся в одном кодовом пространстве и запускаются как единый процесс, но весь код строго разделен на независимые модули, которые общаются друг с другом через четко определенные точки входа. Модульный монолит позволяет быстро писать код, подготавливая почву для последующего переезда на микросервисную архитектуру.
+### Project Structure
 
-### Структура проекта
 ```
 cybersite2077/
-├── apps/                            # Фронтенд и бэкенд проекта
-│   ├── server/                      # Бэкенд проекта
-│   │   ├── src/        
-│   │   │   ├── modules/            
-│   │   │   │   ├── admin/           # Логика работы админ-панели
-│   │   │   │   ├── catalog/         # Логика работы с каталогом
-│   │   │   │   ├── content/         # Логика работы с контентом
-│   │   │   │   ├── discount/        # Логика скидок и промокодов
-│   │   │   │   ├── identity/        
-│   │   │   │   │   ├── auth/        # Логика аутентификации/авторизации
-│   │   │   │   │   └── profile/     # Логика обновления данных профиля
-│   │   │   │   ├── notifications/   # Логика уведомлений в ТГ
-│   │   │   │   ├── ordering/        # Логика формирования заказов
-│   │   │   │   ├── payment/         # Логика оплаты заказов
-│   │   │   │   ├── reports/         # Логика формирования отчетов
-│   │   │   │   ├── reviews/         # Логика работы с отзывами
-│   │   │   │   ├── support/         # Лога работы технической поддержки
-│   │   │   │   ├── trading/         # Логи работы с избранным/корзиной
-│   │   │   │   └── warehouse/       # Логика работы с остатками и доставкой
-│   │   │   ├── sripts/              # Скрипты, выполняемые при сборке контейнеров
-│   │   │   ├── shared/              # Общая логика бэкенда
-│   │   │   │   ├── lib/             # Подключение шины событий/Mongoose/Redis
-│   │   │   │   │   ├── eventBus.ts  # Настройка общей шины событий
-│   │   │   │   │   ├── logger.ts    # Настройка логгера Loki
-│   │   │   │   │   ├── mongoose.ts  # Настройка Mongoose
-│   │   │   │   │   ├── multer.ts    # Настройка Multer
-│   │   │   │   │   ├── redis.ts     # Настройка Redis
-│   │   │   │   │   └── tracing.ts   # Настройка Tempo
-│   │   │   │   ├── middlewares/     # Middleware бэкенда
-│   │   │   │   ├── services/        # Сервис для reCAPTCHA v3
-│   │   │   │   └── utils/           # Общие утилиты
-│   │   │   ├── app.ts               # Подключение всех middleware и роутов
-│   │   │   └── index.ts             # Запуск БД, сервера и прочих сервисов
-│   │   └── uploads/                 # Файлы для отображения на фронтенде
-│   ├── web/                         # Фронтенд проекта
-│   │   ├── .storybook/              # Настройка Storybook
-│   │   ├── cypress/                 # E2E-тесты
-│   │   ├── public/                  # Открытые файлы
+├── apps/                            # Frontend && Backend
+│   ├── server/                      # Backend
 │   │   ├── src/
-│   │   │    ├── app/ 
-│   │   │    │   ├── provides/       # Роутинг фронтенда
-│   │   │    │   ├── styles/         # Глобальные стили
-│   │   │    │   ├── ui/             # Глобальный компонент-обертка
-│   │   │    │   └── App.tsx         # Основной компонент фронтенда
-│   │   │    ├── entities/           # Бизнес-сущности фронтенда
-│   │   │    ├── features/           # Бизнес-логика фронтенда
-│   │   │    ├── pages/              # Основные страницы
-│   │   │    ├── shared/             # Общие файлы
-│   │   │    │   ├── api/            # Взаимодействие с сервером
-│   │   │    │   ├── assets/         # Общие изображения/иконки/шрифты
-│   │   │    │   ├── lib/            # Вспомогательные компоненты
-│   │   │    │   └── ui/             # Переиспользуемые простейшие компоненты
-│   │   │    ├── widgets/            # Самостоятельные компоненты
-│   │   │    └── main.tsx            # Главный TSX-файл фронтенда
-│   │   └── index.html               # Главный HTML-файл фронтенда
-|── deploy/                          # Конфиги для деплоя
-│   ├── loki/                        # Конфиг для Grafana Loki
-│   ├── nginx/                       # Конфиг для Nginx
-│   ├── prometheus/                  # Конфиг для Prometheus
-│   ├── prometheus/                  # Конфиг для Grafana Tempo
-│   ├── docker-compose.prod.yml      # Запуск контейнеров для прода
-│   └── docker-compose.yml           # Запуск контейнеров для разработки
-|── packages/                        # Общие модули проекта
-│   ├── database/                    # Настройка подключения к PostgreSQL (Prisma)
-│   ├── openapi/                     # Описание API проекта
-│   ├── types/                       # Общие типы
-│   └── validation/                  # Схемы валидации Zod
-|── CHANGELOG.md                     # Журнал изменений в проекте
-|── TESTING_STRATEGY.md              # Стратегия ручного/автотестирования проекта
-└── README.md                        # Описание проекта
+│   │   │   ├── modules/
+│   │   │   │   ├── admin/           # The logic of the admin panel
+│   │   │   │   ├── catalog/         # Logic of working with the catalog
+│   │   │   │   ├── content/         # Logic of working with content
+│   │   │   │   ├── discount/        # The logic of discounts and promo codes
+│   │   │   │   ├── identity/
+│   │   │   │   │   ├── auth/        # Authentication/authorization logic
+│   │   │   │   │   └── profile/     # Logic for updating profile data
+│   │   │   │   ├── notifications/   # Notification logic in Telegram
+│   │   │   │   ├── ordering/        # Order formation logic
+│   │   │   │   ├── payment/         # Order payment logic
+│   │   │   │   ├── reports/         # Logic of report generation
+│   │   │   │   ├── reviews/         # The logic of working with reviews
+│   │   │   │   ├── support/         # The logic of technical support work
+│   │   │   │   ├── trading/         # Logic for working with favorites/basket
+│   │   │   │   └── warehouse/       # The logic of working with balances and delivery
+│   │   │   ├── sripts/              # Scripts executed when building containers
+│   │   │   ├── shared/              # Shared backend logic
+│   │   │   │   ├── lib/             # Connecting the Event Bus/Mongoose/Redis
+│   │   │   │   │   ├── eventBus.ts  # Setting up a general event bus
+│   │   │   │   │   ├── logger.ts    # Setting up the Loki logger
+│   │   │   │   │   ├── mongoose.ts  # Setting up Mongoose
+│   │   │   │   │   ├── multer.ts    # Setting up Multer
+│   │   │   │   │   ├── redis.ts     # Setting up Redis
+│   │   │   │   │   └── tracing.ts   # Setting up Tempo
+│   │   │   │   ├── middlewares/     # Backend middleware
+│   │   │   │   ├── services/        # Service for reCAPTCHA v3
+│   │   │   │   └── utils/           # General utilities
+│   │   │   ├── app.ts               # Connecting all middleware and routes
+│   │   │   └── index.ts             # Launching the DB, server, and other services
+│   │   └── uploads/                 # Files for display on the frontend
+│   ├── web/                         # Frontend
+│   │   ├── .storybook/              # Setting up Storybook
+│   │   ├── cypress/                 # E2E-tests
+│   │   ├── public/                  # Public files
+│   │   ├── src/
+│   │   │    ├── app/
+│   │   │    │   ├── provides/       # Frontend routing
+│   │   │    │   ├── styles/         # Global styles
+│   │   │    │   ├── ui/             # Global wrapper component
+│   │   │    │   └── App.tsx         # The main component of the frontend
+│   │   │    ├── entities/           # Front-end business entities
+│   │   │    ├── features/           # Front-end business logic
+│   │   │    ├── pages/              # All pages
+│   │   │    ├── shared/             # Shared files
+│   │   │    │   ├── api/            # Interacting with the server
+│   │   │    │   ├── assets/         # General images/icons/fonts
+│   │   │    │   ├── lib/            # Auxiliary components
+│   │   │    │   └── ui/             # Reusable simple components
+│   │   │    ├── widgets/            # Independent components
+│   │   │    └── main.tsx            # Main frontend TSX file
+│   │   └── index.html               # Main frontend HTML file
+|── deploy/                          # Configs for deployment
+│   ├── loki/                        # Config for Grafana Loki
+│   ├── nginx/                       # Config for Nginx
+│   ├── prometheus/                  # Config for Prometheus
+│   ├── prometheus/                  # Config for Grafana Tempo
+│   ├── docker-compose.prod.yml      # Launching containers for production
+│   └── docker-compose.yml           # Launching containers for development
+|── packages/                        # Shared project modules
+│   ├── database/                    # Setting up a connection to PostgreSQL (Prisma)
+│   ├── openapi/                     # Project API Description
+│   ├── types/                       # Shared types
+│   └── validation/                  # Zod validation schemes
+|── CHANGELOG.md                     # Project change log
+|── TESTING_STRATEGY.md              # Strategy for manual/automated testing
+└── README.md                        # Project description
 
 ```
 
 ## Demo
 
-![Демо всего проекта](/assets/Project.gif)
+![The whole project demo](./assets/Project.gif)
 
-## Release notes (Список изменений)
+## Release notes
 
-[Открыть CHANGELOG](./CHANGELOG.md)
+[Open CHANGELOG](./CHANGELOG.md)
 
-## 🛠 Tech Stack (Технологический стек)
+## 🛠 Tech Stack
 
 ### 1.Frontend
 
 #### 1.1.Frontend Core
 
-- **React:** основная библиотека для создания UI-интерфейса всего приложения.
-- **TypeSrcipt:** основной язык, используемый для строгой типизации кода.
-- **Vite:** инструмент для сборки (бандлер)фронтенд-проектов, позволяющий объединять несколько файлов JS/TS/CSS в один, минифицировать код, произволить компиляцию файлов.
-- **React Router:** библиотека для управления навигацией и маршрутами приложения.
-- **Zustand:** клиентский стейт-менеджер для глобальных данных.
-- **React Query:** серверный стейт-менеджер для работы с серверным состоянием: кеширование, пагинация и синхронизация данных с API.
-- **Axios:** HTTP-клиент для запросов к серверу.
+- **React:** the main library for creating the UI interface of the entire application.
+- **TypeSrcipt:** the primary language used to strongly type code.
+- **Vite:** a tool for assembling (bundler) front-end projects that allows you to combine several JS/TS/CSS files into one, minify the code, and compile files.
+- **React Router:** a library for managing application navigation and routes.
+- **Zustand:** a client state manager for global data.
+- **React Query:** a server state manager for working with server state: caching, pagination, and data synchronization with the API.
+- **Axios:** HTTP client for making requests to the server.
 
 #### 1.2.Forms & Validation
 
-- **React-hook-form:** библиотека для управления состоянием форм.
+- **React-hook-form:** library for managing form state.
 
 #### 1.3.Styles
 
-- **Sass:** препроцессор стилей, расширяющий возможности обычного CSS в процессе написания кода.
-- **PostCSS:** инструмент для преобразования CSS с помощью JS-плагинов, автоматизирующий рутинные задачи (автопрефиксер, минификация, поддержка новых стандартов). Он оптимизирует CSS-код, повышает его совместимость с различными браузерами и позволяет использовать функционал, которого в обычном CSS еще нет, превращая его в старый понятный любому браузеру.
+- **Sass:** a stylesheet preprocessor that extends the capabilities of regular CSS as you write it.
+- **PostCSS:** a tool for transforming CSS using JS plugins, automating routine tasks (autoprefixing, minification, and support for new standards). It optimizes CSS code, improves its compatibility across browsers, and enables the use of features not yet found in standard CSS, transforming it into a legacy CSS that is native to any browser.
 
 #### 1.4.Code Style & Tools
 
-- **StyleLint:** линтер для CSS (и препроцессоров стилей), предназначенный для автоматической проверки кода на наличие ошибок, соблюдения стилевых соглашений и поддержания единообразия.
+- **StyleLint:** a linter for CSS (and stylesheet preprocessors) designed to automatically check code for errors, enforce style conventions, and maintain consistency.
 
 #### 1.5.Testing & Quality
 
-- **React-Testing-Library:** библиотека для тестирования (Unit и интеграционного) React-компонентов, позволяющая тестировать приложение так, как его видит пользователь, а не проверять внутренности кода.
-- **Vitest:** фреймворк для модульного тестирования.
-- **Cypress:** инструмент для E2E тестирования. Он запускает реальный браузер и имитирует действия живого пользователя, что позволяет проверить, что все части системы работают слаженно вместе.
-- **Storybook:** инструмент для разработчки компонентов в изоляции от основного приложения. При работе со Storybook компоненты становятся автономными, проверяемыми и переиспользуемыми модулями.
-- **Chromatic:** сервис для визуального регрессионного тестирования, который работает в связке со Storybook. Он делает скриншоты (скриншот-тестирование) компонентов и сравнивает их с предыдущими версиями.
-- **React-error-boundary:** специальный компонент в React, который работает как блок try-catch, но для визуальной части приложения (UI). Он отлавливает ошибку в дочерних компонентах и вместо сломанного интерфейса показывает запасной вариант.
+- **React-Testing-Library:** a library for testing (unit and integration) React components, allowing you to test the application as the user sees it, rather than checking the internals of the code.
+- **Vitest:** unit testing framework.
+- **Cypress:** an end-to-end testing tool. It runs a real browser and simulates the actions of a live user, allowing you to verify that all parts of the system are working together smoothly.
+- **Storybook:** a tool for developing components in isolation from the main application. When working with Storybook, components become standalone, testable, and reusable modules.
+- **Chromatic:** a visual regression testing service that works in conjunction with Storybook. It takes screenshots (screenshot testing) of components and compares them with previous versions.
+- **React-error-boundary:** a special component in React that works like a try-catch block, but for the visual part of the application (UI). It catches errors in child components and displays a fallback version instead of the broken interface.
 
-[Документация по тестированию](./TESTING_STRATEGY.md)
+[Testing documentation](./TESTING_STRATEGY.md)
 
 #### 1.6.UI & Animation
 
-- **React Hot Toast:** библиотека для создания всплывающих уведомлений (toast-сообщений) в React-приложениях.
-- **Motion:** библиотека для создания анимаций и интерактивных жестов в React-приложениях.
-- **IMask:** библиотека, предназначенная для создания масок ввода в HTML-элементах.
-- **TanStack Table:** headless UI библиотека для управления состоянием и логикой сложных таблиц и дата-гридов в веб-приложениях. 
-- **Leaflet.js:** легковесная библиотека для создания интерактивных мобильных карт.
-- **Swiper.js:** библиотека для создания слайдеров, тач-каруселей и мобильных свайп-интерфейсов.
-- **Tanstack Tables:** headless библиотека, предназначенная для создания и управления сложными таблицами и сетками данных.
-
+- **React Hot Toast:** a library for creating pop-up notifications (toast messages) in React applications.
+- **Motion:** a library for creating animations and interactive gestures in React applications.
+- **IMask:** a library for creating input masks in HTML elements.
+- **TanStack Table:** a headless UI library for managing the state and logic of complex tables and data grids in web applications.
+- **Leaflet.js:** a lightweight library for creating interactive mobile maps.
+- **Swiper.js:** a library for creating sliders, touch carousels, and mobile swipe interfaces.
+- **Tanstack Tables:** a headless library for creating and managing complex tables and data grids.
 
 ### 2.Backend
 
 #### 2.1.Core Runtime
 
-- **Express.js:** фреймворк для Node.js, превращающий его в полноценный веб-сервер. Позволяет работать с маршрутизацией, использовать middlewares, работать с HTTP-методами и пр.
-- **TypeSrcipt:** основной язык, используемый для строгой типизации кода.
+- **Express.js:** a framework for Node.js that turns it into a full-fledged web server. It allows you to work with routing, use middleware, work with HTTP methods, and more.
+- **TypeSrcipt:** the primary language used for strong code typing.
 
 #### 2.2.Database & Storage
 
-- **PostgreSQL:** реляционная СУБД.
-- **Prisma ORM:** инструмент, предназначенный для взаимодействия с реляционными базами данных.
-- **PostGIS:** расширение для PostgreSQL, которое превращает её в полноценную геоинформационную систему (ГИС).
-- **MongoDB:** нереляционная СУБД документного типа.
-- **Mongoose:** библиотека (ODM) для работы с MongoDB в среде Node.js.
-- **Redis:** сверхбыстрая NoSQL СУБД, хранящая данные в оперативной памяти по принципу «ключ-значение». В проекте Redis используется для управления состоянием корзины, а также как брокер сообщений для библиотеки BullMQ (генерация отчетов и скидок, email-рассылка, изменение статусов заказов и т.п.), что позволяет выносить тяжелые операции из основного потока Node.js, предотвращая блокировку сервера.
-- **ioredis:** библиотека-клиент для Redis для решения сложных задач в высоконагруженных системах.
-- **Multer:** библиотека, которая используется для обработки данных формы в формате multipart/form-data. Это стандартный инструмент для загрузки файлов на сервер в приложениях на базе Express.
-- **Sharp:** библиотека, предназначенная для обработки изображений, основная задача которой — конвертация, изменение размера и оптимизация изображений.
+- PostgreSQL: A relational DBMS.
+- Prisma ORM: A tool designed for interacting with relational databases.
+- PostGIS: An extension for PostgreSQL that turns it into a full-fledged geographic information system (GIS).
+- MongoDB: A non-relational document-based DBMS.
+- Mongoose: A library (ODM) for working with MongoDB in a Node.js environment.
+- Redis: An ultra-fast NoSQL DBMS that stores data in memory using the key-value principle. The project uses Redis to manage the cart state and as a message broker for the BullMQ library (generating reports and discounts, sending emails, changing order statuses, etc.), which allows heavy operations to be moved out of the main Node.js thread, preventing server blocking.
+- ioredis: A Redis client library for solving complex problems in high-load systems.
+- Multer: A library used for processing form data in the multipart/form-data format. It is the standard tool for uploading files to the server in Express-based applications.
+- Sharp: A library for image processing, primarily focused on converting, resizing, and optimizing images.
 
-#### 2.3.Search & Background Jobs
+#### 2.3. Search & Background Jobs
 
-- **Elasticsearch:** высокопроизводительный аналитический движок для полнотекстового поиска, осуществления сортировки и фильтрации.
-- **BullMQ:** библиотека для Node.js, которая реализует очереди сообщений (message queues) на базе Redis для реализации фоновых задач (тяжелые и отложенные задания).
+- **Elasticsearch:** a high-performance analytics engine for full-text search, sorting, and filtering.
+- **BullMQ:** a Node.js library that implements message queues based on Redis for background tasks (heavy and delayed jobs).
 
-#### 2.4.Monitoring & Observability
+#### 2.4. Monitoring & Observability
 
-- **Prometheus:** система для сбора и хранения метрик приложения (CPU/RAM, HTTP-запросы, соединения с БД).
-- **Morgan:** middleware для сбора логов по HTTP-запросам.
-- **Winston:** универсальная система логирования для всего приложения.
-- **Grafana Loki:** система агрегации и хранения логов.
-- **Grafana Tempo:** система для распределенной трассировки запросов, предназначенная для хранения и анализа трасс (путей запросов).
-- **Grafana:** единая панель для визуализации метрик, логов и трейсов.
-- **Яндекс Метрика:** сервис веб-аналитики для отслеживания посещаемости, анализа поведения пользователей и проведения оценки эффективности рекламы. 
-- **Sentry:** платформа для мониторинга ошибок и производительности во фронтенд части приложения. Sentry перехватывает сбои, исключения и критические проблемы в реальном времени, предоставляя точный контекст: стек вызовов, окружение и действия пользователя.
+- **Prometheus:** a system for collecting and storing application metrics (CPU/RAM, HTTP requests, database connections).
+- **Morgan:** middleware for collecting logs from HTTP requests.
+- **Winston:** a universal logging system for the entire application.
+- **Grafana Loki:** a log aggregation and storage system.
+- **Grafana Tempo:** a distributed request tracing system designed for storing and analyzing traces (request paths).
+- **Grafana:** a unified dashboard for visualizing metrics, logs, and traces.
+- **Yandex Metrica:** a web analytics service for tracking traffic, analyzing user behavior, and evaluating advertising effectiveness.
+- **Sentry:** a platform for monitoring errors and performance in the frontend of an application. Sentry intercepts crashes, exceptions, and critical issues in real time, providing precise context: call stack, environment, and user actions.
 
 ### 3.Globals
 
 #### 3.1.Code Style & Tools
 
-- **ESLint:** инструмент для статического анализа кода (линтер), который находит ошибки и следит за соблюдением единого стиля кода.
-- **Prettier:** инструмент для автоматического форматирования кода (форматтер), который приводит весь код проекта к единому стилю.
+- **ESLint:** a static code analysis tool (linter) that finds errors and enforces a consistent code style.
+- **Prettier:** an automatic code formatter that ensures a consistent style for all project code.
 
 #### 3.2.Validation
 
-- **Zod:** библиотека для валидации данных (синхронизирует типы TS и правила валидации). В проекте используется как на клиенте, так и на сервере.
+- **Zod:** a data validation library (synchronizes TS types and validation rules). The project uses it on both the client and server.
 
 #### 3.3.Api Documentation
 
-- **Swagger:** набор инструментов для проектирования, документирования, тестирования и развертывания RESTful API, работающий на базе спецификации OpenAPI.
+- **Swagger:** a set of tools for designing, documenting, testing, and deploying RESTful APIs based on the OpenAPI specification.
 
+### 4. DevOps & Infrastructure
 
-### 4.DevOps & Infrastructure
+- **Turborepo:** a high-performance build system for managing a monorepo.
+- **Docker:** application containerization for local development and deployment. Allows you to package code and all its dependencies in an isolated container.
+- **Nginx:** a high-performance web server and reverse proxy.
+- **Git:** a distributed version control system that allows you to work with change history. Also used is GitHub Actions, GitHub's built-in platform for automated development processes (CI/CD), which allows you to automatically build, test, and deploy code.
 
-- **Turborepo:** высокопроизводительная система сборки для управления монорепозиторием.
-- **Docker:** контейнеризация приложения для локальной разработки и деплоя. Позволяет упаковать код со всеми его зависимости в изолированный контейнер.
-- **Nginx:** высокопроизводительный веб-сервер и Reverse Proxy.
-- **Git:** распределенная система управления версиями, позволяющая работать с историей изменений. Также используется GitHub Actions — встроенная в GitHub платформа для автоматизации процессов разработки (CI/CD), которая позволяет автоматически собирать, тестировать и развертывать код.
-<!-- - **Ansible:** управление конфигурациями и автоматизация деплоя на серверы. -->
+## Features
 
-## Features (Функционал)
+### 1. Global
 
-### 1.Global
+**1.1. Security:**
 
-**1.1.Security (Безопасность):**
-
-- Безопасность обеспечивается использованием на сервере пакетов cors (настройка механизма CORS) , helmet (набор middleware, защищающий от распространенных угроз, таких как XSS, кликджекинг (заголовки "X-Frame-Options: DENY" и "Content-Security-Policy: frame-ancestors 'none'") и перехват MIME-типов), hpp (защита от атак типа «загрязнение параметров HTTP»), dompurify (санитайзинг входящих данных для защиты от XSS). 
-- Пользовательские данные проходят этап валидации при помощи Zod как на стороне клиента (при вводе), так и на сервере (все роуты). Осуществляется ограничение длины (min/max) пользовательского ввода, используются регулярные выражения.
-- К ESLint подключены плагины для поиска OWASP top 10: на стороне фронтенд-кода работают SonarJS (помогает находить сложные логические дыры, которые могут стать лазейками для взлома) и No-Unsanitized (для предотвращения XSS-атак (инъекций в DOM)); на стороне бэкенд-кода работают SonarJS и Security (полезен для поиска опасных регулярных выражений (защита от ReDoS-атак); ищет уязвимости в Node.js,например, detect-child-process, detect-non-literal-require).
-- Аутентификация в приложении реализована следующим образом: access token хранится в памяти приложения (не в localStorage), а refresh token хранится в cookie. - Куки помечаются httpOnly: true, что блокирует доступ к ним через document.cookie, предотвращая кражу сессии при XSS. Для куки также устанавливатся атрибут SameSite в заголовке Set-Cookie HTTP-ответа во избежание CSRF-атак. Для того, чтобы не отправлять куки с клиента серверу при каждом запросе настроен параметр path - куки отправляются только на эндпоинты модуля Auth.
-- Для борьбы с brute-force, а также DoS-атаками все публичные запросы пользователя ограничиваются при помощи rate-limiting (для публичных форм лимит сокращен по сравнению с общими запросами).
-- В приложении нет функционала, работающего с XML, то XXE-атаки не являются угрозой.
-- Поисковые инпуты снабжены фунционалом debounce, что снижает нагрузку на сервер, защищая от DoS-атак.
-- Для защиты от XSSI (с учетом используемой схемы работы с токенами доступа) токены клиенту отдаются только в формате JSON, для обновления access-токена используется только POST-метод, а на стороне сервера проверяется заголовок origin (через CORS).
-- Для хэширования паролей используется проверенная современная библиотека argon2, а для генерации и проверки токенов доступа - библиотека jwt.
-- Защита от SQL-injection осуществляется применением ORM Prisma ("под капотом" использует параметризованные запросы) для взаимодействия сервера с БД.
-- Получение, добавление, обновление или удаление ресурса осуществляется с помощью надлежащего HTTP-метода (RESTful API), т.е. GET-запросы не используются для изменения состояния сервера.
-- На стороне сервера реализовано логирование обращений к серверу.
-- Не авторизованный пользователь и пользователь с не соответствующим уровнем полномочий не могут попасть на защищенную страницу. Это реализовано на фронтенде редиректом неавторизованных пользователей с защищенных путей и визуальным сокрытием, а на стороне сервера - проверкой через необходимое middleware. При выходе из аккаунта мгновенно обновляется состояние, так что зашедший в приложение после него на том же браузере новый пользователь не сможет увидеть данные предыдущего. Для того, чтобы браузер не кэшировал чувствительные данные на сервере реализовано middleware, устанавилвающее в ответ заголовки, запрещающие браузеру кэширование защищенных страниц.
+- Security is ensured by the use of the following packages on the server: cors (configuring the CORS mechanism), helmet (a set of middleware that protects against common threats such as XSS, clickjacking (headers "X-Frame-Options: DENY" and "Content-Security-Policy: frame-ancestors 'none'"), and MIME type interception), hpp (protection against HTTP parameter pollution attacks), and dompurify (sanitization of incoming data to protect against XSS).
+- User data is validated using Zod on both the client (upon input) and the server (all routes). The length (min/max) of user input is limited, and regular expressions are used.
+- ESLint is integrated with OWASP Top 10 search plugins: SonarJS (helps find complex logic holes that could become hacking holes) and No-Unsanitized (to prevent XSS (DOM injection) attacks) are used on the frontend code; SonarJS and Security (useful for finding dangerous regular expressions (protecting against ReDoS attacks) and searching for vulnerabilities in Node.js, for example, detect-child-process, detect-non-literal-require) are used on the backend code.
+- Authentication in the application is implemented as follows: the access token is stored in the application's memory (not in localStorage), and the refresh token is stored in a cookie. - Cookies are marked httpOnly: true, which blocks access to them via document.cookie, preventing session theft during XSS. The SameSite attribute is also set for cookies in the Set-Cookie HTTP response header to prevent CSRF attacks. To avoid sending cookies from the client to the server with every request, the path parameter is configured—cookies are sent only to the Auth module endpoints.
+- To combat brute-force and DoS attacks, all public user requests are rate-limited (for public forms, the limit is reduced compared to general requests).
+- The application does not contain any functionality that works with XML, so XXE attacks are not a threat.
+- Search inputs are equipped with debounce functionality, which reduces the server load, protecting against DoS attacks.
+- To protect against XSSI (given the access token handling scheme used), tokens are returned to the client only in JSON format, only the POST method is used to refresh the access token, and the origin header is checked on the server side (via CORS).
+- The proven, modern argon2 library is used for password hashing, and the jwt library is used for generating and verifying access tokens.
+- SQL injection protection is provided by the Prisma ORM (which uses parameterized queries under the hood) for server-to-database interaction. - Retrieving, adding, updating, or deleting a resource is performed using the appropriate HTTP method (RESTful API), i.e., GET requests are not used to change server state.
+- Server-side logging of requests is implemented.
+- Unauthorized users and users with inappropriate permissions cannot access protected pages. This is implemented on the frontend by redirecting unauthorized users from protected paths and visually hiding them, and on the server side by checking through the required middleware. When logging out, the account state is immediately updated, so a new user logging in to the application after the user with the same browser will not be able to see the previous user's data. To prevent the browser from caching sensitive data, middleware is implemented on the server, setting response headers that prohibit the browser from caching protected pages.
+- OWASP Dependency-Check is connected to the CI, which scans all project dependencies (including transitive ones) for known vulnerabilities.
 
 **1.2.UI/UX:**
-- Responsive Design: для корректного визуального отображения приложения на устройствах с различными размерами экранов приложение адаптировано для использования на экранах вплоть до 360px, при этом за основу взята стратегия изящной деградации (graceful degradation). Используется следующая система брейкпоинтов: 1600px, 1441px, 1200px, 1024px, 768px и 481px. Подключенный плагин postcss-pxtorem для PostCSS преобразует px в rem, а кастомная функция используется для плавного изменения размера шрифта текста (на основе clamp) во всем диапазоне рабочих экранов, что вместе ведет к повышенной адаптивности интерфейса на устройстве пользователя. Для улучшения адаптивности также применяется использование свойств (min)/(max)-width(height), изменение размеров шрифтов и изображений в зависимости от размера экрана через кастомные миксины. Для борьбы с "залипанием" нажатия на мобильных устройствах для эффекта hover также написан кастомный миксин.
-- Favicons: в проекте используются favicons форматов svg, ico (48x48 - для поддержки старых версий IE), png (для поддержки всех основных браузеров и различных устройств - 16x16, 32x32, 36x36, 48x48, 70x70, 96x96, 120x120, 144x144, 150x150, 180x180, 192x192, 310x310, 512x512). Иконки подключены в HTML (для использования браузерами на всех устройствах для отображения на вкладке браузера, в истории и в закладках), в веб-манифесте (для использования Android (Chrome) и десктопными Chrome/Edge для режима PWA) и в browserconfig (для использования Windows 8/10/11 и IE для оформления, например, в меню "Пуск").
-- Производительность: для снижения нагрузки на клиента и ускорения загрузки страницы к многочисленным типам изображений применены атрибуты lazy:loading и decoding:async. Для оптимизации работы с изображениями все изображения, загружаемые пользователями на сервер, обрабатываются пакетом sharp, который сжимает и конвертирует изображения в легковесный webp.
-- Темы: вместо стандартной связки "светлая тема - темная тема" в приложении реализовано 4 переключаемых темы. Смена темы сопровождается сменой основных цветов, логотипов и прочего декоративного оформления (курсор, визуальные вставки).
-- Для удобства работы с формами сложные поля (дата, номер телефона) реализованы при помощи библиотеки IMask.
-- Функционал отмены заказа, возможности оставить отзыв, формы обращения в поддержку, отображение текущего статуса заказа, промокоды, скидочные кампании (в т.ч. оповещение пользователя по почте о новых выгодных предложениях), возможность редактирования профиля (выбор имени, аватара), вывод рекомендаций на основе просматриваемого товара, возможность добавления товаров в избранное и т.п. повышают Customer Experience и User Experience. Внедренный функционал добавления администратором приложения различного контента может повышать время удержания клиента на сайте.
-- При разработке дизайна учитывались основные принципы UI/UX: для каждой темы использовано ограниченная палитра цветов, обладающих корректной контрастностью и совместимостью друг с другом; не используется чистый черный - выбраны его оттенки; ограничено количество шрифтов, все символы выбранных шрифтов хорошо читаемы; не используются большие блоки текста для повышения читаемости; элементы страницы размещаются свободно; отзывчивый дизайн позволяет контролировать негативное пространство; все элементы, которые должны привлекать внимание, визуально выделены цветами, границами и подсветкой; потенциально опасные действия (отмена, удаление) выделены красным цветом; все необходимая пользователю информация не скрыта глубоко, а сразу представлена на виду; за основу многих UI-компонентов приложения брались UI-компоненты с различных популярных современных веб-приложений; для скрытия лишней информации при выводе модальных окон фон заблюрен и затемнен; дял повышения читаемости текста в местах, где фон перебивает визуал текста, добавлена еле заметная обводка; весь проект выполнен в едином стиле, включая кастомную админ-панель, все карточки сайта (каталога, товаров, заказов и т.п.), а также внешнее оформление; для стандартизации UI в верстке переиспользуются выделенные UI-компоненты; для ощущения скорости загрузки контента повсюду внедрены лоадеры; при возникновении ошибки пользователь обязательно уведомляется о её наступлении с выводом понятного кастомизированного для каждой конкретной ошибки сообщения; при работе с формами подключена валидация, оповещающая пользователя о некорректности введенных данных с подсказаками по устранению ошибок; все полезные бизнесу действия (добавление в избранное, в корзину, оформление заказа, оплата заказа) выполняются пользователем очень просто в несколько действий, а UI-элементы, необходимые для этих действий, находятся всегда на виду юзера в различных частях приложения; по всем основным функциям, требующим длительного взаимодейтсвия с сервером, внедрено сохранение изменений сначала в локальное состояние, а затем уже актуализация состояния с серверным является примером применения подхода Optimistic UI, что соответствует в том числе концепции порога Доэрти, согласно которому время отклика , т.е. скорость выполнения процессов следует рассматривать как важное функциональное свойство дизайна, лежащее в основе хорошего UX; все интерфейсы достаточно упрощены с точки зрения сложности работы с ними, однако нигде не нарушается закон Теслера (интерфейсы не упрощабтся до уровня потери смысла); для сглаживания отрицательных пиков настроения пользователей от возникновения какой-то ошибки (ошибка приложения, страница 404) в проекте реализована обработка ошибок и на все критические случаи юзеру выводится эстетически приятные страницы с пояснениями происходящего; для обработки в полях поиска ввода текста с ошибками согласно закону Постеля подключен поисковый движок Elasticsearch, который находит результаты, даже если они не идеально совпадают с вводом; все поля ввода, селекты и инпуты содержат соответствующие текстовые примечания по назначению компонентов; согласно закону Фиттса цели касания расположены в удобных местах, а их размер достаточно большой для уверенного точного касания; интерфейс приложения в контексте всего его глобального фунационала удовлетворяет закону Якоба - все основные функции (оформление заказа, работа с каталогом, оплата и т.п.) реализованы аналогично веб-сайтам, которыми уже когда-то пользовался клиент.
+
+- Responsive Design: To ensure the correct visual display of the app on devices with various screen sizes, the app is adapted for use on screens up to 360px, using a graceful degradation strategy. The following breakpoints are used: 1600px, 1441px, 1200px, 1024px, 768px, and 481px. The included postcss-pxtorem PostCSS plugin converts px to rem, and a custom function is used to smoothly change the text font size (based on clamp) across the entire range of screen sizes, which together leads to increased responsiveness of the interface on the user's device. To improve responsiveness, the (min)/(max)-width(height) properties are also used, along with font and image sizes adjusted based on screen size using custom mixins. To combat click sticking on mobile devices, a custom mixin was also written for the hover effect.
+- Favicons: The project uses favicons in the following formats: svg, ico (48x48 - to support older versions of IE), and png (to support all major browsers and various devices - 16x16, 32x32, 36x36, 48x48, 70x70, 96x96, 120x120, 144x144, 150x150, 180x180, 192x192, 310x310, 512x512). Icons are enabled in HTML (for use by browsers on all devices for display in the browser tab, history, and bookmarks), in the web manifest (for use by Android (Chrome) and desktop Chrome/Edge for PWA mode), and in browserconfig (for use by Windows 8/10/11 and IE for design, for example, in the Start menu).
+- Performance: To reduce client load and speed up page loading, the lazy:loading and decoding:async attributes have been applied to numerous image types. To optimize image handling, all images uploaded by users to the server are processed by the sharp package, which compresses and converts them to lightweight webp.
+- Themes: Instead of the standard "light theme/dark theme" combination, the application now features four switchable themes. Changing themes changes the primary colors, logos, and other decorative elements (cursor, visual inserts).
+- For ease of use with forms, complex fields (date, phone number) are implemented using the IMask library.
+- Order cancellation functionality, the ability to leave a review, support forms, display of the current order status, promo codes, discount campaigns (including email notifications about new special offers), profile editing (name and avatar selection), display of recommendations based on the currently viewed product, the ability to add products to favorites, etc. Improve customer experience and user experience. The implemented functionality for the application administrator to add various content can increase customer retention on the site.
+- When developing the design, the main principles of UI/UX were taken into account: a limited palette of colors with correct contrast and compatibility with each other was used for each theme; pure black is not used - its shades were chosen; the number of fonts is limited, all symbols of the selected fonts are easily readable; large blocks of text are not used to improve readability; page elements are placed freely; responsive design allows you to control negative space; all elements that should attract attention are visually highlighted with colors, borders and backlighting; potentially dangerous actions (cancel, delete) are highlighted in red; all information necessary for the user is not deeply hidden, but is immediately presented in plain sight; many UI components of the application were based on UI components from various popular modern web applications; to hide unnecessary information when displaying modal windows, the background is blurred and darkened; to improve the readability of the text, a barely noticeable outline was added in places where the background interrupts the visual text; The entire project is designed in a unified style, including the custom admin panel, all site cards (catalog, products, orders, etc.), and the external design; to standardize the UI, dedicated UI components are reused in the layout; loaders are implemented throughout to ensure a sense of content loading speed; if an error occurs, the user is notified of its occurrence with a clear, customized message for each specific error; validation is enabled when working with forms, notifying the user of incorrectly entered data and providing tips on how to resolve the error; all actions useful for business (adding to favorites, adding to cart, placing an order, paying for an order) are performed by the user very simply in a few steps, and the UI elements necessary for these actions are always visible to the user in various parts of the application; For all major functions that require long-term interaction with the server, saving changes first to the local state, and then updating the state with the server one, is an example of applying the Optimistic UI approach, which corresponds, among other things, to the Doherty threshold concept, according to which the response time, i.e. the speed of process execution, should be considered an important functional property of the design that underlies good UX; all interfaces are sufficiently simplified in terms of the complexity of working with them, however, Tesler's law is not violated anywhere (interfaces will not be simplified to the point of losing their meaning); to smooth out negative peaks in user mood caused by the occurrence of some error (application error, page 404), error handling is implemented in the project and in all critical cases the user is shown aesthetically pleasing pages with explanations of what is happening; to handle text input with errors in search fields according to Postel's law, the Elasticsearch search engine is connected, which finds results even if they do not perfectly match the input; All input fields, selectors, and inputs contain appropriate textual notes on the purpose of their components; in accordance with Fitts's law, touch targets are conveniently located and large enough to allow for precise, confident touching; the app's interface, in the context of its entire global functionality, complies with Jacob's law—all key functions (ordering, catalog management, payment, etc.) are implemented similarly to websites the customer has previously used.
 
 **1.3.Miscellaneous:**
-- SEO: пет-проект является типичным SPA-приложением, поэтому добиться поисковой оптимизации необходимого уровня очень сложно, однако в проекте всё же предприняты меры для повышения SEO - далее будут описаны способы, которые использовались для этих целей. Используются ЧПУ (человеко-понятные урлы) по всем страницам приложения, все символы на латинице, слова разделяются только дефисами и избегаются лишние слова, чтобы сделать адрес максимально коротким; разметка всех компонентов является валидной и семантической; заданы необходимые мета-теги HTML-страницы; используется протокол микроразметки Open Graph; canonocal-ссылки и title добавлены на страницы сайта за счёт внедрения библиотеки react-helmet-async (используется для динамического управления содержимым секции head в React-приложениях); для экономии краулингового бюджета и защиты определенных страниц запрещена индексация страниц админ-панели, а также персонализированных страниц (профиль, авторизация и пр.) через мета-тег robots и файл robots.txt; для генерации sitemap.xml используется динамический роут, отображенный в robots.txt; на страницах товаров используется микроразметка формата JSON-LD; оценка Lighthouse по SEO составляет 90-100.
-- Accessibility: в проекте поддерживаются принципы семантической верстки (иерархия h1-h6, использование специализированных тегов; нет некорректного использования ролей элементов); на страницах реализована навигация с клавиатуры; интерактивные элементы визуально реагируют на состояния hover, focus и пр.; все элементы input / textarea / select имеют связанный label; на элементах input реализован вывод ошибок с подсказками и уведомлениями по их устранению; все изображения имеют alt-атрибуты; все кликабельные элементы имеют размер взаимодействия не менее 44x44px (согласно WCAG); реализовано отключение анимации в приложении (родная анимация и анимация от библиотеки motion) при соответствующих настройках на стороне пользователя; по необходимости внедрены aria-атрибуты (aria-role, aria-label, aria-hidden и т.д.); при введении данных в фильтры происходит установление параметров в адресной строке; обеспечены стандартные способы взаимодействия с интерактивными элементами; оценка Lighthouse по доступности составляет 85-100 (чаще всего 90-100).
-- API: Эндпоинты модулей описаны по стандарту OpenAPI.
 
+- SEO: A pet project is a typical SPA application, so achieving the required level of search engine optimization is very difficult. However, the project has taken steps to improve SEO—the methods used for this purpose will be described below. Human-readable URLs are used on all application pages, all characters are in Latin, words are separated only by hyphens, and unnecessary words are avoided to keep the address as short as possible. The markup of all components is valid and semantic. The necessary HTML page meta tags are specified. The Open Graph micro-markup protocol is used. Canonical links and titles are added to the site pages by implementing the react-helmet-async library (used for dynamically managing the contents of the head section in React applications). To save crawl budget and protect certain pages, indexing of admin panel pages, as well as personalized pages (profile, authorization, etc.) via the robots meta tag and the robots.txt file, is prohibited. A dynamic route mapped in robots.txt is used to generate sitemap.xml. JSON-LD microdata is used on product pages. The Lighthouse SEO score is 90-100.
+- Accessibility: the project supports semantic layout principles (h1-h6 hierarchy, use of specialized tags; no incorrect use of element roles); keyboard navigation is implemented on the pages; interactive elements visually respond to hover, focus, etc. states; all input / textarea / select elements have an associated label; error output with tooltips and notifications for resolving them is implemented on input elements; all images have alt attributes. All clickable elements have an interaction size of at least 44x44px (in accordance with WCAG); animation can be disabled in the app (both native animation and animation from the Motion library) with the appropriate user settings; aria attributes (aria-role, aria-label, aria-hidden, etc.) are implemented where necessary; when entering data into filters, parameters are set in the address bar; standard methods of interacting with interactive elements are provided; the Lighthouse accessibility score is 85-100 (most commonly 90-100).
+- API: Module endpoints are described according to the OpenAPI standard.
 
-### 2.Identity Module
+### 2. Identity Module
 
-**Включает следующие функции:**
+**Includes the following features:**
 
-- Регистрация в приложении (встроенная и через OAuth + OIDC);
-- Подтверждение аккаунта по почте.
-- Логин в свой аккаунт.
-- Управление данными в личном кабинете (аватар, персональные данные, смена пароля).
-- Выход из аккаунта (в т.ч. из всех сессий).
-- Удаление аккаунта.
-- Двухфакторная аутентификация для пользователей с особыми полномочиями.
-- Восстановление пароля.
+- In-app registration (integrated and via OAuth + OIDC);
+- Account verification via email.
+- Account login.
+- Personal account data management (avatar, personal information, password change).
+- Account logout (including all sessions).
+- Account deletion.
+- Two-factor authentication for users with special permissions.
+- Password recovery.
 
-**Подробности реализации:**
+**Implementation details:**
 
-- Для хранения данных профиля пользователя используется PostgreSQL, что вызвано требованиями к безопасности и целостности данных.
-- Подтверждение аккаунта по email при регистрации (генерация токенов активации и отправка писем через SMTP).
-- Интеграция IMask для корректного ввода телефона и даты с автоматической типизацией.
-- Все входные данные как на клиенте, так и на сервере проверяются при помощи **Zod** в строгом режиме, исключая лишние поля, что обеспечивает защиту от _Mass Assignment_. Основная проблема с Mass Assignment заключается в чрезмерном доверии пользовательскому вводу, в связи с чем злоумышленник может добавить в HTTP-запрос скрытые параметры.
-- При вводе некорректных данных в формах модуля (логин, регистрация, восстановление пароля, редактирование профиля) происходит валидация в реальном времени и вывод пользователю ошибок ввода.
-- Настроен автоматический редирект при работе с формами.
-- При регистрации, логине, смене пароля через Forgot Password используется **Google reCaptcha v3**, чем обеспечивается невидимая для пользователя (не нужно вручную ничего вводить) защита от ботов и скриптов на всех публичных формах.
-- Функционал восстановления пароля по email.
-- Для имитации работы реального приложения добавлены в минималистичном виде "Согласие на обработку персональных данных" и "Политика конфиденциальности".
-- Пароль на сервере хранится в хэшированном виде. Для хэширования используется **argon2**.
-- В формах с вводом пароля используется подход _Password Visibility Toggle_, считающийся стандартом UX.
-- В форме логина доступна _Persistent Authentication_ (постоянная аутентификация), что повышает удобство пользователя при частом использовании приложения, а также повышает безопасность, если пользователь должен зайти в аккаунт без сохранения следов авторизации.
-- Аутентификация двумя способами: 1) Access Token (сохранение в памяти у клиента; проверка при помощи цифровой подписи) и Refresh Token (сохранение в HttpOnly Cookie у клиента и в БД на сервере; проверка при помощи цифровой подписи и записи в БД); 2) OAuth 2.0 + OIDC (авторизация через Google с автоматическим созданием профиля и подтягиванием аватара).
-- Двухфакторная аутентификация (2FA) с использованием TOTP для пользователей с ролью ADMIN и SUPERADMIN. 2FA включается в личном кабинете пользователя.
-- Автоматическое удаление неподтвержденного аккаунта через неделю после регистрации.
-- Пользователь может иметь более одной сессии, что позволяет пользоваться приложением с нескольких устройств одновременно.
-- В личном кабинете доступен выход как с текущей сессии, так и со всех сразу.
-- В личном кабинете доступно удаление аккаунта. Удаление аккаунта удалит связанные userId во всех возможных таблицах (заказы, тикеты поддержки, использованние промокодов (необходимые критические данные в этих таблицах останутся)), а также будут полностью удалены записи о избранных товарах, персональных скидках и токенах авторизации.
-- В личном кабинете доступно редактирование персональных данных.
-- В личном кабинете реализована возможность загрузки своего аватара. Загруженный аватар удаляется при загрузке нового или же при удалении аккаунта.
-- В личном кабинете доступна смена пароля.
-- Для борьбы с гонкой токенов (race conditions) используется библиотека **axios-auth-refresh**. То есть, если одновременно на сервер ушло несколько запросов и все они получили 401, библиотека гарантирует, что функция обновления токена будет вызвана только один раз. Для защиты от проблемы race conditions на стороне сервера реализован grace period: при ротации токенов старый токен не удаляется физически мгновенно, а помечается как отозванный с фиксацией времени. Если в течение короткого окна (4 сек) прилетает параллельный дублирующий запрос с этим же токеном, бэкенд "прощает" эту микро-гонку, мягко отклоняя дубликат, но сохраняя сессию пользователя активной; это позволяет сохранить сессию активной, если вдруг прилетит несколько запросов с очень малой разницей по времени. Отозыванные токены периодически удаляются из БД воркером на основе BullMQ.
-- Если злоумышленник перехватит старый Refresh-токен и попытается отправить его на сервер, бэкенд зафиксирует попытку повторного использования (Token Reuse Detection). Система мгновенно расценит это как компрометацию сессии и автоматически аннулирует абсолютно все активные сессии данного пользователя в базе данных, принудительно разлогинив его на всех устройствах.
-- Для ограничения количества запросов с одного IP используется Rate Limiting.
-
+- PostgreSQL is used to store user profile data due to security and data integrity requirements.
+- Account confirmation via email upon registration (activation token generation and sending emails via SMTP).
+- IMask integration for correct phone number and date entry with automatic typing.
+- All input data on both the client and server is validated using Zod in strict mode, excluding unnecessary fields, providing protection against Mass Assignment. The main problem with Mass Assignment is its overreliance on user input, which allows an attacker to add hidden parameters to the HTTP request.
+- When entering incorrect data in the module forms (login, registration, password recovery, profile editing), validation occurs in real time and input errors are displayed to the user.
+- Automatic redirection is configured when working with forms. - When registering, logging in, and changing your password through Forgot Password, Google reCaptcha v3 is used, providing invisible protection against bots and scripts on all public forms (no manual entry required).
+- Password recovery via email.
+- To simulate a real application, a minimalist "Consent to the Processing of Personal Data" and "Privacy Policy" have been added.
+- The password is stored on the server in hashed form. Argon2 is used for hashing.
+- Password entry forms use the _Password Visibility Toggle_ approach, considered a UX standard.
+- Persistent Authentication is available in the login form, improving user experience for frequent app users and enhancing security if the user needs to log in without leaving a trace of their authorization.
+- Two authentication methods: 1) Access Token (stored in the client's memory; verified using a digital signature) and Refresh Token (stored in an HttpOnly Cookie on the client and in the server's database; verified using a digital signature and a database entry); 2) OAuth 2.0 + OIDC (authorization via Google with automatic profile creation and avatar selection).
+- Two-factor authentication (2FA) using TOTP for users with the ADMIN and SUPERADMIN roles. 2FA is enabled in the user's personal account.
+- Automatic deletion of unconfirmed accounts one week after registration.
+- Users can have more than one session, allowing them to use the app from multiple devices simultaneously.
+- In your personal account, you can log out of the current session or log out of all sessions at once.
+- You can delete your account in your personal account. Deleting an account will delete the associated user ID in all possible tables (orders, support tickets, promo code usage (critical data will remain in these tables)), and records about favorite products, personal discounts, and authorization tokens will also be completely deleted.
+- You can edit your personal data in your personal account.
+- You can upload your own avatar in your personal account. The uploaded avatar is deleted when you upload a new one or when you delete your account.
+- You can change your password in your personal account.
+- The **axios-auth-refresh** library is used to combat token race conditions. This means that if multiple requests are sent to the server simultaneously and all receive a 401 response, the library ensures that the token refresh function is called only once. To protect against race conditions, a grace period is implemented on the server side: when rotating tokens, the old token is not physically deleted immediately, but is marked as revoked with a time stamp. If a parallel duplicate request with the same token arrives within a short window (4 seconds), the backend "forgives" this micro-race, gracefully rejecting the duplicate but keeping the user's session active. This allows the session to remain active if multiple requests arrive with very little time difference. Revoked tokens are periodically removed from the database by a BullMQ-based worker. - If an attacker intercepts an old Refresh token and attempts to send it to the server, the backend will detect the reuse attempt (Token Reuse Detection). The system will immediately consider this a session compromise and automatically invalidate all active sessions for that user in the database, forcibly logging them out of all devices.
+- Rate Limiting is used to limit the number of requests from a single IP address.
 
 ### 3.Catalog Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Для хранения данных каталога используется PostgreSQL, что позволяет эффективно управлять сложными структурами товаров, их атрибутами и связями.
-- Переход в полный каталог через кнопку в Header.
-- Просмотр предварительного каталога через кнопку в Header.
-- Поиск моделей через поисковый инпут в Header.
-- Каталог включает страницы категорий (реализована категория мотоциклов), страницы брендов (518 брендов), страницы конкретных брендов и страницы конкретных моделей мотоциклов.
-- Для вывода брендов и моделей мотоциклов используется пагинация.
-- Поиск: глобальный поиск в Header по всем моделям (с выводом подходящих вариантов и возможностью перехода на страницу с наиболее подходящими результатами); поиск на странице брендов (по брендам); поиск на странице бренда (по моделям).
-- Фильтрация: реализована на странице бренда. Позволяет фильтровать по цене, объему двигателя, году выпуска, мощности, категории мотоцикла, типу привода и наличию товара.
-- Товар, находящийся в наличии, помечен при помощи badge.
-- Сортировка: реализована на странице бренда. Позволяет сортировать выводимые модели мотоциклов по алфавиту (возрастание / убывание), по цене (возрастание / убывание), по новизне (убывание) и по рейтингу (убывание.)
-- Страница бренда позволяет выводить результаты (модели мотоциклов) в виде табличек и в виде списка.
-- Вывод рекомендаций: на странице конкретной модели также выводится 4 аналогичные модели.
-- На странице документации можно получить информацию о технических характеристиках конкретной модели, а также описание, условия гарантии и документацию на модель (всё, кроме технических характеристик, унифицировано).
-- Для удобства навигации по каталогу реализованы хлебные крошки (breadcrumbs).
-- Каталог наполнен записями мотоциклов (около 34k позиций) на основе датасета https://app.gigasheet.com/spreadsheet/motorcycle-data/42c25563_d896_4234_9074_36ce6c5caeca. Рейтинг, цена и доступные цвета для каждой модели сгенерированы скриптом рандомным образом.
-- Для функционала поиска, сортировки и фильтрации используется движок Elasticsearch.
-- Реализовано сохранение фильтров, поисковых запросов и состояния в целом при переходе между страницами каталога.
+- PostgreSQL is used to store catalog data, allowing for efficient management of complex product structures, their attributes, and relationships.
+- Access to the full catalog via a button in the Header.
+- View a preliminary catalog via a button in the Header.
+- Search for models via the search input in the Header.
+- The catalog includes category pages (a motorcycle category is implemented), brand pages (518 brands), pages for specific brands, and pages for specific motorcycle models.
+- Pagination is used to display motorcycle brands and models.
+- Search: global search in the Header across all models (displaying matching options and the ability to navigate to the page with the most relevant results); search on the brand page (by brand); search on the brand page (by model).
+- Filtering: implemented on the brand page. Allows filtering by price, engine displacement, year of manufacture, power, motorcycle category, drive type, and product availability. - In-stock items are marked with a badge.
+- Sorting: implemented on the brand page. Allows you to sort the displayed motorcycle models alphabetically (ascending/descending), by price (ascending/descending), by newness (descending), and by rating (descending).
+- The brand page allows you to display results (motorcycle models) in both table and list formats.
+- Recommendation display: the page for a specific model also displays four similar models.
+- The documentation page provides information on the technical specifications of a specific model, as well as a description, warranty terms, and documentation (everything except technical specifications is standardized).
+- Breadcrumbs have been implemented for easy catalog navigation.
+- The catalog is filled with motorcycle records (approximately 34k items) based on the dataset https://app.gigasheet.com/spreadsheet/motorcycle-data/42c25563_d896_4234_9074_36ce6c5caeca. The rating, price, and available colors for each model are randomly generated by a script.
+- The Elasticsearch engine is used for searching, sorting, and filtering.
+- Filters, search queries, and the overall state are saved when switching between catalog pages.
 
 ### 4.Trading Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Для хранения товаров в избранном выбран PostgreSQL, а для товаров корзины - Redis, что обусловлено его способностью обрабатывать временные данные с экстремально высокой скоростью, что критично для UX и снижения нагрузки на основные базы данных. Для просмотра данных в Redis подключен Redis Insight.
-- Возможность добавления в избранное реализована для каждой отдельной карточки продукта (как в режиме grid, так и в режиме list), для страницы конкретного товара и для страницы корзины.
-- Возможность добавления в корзину реализована для каждой отдельной карточки продукта (как в режиме grid, так и в режиме list), для страницы конкретного товара и для страницы избранного.
-- Кнопка добавления в корзину при нажатии превращается в кнопки выбора количества товара и отображения его текущего количества в корзине. Нажатие на "-" при текущем количестве "1" удаляет товар из корзины.
-- На странице избранного реализована логика "Показать ещё" для большого количества товаров.
-- На странице корзины можно удалить из корзины как конкретный товар, так и все выбранные (добавлен чекбокс выбора всех товаров).
-- На странице корзины отображается цена индивидуального товара, сумма по конкретной позиции с учётом её количества, общее количество выбранного товара и общая сумма заказа.
-- В Header отображается текущее количество товаров, добавленных в избранное и в корзину. Нажатие на иконку перенаправляет на соответствующую старницу.
-- Для удобства пользователя в контексте работы с избранным и корзиной реализована стратегия Optimistic UI - изменение товара в корзине и избранных товаров происходит мгновенно на стороне клиента с отменой при необходимости (если сервер не отработал или отказал в операции). Для этого используется Zustand + React Query.
+- PostgreSQL was selected for storing favorites, and Redis for cart items. This is due to its ability to process temporary data at extremely high speed, which is critical for UX and reducing the load on the main databases. Redis Insight is integrated for viewing data in Redis.
+- The ability to add to favorites is implemented for each individual product card (in both grid and list modes), for the specific product page, and for the cart page.
+- The ability to add to cart is implemented for each individual product card (in both grid and list modes), for the specific product page, and for the favorites page.
+- When clicked, the Add to Cart button transforms into buttons for selecting the quantity of the item and displaying the current quantity in the cart. Clicking "-" when the current quantity is 1 removes the item from the cart.
+- The Favorites page now has a "Show more" logic for a large number of items. - On the cart page, you can delete a specific item or all selected items from the cart (a checkbox has been added for selecting all items).
+- The cart page displays the price of an individual item, the total for a specific item including its quantity, the total quantity of the selected item, and the total order amount.
+- The Header displays the current number of items added to Favorites and the cart. Clicking on the icon redirects to the corresponding page.
+- For user convenience, the Optimistic UI strategy has been implemented for working with Favorites and the cart: changes to cart items and Favorites are made instantly on the client side, with cancellation if necessary (if the server has failed or rejected the operation). This is achieved using Zustand + React Query.
 
 ### 5.Warehouse Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Для реализации модуля в PostgreSQL созданы таблицы складов и остатков на складах. Таблица складов заполнена данными о 5 складах в различных географических точках в пределах территории РФ. В таблице Stock в БД для каждой позиции товара и для каждого из пяти складов указаны остатки (остатки заполнены скриптом рандомно).
-- При создании заказа пользователь должен указать свой адрес - для этого в приложение со стороны фронтенда внедрена географическая карта при помощи leaflet.js, а на бэкенде работает PostGIS (как единый docker-образ с PostgreSQL). Выбранная пользователем точка на карте трансформируется в текстовый адрес при помощи Nomenatim (поисковая система, предназначенная для геокодирования и обратного геокодирования данных). Координаты выбранной точки отправляются на сервер, где на их основе определяется ближайший склад (с учетом кривизны Земли) со всеми необходимыми товарами. Расстояние от точки доставки до склада ложится в основу расчета стоимости доставки (километраж) и даты доставки (выбран 1 день на 1000 км). Данные о доставке отображаются пользователю при создании заказа, а также влияют как на стоимость заказа, так и на изменение статуса заказа (подробнее про статусы описано в модуле Ordering).
-- На географической карте при заказе можно выбрать любую точку в пределах РФ. Текущая выбранная точка, а также расположение всех складов отображаются метками. Если пользователь делает не первый заказ, то географические настройки последнего заказа используются для формирования дефолтного адреса по умолчанию (отображается последняя метка на карте, а также на его основе производятся базовые расчеты доставки).
-- Для синхронизации (PostgreSQL и поискового движка) остатков на различных этапах заказа (при создании заказа происходит резервирование остатков, при оплате - списание, при отмене - возврат) запускается точечное обновление Elasticsearch.
-- При добавлении в корзину срабатывает ограничение, которое не позволяет добавить товара больше, чем есть на остатках. На странице корзины при превышении остатков (товар добавили, когда он был на складе, а хотим сделать заказ, когда уже нет) блокируется кнопка создания заказа и выводится предупреждение о необходимости изменения количества товара.
+- To implement the module, warehouse and inventory tables were created in PostgreSQL. The warehouse table is populated with data for five warehouses in various locations across the Russian Federation. The "Stock" table in the database displays the inventory for each product item and for each of the five warehouses (the inventory is randomly populated by a script).
+- When placing an order, the user must specify their address. For this purpose, a geographic map is embedded in the frontend of the application using leaflet.js, and PostGIS runs on the backend (as a single Docker image with PostgreSQL). The user-selected point on the map is transformed into a text address using Nomenatim (a search engine designed for geocoding and reverse geocoding data). The coordinates of the selected point are sent to the server, where they are used to determine the nearest warehouse (taking into account the curvature of the Earth) with all the required products. The distance from the delivery point to the warehouse is used to calculate the delivery cost (mileage) and delivery date (1 day per 1000 km is selected). Delivery data is displayed to the user when creating an order and affects both the order cost and changes to the order status (more information about statuses is available in the Ordering module).
+- When placing an order, you can select any location within the Russian Federation on the geographic map. The currently selected location, as well as the locations of all warehouses, are displayed as markers. If this is not the user's first order, the geographic settings of the last order are used to generate the default address (the last marker is displayed on the map, and basic delivery calculations are based on it).
+- To synchronize (PostgreSQL and the search engine) the balances at various order stages (when creating an order, the balances are reserved, upon payment, they are written off, and upon cancellation, they are refunded), a targeted Elasticsearch update is triggered.
+- When adding to cart, a limit is triggered that prevents adding more items than are in stock. On the shopping cart page, if the balance is exceeded (the item was added when it was in stock, but we want to place an order when it is no longer available), the button for creating an order is blocked and a warning is displayed about the need to change the quantity of the item.
 
 ### 6.Ordering Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Для реализации модуля в PostgreSQL созданы таблицы заказов и товаров в заказе.
-- На страницу создания заказа не пускает, если профиль пользователя не заполнен, или если число товара в корзине превышает реальное количество остатков на складах.
-- Реализована система управления жизненным циклом заказов на базе BullMQ. Это позволяет выносить тяжелые или отложенные во времени операции в фоновые процессы, не блокируя основной поток API. Жизненный цикл следующий (статусы заказов): pending (ожидает оплаты), cancelled (отменен), paid (ждет отправки), delivery (отправлен), delivered (ждет получения), completed (завершен). После создания заказ переходит в статус pending. В этом статусе заказ ожидает оплаты в течение 1 ч. Если за это время оплата не произошла, то происходит автоматическое удаление заказа и тот переходит в статус cancelled. После оплаты статус меняется на paid. После этого через 2-3 ч (рандомно) происходит смена статуса на delivery - после этого уже нельзя вручную отменить заказ со страницы заказов. В день рассчитанной доставки статус меняется на delivered, после чего на странице заказов появляется кнопка для подтверждения заказа, после нажатия которой происходит смена статуса на completed и появляется кнопка, позволяющая оставить отзыв. Отслеживание и изменение статусов заказа происходит при помощи BullMQ.
+- To implement the module, tables for orders and products in the order have been created in PostgreSQL.
+- The order creation page is blocked if the user's profile is incomplete or if the number of items in the cart exceeds the actual inventory level.
+- An order lifecycle management system has been implemented using BullMQ. This allows heavy or delayed operations to be moved to background processes without blocking the main API thread. The order lifecycle statuses are as follows: pending (awaiting payment), canceled, paid (awaiting shipment), delivery (shipped), delivered (awaiting receipt), completed. After creation, an order is assigned the pending status. In this status, the order awaits payment for 1 hour. If payment is not made within this time, the order is automatically deleted and the status is changed to canceled. After payment, the status changes to paid. After this, the order status changes to delivery after 2-3 hours (randomly). After this, the order can no longer be manually canceled from the orders page. On the estimated delivery day, the status changes to delivered, after which a button for confirming the order appears on the orders page. Clicking this changes the status to completed, and a button allowing you to leave a review appears. Order statuses are tracked and updated using BullMQ.
 
 ```mermaid
 stateDiagram-v2
 
  direction LR
-    [*] --> PENDING : Создание заказа
-    PENDING --> CANCELED : BullMQ (1 час без оплаты)
-    PENDING --> PAID : Оплата (эндпоинт)
+    [*] --> PENDING : Creating an order
+    PENDING --> CANCELED : BullMQ (1 hour free)
+    PENDING --> PAID : Payment (endpoint)
 
     state PAID {
-        [*] --> ReservedAction : Изменение физического и зарезервированного кол-ва
+        [*] --> ReservedAction : Change of physical and reserved quantity
     }
 
-    PAID --> DELIVERY : BullMQ (через 2-3 часа)
-    DELIVERY --> DELIVERED : BullMQ (в дату доставки)
-    DELIVERED --> COMPLETED : Подтверждение пользователем
-    
-    CANCELED --> [*] : Товар вернулся в продажу
-    COMPLETED --> [*] : Заказ завершен
+    PAID --> DELIVERY : BullMQ (after 2-3 hours)
+    DELIVERY --> DELIVERED : BullMQ (on the delivery date)
+    DELIVERED --> COMPLETED : User confirmation
+
+    CANCELED --> [*] : The product is back on sale
+    COMPLETED --> [*] : The order has been completed
 ```
-- В Header добавлена иконка-ссылка на страницу заказа. Над иконкой отображатся счетчик активных заказов (статус pending, paid, delivery). Счетчик обнуляется сразу при логауте, а актуальные данные подтягиваются сразу после логина.
-- На странице заказов отображается информация по каждому заказу - номер, дата, сумма, статус, данные по товару, указанный адрес доставки. Реализована фильтрация по статусу заказа.
-- Для синхронизации выбранных товаров в корзине и на странице оформления заказа реализовано сохранение состояния о selected в Redis.
+
+- An icon linking to the order page has been added to the Header. A counter for active orders (status pending, paid, delivery) is displayed above the icon. The counter is reset immediately upon logout, and current data is retrieved immediately after logging in.
+- The Orders page displays information for each order: number, date, amount, status, product details, and specified delivery address. Filtering by order status has been implemented.
+- To synchronize selected items in the cart and on the checkout page, the "selected" state is now stored in Redis.
 
 ### 7.Review Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Для реализации хранения данных отзывов выбрана MongoDB в связи с тем, что отзывы — это неструктурированные данные и внедрение последующего функционала (древовилные ответы, сложные метаданные и т.п.) будет проще реализовать на NoSQL-БД, к тому же в проекте используется гибридная архитектура хранения данных, подразумевающая вынос пользовательского контента в отдельную БД. Взаимодействие с MongoDB осуществляется через ODM Mongoose.
-- После перехода заказа в статус COMPLETED пользователю открывается кнопка "Оставить отзыв". Нажатие на кнопку открывает модальное окно, в котором можно выставить рейтинг (1-5), написать комментарий и загрузить изображения (до 5 шт). Оставить отзыв можно индивидуально для каждой позиции заказа (только один раз на каждый товар в заказе). Оставление отзыва приводит к изменению рейтинга.
-- Просмотр отзывов реализован на странице каждого мотоцикла во вкладке "Отзывы" (компонента Tab). Там же можно удалить любой отзыв - удаление доступно как автору комментария, так и любому пользователю с ролью ADMIN. 
-- Удаление отзыва приводит к изменению рейтинга, очистке БД и удалению фотографий отзыва с сервера.
-- Текст комментария, введенные пользователем, на сервере проходит санитайзинг перед сохранением в БД с целью избежания атак на клиентов при отображении отзывов. Текст ввода также ограничен (по обеим границам) с выводом подсказок пользователю.
-- Изображения отзывов на странице товара открываются в виде галереи, что позволяет просматривать их в широком формате и переключаться между изображениями при помощи клавиатуры.
+- MongoDB was chosen to store review data because reviews are unstructured data, and implementing subsequent functionality (tree responses, complex metadata, etc.) would be easier with a NoSQL database. Furthermore, the project uses a hybrid data storage architecture, which means storing user content in a separate database. Interaction with MongoDB is accomplished via ODM Mongoose.
+- After an order reaches the COMPLETED status, the user sees the "Leave a review" button. Clicking the button opens a modal window where they can set a rating (1-5), write a comment, and upload up to 5 images. Reviews can be left individually for each item in the order (only once per item). Leaving a review changes the rating.
+- Reviews can be viewed on each motorcycle page in the "Reviews" tab (Tab component). You can also delete any review there—deletion is available to both the comment author and any user with the ADMIN role.
+
+- Deleting a review changes the rating, clears the database, and removes review photos from the server.
+- Comment text entered by the user is sanitized on the server before being saved to the database to prevent attacks on clients when displaying reviews. Input text is also limited (at both boundaries) with user prompts.
+- Review images on the product page open as a gallery, allowing you to view them in full-screen format and navigate between images using the keyboard.
 
 ### 8.Discount Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Модуль реализует фунционал скидок (глобальных и индивидуальных) и промокодов. 
-- Промокоды: раз в неделю генерируется 5 случайных слов (при помощи библиотеки faker), выступающих в роли промокода. Каждый промокод даёт скидку от 100000 до 200000 руб к цене товара. Пользователь может использовать все доступные промокоды, но не более одного раза каждый. Ввод промокода осуществляется на странице корзины.
-- Глобальные скидки: раз в 24 часа выбирается случайный год среди годов производства продаваемых мотоциклов. В течение этого дня на все мотоциклы выбранного года производства пользователь получает скидку 5-15 % (рандомно генерируется). На главной странице висит баннер, указывающий на что действует глобальная скидка в текущий момент и сколько она ещё будет действовать.
-- Индивидуальные скидки: раз в день происходит выбор рандомного мотоцикла (для каждого зарегистированного и подтвержденного аккаунта) среди всего ассортимента и на этот мотоцикл пользователь получает фиксированную скидку в 20%. Индивидуальная скидка активна в течение недели. После генерации индивидуальной скидки пользователю по email посылается письмо с указанием стоимости товара (до и после скидки), наименования продукции и ссылки на товар.
-- Приоритеты: если товар подходит и под индивидуальную и глобальную скидку, то применяется та, которая даёт наибольшую выгоду покупателю (скидка действует только на товар, а не на доставку). Промокод применяется после применения скидки в самом конце расчёта цены товара.
-- Генерация промокодов (раз в неделю), индивидуальных и глобальных скидок (раз в день) осуществляется при помощи BullMQ.
-- Актуальная цена с учетом скидок (а также badge на карточках товара) реализована во всех местах сайта, отображающих цену товара (страница бренда с карточками мотоциклов, страница поиска с карточками мотоциклов, страница конкретного мотоцикла, страница избранных товаров, страница корзины). Для получения актуальных данных реализовано обогащение информацией о скидках данных, получаемых на клиенте из Elasticsearch. Не авторизованный пользователь получает информацию только о глобальных скидках, а авторизованный ещё и о индивидуальных.
+- The module implements discounts (global and individual) and promo codes.
+
+- Promo codes: Once a week, 5 random words are generated (using the faker library), which act as promo codes. Each promo code provides a discount of 100,000 to 200,000 rubles on the price of the product. The user can use all available promo codes, but no more than once each. Promo codes are entered on the cart page.
+- Global discounts: Once every 24 hours, a random year is selected from among the production years of motorcycles for sale. During this day, the user receives a 5-15% discount (randomly generated) on all motorcycles of the selected production year. A banner on the main page indicates what the global discount is currently valid for and how long it will remain valid. - Individual discounts: Once a day, a random motorcycle is selected from the entire inventory (for each registered and verified account) and the user receives a fixed 20% discount on this motorcycle. The individual discount is active for one week. After the individual discount is generated, the user receives an email indicating the product price (before and after the discount), the product name, and a link to the product.
+- Priorities: If an item qualifies for both an individual and global discount, the one that provides the greatest benefit to the buyer is applied (the discount applies only to the item, not to shipping). The promo code is applied after the discount is applied, at the very end of the product price calculation.
+- Promo codes (once a week) and individual and global discounts (once a day) are generated using BullMQ.
+- The current price, including discounts (as well as the badge on product cards), is now available in all areas of the website where the product price is displayed (brand page with motorcycle cards, search page with motorcycle cards, specific motorcycle page, featured products page, and cart page). To ensure up-to-date data, the data retrieved from Elasticsearch on the client is enriched with discount information. An unauthorized user receives information only about global discounts, while an authorized user also receives information about individual discounts.
 
 ### 9.Payment Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Оплатить заказ можно как при его создании, так и впоследствии (за счёт записи реквизитов в БД заказа) в течение 1 часа (после этого заказ автоматически отменяется). При нажатии на кнопку оплаты появляется pre-payment модальное окно.
-- В качестве платежного агрегатора выбрана ЮKassa (используется тестовый магазин). Коннект осуществляется через ngrok. Платежи происходят на стороне ЮKassa. Используются одноэтапные (без холдирования) платежи. Номера рабочих (тестовых) карт для оплаты выводятся в pre-payment модальном окне.
-- Для фильтрации сторонних запросов на эндпоинт приема ответа от Юкассы установлен IP-фильтр. 
-- При отмене заказа после оплаты происходит запрос к Юкассе и возврат средств. 
-- Оплата заказа производит изменение его статуса с PENDING на PAID, а также происходит конечное списание остатков (quantity уменьшается, reserved обнуляется) на складах.
+- You can pay for an order either upon creation or later (by saving the details to the order database) within 1 hour (after which, the order is automatically canceled). Clicking the payment button opens a pre-payment modal window.
+- ЮKassa is selected as the payment aggregator (a test store is used). Connection is via ngrok. Payments are processed on the ЮKassa side. Single-stage payments (without holding) are used. The numbers of working (test) cards for payment are displayed in the pre-payment modal window.
+- An IP filter is installed on the ЮKassa response endpoint to filter third-party requests.
+- If an order is canceled after payment, a request is made to ЮKassa and the funds are refunded.
+- Payment for the order changes its status from PENDING to PAID, and the final write-off of the remaining balances (quantity is reduced, reserved is reset) in the warehouses occurs.
+- For security reasons, when receiving a response from ЮKassa, a response request to the official IP address with the received ID has been implemented to ensure the validity of the data before the application's business logic is executed.
+  -Changes in the order payment status are accompanied by the generation of events with subsequent notification in the Telegram channel.
 
-### 10.Notifications Module
+  ### 10.Notifications Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Для того, чтобы владелец магазина мог получать актуальную информацию о созданных, оплаченных и доставленных заказах, а также о сгенерированных скидках/промокодах и оставленных отзывах, данные пересылаются в ТГ-бот.
-- Оповещения в приложении построены на Event-Driven архитектуре (EDA) - различные сервисы (producers) генерируют события, а централизованный слушатель (consumer) реагирует на них - посылает сообщения в ТГ-бота и на электронные почты пользователей.
-- Сообщения на электронную почту пользователей посылаются при следующих событиях: регистрация нового аккаунта, попытка восстановления пароля, генерация персональных скидок, завершена доставка заказа. 
-- Сообщения в ТГ-бота посылаются при следующих событиях: создание нового заказа, оплата заказа, завершена доставка заказа, сгенерированы промокоды и скидки общей командой генерации, оставлен отзыв на товар.
+- To ensure that store owners receive up-to-date information about created, paid, and delivered orders, as well as generated discounts/promo codes and reviews, the data is sent to the Telegram bot.
+- Notifications in the application are built on an Event-Driven Architecture (EDA) - various services (producers) generate events, and a centralized listener (consumer) responds to them by sending messages to the Telegram bot and to users' email addresses.
+- Messages are sent to users' email addresses upon the following events: new account registration, password recovery attempt, personal discount generation, and order delivery completion.
+- Messages are sent to the Telegram bot upon the following events: new order creation, order payment, order delivery completion, promo codes and discounts generated by the general generation command, and product reviews left.
 
 ### 11.Support Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Реализована форма фидбека, позволяющая задать любой вопрос. Форма доступна как авторизованным, так и не авторизованным пользователям (последним ограничена загрузка файлов).
-- К форме можно прикрепить изображения, а также файлы формата txt, pdf, doc/docx.
-- Форма проходит валидацию (Zod) как на клиенте, так и сервере.
-- Отправка формы защищена от спама через Google reCAPTCHA v3.
-- Загруженные файлы хранятся на сервере и автоматически удаляются через 30 дней после закрытия тикета (CLOSED или RESOLVED) при помощи BullMQ. 
-- Статус заданных вопросов пользователь может отслеживать через личный кабинет.
+- A feedback form has been implemented, allowing you to ask any question. The form is available to both authorized and unauthorized users (unauthorized users are limited to file uploads).
+- You can attach images, as well as .txt, .pdf, and .doc/.docx files to the form.
+- The form is validated (Zod) on both the client and server.
+- Form submission is protected from spam using Google reCAPTCHA v3.
+- Uploaded files are stored on the server and are automatically deleted 30 days after the ticket is closed (CLOSED or RESOLVED) using BullMQ.
+- The user can track the status of their questions in their personal account.
 
 ### 12.Reports Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Сервис Reports через Prisma собирает статистику - считает общую выручку, количество оплаченных заказов и находит топ-5 самых продаваемых моделей мотоциклов. Также происходит определение товаров, остатки которых стали критическими (1 и менее шт). На основе всей этой информации генерируются отчеты.
-- Отчеты формируется как в формате pdf, так и в формате xlsx (Excel). Для создания многостраничных таблиц используется библиотека exceljs, а для преобразования HTML-шаблонов в pdf - Puppeteer.
-- Реализована автоматизация через BullMQ (Cron) - каждое утро ТГ-бот присылает краткий текстовый дайджест, а каждый понедельник генерирует и присылает полные файлы (Excel + PDF) за неделю.
-- Для ТГ-бота написаны команды, позволяющие мгновенно получить статистику на данный момент (только в pdf или же в обоих форматах) прямо в мессенджер.
+- The Reports service collects statistics via Prisma – it calculates total revenue, the number of paid orders, and identifies the top 5 best-selling motorcycle models. It also identifies items whose stock levels have become critical (one or fewer units). Reports are generated based on all this information.
+- Reports are generated in both PDF and xlsx (Excel) formats. The ExcelJS library is used to create multi-page tables, and Puppeteer is used to convert HTML templates to PDF.
+- Automation is implemented via BullMQ (Cron) – every morning, a TG bot sends a short text digest, and every Monday, it generates and sends full files (Excel + PDF) for the week. - Commands have been written for the TG bot that allow you to instantly receive current statistics (in PDF only or in both formats) directly in the messenger.
 
 ### 13.Admin Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Написана кастомная админ-панель, включающая разделы для: работы с каталогом (бренды, товары, остатки на складах), работы с заказами, работы с вопросами пользователей, работы со скидками и промокодами, работы с контентом приложения (новости), работы с отчетами, управления доступом. Разделы работы с данными поддерживают основные CRUD-операции.
-- Все разделы админ-панели ограничены как визуально (на фронтенде), так и авторизацией на сервере в соответствии с моделью управления доступом RBAC (Role-Based Access Control).
+- A custom admin panel has been written, including sections for: catalog management (brands, products, warehouse balances), orders, user inquiries, discounts and promo codes, app content management (news), reports, and access management. The data management sections support basic CRUD operations.
+- All admin panel sections are restricted both visually (on the frontend) and by server authorization in accordance with the RBAC (Role-Based Access Control) access control model.
 
-- Матрица прав доступа (RBAC) для админ-панели:
+- Access permissions matrix (RBAC) for the admin panel:
 
-| Категория | Раздел | CONTENT_EDITOR | MANAGER | ADMIN | SUPERADMIN |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| **Каталог** | Бренды | ❌ | Просмотр, изм., уд. | Просмотр, изм., уд. | Просмотр, изм., уд. |
-| | Мотоциклы | Просмотр | Просмотр, изм., уд. | Просмотр, изм., уд. | Просмотр, изм., уд. |
-| | Склады и наличие | ❌ | Просмотр, изм. кол-ва, уд. | Просмотр, изм. кол-ва, уд. | Просмотр, изм. кол-ва, уд. |
-| **Заказы** | Все заказы | ❌ | Просмотр | Просмотр, изм. статуса | Просмотр, изм. статуса |
-| **Поддержка** | Тикеты саппорта | ❌ | Просмотр, ответ, изм. статуса | Просмотр, ответ, изм. статуса | Просмотр, ответ, изм. статуса |
-| **Маркетинг** | Скидки | ❌ | Просмотр | Просмотр, генерация | Просмотр, генерация |
-| | Отчеты | ❌ | Генерация | Генерация | Генерация |
-| **Техническое обслуживание** | Техническое обслуживание | ❌ | ❌ | Запуск синхронизации | Запуск синхронизации |
-| **Контент** | Новости | Создание, изм., уд. | ❌ | Создание, изм., уд. | Создание, изм., уд. |
-| **Доступ** | Пользователи | ❌ | ❌ | ❌ | Просмотр, изм. роли, уд. |
+| Category        | Section                     |  CONTENT_EDITOR  |          MANAGER          |           ADMIN           | SUPERADMIN                |
+| :-------------- | :-------------------------- | :--------------: | :-----------------------: | :-----------------------: | ------------------------- |
+| **Catalog**     | Brands                      |        ❌        |    View, change, spec.    |    View, change, spec.    | View, change, spec.       |
+|                 | Motorcycles                 |       View       |    View, change, spec.    |    View, change, spec.    | View, change, spec.       |
+|                 | Warehouses and availability |        ❌        | View, change. qty., spec. | View, change. qty., spec. | View, change. qty., spec. |
+| **Orders**      | All orders                  |        ❌        |           View            |   View, change. status    | View, change. Status      |
+| **Support**     | Support Tickets             |        ❌        | View, Reply, Edit Status  | View, Reply, Edit Status  | View, Reply, Edit Status  |
+| **Marketing**   | Discounts                   |        ❌        |           View            |      View, Generate       | View, Generate            |
+|                 | Reports                     |        ❌        |         Generate          |         Generate          | Generate                  |
+| **Maintenance** | Maintenance                 |        ❌        |            ❌             |        Start Sync         | Start Sync                |
+| **Content**     | News                        | Create, Edit, ID |            ❌             |     Create, Edit, ID      | Create, Edit, ID          |
+| **Access**      | Users                       |        ❌        |            ❌             |            ❌             | View, Edit Roles, ID      |
 
-- На вкладках разделов, предполагающих работу с большим количество имнформации, реализована пагинация и фильтрация / поиск.
-- Изменение данных каталога в админ-панели сопровождается синхронизацией данных в Elasticsearch, что позволяет получать актуальные данные сразу после их правки.
+- Pagination and filtering/searching are now implemented in section tabs that require working with large amounts of information.
+- Editing catalog data in the admin panel synchronizes the data with Elasticsearch, allowing you to receive up-to-date data immediately after editing.
 
 ### 14.Content Module
 
-**Функционал и подробности реализации:**
+**Functionality and implementation details:**
 
-- Для создания новостей используется соответствующий раздел админ-панели, предлагающий кастомный конструктор, позволяющий загружать изображения, писать текст, указывать id-мотоциклов (на их основе подтягиваются карточки товара с изображениями, актуальными ценами, характеристиками и т.п.) в различных комбинациях.
-- Для хранения созданных новостей используется MongoDB + Mongoose. Выбор БД обусловлен хаотичной структурой генерируемой информации за счёт использования кастомного конструктора.
-- Создаваемые пользователем с соответствующей ролью новости имеют статусы, что позволяет их писать без мгновенной публикации. Опубликованные новости доступны на соотвествующей вкладке приложения (в компоненте Header).
-- Над новостями можно проделывать стандартные CRUD-операции, что позволяет актуализировать информацию.
+- News items are created using the corresponding section of the admin panel, which offers a custom designer that allows you to upload images, write text, and specify motorcycle IDs (which are used to pull up product cards with images, current prices, specifications, etc.) in various combinations.
+- MongoDB + Mongoose is used to store created news items. This database was chosen due to the chaotic structure of the generated information, which is facilitated by the use of a custom designer.
+- News items created by users with the appropriate roles have statuses, allowing them to be written without immediate publication. Published news items are available in the corresponding tab of the application (in the Header component).
+- Standard CRUD operations can be performed on news items, allowing for updating the information.
 
+## Database Architecture
 
-## Database Architecture (Архитектура SQL-БД)
-Система построена на базе PostgreSQL с использованием Prisma ORM. Архитектура разделена на независимые модули. Используются PostgreSQL для транзакционных данных и PostGIS для работы с геолокацией.
+The system is built on PostgreSQL using Prisma ORM. The architecture is divided into independent modules. PostgreSQL is used for transactional data and PostGIS for geolocation.
 
 ```mermaid
 erDiagram
@@ -719,100 +724,116 @@ erDiagram
 ```
 
 ### Identity Module
-- User: Центральная таблица. Поддерживает RBAC (5 ролей), OAuth (Google), 2FA, а также хранит географические координаты пользователя (PostGIS) для расчета доставки по умолчанию.
-- Token: Хранилище Refresh-токенов для управления активными сессиями.
+
+- User: Central table. Supports RBAC (5 roles), OAuth (Google), 2FA, and stores user geographic coordinates (PostGIS) for default shipping calculations.
+- Token: Refresh token storage for managing active sessions.
 
 ### Catalog Module
-- Brand: Бренды с привязкой к странам и логотипам.
-- Motorcycle: Основная модель с 20+ техническими параметрами (двигатель, трансмиссия, шины, тип охлаждения).
-- SiteCategory: Глобальные категории для навигации на сайте.
-- ProductImage: Галерея изображений (с пометкой главного фото isMain).
+
+- Brand: Brands linked to countries and logos.
+- Motorcycle: Main model with 20+ technical parameters (engine, transmission, tires, cooling type).
+- SiteCategory: Global categories for website navigation.
+- ProductImage: Image gallery (with the main photo marked as "Main").
 
 ### Trading Module
 
-- Favorite: Список товаров с привязкой к юзерам, пометившим этот товар как "избранный".
+- Favorite: List of products linked to users who have marked this product as "favorite."
 
 ### Warehouse Module
 
-- Warehouse: Склады с точными координатами для работы с картами.
-- Stock: Таблица остатков. Реализует логику двойного списания: quantity (физический остаток) и reserved (бронь под неоплаченные заказы).
+- Warehouse: Warehouses with precise coordinates for working with maps.
+- Stock: Balance table. Implements double-debit logic: quantity (physical inventory) and reserved (reserved for unpaid orders).
 
 ### Ordering Module
 
-- Order: Финансовый документ заказа. Фиксирует стоимость доставки по тарифу, расстояние, статус оплаты (ЮKassa) и расчетную дату прибытия.
-- OrderItem: Состав заказа - позиции, количество, цена товара на момент покупки.
+- Order: Financial order document. Records the delivery cost according to the rate, distance, payment status (ЮKassa), and estimated arrival date.
+- OrderItem: Order contents - items, quantity, and price at the time of purchase.
 
 ### Discount Module
 
-- PersonalDiscount: Индивидуальные предложения (20%) на конкретные модели с ограниченным сроком действия (3 дней).
-- PromoCode: Глобальные промокоды на фиксированную сумму.
-- UsedPromo: Журнал использованных кодов для защиты от повторного применения одним пользователем.
+- PersonalDiscount: Personalized offers (20%) on specific models with a limited validity period (3 days).
+- PromoCode: Global promo codes for a fixed amount.
+- UsedPromo: Code usage log to prevent duplicate use by the same user.
 
 ### Support Module
 
-- SupportTicket: Тикетная система. Поддерживает анонимные запросы и обращения авторизованных пользователей.
-- SupportAttachment: Хранилище метаданных прикрепленных файлов (логи, изображения).
+- SupportTicket: Ticket system. Supports anonymous requests and requests from authorized users.
+- SupportAttachment: Storage of file attachment metadata (logs, images).
 
-## ⚙️ Getting Started (Запуск проекта)
+## ⚙️ Getting Started
 
-### Начало работы с проектом
-1. Клонируйте репозиторий на свою локальную машину:
+### Getting Started
+
+1. Clone the repository to your local machine:
+
 ```bash
 git clone https://github.com/ValeriyTm/Cybersite-2077.git
 ```
-2. Из корня склонированного проекта выполните установку всех зависимостей:
+
+2. From the root of the cloned project, install all dependencies:
+
 ```bash
 npm install
 ```
-3. Создайте .env файлы в папке фронтенда apps/web и в корневой папке на осное .env.sample файлов в соответствующих директориях. При неполном заполнении .env файлов приложение будет работать некорректно либо вообще не запустится.
 
-4. На фронтенде в apps/web/main.tsx укажите свой dsn (получить на сайте sentry.io) для корректной работы Sentry.
+3. Create .env files in the frontend apps/web folder and in the root folder based on the .env.sample files in the corresponding directories. If the .env files are not completely filled in, the application will not work correctly or will not launch at all.
 
-5. Из корня проекта выполните сборку фронтенда:
+4. Build the frontend from the project root:
+
 ```bash
 npm run build -w web
 ```
-6. Запуск контейнеров. Выполните из корня проекта:
+
+5. Launch containers. From the project root, run:
+
 ```bash
 docker compose -f deploy/docker-compose.yml up -d --build
 ```
-Запуск контейнера сервера (соответственно, и всего приложения) займет некоторое время (сидирование БД, синхронизация с Elasticsearch, выполнение прочих скриптов). Понять, что приложение начало функционировать, можно по логам внутри контейнера сервера - должно появиться сообщение об успешном запуске сервера.
 
-7. Необходимо настроить ngrok, иначе в приложении не будет работать функционал оплаты. 
-- Регистрируемся на https://dashboard.ngrok.com/signup
-- Создаём ngrok.yml (образец лежит в assets/ngrok-example.yml), указывав свой токен и домен с ngrok.
-- Файл ngrok.yml должен располагаться в стандартном месте: C:\Users\<User>\AppData\Local\ngrok\ngrok.yml (Windows), ~/.config/ngrok/ngrok.yml (macOS) или ~/Library/Application Support/ngrok/ngrok.yml (Linux).
-- Запуск ngrok осуществляем командой:
+Launching the server container (and therefore the entire application) will take some time (seeding the database, synchronizing with Elasticsearch, and running other scripts). You can tell that the application has started functioning by looking at the logs inside the server container – a message indicating successful server startup should appear.
+
+6. You need to configure ngrok, otherwise the payment functionality will not work in the application.
+
+- Register at https://dashboard.ngrok.com/signup
+- Create ngrok.yml (a sample is located in assets/ngrok-example.yml), specifying your token and domain with ngrok.
+- The ngrok.yml file should be located in the standard location: C:\Users\<User>\AppData\Local\ngrok\ngrok.yml (Windows), ~/.config/ngrok/ngrok.yml (macOS), or ~/Library/Application Support/ngrok/ngrok.yml (Linux).
+- To launch ngrok, run the command:
+
 ```bash
 ngrok start --all
 ```
-8. После всех действий приложение будет запущено на http://localhost. БД уже будет заполнена и вы сможете зайти в приложение под аккаунтом дефолтного админа (login - admin@cybersite2077.com, password - AdminPassword2077!).
 
-9. Для удобной работы с базами данных также запукаются контейнеры с Adminer (для PostgreSQL), Mongo-Express (для MongoDB) и Redis-Insight (для Redis). 
-- Adminer - http://localhost:8085. Выбираем движок PostgreSQL, сервер "postgres", логин "admin", пароль "password", БД "cybersite_db".
-- Mongo-Express - http://localhost:8081/. Логин - "dev", пароль - "dev".
-- Redis-Insight - http://localhost:5540/. Указать в подключении redis://default@cybersite_redis:6379 
+7. After all these steps, the application will be running on http://localhost. The database will already be populated, and you can log in to the application using the default admin account (login - admin@cybersite2077.com, password - AdminPassword2077!).
 
-Наблюдать за данными от Loki, Prometheus и Tempo можно при помощи Grafana - http://localhost:3050. Зайти на домен, далее --> Connections --> Data Sources --> Add New Data Source --> Выбрать Tempo / Loki / Prometheus . В URL при настройке указать http://tempo:3200 / http://loki:3100 / http://prometheus:9090. Нажать Save & Test, а затем Exlpore View.
+8. For convenient work with databases, containers with Adminer (for PostgreSQL), Mongo-Express (for MongoDB), and Redis-Insight (for Redis) are also launched.
 
-P.S. для активной dev-разработки следует увеличить допустимые лимиты rate limiting в apps/server/src/shared/middlewares/rate-limiter.ts.
- 
-### Запуск в production
-1. Следует корректно заполнить файл .env.prod в корне проекта на основе .env.prod.sample. 
+- Adminer - http://localhost:8085. Select the PostgreSQL engine, server "postgres," login "admin," password "password," and database "cybersite_db."
+- Mongo-Express - http://localhost:8081/. Login - "dev," password - "dev."
+- Redis-Insight - http://localhost:5540/. Specify redis://default@cybersite_redis:6379 in the connection.
 
-2. Для корректной работы SEO в apps/web/pulic/robots.txt укажите свой реальный домен фронтенда.
+You can monitor data from Loki, Prometheus, and Tempo using Grafana - http://localhost:3050. Go to your domain, then --> Connections --> Data Sources --> Add New Data Source --> Select Tempo / Loki / Prometheus. When setting up the URL, enter http://tempo:3200 / http://loki:3100 / http://prometheus:9090. Click Save & Test, then Exlpore View.
 
+P.S. For active development, you should increase the rate limiting limits in apps/server/src/shared/middlewares/rate-limiter.ts.
 
-3. Следует закомментировать следующие блоки кода (в комментариях есть подсказки):
-- Импорт tracing.js в apps/server/src/index.ts.
-- Блок внутри запуска morgan, связанный с работой Loki (а также его импорт), в apps/server/src/app.ts.
-- Редирект на Grafana и Tempo внутри deploy/nginx/nginx.conf.
+### Launching in Production
 
-4. Из корня проекта выполнить:
+1. The .env.prod file in the project root must be correctly populated based on .env.prod.sample.
+
+2. For proper SEO, specify your actual frontend domain in apps/web/pulic/robots.txt.
+
+3. The following code blocks should be commented out (there are hints in the comments):
+
+- Import tracing.js in apps/server/src/index.ts.
+- Redirect to Grafana and Tempo in deploy/nginx/nginx.conf.
+
+4. From the project root, run:
+
 ```bash
 docker compose -p cybersite-prod -f deploy/docker-compose.prod.yml up -d --build
 ```
-P.S. не забудьте поправить ваш реальный домен на следующих сервисах: Google reCAPTCHA, Google OAuth, ЮKassa, Яндекс Метрика, иначе они не будут работать с вашим приложением.
 
-## Authors & License (Авторы и Лицензия)
+P.S. Don't forget to correct your real domain for the following services: Google reCAPTCHA, Google OAuth, ЮKassa, Yandex Metrika, otherwise they won't work with your application.
+
+## Authors & License
+
 - [MIT License](./LICENSE)

@@ -1,5 +1,6 @@
 //Состояния:
 import { useTradingStore, useCart } from "@/entities/trading/";
+import { useAuthStore } from "@/features/auth";
 //Стили:
 import styles from "./AddToCartButton.module.scss";
 
@@ -23,6 +24,8 @@ export const AddToCartButton = ({
   variant = "details",
   onCartPage = false,
 }: AddToCartButtonProps) => {
+  const { isAuth } = useAuthStore();
+
   //Мутации для работы с корзиной:
   const { addToCart, updateQuantity, removeItem } = useCart();
 
@@ -35,6 +38,12 @@ export const AddToCartButton = ({
   const handleAction = (e: React.MouseEvent, action: () => void) => {
     e.preventDefault(); //Останавливает переход по ссылке
     e.stopPropagation(); //Останавливает передачу клика родителю (тег <Link>)
+
+    if (!isAuth) {
+      alert("Войдите, чтобы добавлять в корзину"); //Когда-нибудь заменю на модалку
+      return;
+    }
+
     action();
   };
 

@@ -84,7 +84,7 @@ export const getMotorcycles = catchAsync(
 export const getMotorcycle = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { slug } = req.params as MotoBySlugServiceArgs;
-    const userId = req.user.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
+    const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
     const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
 
@@ -100,7 +100,7 @@ export const getMotorcycle = catchAsync(
 export const getMotorcycleById = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { id } = req.params as MotoByIdServiceArgs;
-    const userId = req.user.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
+    const userId = req.user?.id; //Здесь либо UUID, либо undefined, в зависимости от того, авторизован ли юзер
 
     const motorcycle = await catalogService.getMotorcycleById(id);
 
@@ -130,7 +130,7 @@ export const getMotorcycleById = catchAsync(
 export const getRelated = catchAsync(
   async (req: AuthRequest, res: Response) => {
     const { slug } = req.params as RelatedBySlugServiceArgs;
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const motorcycle = await catalogService.getMotorcycleBySlug(slug, userId);
     if (!motorcycle) return res.status(404).send();

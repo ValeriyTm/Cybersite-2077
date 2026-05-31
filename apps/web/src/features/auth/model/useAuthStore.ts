@@ -8,6 +8,8 @@ interface AuthState {
   isAuth: boolean;
   //Поля для 2FA:
   tempUserId: string | null;
+  isCheckingAuth: boolean; //Флаг проверки при старте приложения
+  setCheckingAuth: (val: boolean) => void;
   setTempUserId: (id: string | null) => void;
   setAuth: (token: string | null) => void;
   clearAuth: () => void;
@@ -21,7 +23,9 @@ export const useAuthStore = create<AuthState>()(
         accessToken: null,
         isAuth: false,
         tempUserId: null,
+        isCheckingAuth: true,
         //---------Actions:
+        setCheckingAuth: (val) => set({ isCheckingAuth: val }),
         //Action для временного хранения ID админа при логине:
         setTempUserId: (id) => set({ tempUserId: id }),
 

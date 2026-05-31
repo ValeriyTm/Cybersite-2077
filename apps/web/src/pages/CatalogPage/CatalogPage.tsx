@@ -33,7 +33,7 @@ export const CatalogPage = () => {
 
   if (isError) {
     return (
-      <div style={{ textAlign: "center", padding: "40px" }}>
+      <div style={{ textAlign: "center", padding: "40px", color: 'white' }}>
         Ошибка при загрузке категорий. Попробуйте позже.
       </div>
     );

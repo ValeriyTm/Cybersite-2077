@@ -761,8 +761,8 @@ export const updateMotorcycleAdminSchema = z.object({
       .default(300000),
     createdAt: z.string().optional(),
     updatedAt: z.string().optional(),
-    brand: z.any(),
-    images: z.any(),
+    brand: z.any().optional(),
+    // images: z.any(),
     siteCategory: z.enum(["Мотоциклы", "Мотоэкипировка", "Запчасти"], {
       message: "Выберите корректную категорию товара",
     }),
@@ -1643,7 +1643,7 @@ export const serverEnvSchema = z.object({
   MONGO_URI: z.string().min(1, "MONGO_URI обязателен"),
   //Системные сервисы (Elastic, Loki):
   ELASTIC_NODE: safeUrl,
-  LOKI_URL: safeUrl,
+  LOKI_URL: safeUrl.optional(),
   //Почтовый сервис (SMTP):
   SMTP_HOST: z.string().min(1, "SMTP_HOST обязателен"),
   SMTP_PORT: z

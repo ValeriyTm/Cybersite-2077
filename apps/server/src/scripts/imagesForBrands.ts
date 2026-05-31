@@ -60,4 +60,20 @@ async function syncBrandImages() {
   }
 }
 
-syncBrandImages();
+syncBrandImages()
+  .catch((err) => {
+    logger.error(err);
+    // Принудительно выходим с кодом ошибки (1), чтобы цепочка в Docker остановилась
+    process.exit(1);
+  })
+  .finally(async () => {
+    //Закрываем соединение с базой данных:
+    await prisma.$disconnect();
+
+    logger.info("Процесс синхронизации картинок успешно завершен.");
+
+    //Даем логгеру время, чтобы физически дозаписать логи:
+    setTimeout(() => {
+      process.exit(0);
+    }, 500);
+  });

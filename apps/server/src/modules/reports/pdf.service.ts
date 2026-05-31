@@ -8,7 +8,17 @@ import { Statistics } from "./types.js";
 
 export class PdfService {
   async generateSalesPdf(stats: Statistics): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      // Использует Chromium из Docker, а локально (где переменной нет) — стандартный
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      headless: true,
+      args: [
+        "--no-sandbox", // Обязательно для root-пользователя в Docker
+        "--disable-setuid-sandbox", // Отключает внутреннюю песочницу Linux
+        "--disable-dev-shm-usage", // Решает проблему нехватки RAM через /dev/shm
+        "--disable-software-rasterizer", // Отключает 3D-графику, что экономит ресурсы
+      ],
+    });
     const page = await browser.newPage();
 
     //Верстка отчета:

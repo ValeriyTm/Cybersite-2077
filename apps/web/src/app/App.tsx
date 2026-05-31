@@ -11,7 +11,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 //Состояние:
 import { useAuthStore } from "@/features/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+//Страницы:
+import { PageLoader } from "@/pages/PageLoader";
 //API:
 import axios from "axios";
 //Логирование:
@@ -41,6 +43,8 @@ export const App = () => {
   const clearAuth = useAuthStore((state) => state.clearAuth);
   //Не использовал деструктуризацию во избежание лишних ререндеров в компоненте такого высокого уровня
 
+  const [isCheckingAuth, setIsCheckingAuth] = useState(() => isAuth && !accessToken);
+
   useEffect(() => {
     //Если по данным localStorage юзер залогинен, но токена в памяти нет (была перезагрузка):
     if (isAuth && !accessToken) {
@@ -50,10 +54,19 @@ export const App = () => {
           setAuth(res.data.accessToken);
         })
         .catch(() => {
-          clearAuth(); // Если кука протухла — разлогиниваем
+          clearAuth(); // Если кука просрочена — разлогиниваем
+        })
+        .finally(() => {
+          setIsCheckingAuth(false);
         });
     }
   }, [accessToken, clearAuth, isAuth, setAuth]);
+
+  if (isCheckingAuth) {
+    return (
+      <PageLoader />
+    );
+  }
 
   return (
     <GoogleReCaptchaProvider

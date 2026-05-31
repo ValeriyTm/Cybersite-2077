@@ -14,6 +14,7 @@ interface PhoneInputProps<TFieldValues extends FieldValues> {
   required?: boolean;
   className?: string;
   center?: boolean;
+  variant?: "support" | 'profile';
 }
 
 export const PhoneInput = <TFieldValues extends FieldValues>({
@@ -24,9 +25,10 @@ export const PhoneInput = <TFieldValues extends FieldValues>({
   required = false,
   className = "",
   center,
+  variant = 'support',
 }: PhoneInputProps<TFieldValues>) => {
   return (
-    <div className={`${styles.row} ${className}`.trim()}>
+    <div className={`${styles.row} ${className} ${styles[variant]}`.trim()}>
       <div className={styles.label}>
         <label htmlFor={id}>
           <HiOutlinePhone />&nbsp;&nbsp;&nbsp;Телефон{" "}
