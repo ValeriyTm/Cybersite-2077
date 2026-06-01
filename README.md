@@ -155,7 +155,10 @@ cybersite2077/
 
 ## Demo
 
-![The whole project demo](./assets/Project.gif)
+<!-- ![The whole project demo](./assets/Project.gif) -->
+
+<video src="https://media.githubusercontent.com/media/ValeriyTm/Cybersite-2077/media/ProjectDemo.mp4" autoplay loop muted playsinline width="100%">
+</video>
 
 ## Release notes
 
