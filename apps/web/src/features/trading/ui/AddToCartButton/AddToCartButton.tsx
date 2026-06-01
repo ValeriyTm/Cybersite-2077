@@ -47,15 +47,6 @@ export const AddToCartButton = ({
     action();
   };
 
-  //Яндекс метрика:
-  const handleOrder = () => {
-    const metricaId = import.meta.env.VITE_YANDEX_METRICA_ID;
-
-    if (typeof window !== 'undefined' && window.ym) {
-      window.ym(metricaId, 'reachGoal', 'CLICK-CART');
-    }
-  };
-
   //1) Если товара нет в корзине, то показываем кнопку "В корзину"
   if (!cartItem) {
     return (
@@ -109,7 +100,6 @@ export const AddToCartButton = ({
         <button
           disabled={isMaxStockReached}
           onClick={(e) => {
-            handleOrder();
             handleAction(e, () =>
               updateQuantity({ id: data.id, quantity: cartItem.quantity + 1 }),
             )

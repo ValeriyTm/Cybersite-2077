@@ -47,7 +47,7 @@ async function main() {
     {
       email: "manager@example.com",
       name: "manager",
-      password: "PASSword888@",
+      password: "PASSwoRd222@",
       role: "MANAGER",
     },
     {

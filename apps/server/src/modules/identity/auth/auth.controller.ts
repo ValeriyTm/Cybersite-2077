@@ -5,7 +5,6 @@ import { AuthRequest } from "../../../shared/middlewares/authMiddleware.js"; //�
 import { Role } from "@repo/database";
 //Схемы валидации Zod:
 import {
-  RegisterArgs,
   LoginArgs,
   ActivationParamArgs,
   ChangePasswordType,
@@ -40,29 +39,7 @@ interface RefreshValidationResult {
   exp: number;
 }
 
-//Контроллер регистрации нового пользователя:
-export const register = catchAsync(async (req: Request, res: Response) => {
-  const { captchaToken, ...data } = req.body as RegisterArgs;
-
-  //Проверяем капчу (до того, как лезть в БД и проверять пароль):
-  //Отправляем токен капчи в Google, и получаем true или false:
-  const isHuman = await recaptchaService.verify(captchaToken);
-  if (!isHuman) {
-    throw new AppError(
-      403,
-      "Ошибка безопасности: проверка reCAPTCHA не пройдена",
-    );
-  }
-
-  //Если все проверки пройдены, то вызываем наш сервис работы с БД:
-  const user = await authService.register(data);
-  //Ответ от нашего сервиса пересылаем пользователю:
-  res.status(201).json({
-    message: "Пользователь создан!",
-    //Клиенту передаём только id и email:
-    user: { id: user.id, email: user.email },
-  });
-});
+//Тут был контроллер регистрации
 
 //Контроллер для работы с активацией аккаунта:
 export const activate = catchAsync(async (req: Request, res: Response) => {

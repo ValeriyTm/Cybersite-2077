@@ -4,8 +4,8 @@ import * as catalogController from "./catalog.controller.js";
 //Middleware:
 import { optionalAuth } from "../../shared/middlewares/optionalAuthMiddleware.js"; //Опциональная авторизация
 import { validate } from "../../shared/middlewares/validate.js";
-import { roleMiddleware } from "src/shared/middlewares/roleMiddleware.js";
-import { authMiddleware } from "src/shared/middlewares/authMiddleware.js";
+import { roleMiddleware } from "../../shared/middlewares/roleMiddleware.js";
+import { authMiddleware } from "../../shared/middlewares/authMiddleware.js";
 //Схемы валидации:
 import {
   GetBrandsQuerySchema,

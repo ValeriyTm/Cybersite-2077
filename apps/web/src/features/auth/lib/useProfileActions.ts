@@ -4,8 +4,6 @@ import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 //React Query:
 import { useQueryClient } from "@tanstack/react-query";
-//Логгер:
-import * as Sentry from "@sentry/react";
 //Тип для возвращаемого значения%
 import { type IUser } from "@repo/types";
 //Схемы валидации Zod:
@@ -190,7 +188,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       setIsEditing(false);
     } catch (error) {
       toast.error("Ошибка загрузки файла");
-      Sentry.captureException(error);
+      console.log(`Ошибка ${error}`);
     } finally {
       //Выключаем лоадер:
       setIsAvatarLoading(false);
@@ -238,7 +236,7 @@ export const useProfileActions = (user: IUser | null | undefined) => {
       setQrCode(res.data.qrCodeUrl);
     } catch (error) {
       toast.error("Ошибка при генерации QR-кода");
-      Sentry.captureException(error);
+      console.log(`Ошибка ${error}`);
     }
   };
 

@@ -16,7 +16,7 @@ import { eventBus, EVENTS } from "../../shared/lib/eventBus.js";
 //Для удаления прикрепленных файлов:
 import fs from "fs/promises";
 //Логирование:
-import { logger } from "src/shared/lib/logger.js";
+import { logger } from "../../shared/lib/logger.js";
 
 //Создание тикета поддержки от юзера:
 export const createTicket = catchAsync(

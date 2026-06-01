@@ -5,19 +5,18 @@ import styles from './GoogleAuthButton.module.scss'; // Укажите прав�
 
 interface GoogleAuthButtonProps {
   mode: 'login' | 'register';
-  onClick: () => void;
 }
 
-export const GoogleAuthButton = ({ mode = 'login', onClick }: GoogleAuthButtonProps) => {
+export const GoogleAuthButton = ({ mode = 'login' }: GoogleAuthButtonProps) => {
   return (
     <button
       className={styles.googleBtn}
       type="button"
-      onClick={onClick}
+      disabled
     >
       <FcGoogle className={styles.google} />
       <span>
-        {mode === "login" ? "Войти с Google" : "Зарегистрироваться с Google"}
+        {mode === "login" ? "Вход с Google недоступен" : "Регистрация с Google не доступна"}
       </span>
     </button>
   );

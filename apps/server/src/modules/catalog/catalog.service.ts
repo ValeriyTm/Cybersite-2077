@@ -14,7 +14,7 @@ import {
 import { promises as fs } from "fs";
 import * as path from "path";
 //Логирование:
-import { logger } from "src/shared/lib/logger.js";
+import { logger } from "../../shared/lib/logger.js";
 
 //Функция для генерации slug для модели мотоцикла:
 const slugify = (text: string) =>

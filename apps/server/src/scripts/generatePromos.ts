@@ -2,7 +2,7 @@
 import { prisma } from "@repo/database"; // Клиент призмы
 import { redis } from "../shared/lib/redis.js"; //Клиент Redis
 import { faker } from "@faker-js/faker"; //Генерация рандомных слов
-import { logger } from "src/shared/lib/logger.js"; //Логирование
+import { logger } from "../shared/lib/logger.js"; //Логирование
 
 async function generatePromos() {
   try {

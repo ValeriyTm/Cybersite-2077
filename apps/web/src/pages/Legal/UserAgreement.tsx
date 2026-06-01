@@ -91,7 +91,7 @@ export const UserAgreement = () => {
         </section>
 
         <footer>
-          <p>&copy; 2026 Cybersite-2077. Сделано в учебных целях.</p>
+          <p>2026 Cybersite-2077. Сделано в учебных целях.</p>
         </footer>
       </div>
     </>

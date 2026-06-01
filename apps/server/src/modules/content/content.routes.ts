@@ -2,7 +2,7 @@ import { Router } from "express";
 //Новостной контроллер модуля Content:
 import * as newsController from "./news.controller.js";
 //Middlewares:
-import { validate } from "src/shared/middlewares/validate.js";
+import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
 import { GetNewsSchema } from "@repo/validation";
 

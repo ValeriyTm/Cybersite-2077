@@ -1,28 +1,18 @@
 //React Hook Form:
-import { useForm, type FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 //Библиотека для связывания Zod и React Hook Form:
 import { zodResolver } from "@hookform/resolvers/zod";
-//Обработчик ошибок формы:
-import { handleFormError } from "@/shared/lib";
-//API:
-import { $api } from "@/shared/api";
 //Схемы валидации Zod:
 import { RegisterFormSchema, type RegisterFormType } from "@repo/validation";
 //Компоненты:
 import { Button, Checkbox, Input, PasswordField } from "@/shared/ui";
-//Состояния:
-import { useAuthSubmit } from "@/features/auth";
 //Стили:
 import styles from "./RegisterForm.module.scss";
 
-export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
-
-  //Кастомный хук:
-  const { handleAuthSubmit } = useAuthSubmit<RegisterFormType>();
+export const RegisterForm = () => {
 
   const {
     register,
-    handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormType>({
@@ -35,47 +25,15 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
     },
   });
 
-  //Работа с ошибками формы:
-  const onFormError = (errors: FieldErrors<RegisterFormType>) =>
-    handleFormError(errors, "form-validation-error");
-
-  const onSubmit = async (data: RegisterFormType) => {
-    await handleAuthSubmit(
-      {
-        action: "register",
-        apiCall: (payload) => {
-          //ESLint настроен в режиме максимальной строгости, поэтому заткнем его, чтобы не ругался на неиспользуемые переменные:
-          //eslint-disable-next-line @typescript-eslint/no-unused-vars, sonarjs/no-unused-vars
-          const { confirmPassword, acceptTerms, ...registerData } = payload;
-
-          return $api.post("/identity/auth/register", registerData);
-        },
-        successMessage:
-          "Регистрация успешна! Проверьте почту для активации аккаунта.",
-        onSuccess: () => {
-          //Очищаем форму (reset берем из useForm):
-          reset();
-
-          //Делаем задержку перед переключением на логин (onSuccess пришел из пропсов AuthCard):
-          setTimeout(() => {
-            onSuccess();
-          }, 500);
-        },
-      },
-      data,
-    );
-  };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit, onFormError)}>
-      {/*handleSubmit — это обертка, которая сначала проверяет данные через Zod. Если всё ок — запускает onSubmit, если есть ошибки — вызывает onFormError (показ уведомлений).*/}
-
+    <form>
       {/*Поле ввода имени:*/}
       <Input
         label="Имя"
         placeholder="Иван"
         registration={register("name")}
         error={errors.name}
+        disabled
       />
 
       {/*Поле ввода email:*/}
@@ -85,6 +43,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
         placeholder="mail@example.com"
         registration={register("email")}
         error={errors.email}
+        disabled
       />
 
       {/*Поле ввода пароля:*/}
@@ -93,6 +52,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
         registration={register("password")}
         error={errors.password}
         placeholder="••••••••"
+        disabled
       />
 
       {/*Поле ввода пароля для подтверждения:*/}
@@ -101,6 +61,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
         registration={register("confirmPassword")}
         error={errors.confirmPassword}
         placeholder="••••••••"
+        disabled
       />
 
       {/*Чекбокс с согласиями:*/}
@@ -122,6 +83,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
         registration={register("acceptTerms")}
         error={errors.acceptTerms}
         smallText
+        disabled
       />
 
       <div className={styles.btnGroup}>
@@ -131,6 +93,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
           variant="primary"
           isLoading={isSubmitting}
           loadingText="Регистрируемся..."
+          disabled
         >
           Зарегистрироваться
         </Button>
@@ -142,6 +105,7 @@ export const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
           isLoading={isSubmitting}
           loadingText="Очищаем..."
           onClick={() => reset()}
+          disabled
         >
           Очистить форму
         </Button>

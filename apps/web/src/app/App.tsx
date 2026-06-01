@@ -10,14 +10,14 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 //Google reCAPTCHA v3:
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 //Состояние:
-import { useAuthStore } from "@/features/auth";
 import { useEffect, useState } from "react";
+import { useAuthStore } from "@/features/auth";
+import { usePrivacyStore } from "@/entities/session";
 //Страницы:
 import { PageLoader } from "@/pages/PageLoader";
+import { PrivacyPage } from "@/pages/PrivacyPage";
 //API:
 import axios from "axios";
-//Логирование:
-import * as Sentry from "@sentry/react";
 //React Helmet для SEO:
 import { HelmetProvider } from "react-helmet-async";
 //Компонент, который отобразится при глобальной ошибке:
@@ -41,12 +41,18 @@ export const App = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAuth = useAuthStore((state) => state.setAuth);
   const clearAuth = useAuthStore((state) => state.clearAuth);
+  const isAccepted = usePrivacyStore((state) => state.isAccepted);
   //Не использовал деструктуризацию во избежание лишних ререндеров в компоненте такого высокого уровня
 
   const [isCheckingAuth, setIsCheckingAuth] = useState(() => isAuth && !accessToken);
 
   useEffect(() => {
-    //Если по данным localStorage юзер залогинен, но токена в памяти нет (была перезагрузка):
+    // Если пользователь еще не принял условия политики, то проверку авторизациине не проводим:
+    if (!isAccepted) {
+      return;
+    }
+
+    //Если по данным localStorage юзер залогинен, но токена в памяти нет (была перезагрузка F5):
     if (isAuth && !accessToken) {
       axios
         .post(`${import.meta.env.VITE_API_URL}/api/identity/auth/refresh`, {}, { withCredentials: true })
@@ -60,8 +66,14 @@ export const App = () => {
           setIsCheckingAuth(false);
         });
     }
-  }, [accessToken, clearAuth, isAuth, setAuth]);
+  }, [accessToken, clearAuth, isAuth, setAuth, isAccepted]);
 
+  //Если нет согласия, то рендерится только модалка:
+  if (!isAccepted) {
+    return <PrivacyPage />;
+  }
+
+  //Если согласие есть, но идет проверка токена, то показывается лоадер:
   if (isCheckingAuth) {
     return (
       <PageLoader />
@@ -76,17 +88,7 @@ export const App = () => {
         <HelmetProvider>
           <ErrorBoundary
             FallbackComponent={GlobalErrorFallback}
-            //Логируем ошибку сразу в момент возникновения
-            onError={(error, info) => {
-              Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
-            }}
-            //Сбрасываем состояние при нажатии кнопки в Fallback:
-            onReset={() => {
-              queryClient.clear(); //Очищаем кэш запросов перед редиректом
-              setTimeout(() => {
-                window.location.href = "/";
-              }, 150); //Небольшой таймаут гарантирует, что сетевой пакет Sentry успеет улететь
-            }}
+            onReset={() => (window.location.href = "/")} //Редирект на главную
           >
             <RouterProvider router={router} />
           </ErrorBoundary>

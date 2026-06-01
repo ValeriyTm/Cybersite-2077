@@ -62,7 +62,7 @@ import { catchAsync } from "../../shared/utils/catch-async.js";
 //Используем свой класс для выбрасывания ошибок:
 import { AppError } from "../../shared/utils/app-error.js";
 //Логирование:
-import { logger } from "src/shared/lib/logger.js";
+import { logger } from "../../shared/lib/logger.js";
 
 type ContentFull = UpdateNewsBodyArgs & {
   mainImage?: string;

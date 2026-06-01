@@ -1,9 +1,6 @@
 // //Этот компонент будет отображен, если произойдет ошибка внутри любого компонента внутри компонента App.
-import { useEffect } from "react";
 //Роутинг:
 import { useRouteError, isRouteErrorResponse } from "react-router";
-//Логирование:
-import * as Sentry from "@sentry/react";
 //Изображения:
 import errorBanner from '@/shared/assets/images/banners/errorBanner.png';
 //Стили:
@@ -12,12 +9,6 @@ import styles from './ErrorFallback.module.scss';
 export const ErrorFallback = () => {
   // Хук для получения ошибки из контекста роутера
   const error = useRouteError();
-
-  useEffect(() => {
-    if (error) {
-      Sentry.captureException(error);
-    }
-  }, [error]);
 
   // Определяем текст ошибки в зависимости от её типа
   let errorMessage: string;

@@ -35,7 +35,7 @@ services:
 
   # Основная база: PostgreSQL с расширением PostGIS для реализации карты
   postgres:
-    image: postgis/postgis:15-3.3 # Специальный образ с уже установленным PostGIS
+    image: postgis/postgis:15-3.3
     container_name: cybersite_postgres_prod
     restart: always
     env_file:
@@ -84,6 +84,16 @@ services:
         hard: -1
     volumes:
       - es_data:/usr/share/elasticsearch/data
+    networks:
+      - cybersite_net
+
+    # --------------------------------------------------- #
+  adminer:
+    image: adminer
+    container_name: cybersite_adminer
+    restart: always
+    ports:
+      - "127.0.0.1:8085:8080"
     networks:
       - cybersite_net
 

@@ -7,15 +7,15 @@ export const supportCleanupQueue = new Queue("support-cleanup", {
   connection: redis as unknown as ConnectionOptions,
 });
 
-//Функция для планирования удаления файлов модуля Support (через 30 дней после закрытия вопроса):
+//Функция для планирования удаления файлов модуля Support (через 2 дня после закрытия вопроса):
 export const scheduleTicketCleanup = async (ticketId: string) => {
-  const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+  const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
 
   await supportCleanupQueue.add(
     "delete-files",
     { ticketId },
     {
-      delay: THIRTY_DAYS, //Благодаря параметру delay, задача попадает не в список готовых дел, а в специальный сортированный список (Delayed Set),
+      delay: TWO_DAYS, //Благодаря параметру delay, задача попадает не в список готовых дел, а в специальный сортированный список (Delayed Set),
       //где Redis хранит её 30 дней, не трогая воркера.
       jobId: `cleanup-${ticketId}`, // jobId предотвратит повторные вызовы с тем же tickerId
       //Настройки повторов:

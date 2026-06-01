@@ -5,7 +5,7 @@ import * as AuthController from "./auth.controller.js";
 import { authMiddleware } from "../../../shared/middlewares/authMiddleware.js"; //Middleware для авторизации
 import { authLimiter } from "../../../shared/middlewares/rateLimiter.js"; //rate-лимитер для защиты от перебора паролей:
 import { noCacheMiddleware } from "../../../shared/middlewares/noCacheMiddleware.js"; //Middleware для запрета кэширования данных на стороне клиента
-import { validate } from "src/shared/middlewares/validate.js";
+import { validate } from "../../../shared/middlewares/validate.js";
 //Схемы валидации:
 import {
   activate2FASchema,
@@ -17,19 +17,12 @@ import {
   BackendVerify2FASchema,
   GoogleResponseSchema,
   LoginSchema,
-  RegisterSchema,
 } from "@repo/validation";
 
 const router = Router();
 
 //-------------Роуты подмодуля аутентификации----
-//Роут (публичный) регистрации:
-router.post(
-  "/register",
-  authLimiter,
-  validate(RegisterSchema),
-  AuthController.register,
-);
+//Тут был роут регистрации
 
 //Роут (публичный) активации аккаунта по ссылке:
 router.get(

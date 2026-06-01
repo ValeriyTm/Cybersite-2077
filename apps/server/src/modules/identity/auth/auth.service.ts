@@ -1,10 +1,7 @@
 //Библиотека для хэширования паролей:
 import argon2 from "argon2";
-
 //Встроенный модуль для работы с криптографией:
-import crypto, { randomUUID } from "node:crypto";
-//randomUUID - функция для генерации уникального идентификатора версии 4:
-
+import crypto from "node:crypto";
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 //Мой сервис для работы с токенами:
@@ -49,52 +46,7 @@ export interface IGoogleUser {
 }
 
 export class AuthService {
-  //Записываем нового пользователя в БД:
-  async register(data: { email: string; password: string; name: string }) {
-    //1) Проверяем email по БД (вдруг такой уже зарегистрирован):
-    const existingEmail = await prisma.user.findUnique({
-      where: { email: data.email },
-    });
-    if (existingEmail) throw new AppError(400, "Некорректный email или пароль");
-    //Не указываю, что именно email занят, т.к. это путь к брутфорс атакам.
-
-    //2)Проверяем имя (логина), т.к. оно тоже может быть только уникальным по нашей схеме призмы:
-    const existingName = await prisma.user.findUnique({
-      where: { name: data.name },
-    });
-    if (existingName)
-      throw new AppError(400, "Это имя уже занято, выберите другое");
-
-    //3) Хэшируем пароль пользователя:
-    const passwordHash = await argon2.hash(data.password);
-    //4)Генерируем токен для активации (рандомная строка):
-    const activationToken = randomUUID();
-
-    //5)Создаём и записываем пользователя в БД:
-    const user: User = await prisma.user.create({
-      data: {
-        email: data.email,
-        name: data.name,
-        passwordHash,
-        activationToken,
-        isActivated: false, // Юзер создан, но не активен
-      },
-    });
-
-    //6).Отправляем ссылку активации клиенту по почте:
-    try {
-      //Создаём ссылку активации:
-      const activationLink = `${process.env.API_URL}/api/identity/auth/activate/${activationToken}`;
-
-      //Генерируем событие для отправки письма:
-      eventBus.emit(EVENTS.ACCOUNT_CREATED, user.email, activationLink);
-    } catch (error) {
-      logger.error(`❌ Ошибка отправки почты: `, error);
-    }
-
-    //Возвращаем юзера:
-    return user;
-  }
+  //Тут был метод регистрации
 
   //Меняем статус активации аккаунта пользователя в БД:
   async activate(token: string) {

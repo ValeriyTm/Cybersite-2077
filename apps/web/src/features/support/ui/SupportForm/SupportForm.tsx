@@ -12,10 +12,8 @@ import { useForm } from "react-hook-form";
 import { REASON_OPTIONS } from "../../model/constants";
 //reCAPTCHA:
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-//Логгер:
-import * as Sentry from "@sentry/react";
 //Компоненты:
-import { PhoneInput, Input, Textarea, Button, Select, FileUpload } from "@/shared/ui";
+import { PhoneInput, Input, Textarea, Button, Select, FileUpload, Checkbox } from "@/shared/ui";
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
@@ -38,8 +36,8 @@ export const SupportForm = () => {
 		defaultValues: {
 			//Инициализируем значения по умолчанию:
 			captchaToken: "1",
-			email: user?.email || "",
-			phone: user?.phone || "",
+			email: user?.email || "noname@example.com",
+			phone: "9999999999",
 		},
 	});
 
@@ -95,7 +93,7 @@ export const SupportForm = () => {
 			toast.success("Ваше обращение принято! Мы ответим в ближайшее время.");
 		} catch (error) {
 			toast.error("Ошибка при отправке. Попробуйте позже.");
-			Sentry.captureException(error);
+			console.log(`Ошибка ${error}`)
 		}
 	};
 
@@ -122,6 +120,8 @@ export const SupportForm = () => {
 					placeholder="Фамилия"
 					registration={register("lastName")}
 					error={errors.lastName}
+					value={'Иванов'}
+					disabled
 				/>
 			</div>
 
@@ -133,6 +133,7 @@ export const SupportForm = () => {
 				readOnly={!!user}
 				registration={register("email")}
 				error={errors.email}
+				disabled
 			/>
 
 			{/*Номер телефона:*/}
@@ -141,6 +142,7 @@ export const SupportForm = () => {
 				error={errors.phone}
 				name="phone"
 				id="phone"
+				disabled={true}
 			/>
 
 			{/* Указание причины обращения */}
@@ -171,6 +173,26 @@ export const SupportForm = () => {
 				isDragActive={isDragActive}
 				setIsDragActive={setIsDragActive}
 				isUserLoggedIn={!!user}
+			/>
+
+			<Checkbox
+				label={
+					<>
+						Я даю{" "}
+						<a href="/terms" target="_blank">
+							Согласие на обработку персональных данных
+							<span className="visually-hidden">Откроется в новой вкладке</span>
+						</a>{" "}
+						и принимаю условия{" "}
+						<a href="/privacy" target="_blank">
+							Политики конфиденциальности
+							<span className="visually-hidden">Откроется в новой вкладке</span>
+						</a>
+					</>
+				}
+				registration={register("acceptTerms")}
+				error={errors.acceptTerms}
+				smallText
 			/>
 
 			<Button

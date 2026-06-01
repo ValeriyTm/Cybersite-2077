@@ -15,6 +15,7 @@ interface PhoneInputProps<TFieldValues extends FieldValues> {
   className?: string;
   center?: boolean;
   variant?: "support" | 'profile';
+  disabled?: boolean;
 }
 
 export const PhoneInput = <TFieldValues extends FieldValues>({
@@ -26,6 +27,7 @@ export const PhoneInput = <TFieldValues extends FieldValues>({
   className = "",
   center,
   variant = 'support',
+  disabled = false,
 }: PhoneInputProps<TFieldValues>) => {
   return (
     <div className={`${styles.row} ${className} ${styles[variant]}`.trim()}>
@@ -45,6 +47,7 @@ export const PhoneInput = <TFieldValues extends FieldValues>({
               mask="+{7} (000) 000-00-00"
               value={value || ""}
               onAccept={(val) => onChange(val)}
+              disabled={disabled}
               className={`${styles.maskInput} ${center ? styles.centered : ''} ${error ? styles.inputError : ''}`}
             />
           )}

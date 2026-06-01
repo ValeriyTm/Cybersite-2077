@@ -13,6 +13,7 @@ interface PasswordFieldProps {
   registration: UseFormRegisterReturn; // Результат функции register() (привязка к форме).
   error?: FieldError; //Откуда ошибки брать
   showToggle?: boolean; // Нужно ли показывать глаз
+  disabled?: boolean;
 }
 
 export const PasswordField = ({
@@ -21,6 +22,7 @@ export const PasswordField = ({
   registration,
   error,
   showToggle = true,
+  disabled = false,
 }: PasswordFieldProps) => {
   //Состояние для отображать/не отображать символы пароля:
   const [showPassword, setShowPassword] = useState(false);
@@ -36,6 +38,7 @@ export const PasswordField = ({
             {...registration}
             placeholder={placeholder}
             className={error ? styles.inputError : ""}
+            disabled={disabled}
           />
           {/*Переключение "глаза":*/}
           {showToggle && (

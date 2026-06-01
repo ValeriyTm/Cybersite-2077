@@ -1,0 +1,187 @@
+.pageContainer {
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+
+  overflow-y: scroll;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+
+  color: #fff;
+
+  background-color: #111;
+
+  .title {
+    color: #e7110a;
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  p,
+  div {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-align: justify;
+
+    @media (width <= 600px) {
+      text-align: left;
+    }
+  }
+
+  .text {
+    text-indent: 20px;
+  }
+
+  ol {
+    padding-left: 20px;
+  }
+
+  li {
+    text-align: left;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: #f1c40f;
+    text-align: center;
+  }
+
+  a {
+    color: #f16717;
+
+    &:hover {
+      text-shadow: 2px 2px 4px #f16717;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+    color: #e7110a;
+  }
+}
+
+.card {
+  width: 95%;
+  max-width: 800px;
+  padding: 40px;
+  border: 1px solid #f16717;
+  border-radius: 16px;
+
+  text-align: center;
+
+  background-color: #222;
+  box-shadow: 0 0 20px #f16717;
+}
+
+.title {
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+// Кнопки:
+.buttonGroup {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+
+  @media (width <= 480px) {
+    flex-direction: column;
+  }
+}
+
+.btn {
+  cursor: pointer;
+
+  flex: 1;
+
+  min-height: 44px;
+  margin-bottom: 10px;
+  padding: 15px 24px;
+  border: none;
+  border-radius: 8px;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  outline: none;
+
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btnAccept {
+  border: 1px solid #2ecc71;
+  color: #fff;
+  background-color: #2ecc71;
+
+  &:hover {
+    box-shadow: 0 0 20px #2ecc71;
+  }
+}
+
+.btnDecline {
+  border: 1px solid rgb(255 255 255 / 40%);
+  color: rgb(255 255 255 / 40%);
+  background-color: transparent;
+
+  &:hover {
+    border: 1px solid #e7110a;
+    color: #e7110a;
+  }
+}
+
+// Чебокс:
+.checkboxContainer {
+  cursor: pointer;
+  user-select: none;
+
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  margin-bottom: 14px;
+
+  text-align: left;
+}
+
+.checkboxInput {
+  cursor: pointer;
+
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+
+  accent-color: #2ecc71;
+}
+
+.checkboxText {
+  font-size: 1rem;
+  line-height: 1;
+  color: rgb(255 255 255 / 40%);
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.footer {
+  text-align: center !important;
+}

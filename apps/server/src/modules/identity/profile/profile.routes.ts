@@ -5,7 +5,7 @@ import * as ProfileController from "./profile.controller.js";
 import { authMiddleware } from "../../../shared/middlewares/authMiddleware.js"; //Middleware для авторизации
 import { uploadAvatar } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
 import { noCacheMiddleware } from "../../../shared/middlewares/noCacheMiddleware.js"; //Middleware для запрета кэширования данных на стороне клиента
-import { validate } from "src/shared/middlewares/validate.js";
+import { validate } from "../../../shared/middlewares/validate.js";
 //Схемы валидации:
 import { BackendUpdateProfileSchema } from "@repo/validation";
 

@@ -6,7 +6,7 @@ import { authMiddleware } from "../../shared/middlewares/authMiddleware.js"; //�
 import { uploadReviewImages } from "./upload.js"; //Middleware для загрузки файлов на сервер на основе Multer
 import { validateReviewAccess } from "./review.middleware.js"; //Middleware для отсечения повторных отзывов, а также отзывов на не свой заказ и на не завершенный заказ
 import { noCacheMiddleware } from "../../shared/middlewares/noCacheMiddleware.js"; //Запрещаем кэширование страниц браузером
-import { validate } from "src/shared/middlewares/validate.js";
+import { validate } from "../../shared/middlewares/validate.js";
 //Схемы валидации:
 import {
   CreateReviewSchema,

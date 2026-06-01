@@ -1,7 +1,5 @@
 //Работа с картой:
 import { useMapEvents } from "react-leaflet";
-//Логгер:
-import * as Sentry from "@sentry/react";
 
 export const useMapClickHandler = (
   setTempCoords: (coords: L.LatLng | null) => void,
@@ -41,7 +39,7 @@ export const useMapClickHandler = (
         setTempCoords(e.latlng);
       } catch (error) {
         setAddress("Ошибка определения адреса");
-        Sentry.captureException(error);
+        console.log(`Ошибка ${error}`);
       } finally {
         setLoading(false);
       }

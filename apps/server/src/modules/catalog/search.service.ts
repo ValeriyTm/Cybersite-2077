@@ -10,7 +10,7 @@ import { MotorcyclesServiceArgs } from "@repo/validation";
 import { type MotorcycleFullServer } from "@repo/types";
 import { estypes } from "@elastic/elasticsearch";
 //Логирование:
-import { logger } from "src/shared/lib/logger.js";
+import { logger } from "../../shared/lib/logger.js";
 
 import { QueryDslQueryContainer } from "@elastic/elasticsearch/lib/api/types";
 
