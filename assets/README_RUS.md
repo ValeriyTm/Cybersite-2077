@@ -156,6 +156,7 @@ cybersite2077/
 ## Demo
 
 ![Демо всего проекта](./Project.gif)
+[Полное видео всего функционала (скачать)](https://media.githubusercontent.com/media/ValeriyTm/Cybersite-2077/media/ProjectDemo.mp4)
 
 ## Release notes (Список изменений)
 
