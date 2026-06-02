@@ -1,29 +1,32 @@
 services:
   # ------------Инфраструктура:--------------- #
   nginx:
-    build: ./nginx
+    # build: ./nginx
+    image: ghcr.io/valeriytm/cybersite-nginx:latest
     container_name: cybersite_nginx_prod
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      # Nginx отдаёт файлы фронтенда напрямую:
-      - ../apps/web/dist:/usr/share/nginx/html
+    # volumes:
+    #   # Nginx отдаёт файлы фронтенда напрямую:
+    #   - ../apps/web/dist:/usr/share/nginx/html
     networks:
       - cybersite_net
     depends_on:
       - server
   # ------------Бэкенд:--------------- #
   server:
-    build:
-      context: .. # Поднимаемся в корень проекта
-      dockerfile: Dockerfile
-      target: server # Выбираем стадию бэкенда
+    # build:
+    #   context: .. # Поднимаемся в корень проекта
+    #   dockerfile: Dockerfile
+    #   target: server # Выбираем стадию бэкенда
+    image: ghcr.io/valeriytm/cybersite-server:latest
     container_name: cybersite_server_prod
     restart: always
-    env_file: ../.env.prod # Файл из корня проекта
+    # env_file: ../.env.prod # Файл из корня проекта
+    env_file: .env.prod # Будет лежать в той же папке на VPS
     depends_on:
       - postgres
       - redis
