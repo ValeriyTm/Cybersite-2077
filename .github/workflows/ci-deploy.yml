@@ -1,0 +1,90 @@
+name: Cybersite-2077 CI
+
+on:
+  push:
+    branches: [deploy-vps]
+  pull_request:
+    branches: [deploy-vps]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Клонируем репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      # 3. Устанавливаем зависимости
+      - name: Install dependencies
+        run: npm ci
+
+      # 4.1. Сканирование зависимостей на уязвимости (SCA)
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: "Cybersite-2077"
+          path: "."
+          format: "HTML"
+          out: "reports" # Отчет сохранится в папку reports в корне проекта
+          args: >
+            --failOnCVSS 8
+            --nodePackageSkipDevDependencies
+            --exclude "**/node_modules/**"
+
+      # 4.2. Сохранение отчета об уязвимостях в артефакты GitHub
+      - name: Upload OWASP Report
+        uses: actions/upload-artifact@v4
+        if: always() # Отчет запишется, даже если проверка завалится уязвимостью
+        with:
+          name: owasp-vulnerability-report
+          path: reports/dependency-check-report.html
+
+      # 5. Устанавливаем клиент Prisma для генерации типов
+      - name: Generate Prisma Client
+        run: npx prisma generate --schema=./packages/database/prisma/schema.prisma
+
+      # 6. Проверка линтером серверного кода
+      - name: Run EsLint Backend
+        run: npm run lint -w server
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      # 7. Проверка линтером клиентского кода
+      - name: Run EsLint Frontend
+        run: npm run lint:js -w web
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      # 8. Проверка линтером клиентских стилей
+      - name: Run StyleLint Frontend
+        run: npm run lint:style -w web
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      # 9. Проверка типов TypeScript на фронтенде
+      - name: Type check Frontend
+        run: npm run type-check -w web
+
+      # 10. Проверка типов TypeScript на бэкенде
+      - name: Type check Backend
+        run: npm run type-check -w server
+
+      # 11. Запуск Unit-тестов и интеграционных тестов на фронтенде
+      - name: Run Unit Tests Frontend
+        run: npm run test -w web
+
+      # 12. Запуск Unit-тестов на бэкенде
+      - name: Run Unit Tests Backend
+        run: npm run test -w server
+
+      # 13. Сборка фронтенда
+      - name: Build Web App
+        run: npm run build -w web
