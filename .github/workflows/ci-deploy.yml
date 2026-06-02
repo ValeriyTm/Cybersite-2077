@@ -140,6 +140,10 @@ jobs:
           file: ./deploy/nginx/Dockerfile
           push: true
           tags: ghcr.io/${{ env.REGISTRY_OWNER }}/cybersite-nginx:latest
+          build-args: |
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
+            VITE_SITE_URL=${{ secrets.VITE_SITE_URL }}
+            VITE_GOOGLE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_GOOGLE_RECAPTCHA_SITE_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

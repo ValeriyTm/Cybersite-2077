@@ -26,6 +26,15 @@ COPY packages/validation/package.json ./packages/validation/
 RUN npm ci
 
 COPY . .
+
+#Принимаем аргументы из GitHub Actions и превращаем их в переменные среды для Vite
+ARG VITE_API_URL
+ARG VITE_SITE_URL
+ARG VITE_GOOGLE_RECAPTCHA_SITE_KEY
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_SITE_URL=$VITE_SITE_URL
+ENV VITE_GOOGLE_RECAPTCHA_SITE_KEY=$VITE_GOOGLE_RECAPTCHA_SITE_KEY
+
 RUN npm run build -w web
 
 # --- Этап 2: Финальный образ Nginx ---

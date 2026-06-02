@@ -36,7 +36,7 @@ export const Avatar = ({
         height='120'
       />
 
-      {/* Спиннер при загрузке */}
+      {/*Спиннер при загрузке */}
       {isAvatarLoading && (
         <div className={styles.spinnerOverlay}>
           <div className={styles.spinner}></div>
