@@ -156,7 +156,7 @@ cybersite2077/
 ## Demo
 Watch the latest demo on YouTube:
 
-[![See demo on YouTube](https://img.youtube.com/vi/7y4Q71LkbKo/maxresdefault.jpg)](https://www.youtube.com/watch?v=7y4Q71LkbKo&t=326s)
+[![See demo on YouTube](./assets//PreviewYoutube.png)](https://www.youtube.com/watch?v=7y4Q71LkbKo)
 [The complete project video demo (download)](https://media.githubusercontent.com/media/ValeriyTm/Cybersite-2077/media/ProjectDemo.mp4)
 
 Preview (somewhat outdated):
