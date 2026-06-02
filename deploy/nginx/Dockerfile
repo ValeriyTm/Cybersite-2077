@@ -4,7 +4,7 @@ FROM nginx:alpine
 # 2. Удаляем дефолтный конфиг Nginx, который идет "из коробки"
 RUN rm /etc/nginx/conf.d/default.conf
 
-# 3. Копируем твой кастомный конфиг в папку настроек Nginx
+# 3. Копируем кастомный конфиг в папку настроек Nginx
 # Файл nginx.conf должен лежать в той же папке, что и этот Dockerfile
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

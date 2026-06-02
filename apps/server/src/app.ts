@@ -93,7 +93,8 @@ app.use(
           "data:",
           //Разрешаем загрузку аватарок с Google и своего сервера:
           "https://*.googleusercontent.com", // Используем маску для надежности
-          "http://localhost:3001",
+          "http://cybersite2077.online",
+          "https://cybersite2077.online",
         ],
 
         // Запрещает использование опасных функций (DOM sinks) без специальных политик:
@@ -107,7 +108,7 @@ app.use(
     },
     xFrameOptions: { action: "deny" }, //Защита от Clickjacking
     xContentTypeOptions: true, //Явно включаем заголовок X-Content-Type-Options: nosniff (для борьбы с MIME-type sniffing, в т.ч. XSS и XSSI)
-    xXssProtection: true, //Явно отключаем заколовок X-XSS-Protection (т.к. он устарел и опасен)
+    xXssProtection: false, //Явно отключаем заколовок X-XSS-Protection (т.к. он устарел и опасен)
   }),
 );
 //При использовании helmet не допускается какой-либо JS-код

@@ -71,13 +71,11 @@ router.get(
 );
 
 //Временный роут для ручного запуска синхронизации
-//(http://localhost:3001/api/catalog/sync-search):
 router.get(
   "/sync-search",
   authMiddleware,
   roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
   catalogController.syncAllMotorcycles,
 );
-//Не забывать перед каждой синхронизацией удалять старые данные DELETE-запросом на http://localhost:9200/motorcycles
 
 export default router;
