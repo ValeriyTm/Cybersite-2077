@@ -154,10 +154,13 @@ cybersite2077/
 ```
 
 ## Demo
+Watch the latest demo on YouTube:
 
-![The whole project demo](./assets/Project.gif)
+[![See demo on YouTube](https://img.youtube.com/vi/7y4Q71LkbKo/maxresdefault.jpg)](https://www.youtube.com/watch?v=7y4Q71LkbKo&t=326s)
 [The complete project video demo (download)](https://media.githubusercontent.com/media/ValeriyTm/Cybersite-2077/media/ProjectDemo.mp4)
 
+Preview (somewhat outdated):
+![The whole project demo](./assets/Project.gif)
 
 ## Release notes
 
