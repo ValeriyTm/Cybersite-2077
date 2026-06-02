@@ -9,6 +9,10 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    # Общие папки для сертификатов:
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_var:/var/www/certbot
     networks:
       - cybersite_net
     depends_on:
@@ -93,6 +97,22 @@ services:
       - cybersite_net
 
     # --------------------------------------------------- #
+
+  certbot:
+    image: certbot/certbot
+    container_name: cybersite_certbot_prod
+    # Делим те же папки с Nginx:
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_var:/var/www/certbot
+    # Команда для получения сертификата (в первый запуск она создаст ключи)
+    # Замените домен и email на свои!
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot certonly --webroot -w /var/www/certbot d cybersite2077.online d www.cybersite2077.online email tamvalera@gmail.com rsa-key-size 4096 agree-tos non-interactive; sleep 12h & wait $${!}; certbot renew; done'"
+    networks:
+      - cybersite_net
+
+  # --------------------------------------------------- #
+
 networks:
   cybersite_net:
     driver: bridge
@@ -106,3 +126,6 @@ volumes:
   mongodb_data:
   # Для Elascticsearch:
   es_data:
+  # Для Certbot:
+  certbot_etc:
+  certbot_var:
