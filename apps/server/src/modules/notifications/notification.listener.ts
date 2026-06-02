@@ -48,7 +48,7 @@ export const initNotificationListeners = () => {
 <b>Текст:</b>
 <i>"${review.comment}"</i>
 ————————————————
-<a href="http://cybersite2077.online/catalog/motorcycles/${review.motorcycleId}">Открыть на сайте</a>
+<a href="https://cybersite2077.online/catalog/motorcycles/${review.motorcycleId}">Открыть на сайте</a>
   `;
     await telegramService.sendMessage(message);
   });

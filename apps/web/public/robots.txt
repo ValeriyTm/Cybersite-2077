@@ -14,4 +14,4 @@ Disallow: /register
 Disallow: /auth
 Disallow: /support/tickets
 
-Sitemap: http://cybersite2077.online/api/catalog/sitemap.xml
+Sitemap: https://cybersite2077.online/api/catalog/sitemap.xml

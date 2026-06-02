@@ -1,7 +1,7 @@
 //Клиент призмы для работы с PostgreSQL:
 import { prisma } from "@repo/database";
 
-const BASE_URL = "https://cybersite2077.com"; //Мой будущий домен тут будет
+const BASE_URL = "https://cybersite2077.online";
 
 export class SitemapService {
   //Переменные для хранения кэша:
