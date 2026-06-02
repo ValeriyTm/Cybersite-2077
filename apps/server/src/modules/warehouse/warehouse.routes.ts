@@ -10,10 +10,10 @@ import { DeliveryCalculateSchema } from "@repo/validation";
 
 const router = Router();
 
-// Получить все склады для карты:
+//Получить все склады для карты:
 router.get("/", warehouseController.getAllWarehouses);
 
-// Рассчитать доставку:
+//Рассчитать доставку:
 router.post(
   "/calculate",
   authMiddleware,
