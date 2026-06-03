@@ -10,9 +10,10 @@ interface DownloadReportCardProps {
   format: 'pdf' | 'xlsx';
   title: string;
   description: string;
+  isRestricted?: boolean;
 }
 
-export const DownloadReportCard = ({ format, title, description }: DownloadReportCardProps) => {
+export const DownloadReportCard = ({ format, title, description, isRestricted = false }: DownloadReportCardProps) => {
   const { downloadReport, isLoading } = useDownloadReport(format);
 
   const isExcel = format === 'xlsx';
@@ -29,7 +30,7 @@ export const DownloadReportCard = ({ format, title, description }: DownloadRepor
         <p>{description}</p>
         <Button
           type="button"
-          disabled
+          disabled={isRestricted}
           variant="outline"
           onClick={downloadReport}
           isLoading={isLoading}

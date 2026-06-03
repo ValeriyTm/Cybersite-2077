@@ -1,9 +1,13 @@
+import { useProfile } from '@/features/auth';
 //Компоненты:
 import { DownloadReportCard } from '@/features/reports/ui';
 //Стили:
 import styles from './AdminReportsPage.module.scss';
 
 export const AdminReportsPage = () => {
+  const { user } = useProfile(); //Данные юзера
+  const userRole = user?.role;
+  const isRestricted = userRole == 'WATCHER';
 
   return (
     <div className={styles.pageWrapper}>
@@ -21,6 +25,7 @@ export const AdminReportsPage = () => {
         <DownloadReportCard
           format="pdf"
           title="Финансовая сводка (PDF)"
+          isRestricted={isRestricted}
           description="Презентабельный документ с графиками, итоговыми суммами и динамикой продаж."
         />
       </div>

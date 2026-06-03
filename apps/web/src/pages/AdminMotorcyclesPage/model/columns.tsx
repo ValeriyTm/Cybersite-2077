@@ -1,11 +1,12 @@
 //Типы:
 import { type ColumnDef } from "@tanstack/react-table";
 import type { MotorcycleEditAdmin } from "@/entities/catalog";
+//Компоненты:
+import { AdminButton } from '@/shared/ui';
 //Уведомления:
 import toast from "react-hot-toast";
 //Стили:
 import styles from './columns.module.scss';
-import { AdminButton } from '@/shared/ui';
 
 
 export const getMotoColumns = (
@@ -59,10 +60,10 @@ export const getMotoColumns = (
       header: "Действия",
       cell: ({ row }) => (
         <div className={styles.actionsWrapper}>
-          {(['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(userRole)) &&
+          {(['MANAGER', 'ADMIN', 'SUPERADMIN', 'WATCHER'].includes(userRole)) &&
             <AdminButton variant="edit" title={`Редактировать модель ${row.original.model}`} onClick={() => onEdit(row.original)} />
           }
-          {(['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(userRole)) &&
+          {(['MANAGER', 'ADMIN', 'SUPERADMIN', 'WATCHER'].includes(userRole)) &&
             <AdminButton variant="delete" title={`Удалить модель ${row.original.model}`} onClick={() => onDelete(row.original.id)} />
 
           }
