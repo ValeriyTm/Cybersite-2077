@@ -37,7 +37,7 @@ export const PhoneInput = <TFieldValues extends FieldValues>({
           {required && <span className={styles.requiredStar}>*</span>}
         </label>
       </div>
-      <div className={styles.value}>
+      <div className={variant == 'profile' ? styles.value : styles.valueSupport}>
         <Controller
           control={control}
           name={name}

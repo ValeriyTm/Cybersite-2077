@@ -16,19 +16,42 @@ services:
     networks:
       - cybersite_net
     depends_on:
-      - server
+      server:
+        condition: service_healthy
   # ------------Бэкенд:--------------- #
   server:
     image: ghcr.io/valeriytm/cybersite-server:latest
     container_name: cybersite_server_prod
     restart: always
     env_file: .env.prod # Будет лежать в той же папке на VPS
+    # depends_on:
+    #   - postgres
+    #   - redis
+    #   - mongodb
     depends_on:
-      - postgres
-      - redis
-      - mongodb
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      mongodb:
+        condition: service_started
     networks:
       - cybersite_net
+    healthcheck:
+      # Проверяем наш точный эндпоинт здоровья (подставьте /api/health, если есть префикс):
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3001/health",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 120s # Даем 120 секунд накатить миграции и сидинг до первой проверки
 
   # ------------Базы данных:--------------- #
 
@@ -43,6 +66,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - cybersite_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d cybersite_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Кэш и очереди: Redis (для корзины и BullMQ)
   redis:

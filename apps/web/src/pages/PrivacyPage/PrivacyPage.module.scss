@@ -18,6 +18,10 @@
 
   background-color: #111;
 
+  img {
+    margin: 0 auto;
+  }
+
   .title {
     color: #e7110a;
     text-transform: uppercase;
@@ -26,9 +30,14 @@
   h1,
   h2 {
     margin-bottom: 1rem;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     text-align: center;
     overflow-wrap: break-word;
+    hyphens: auto;
+
+    @include mobile {
+      font-size: 1.2rem;
+    }
   }
 
   p,
@@ -36,6 +45,8 @@
     margin-bottom: 1rem;
     font-size: 1rem;
     text-align: justify;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
 
     @media (width <= 600px) {
       text-align: left;
@@ -55,9 +66,13 @@
   }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: #f1c40f;
     text-align: center;
+
+    @include mobile {
+      font-size: 1.1rem;
+    }
   }
 
   a {
