@@ -15,9 +15,10 @@ interface StockEditModalProps {
   stock: Stock | null;
   onSave: (quantity: number) => void;
   isSaving: boolean;
+  role?: string;
 }
 
-export const StockEditModal = ({ isOpen, onClose, stock, onSave, isSaving }: StockEditModalProps) => {
+export const StockEditModal = ({ isOpen, onClose, stock, onSave, isSaving, role }: StockEditModalProps) => {
   const [quantity, setQuantity] = useState(stock ? stock.quantity : 0);
 
   //Блокировка скроллбара:
@@ -30,6 +31,7 @@ export const StockEditModal = ({ isOpen, onClose, stock, onSave, isSaving }: Sto
     };
   }, [isOpen]);
 
+  const isRestricted = role == "WATCHER";
 
   if (!isOpen) return null;
 
@@ -67,7 +69,7 @@ export const StockEditModal = ({ isOpen, onClose, stock, onSave, isSaving }: Sto
               type="button"
               variant="primary"
               onClick={() => onSave(quantity)}
-              disabled={isSaving}
+              disabled={isSaving || isRestricted}
             >
               {isSaving ? 'Сохранение...' : 'Сохранить'}
             </Button>

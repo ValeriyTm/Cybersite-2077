@@ -46,7 +46,13 @@ router.use(noCacheMiddleware); //Запрещаем кэширование ст�
 //Получение брендов:
 router.get(
   "/brands",
-  roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
+  roleMiddleware([
+    "ADMIN",
+    "SUPERADMIN",
+    "MANAGER",
+    "CONTENT_EDITOR",
+    "WATCHER",
+  ]),
   validate(GetBrandsAdminSchema),
   adminController.getBrands,
 );
@@ -77,7 +83,13 @@ router.patch(
 //Поиск бренда:
 router.get(
   "/brands/search",
-  roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
+  roleMiddleware([
+    "ADMIN",
+    "SUPERADMIN",
+    "MANAGER",
+    "CONTENT_EDITOR",
+    "WATCHER",
+  ]),
   validate(SearchBrandsAdminSchema),
   adminController.searchBrands,
 );
@@ -86,7 +98,13 @@ router.get(
 //Получение мотоциклов конкретного бренда:
 router.get(
   "/motorcycles",
-  roleMiddleware(["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"]),
+  roleMiddleware([
+    "ADMIN",
+    "SUPERADMIN",
+    "MANAGER",
+    "CONTENT_EDITOR",
+    "WATCHER",
+  ]),
   validate(GetMotosAdminSchema),
   adminController.getMotorcycles,
 );
@@ -121,7 +139,7 @@ router.delete(
 //Получить остатки по складам:
 router.get(
   "/stocks",
-  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN", "WATCHER"]),
   validate(GetStocksAdminSchema),
   adminController.getStocks,
 );
@@ -138,7 +156,7 @@ router.patch(
 //Получить все заказы:
 router.get(
   "/orders",
-  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN", "WATCHER"]),
   validate(GetOrdersAdminSchema),
   adminController.getOrders,
 );
@@ -186,14 +204,14 @@ router.post(
 //Получение промокодов:
 router.get(
   "/promos",
-  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN", "WATCHER"]),
   adminController.getPromoCodes,
 );
 
 //Получение персональных скидок:
 router.get(
   "/personal-discounts",
-  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN", "WATCHER"]),
   validate(GetPersonalDiscountsSchema),
   adminController.getPersonalDiscounts,
 );
@@ -202,7 +220,7 @@ router.get(
 //Скачать отчет:
 router.get(
   "/reports/download",
-  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN", "WATCHER"]),
   validate(GetReportsAdminSchema),
   adminController.downloadSalesReport,
 );
@@ -211,7 +229,7 @@ router.get(
 //Получить все тикеты:
 router.get(
   "/tickets",
-  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN"]),
+  roleMiddleware(["MANAGER", "ADMIN", "SUPERADMIN", "WATCHER"]),
   validate(GetTicketsAdminSchema),
   adminController.getTickets,
 );
@@ -236,7 +254,7 @@ router.patch(
 //Получение всех новостей:
 router.get(
   "/news",
-  roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN"]),
+  roleMiddleware(["CONTENT_EDITOR", "ADMIN", "SUPERADMIN", "WATCHER"]),
   adminController.getNews,
 );
 

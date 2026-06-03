@@ -62,6 +62,12 @@ async function main() {
       password: "456privatePASS*",
       role: "ADMIN",
     },
+    {
+      email: "watcher@example.com",
+      name: "watcher",
+      password: "aaaAAA111!",
+      role: "WATCHER",
+    },
   ];
 
   for (const user of defaultUsers) {

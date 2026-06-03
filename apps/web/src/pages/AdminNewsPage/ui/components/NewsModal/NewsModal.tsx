@@ -21,11 +21,12 @@ interface NewsModalProps {
   news: News;
   onClose: () => void;
   onSubmit: (formData: FormData) => void;
+  isRestricted?: boolean;
 }
 
 const BASE_URL = `${API_URL}/static/news/`;
 
-export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
+export const NewsModal = ({ news, onClose, onSubmit, isRestricted }: NewsModalProps) => {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(SaveNewsFrontendSchema),
     defaultValues: {
@@ -206,6 +207,7 @@ export const NewsModal = ({ news, onClose, onSubmit }: NewsModalProps) => {
               <Button
                 type="submit"
                 variant="primary"
+                disabled={isRestricted}
               >
                 Опубликовать
               </Button>

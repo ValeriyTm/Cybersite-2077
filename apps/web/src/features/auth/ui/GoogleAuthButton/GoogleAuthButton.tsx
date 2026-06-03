@@ -15,7 +15,7 @@ export const GoogleAuthButton = ({ mode = 'login' }: GoogleAuthButtonProps) => {
       disabled
     >
       <FcGoogle className={styles.google} />
-      <span>
+      <span title='Во избежание нарушения 152ФЗ'>
         {mode === "login" ? "Вход с Google недоступен" : "Регистрация с Google не доступна"}
       </span>
     </button>

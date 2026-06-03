@@ -19,9 +19,10 @@ interface AdminTicketModalProps {
   onClose: () => void;
   onReply: (answer: string, callback: () => void) => void;
   isPending: boolean;
+  role?: string;
 }
 
-export const AdminTicketModal = ({ ticket, onClose, onReply, isPending }: AdminTicketModalProps) => {
+export const AdminTicketModal = ({ ticket, onClose, onReply, isPending, role }: AdminTicketModalProps) => {
   const [answer, setAnswer] = useState('');
 
   //Блокировка скролла:
@@ -62,6 +63,8 @@ export const AdminTicketModal = ({ ticket, onClose, onReply, isPending }: AdminT
   } else if (!ticket.userId) {
     submitButtonText = 'Ответ невозможен (гость)';
   }
+
+  const isRestricted = role == "WATCHER";
 
   return createPortal(
     <FocusTrap focusTrapOptions={{ allowOutsideClick: true }}>
@@ -134,7 +137,7 @@ export const AdminTicketModal = ({ ticket, onClose, onReply, isPending }: AdminT
               type="submit"
               variant="primary"
               onClick={handleSubmitting}
-              disabled={!answer.trim() || isPending || !ticket.userId}
+              disabled={!answer.trim() || isPending || !ticket.userId || isRestricted}
             >
               {submitButtonText}
             </Button>

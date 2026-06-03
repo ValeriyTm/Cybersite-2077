@@ -19,9 +19,10 @@ interface BrandModalProps {
   isSubmitting: boolean;
   onClose: () => void;
   onSubmit: (data: BrandData) => void;
+  role?: string;
 }
 
-export const BrandModal = ({ isOpen, brand, isSubmitting, onClose, onSubmit }: BrandModalProps) => {
+export const BrandModal = ({ isOpen, brand, isSubmitting, onClose, onSubmit, role }: BrandModalProps) => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<BrandData>({
     defaultValues: brand || { name: "", country: "", slug: "" },
     resolver: zodResolver(CreateBrandAdminFrontendSchema),
@@ -51,6 +52,8 @@ export const BrandModal = ({ isOpen, brand, isSubmitting, onClose, onSubmit }: B
       document.body.style.overflow = originalStyle;
     };
   }, [isOpen]);
+
+  const isRestricted = role == "WATCHER";
 
   if (!isOpen) return null;
 
@@ -107,6 +110,7 @@ export const BrandModal = ({ isOpen, brand, isSubmitting, onClose, onSubmit }: B
               <Button
                 type="submit"
                 variant="primary"
+                disabled={isRestricted}
               >
                 {isSubmitting ? "Сохранение..." : "Сохранить"}
               </Button>

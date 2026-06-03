@@ -24,6 +24,7 @@ enum Role {
   CONTENT_EDITOR
   ADMIN
   SUPERADMIN
+  WATCHER
 }
 
 enum Gender {

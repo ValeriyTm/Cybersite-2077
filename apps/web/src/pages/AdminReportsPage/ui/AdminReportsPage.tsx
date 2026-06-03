@@ -4,6 +4,7 @@ import { DownloadReportCard } from '@/features/reports/ui';
 import styles from './AdminReportsPage.module.scss';
 
 export const AdminReportsPage = () => {
+
   return (
     <div className={styles.pageWrapper}>
       <h3>Аналитическая отчетность</h3>

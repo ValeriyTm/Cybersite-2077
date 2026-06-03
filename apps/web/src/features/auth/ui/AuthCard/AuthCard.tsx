@@ -69,7 +69,9 @@ export const AuthCard = ({ initialMode }: AuthCardProps) => {
 
         <div className={styles.formCard}>
           <h2>{mode === "login" ? "Вход" : "Регистрация"}</h2>
-          {mode === "register" && (<p className={styles.error}>Регистрация не доступна</p>)}
+          {mode === "register" && (<p className={styles.error}>Регистрация недоступна во избежание нарушения 152ФЗ</p>)}
+          {mode === "login" && (<p>login: watcher@example.com</p>)}
+          {mode === "login" && (<p>password: aaaAAA111!</p>)}
 
           <GoogleAuthButton
             mode={mode}

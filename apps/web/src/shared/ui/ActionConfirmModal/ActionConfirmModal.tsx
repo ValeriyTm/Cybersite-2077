@@ -15,6 +15,7 @@ interface ActionConfirmModalProps {
   isSubmitting?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  role?: string;
 }
 
 export const ActionConfirmModal = ({
@@ -27,6 +28,7 @@ export const ActionConfirmModal = ({
   isSubmitting = false,
   onConfirm,
   onCancel,
+  role
 }: ActionConfirmModalProps) => {
   //Блокировка скроллбара:
   useEffect(() => {
@@ -38,6 +40,8 @@ export const ActionConfirmModal = ({
       document.body.style.overflow = originalStyle;
     };
   }, [isOpen]);
+
+  const isRestricted = role == "WATCHER";
 
   if (!isOpen) return null;
 
@@ -58,7 +62,7 @@ export const ActionConfirmModal = ({
               {cancelText}
             </button>
 
-            <button type="button" className={confirmBtnClassName} onClick={onConfirm} disabled={isSubmitting}>
+            <button type="button" className={confirmBtnClassName} onClick={onConfirm} disabled={isSubmitting || isRestricted}>
               {isSubmitting ? "Ждите..." : confirmText}
             </button>
           </div>

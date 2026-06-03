@@ -4,20 +4,25 @@ import { useSearchParams } from 'react-router';
 import { useState } from 'react';
 import { useAdminStocks } from '@/entities/admin';
 import { useAdminStocksSave } from '@/features/admin';
+import { useProfile } from '@/features/auth';
 //Формирование таблицы:
 import { DataTable } from '@/shared/ui';
 import { stockColumns } from '../model/columns';
+//Компоненты:
+import { StockEditModal } from './components';
 //Типы:
 import type { Stock } from '@/entities/admin/types/types';
 //Стили:
 import styles from './AdminStocksPage.module.scss';
-import { StockEditModal } from './components';
 
 export const AdminStocksPage = () => {
 	const [searchParams] = useSearchParams();
 	const motoId = searchParams.get('motoId');
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingStock, setEditingStock] = useState<Stock | null>(null);
+
+	const { user } = useProfile(); //Данные юзера
+	const userRole = user?.role;
 
 	//Данные об остатках:
 	const { data, isLoading } = useAdminStocks(motoId!);
@@ -55,6 +60,7 @@ export const AdminStocksPage = () => {
 						setEditingStock(null);
 					}}
 					stock={editingStock}
+					role={userRole}
 					onSave={(quantity) => updateMutation.mutate(quantity)}
 					isSaving={updateMutation.isPending}
 				/>

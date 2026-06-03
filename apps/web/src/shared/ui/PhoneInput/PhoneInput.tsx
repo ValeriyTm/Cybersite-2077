@@ -30,7 +30,7 @@ export const PhoneInput = <TFieldValues extends FieldValues>({
   disabled = false,
 }: PhoneInputProps<TFieldValues>) => {
   return (
-    <div className={`${styles.row} ${className} ${styles[variant]}`.trim()}>
+    <div className={`${styles.row} ${variant == 'profile' ? styles.profile : ''} ${className} ${styles[variant]}`.trim()}>
       <div className={styles.label}>
         <label htmlFor={id}>
           <HiOutlinePhone />&nbsp;&nbsp;&nbsp;Телефон{" "}

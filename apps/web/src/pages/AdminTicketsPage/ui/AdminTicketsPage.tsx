@@ -2,6 +2,7 @@
 import { useMemo, useState } from 'react';
 import { useAdminTickets } from '@/entities/admin';
 import { useAdminTicketsReply, useAdminTicketsStatus } from '@/features/admin';
+import { useProfile } from '@/features/auth';
 //Формирование таблицы:
 import { DataTable, Pagination } from '@/shared/ui';
 import { getTicketColumns } from '../model/columns';
@@ -22,6 +23,10 @@ export const AdminTicketsPage = () => {
   const [emailValue, setEmailValue] = useState(''); //Для мгновенного ввода
   const [debouncedEmail, setDebouncedEmail] = useState(''); //Для API-запроса
   const [statusFilter, setStatusFilter] = useState('');
+
+  const { user } = useProfile(); //Данные юзера
+  const userRole = user?.role;
+  const isRestricted = userRole == "WATCHER";
 
   //Получение данных о тикетах:
   const { data, isLoading } = useAdminTickets(page, statusFilter, debouncedEmail);
@@ -55,7 +60,8 @@ export const AdminTicketsPage = () => {
     (id, status) => statusMutation.mutate({ id, status }),
     (ticket) => {
       setSelectedTicket(ticket);
-    }
+    },
+    isRestricted
   );
 
   return (
@@ -88,6 +94,7 @@ export const AdminTicketsPage = () => {
           ticket={selectedTicket}
           isPending={replyMutation.isPending}
           onClose={() => setSelectedTicket(null)}
+          role={userRole}
           onReply={(text, successCallback) => {
             // Передаем текст в мутацию. В onSuccess мутации вызовите successCallback(), чтобы очистить textarea
             replyMutation.mutate({

@@ -12,7 +12,8 @@ export type UserRole =
   | "MANAGER"
   | "CONTENT_EDITOR"
   | "ADMIN"
-  | "SUPERADMIN";
+  | "SUPERADMIN"
+  | "WATCHER";
 
 //Типизируем пол:
 export type UserGender = "MALE" | "FEMALE" | null; //null, т.к. поле опциональное

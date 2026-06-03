@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useAdminNews } from '@/entities/admin';
 import { useAdminNewsDelete, useAdminNewsSave, useAdminNewsStatus } from '@/features/admin';
+import { useProfile } from '@/features/auth';
 //Формирование таблицы:
 import { ActionConfirmModal, Button, DataTable } from '@/shared/ui';
 import { newsColumns } from '../model/columns';
@@ -16,6 +17,11 @@ export const AdminNewsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNews, setEditingNews] = useState<News | null>(null);
   const [deletingNewsId, setDeletingNewsId] = useState<string | null>(null);
+
+  const { user } = useProfile(); //Данные юзера
+  const userRole = user?.role;
+  const isRestricted = userRole == "WATCHER";
+
   //Получение новостей:
   const { data: news } = useAdminNews();
 
@@ -65,6 +71,7 @@ export const AdminNewsPage = () => {
         <NewsModal
           news={editingNews as News}
           onClose={() => setIsModalOpen(false)}
+          isRestricted={isRestricted}
           onSubmit={(formData: FormData) => saveMutation.mutate(formData)}
         />
       )}
@@ -75,6 +82,7 @@ export const AdminNewsPage = () => {
         title="Удаление новости"
         description="Вы уверены, что хотите удалить эту новость? Это действие невозможно отменить."
         confirmText="Удалить"
+        role={userRole}
         cancelText="Отмена"
         isSubmitting={deleteMutation.isPending}
         onConfirm={handleDeleteConfirm}

@@ -38,7 +38,6 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
     resolver: zodResolver(LoginFrontendSchema),
     mode: "onBlur",
     defaultValues: {
-      // Инициализируем значения по умолчанию
       email: "",
       password: "",
       rememberMe: false,
@@ -97,7 +96,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
       <Input
         label="Email"
         type="email"
-        placeholder="mail@example.com"
+        placeholder="watcher@example.com"
         registration={register("email")}
         error={errors.email}
       />
@@ -107,7 +106,7 @@ export const LoginForm = ({ onSuccess, onVerify2FA }: Props) => {
         label={
           <div className={styles.labelWithLink}>
             <span>Пароль</span>
-            <a href="/forgot-password" className={styles.forgotLink}>
+            <a href="" className={styles.forgotLink} title='Недоступно во избежание нарушения 152ФЗ'>
               Забыли пароль?
             </a>
           </div>

@@ -25,7 +25,8 @@ const STATUS_OPTIONS = [
 
 export const getTicketColumns = (
   onStatusChange: (id: string, status: string) => void,
-  onReply: (ticket: Ticket) => void
+  onReply: (ticket: Ticket) => void,
+  isRestricted: boolean,
 ): ColumnDef<Ticket>[] => [
     {
       accessorKey: 'sender',
@@ -82,7 +83,7 @@ export const getTicketColumns = (
             options={STATUS_OPTIONS}
             value={status}
             data-status={status}
-            onChange={(e) => onStatusChange(row.original.id, e.target.value)}
+            onChange={!isRestricted ? (e) => onStatusChange(row.original.id, e.target.value) : undefined}
             variant="dark"
             direction="column"
             visuallyHidden

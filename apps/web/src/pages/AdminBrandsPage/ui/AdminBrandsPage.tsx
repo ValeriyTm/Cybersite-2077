@@ -2,6 +2,7 @@
 import { useAdminBrands } from "@/entities/admin";
 import { useCallback, useMemo, useState } from "react";
 import { useAdminBrandDelete, useAdminBrandSave } from "@/features/admin";
+import { useProfile } from "@/features/auth";
 //Компоненты:
 import { BrandModal } from "./BrandModal";
 import { ActionConfirmModal, Button, DataTable, Pagination } from "@/shared/ui";
@@ -17,8 +18,12 @@ export const AdminBrandsPage = () => {
   const [editingBrand, setEditingBrand] = useState<BrandData | null>(null);
   const [brandIdToDelete, setBrandIdToDelete] = useState<string | null>(null);
 
+  const { user } = useProfile(); //Данные юзера
+  const userRole = user?.role;
+
   //Получаем бренды:
   const { data, isLoading, error } = useAdminBrands(page);
+
   //----------API:----------//
   //Удаление бренда:
   const deleteMutation = useAdminBrandDelete();
@@ -98,6 +103,7 @@ export const AdminBrandsPage = () => {
         brand={editingBrand}
         isSubmitting={saveMutation.isPending}
         onClose={handleCloseModal}
+        role={userRole}
         onSubmit={(formData: BrandData) => {
           saveMutation.mutate(formData);
         }}
@@ -114,6 +120,7 @@ export const AdminBrandsPage = () => {
         isSubmitting={deleteMutation.isPending}
         onConfirm={handleConfirmDelete}
         onCancel={() => setBrandIdToDelete(null)}
+        role={userRole}
       />
     </div>
   );

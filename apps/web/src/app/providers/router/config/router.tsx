@@ -9,8 +9,6 @@ import { ProtectedRoute } from '@/app/providers/router/ui/ProtectedRoute.js';
 import { GuestRoute } from '@/app/providers/router/ui/GuestRoute.js';
 
 const ProfilePage = lazy(() => import("@/pages/ProfilePage/ProfilePage").then(m => ({ default: m.ProfilePage })));
-const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage/ForgotPasswordPage").then(m => ({ default: m.ForgotPasswordPage })));
-const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage/ResetPasswordPage").then(m => ({ default: m.ResetPasswordPage })));
 const AuthCard = lazy(() => import("@/features/auth/ui/AuthCard/AuthCard").then(m => ({ default: m.AuthCard })));
 
 export const router = createBrowserRouter([
@@ -30,22 +28,22 @@ export const router = createBrowserRouter([
           </GuestRoute> //Страница авторизации
         ),
       },
-      {
-        path: "/forgot-password",
-        element: (
-          <GuestRoute>
-            <ForgotPasswordPage />
-          </GuestRoute> //Страница "Forgot Password"
-        ),
-      },
-      {
-        path: "/reset-password",
-        element: (
-          <GuestRoute>
-            <ResetPasswordPage />
-          </GuestRoute> //Страница восстановления пароля
-        ),
-      },
+      // {
+      //   path: "/forgot-password",
+      //   element: (
+      //     <GuestRoute>
+      //       <ForgotPasswordPage />
+      //     </GuestRoute> //Страница "Forgot Password"
+      //   ),
+      // },
+      // {
+      //   path: "/reset-password",
+      //   element: (
+      //     <GuestRoute>
+      //       <ResetPasswordPage />
+      //     </GuestRoute> //Страница восстановления пароля
+      //   ),
+      // },
       {
         path: "/profile",
         element: (

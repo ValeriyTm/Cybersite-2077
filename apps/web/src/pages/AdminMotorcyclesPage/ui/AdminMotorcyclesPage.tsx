@@ -118,6 +118,7 @@ export const AdminMotorcyclesPage = () => {
           }}
           isOpen={isModalOpen}
           isPending={isPending}
+          role={userRole}
         />
       )}
 
@@ -131,6 +132,7 @@ export const AdminMotorcyclesPage = () => {
         isSubmitting={deleteMutation.isPending}
         onConfirm={handleConfirmDelete}
         onCancel={() => setMotoIdToDelete(null)}
+        role={userRole}
       />
 
       {/* Пагинация: */}

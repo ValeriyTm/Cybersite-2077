@@ -71,7 +71,7 @@ export const generateMotorcycleJsonLd = (
     motorcycle.images?.[0]?.url ||
     "";
   const imageUrl = `${API_URL}/static/motorcycles/${mainImgName}`;
-  const productUrl = `http://${siteUrl}/catalog/motorcycles/${brandSlug}/${slug}`;
+  const productUrl = `https://${siteUrl}/catalog/motorcycles/${brandSlug}/${slug}`;
 
   const gearboxLabel =
     (motorcycle.gearbox && GEARBOX_MAP[motorcycle.gearbox]) || "Нет данных";

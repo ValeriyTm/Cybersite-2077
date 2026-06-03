@@ -23,6 +23,8 @@ export const AdminOrdersPage = () => {
   const [debouncedEmail, setDebouncedEmail] = useState('');
 
   const { user } = useProfile();
+  const userRole = user?.role;
+  const isAllowed = userRole != "WATCHER";
 
   //Получаем данные о заказах:
   const { data } = useAdminOrders(page, status, debouncedEmail);
@@ -67,7 +69,7 @@ export const AdminOrdersPage = () => {
           label="Фильтрация заказа по статусу"
           options={STATUS_OPTIONS}
           data-status={status}
-          onChange={handleStatusChange}
+          onChange={isAllowed ? handleStatusChange : undefined}
           variant="dark"
           direction="column"
           visuallyHidden

@@ -10,7 +10,8 @@
 .SidebarMobile {
   position: fixed;
   z-index: 1500;
-  top: 201px;
+  // top: 201px;
+  top: 1rem;
 
   overflow-y: auto;
   display: flex;
@@ -29,6 +30,11 @@
 
   @include laptop-s-above {
     display: none;
+  }
+
+  button {
+    position: relative;
+    top: -10px;
   }
 }
 

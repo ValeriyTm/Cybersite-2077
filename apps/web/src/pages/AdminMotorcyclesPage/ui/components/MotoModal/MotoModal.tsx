@@ -29,9 +29,10 @@ interface MotoModalProps {
   onSubmit: (data: FormData) => void;
   isOpen: boolean;
   isPending: boolean;
+  role?: string;
 }
 
-export const MotoModal = ({ isOpen, moto, onClose, onSubmit, isPending }: MotoModalProps) => {
+export const MotoModal = ({ isOpen, moto, onClose, onSubmit, isPending, role }: MotoModalProps) => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
       ...moto,
@@ -115,6 +116,8 @@ export const MotoModal = ({ isOpen, moto, onClose, onSubmit, isPending }: MotoMo
       document.body.style.overflow = originalStyle;
     };
   }, [isOpen]);
+
+  const isRestricted = role == "WATCHER";
 
   if (!isOpen) return null;
 
@@ -377,6 +380,7 @@ export const MotoModal = ({ isOpen, moto, onClose, onSubmit, isPending }: MotoMo
                 type="submit"
                 variant="outline-dark"
                 isLoading={isPending}
+                disabled={isRestricted}
                 loadingText="Сохранение..."
               >
                 Сохранить байк

@@ -29,6 +29,7 @@ export const DownloadReportCard = ({ format, title, description }: DownloadRepor
         <p>{description}</p>
         <Button
           type="button"
+          disabled
           variant="outline"
           onClick={downloadReport}
           isLoading={isLoading}
