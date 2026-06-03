@@ -17,7 +17,7 @@ services:
       - cybersite_net
     depends_on:
       server:
-        condition: service_healthy
+        condition: service_started
   # ------------Бэкенд:--------------- #
   server:
     image: ghcr.io/valeriytm/cybersite-server:latest
@@ -48,10 +48,10 @@ services:
           "--spider",
           "http://localhost:3001/health",
         ]
-      interval: 15s
-      timeout: 5s
+      interval: 20s
+      timeout: 10s
       retries: 5
-      start_period: 120s # Даем 120 секунд накатить миграции и сидинг до первой проверки
+      start_period: 150s # Даем 150 секунд накатить миграции и сидинг до первой проверки
 
   # ------------Базы данных:--------------- #
 
