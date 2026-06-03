@@ -9,7 +9,7 @@ export const AdminRoute = () => {
 
   const isAdmin =
     user?.role &&
-    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"].includes(user.role);
+    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR", "WATCHER"].includes(user.role);
   //Роли, которым открыт доступ в админ-панель
 
   if (!isAuth || !isAdmin) {
