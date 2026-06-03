@@ -24,7 +24,7 @@ export const MobileMenu = () => {
   //Показывать ссылку на страницу администраторов или нет:
   const isAdmin =
     user?.role &&
-    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"].includes(user.role);
+    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR", "WATCHER"].includes(user.role);
   const canSee = isAuth && isAdmin;
 
   const logoUrl = getLogoByTheme(theme);

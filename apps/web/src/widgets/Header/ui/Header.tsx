@@ -41,7 +41,7 @@ export const Header = () => {
 
   //Показывать ли ссылку на страницу админ-панели:
   const isAdmin = (user?.role &&
-    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR"].includes(user.role)) ? true : false;
+    ["ADMIN", "SUPERADMIN", "MANAGER", "CONTENT_EDITOR", "WATCHER"].includes(user.role)) ? true : false;
   const canSeeAdmin = isAuth && isAdmin;
 
   return (
