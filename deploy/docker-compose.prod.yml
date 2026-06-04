@@ -26,10 +26,6 @@ services:
     env_file: .env.prod
     environment:
       - NODE_OPTIONS=--dns-result-order=ipv4first
-    # depends_on:
-    #   - postgres
-    #   - redis
-    #   - mongodb
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,7 +36,6 @@ services:
     networks:
       - cybersite_net
     healthcheck:
-      # Проверяем наш точный эндпоинт здоровья (подставьте /api/health, если есть префикс):
       test:
         [
           "CMD",
@@ -135,8 +130,7 @@ services:
     volumes:
       - certbot_etc:/etc/letsencrypt
       - certbot_var:/var/www/certbot
-    # Команда для получения сертификата (в первый запуск она создаст ключи)
-    # Замените домен и email на свои!
+    # Команда для получения сертификата:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot certonly --webroot -w /var/www/certbot -d cybersite2077.online -d www.cybersite2077.online -m tamvalera@gmail.com --rsa-key-size 4096 --agree-tos --non-interactive; sleep 12h & wait $${!}; certbot renew; done'"
     networks:
       - cybersite_net

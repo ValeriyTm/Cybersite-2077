@@ -131,9 +131,9 @@
 }
 
 .profile {
-  gap: 400px;
   display: grid;
   grid-template-columns: 140px 1fr;
+  gap: 400px;
 
   @include tablet {
     gap: 50px;

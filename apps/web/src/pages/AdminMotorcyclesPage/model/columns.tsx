@@ -76,7 +76,7 @@ export const getMotoColumns = (
       cell: ({ row }) => {
         return (
           <>
-            {(['MANAGER', 'ADMIN', 'SUPERADMIN'].includes(userRole)) &&
+            {(['MANAGER', 'ADMIN', 'SUPERADMIN', 'WATCHER'].includes(userRole)) &&
               <AdminButton variant="stocks" title={`Редактировать остатки для модели ${row.original.model}`} onClick={() => onNavigateToStock(row.original.id)} />
             }
           </>

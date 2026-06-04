@@ -30,10 +30,11 @@
   h1,
   h2 {
     margin-bottom: 1rem;
+
     font-size: 1.5rem;
+    hyphens: auto;
     text-align: center;
     overflow-wrap: break-word;
-    hyphens: auto;
 
     @include mobile {
       font-size: 1.2rem;
@@ -43,10 +44,11 @@
   p,
   div {
     margin-bottom: 1rem;
+
     font-size: 1rem;
+    hyphens: auto !important;
     text-align: justify;
     overflow-wrap: break-word !important;
-    hyphens: auto !important;
 
     @media (width <= 600px) {
       text-align: left;

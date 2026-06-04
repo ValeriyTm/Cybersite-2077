@@ -64,7 +64,7 @@ CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/pri
 # Короткий вариант для тестов:
 # CMD ["sh", "-c", "npx prisma migrate deploy --schema=../../packages/database/prisma/schema.prisma --config=../../packages/database/prisma.config.ts  &&  npx tsx src/scripts/syncElastic.ts && npx tsx src/index.ts"]
 
-
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # Dockerfile с PUPPETEER (для работы pdf сервиса) (не использую пока, т.к. много ресурсов потребляет):
 
 # # ------------------Многоэтапная сборка (multi-stage build)--------------------- #

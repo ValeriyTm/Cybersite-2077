@@ -18,6 +18,7 @@ export const newsColumns = (
     {
       accessorKey: 'title',
       header: 'Заголовок',
+      meta: { className: styles.titleColumn },
       cell: ({ row }) => (
         <div className={styles.title}>{row.original.title}</div>
       )
@@ -25,6 +26,7 @@ export const newsColumns = (
     {
       accessorKey: 'status',
       header: 'Статус',
+      meta: { className: styles.statusColumn },
       cell: ({ row, getValue }) => {
         const status = String(getValue());
         const selectClass = `${styles.statusSelect} ${status === 'PUBLISHED' ? styles.published : styles.draft
@@ -57,6 +59,7 @@ export const newsColumns = (
     {
       id: 'actions',
       header: 'Действия',
+      meta: { className: styles.actionsColumn },
       cell: ({ row }) => (
         <div className={styles.actions}>
           <AdminButton

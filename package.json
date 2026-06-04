@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
+    "reload": "npm run build -w web && docker exec cybersite_nginx nginx -s reload",
     "test": "vitest",
     "test:ui": "vitest --ui"
   },

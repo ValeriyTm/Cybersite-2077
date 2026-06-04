@@ -34,4 +34,37 @@
   display: flex;
   gap: 15px;
   color: var(--color-rating);
+
+  @include mobile {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.titleColumn {
+  @include mobile {
+    max-width: 16rem;
+    overflow-wrap: break-word;
+  }
+
+  @include mobile-s {
+    max-width: 14rem;
+    overflow-wrap: break-word;
+  }
+}
+
+.statusColumn {
+  @include mobile-s {
+    max-width: 60px;
+  }
+
+  select {
+    @include mobile-s {
+      max-width: 120px;
+
+      // Поворот select на 90 градусов:
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+  }
 }
