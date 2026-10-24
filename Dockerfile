@@ -1,7 +1,8 @@
 # ------------------Многоэтапная сборка (multi-stage build)--------------------- #
 # --- Этап 1: Base (установка всех зависимостей) ---
 # Этот этап позволит нам при изменении кода без изменения зависимостей перезапустить контейнер без повторной установки всех зависимостей. Тут ставим вообще все зависимости проекта (в т.ч. dev), чтобы на следующем этапе сгенерировать код.
-FROM node:20-alpine AS base
+# FROM node:20-alpine AS base
+FROM node:22.23.4-alpine AS base
 # Ставим библиотеку совместимости для корректной работы Prisma в Alpine:
 RUN apk add --no-cache libc6-compat 
 WORKDIR /app
@@ -46,7 +47,8 @@ RUN npm ci --omit=dev && npm cache clean --force
 
 # --- Этап 4: Server ---
 # Главный этап. Тут используем зависимости с production-deps этапа и сгенерированный код с этапа builder, а также делаем прочую работу.
-FROM node:20-alpine AS server
+# FROM node:20-alpine AS server
+FROM node:22.23.4-alpine AS server
 WORKDIR /app
 
 # Копируем prod-зависимости (т.е. все зависимости берем с этапа production-deps):

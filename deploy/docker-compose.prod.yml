@@ -15,6 +15,8 @@ services:
       - certbot_var:/var/www/certbot
     networks:
       - cybersite_net
+    # Команда для перезапуска контейнера каждые 12 часов (чтобы при обновлении SSL-сертификата всё заработало): 
+    command: "/bin/sh -c 'while :; do sleep 12h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     depends_on:
       server:
         condition: service_started
