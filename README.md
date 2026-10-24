@@ -466,7 +466,7 @@ stateDiagram-v2
 **Functionality and implementation details:**
 
 - A feedback form has been implemented, allowing you to ask any question. The form is available to both authorized and unauthorized users (unauthorized users are limited to file uploads).
-- You can attach images, as well as .txt, .pdf, and .doc/.docx files to the form.
+- You can attach images, as well as .txt, .pdf, and .doc /.docx files to the form.
 - The form is validated (Zod) on both the client and server.
 - Form submission is protected from spam using Google reCAPTCHA v3.
 - Uploaded files are stored on the server and are automatically deleted 30 days after the ticket is closed (CLOSED or RESOLVED) using BullMQ.
